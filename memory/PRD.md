@@ -29,6 +29,7 @@ Founder ≠ Command Center user. Studio Request ≠ Tenant. Provisioning asincro
 ## Implementation Status
 
 ### ✅ COMPLETATO
+- **STUDIO MARKET SELECTION REFACTOR** (2026-06-01) — Step 02/05 ristrutturato in 3 sezioni: A·Operating Market (singolo) · B·Headquarter (Mapbox geocoder) · C·Target Countries (multi-select 245 paesi DB-driven). Migration 029a/b/c applicate. Drawer Command Center con sezione "Geografia commerciale". Report `STUDIO_MARKET_SELECTION_REFACTOR_REPORT.md` (READY_FOR_USER_ACCEPTANCE). Mapbox token in fallback (scope Geocoding da abilitare).
 - **STUDIO ACTIVATION FLOW V2** (2026-06-01) — Nuovo funnel pubblico `/studio` a 5 step DB-driven (categoria · paese · referente · aiuto · ricevuto). Zero foto reali, zero hardcoded, lifecycle V1 riutilizzato senza duplicazione. V1 quarantenato su `/studio-legacy`. Report `STUDIO_V2_IMPLEMENTATION_REPORT.md` (READY_FOR_USER_ACCEPTANCE).
 - Resend Production Go-Live (`no-reply@mail.moodfordesign.com`)
 - Tenant Lifecycle (validazione E2E)

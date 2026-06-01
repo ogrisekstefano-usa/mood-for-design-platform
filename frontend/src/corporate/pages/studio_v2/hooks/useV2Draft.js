@@ -11,10 +11,20 @@ const TOKEN_KEY      = 'mood_studio_v2_token';
 const LOCAL_FORM_KEY = 'mood_studio_v2_form';
 
 const emptyForm = {
-  archetype_code:     null,
-  country:            null,
-  city:               '',
-  additional_markets: [],
+  archetype_code:                null,
+  // New geo (V2 Step 2 refactor)
+  primary_operating_market_code: null,
+  headquarter_country_iso:       null,
+  headquarter_city:              '',
+  headquarter_lat:               null,
+  headquarter_lng:               null,
+  mapbox_place_id:               null,
+  target_country_isos:           [],
+  // Legacy mirrors (still read by some downstream)
+  country:                       null,
+  city:                          '',
+  additional_markets:            [],
+  // Contact + help
   first_name:         '',
   last_name:          '',
   contact_email:      '',

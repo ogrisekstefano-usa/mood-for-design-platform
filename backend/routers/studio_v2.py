@@ -36,9 +36,19 @@ async def submit(request: Request, body: dict = Body(...)):
         return await studio_v2.submit_v2(
             draft_token       = body.get("draft_token") or "",
             archetype_code    = body.get("archetype_code") or "",
+            # Legacy
             country           = body.get("country") or "",
             city              = body.get("city"),
             additional_markets= body.get("additional_markets") or [],
+            # New geo fields
+            primary_operating_market_code = body.get("primary_operating_market_code"),
+            headquarter_country_iso       = body.get("headquarter_country_iso"),
+            headquarter_city              = body.get("headquarter_city"),
+            headquarter_lat               = body.get("headquarter_lat"),
+            headquarter_lng               = body.get("headquarter_lng"),
+            mapbox_place_id               = body.get("mapbox_place_id"),
+            target_country_isos           = body.get("target_country_isos") or [],
+            # Contact + help
             first_name        = body.get("first_name") or "",
             last_name         = body.get("last_name")  or "",
             contact_email     = body.get("contact_email") or "",

@@ -1,187 +1,225 @@
 /**
- * Step2 — Dove operi? (Country DB-driven + City Mapbox autocomplete)
- * NB: NO testo libero per il paese. City: autocomplete se il backend
- * espone /api/studio/v2/cities, altrimenti free-text con avviso sobrio.
+ * Step 2 — Dove operate? (refactor 2026-06-01)
+ *  A · MOOD Operating Market   (single, required)        ← /api/geo/operating-markets
+ *  B · Headquarter Country + City (Mapbox)               ← /api/geo/countries + /api/studio/v2/cities
+ *  C · Target Countries (multi-select, optional)         ← /api/geo/countries
+ *
+ * NO hardcoded labels, no technical codes shown to the visitor.
  */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useCountries } from './hooks/useCountries';
+import { useOperatingMarkets } from './hooks/useOperatingMarkets';
+import TargetCountriesCombobox from './components/TargetCountriesCombobox';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
-const Step2Location = ({ manifest, t, form, update, next, back }) => {
-  const countries = manifest?.countries || [];
+const labelStyle = {
+  display: 'block', fontSize: '0.7rem', letterSpacing: '0.18em',
+  color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase',
+  marginBottom: 8, fontFamily: 'Inter, sans-serif',
+};
+const inputStyle = {
+  width: '100%',
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  borderRadius: 6, color: 'var(--mood-text-1, #F4F4F5)',
+  padding: '14px 16px', fontSize: '1rem', fontFamily: 'inherit',
+};
+const helperStyle = {
+  fontSize: '0.84rem', color: 'rgba(255,255,255,0.55)',
+  marginTop: 6, fontFamily: 'Inter, sans-serif',
+};
+const sectionTitleStyle = {
+  fontSize: '1.05rem', fontWeight: 500, color: 'var(--mood-text-1, #F4F4F5)',
+  marginBottom: 14,
+};
+const sectionEyebrowStyle = {
+  fontSize: '0.66rem', letterSpacing: '0.22em',
+  color: 'var(--mood-teal, #00C9B3)', textTransform: 'uppercase',
+  marginBottom: 8, fontFamily: 'Inter, sans-serif',
+};
+const dividerStyle = {
+  margin: '36px 0', height: 1, background: 'rgba(255,255,255,0.06)', border: 'none',
+};
+
+const Step2Location = ({ t, form, update, next, back, locale }) => {
+  const { items: markets, ready: marketsReady } = useOperatingMarkets(locale || 'it-IT');
+  const { items: countries, ready: countriesReady } = useCountries(locale || 'it-IT');
   const [citySuggestions, setCitySuggestions] = useState([]);
-  const [mapboxAvailable, setMapboxAvailable] = useState(null);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [cityLoading, setCityLoading] = useState(false);
 
-  const selectedCountry = form.country
-    || manifest?.default_country
-    || countries[0]?.code
-    || '';
-
-  // Sync default country into form once
+  // Mapbox debounced city search
   useEffect(() => {
-    if (!form.country && selectedCountry) update({ country: selectedCountry });
-    // eslint-disable-next-line
-  }, []);
-
-  // City autocomplete (debounced)
-  useEffect(() => {
-    if (!form.city || form.city.length < 2 || !selectedCountry) {
-      setCitySuggestions([]);
-      return;
-    }
+    const cc = form.headquarter_country_iso || form.country || '';
+    const q  = (form.headquarter_city || form.city || '').trim();
+    if (!cc || q.length < 2) { setCitySuggestions([]); return; }
+    setCityLoading(true);
     const tid = setTimeout(async () => {
       try {
         const r = await axios.get(`${BACKEND}/api/studio/v2/cities`,
-          { params: { country: selectedCountry, q: form.city, limit: 5 } });
-        const items = r.data?.items || [];
-        setCitySuggestions(items);
-        setMapboxAvailable(items.length > 0 || mapboxAvailable !== false);
-        if (items.length === 0 && mapboxAvailable === null) {
-          // Don't conclude yet
-        }
-      } catch {
-        setCitySuggestions([]);
-      }
-    }, 350);
+          { params: { country: cc, q, limit: 6 } });
+        setCitySuggestions(r.data?.items || []);
+      } catch { setCitySuggestions([]); }
+      finally { setCityLoading(false); }
+    }, 380);
     return () => clearTimeout(tid);
-    // eslint-disable-next-line
-  }, [form.city, selectedCountry]);
+  }, [form.headquarter_country_iso, form.headquarter_city, form.country, form.city]);
 
-  const canContinue = !!selectedCountry && !!(form.city || '').trim();
+  // Defaults
+  useEffect(() => {
+    if (!form.primary_operating_market_code && markets.length > 0) {
+      const it = markets.find((m) => m.code === 'italy');
+      update({ primary_operating_market_code: (it || markets[0]).code });
+    }
+  }, [markets]); // eslint-disable-line
+  useEffect(() => {
+    if (!form.headquarter_country_iso && countries.length > 0) {
+      const it = countries.find((c) => c.iso2 === 'IT');
+      update({ headquarter_country_iso: (it || countries[0]).iso2 });
+    }
+  }, [countries]); // eslint-disable-line
 
-  const toggleMarket = (code) => {
-    const cur = new Set(form.additional_markets || []);
-    if (cur.has(code)) cur.delete(code); else cur.add(code);
-    update({ additional_markets: Array.from(cur) });
+  if (!marketsReady || !countriesReady) {
+    return <p data-testid="step2-loading" style={{ opacity: 0.55 }}>…</p>;
+  }
+
+  const hqCountry = countries.find((c) => c.iso2 === form.headquarter_country_iso);
+  const canContinue = !!form.primary_operating_market_code
+                   && !!form.headquarter_country_iso
+                   && !!(form.headquarter_city || '').trim();
+
+  const pickCity = (sug) => {
+    update({
+      headquarter_city: sug.name,
+      headquarter_lat:  sug.lat,
+      headquarter_lng:  sug.lng,
+      mapbox_place_id:  sug.place_id,
+    });
+    setCitySuggestions([]);
+    setShowCityDropdown(false);
   };
-
-  // Build unique market list (parent market codes seen on countries)
-  const marketsList = Array.from(new Map(
-    countries
-      .filter((c) => c.market && c.code !== selectedCountry)
-      .map((c) => [c.market, c.market])
-  ).keys()).slice(0, 12);
 
   return (
     <div data-testid="step2-location">
       <h1 style={{
-        fontSize: 'clamp(2rem, 4.5vw, 3rem)',
-        lineHeight: 1.1, margin: '0 0 36px',
-        fontWeight: 500, letterSpacing: '-0.02em',
+        fontSize: 'clamp(2rem, 4.5vw, 3rem)', lineHeight: 1.1,
+        margin: '0 0 36px', fontWeight: 500, letterSpacing: '-0.02em',
+        color: 'var(--mood-text-1, #F4F4F5)',
       }} data-testid="step2-title">{t('step2_title')}</h1>
 
-      <div style={{ marginBottom: 28 }}>
-        <label style={{
-          display: 'block', fontSize: '0.72rem', letterSpacing: '0.16em',
-          color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase',
-          marginBottom: 8,
-        }}>{t('step2_country')}</label>
+      {/* ─── A · MOOD Operating Market ─────────────────────────────── */}
+      <section data-testid="section-operating-market">
+        <p style={sectionEyebrowStyle}>A · Mercato operativo</p>
+        <h2 style={sectionTitleStyle}>{t('step2_market_title')}</h2>
+        <label style={labelStyle}>Mercato MOOD</label>
         <select
-          data-testid="country-select"
-          value={selectedCountry}
-          onChange={(e) => update({ country: e.target.value })}
-          style={{
-            width: '100%',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 6, color: '#F4F4F5',
-            padding: '14px 16px', fontSize: '1rem', fontFamily: 'inherit',
-          }}
-        >
-          {countries.map((c) => (
-            <option key={c.code} value={c.code}
-                    style={{ background: '#0A0A0B' }}>
-              {c.label}
+          data-testid="operating-market-select"
+          value={form.primary_operating_market_code || ''}
+          onChange={(e) => update({ primary_operating_market_code: e.target.value })}
+          style={inputStyle}>
+          {markets.map((m) => (
+            <option key={m.code} value={m.code} style={{ background: '#0A0A0B' }}>
+              {m.label}
             </option>
           ))}
         </select>
-      </div>
+        <p style={helperStyle}>{t('step2_market_helper')}</p>
+      </section>
 
-      <div style={{ marginBottom: 28, position: 'relative' }}>
-        <label style={{
-          display: 'block', fontSize: '0.72rem', letterSpacing: '0.16em',
-          color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase',
-          marginBottom: 8,
-        }}>{t('step2_city')}</label>
-        <input
-          data-testid="city-input"
-          type="text"
-          value={form.city || ''}
-          onChange={(e) => update({ city: e.target.value })}
-          placeholder="Milano…"
-          autoComplete="off"
-          style={{
-            width: '100%',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 6, color: '#F4F4F5',
-            padding: '14px 16px', fontSize: '1rem', fontFamily: 'inherit',
-          }}
-        />
-        {citySuggestions.length > 0 && (
-          <ul data-testid="city-suggestions" style={{
-            position: 'absolute', top: '100%', left: 0, right: 0,
-            background: '#161617',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 6, marginTop: 4, padding: 4,
-            listStyle: 'none', zIndex: 10,
-          }}>
-            {citySuggestions.map((s) => (
-              <li key={s.full_name}>
-                <button type="button"
-                  onClick={() => { update({ city: s.name }); setCitySuggestions([]); }}
-                  data-testid={`city-suggestion-${s.name}`}
-                  style={{
-                    width: '100%', textAlign: 'left',
-                    background: 'transparent', border: 'none',
-                    color: '#F4F4F5', padding: '10px 12px',
-                    fontFamily: 'inherit', cursor: 'pointer',
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  <span style={{ fontSize: '0.95rem' }}>{s.name}</span>
-                  <span style={{ fontSize: '0.75rem',
-                                 color: 'rgba(255,255,255,0.45)',
-                                 marginLeft: 8 }}>{s.full_name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <hr style={dividerStyle} />
 
-      {marketsList.length > 0 && (
-        <div style={{ marginBottom: 32 }}>
-          <p style={{
-            fontSize: '0.72rem', letterSpacing: '0.16em',
-            color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase',
-            marginBottom: 10,
-          }}>{t('step2_more')}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {marketsList.map((mk) => {
-              const sel = (form.additional_markets || []).includes(mk);
-              return (
-                <button
-                  key={mk} type="button"
-                  onClick={() => toggleMarket(mk)}
-                  data-testid={`market-${mk}`}
-                  style={{
-                    background: sel ? 'rgba(0,201,179,0.1)' : 'rgba(255,255,255,0.04)',
-                    border: '1px solid ' + (sel ? '#00C9B3' : 'rgba(255,255,255,0.12)'),
-                    borderRadius: 999, padding: '8px 14px',
-                    color: '#F4F4F5', cursor: 'pointer',
-                    fontSize: '0.82rem', fontFamily: 'inherit',
-                  }}
-                >{mk.replace('_', ' ')}</button>
-              );
-            })}
+      {/* ─── B · Headquarter ────────────────────────────────────────── */}
+      <section data-testid="section-headquarter">
+        <p style={sectionEyebrowStyle}>B · Sede</p>
+        <h2 style={sectionTitleStyle}>{t('step2_hq_title')}</h2>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 18 }}>
+          <div>
+            <label style={labelStyle}>{t('step2_country')}</label>
+            <select
+              data-testid="hq-country-select"
+              value={form.headquarter_country_iso || ''}
+              onChange={(e) => update({ headquarter_country_iso: e.target.value,
+                                        headquarter_city: '', headquarter_lat: null,
+                                        headquarter_lng: null, mapbox_place_id: null })}
+              style={inputStyle}>
+              {countries.map((c) => (
+                <option key={c.iso2} value={c.iso2} style={{ background: '#0A0A0B' }}>
+                  {c.flag ? `${c.flag}  ${c.label}` : c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div style={{ position: 'relative' }}>
+            <label style={labelStyle}>{t('step2_city')}</label>
+            <input
+              data-testid="hq-city-input"
+              type="text"
+              value={form.headquarter_city || ''}
+              onChange={(e) => { update({ headquarter_city: e.target.value });
+                                  setShowCityDropdown(true); }}
+              onFocus={() => setShowCityDropdown(true)}
+              placeholder={hqCountry?.iso2 === 'IT' ? 'Milano…' : 'Inserisci la città…'}
+              autoComplete="off"
+              style={inputStyle} />
+            {cityLoading && (
+              <span data-testid="city-loading" style={{
+                position: 'absolute', right: 12, top: 44,
+                fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)',
+              }}>…</span>
+            )}
+            {showCityDropdown && citySuggestions.length > 0 && (
+              <ul data-testid="city-suggestions" style={{
+                position: 'absolute', top: '100%', left: 0, right: 0,
+                background: '#161617',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: 6, marginTop: 4, padding: 4,
+                listStyle: 'none', zIndex: 20, maxHeight: 240, overflowY: 'auto',
+              }}>
+                {citySuggestions.map((s) => (
+                  <li key={s.place_id || s.full_name}>
+                    <button type="button"
+                      onClick={() => pickCity(s)}
+                      data-testid={`city-suggestion-${s.name}`}
+                      style={{
+                        width: '100%', textAlign: 'left',
+                        background: 'transparent', border: 'none',
+                        color: 'var(--mood-text-1, #F4F4F5)',
+                        padding: '10px 12px', fontFamily: 'inherit', cursor: 'pointer',
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+                      onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                      <span style={{ fontSize: '0.94rem' }}>{s.name}</span>
+                      <span style={{ fontSize: '0.74rem',
+                                     color: 'rgba(255,255,255,0.45)', marginLeft: 8 }}>{s.full_name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
-      )}
+      </section>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+      <hr style={dividerStyle} />
+
+      {/* ─── C · Target Countries (optional) ────────────────────────── */}
+      <section data-testid="section-target-countries">
+        <p style={sectionEyebrowStyle}>C · Paesi target  ·  Opzionale</p>
+        <h2 style={sectionTitleStyle}>{t('step2_targets_title')}</h2>
+        <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_targets_helper')}</p>
+
+        <TargetCountriesCombobox
+          allCountries={countries.filter((c) => c.iso2 !== form.headquarter_country_iso)}
+          selected={form.target_country_isos || []}
+          onChange={(next) => update({ target_country_isos: next })}
+          placeholder={t('step2_targets_placeholder')} />
+      </section>
+
+      {/* ─── Nav ─────────────────────────────────────────────────────── */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 40 }}>
         <button type="button" onClick={back} data-testid="step2-back"
           style={{
             background: 'transparent', color: 'rgba(255,255,255,0.6)',
@@ -191,7 +229,7 @@ const Step2Location = ({ manifest, t, form, update, next, back }) => {
         <button type="button" disabled={!canContinue} onClick={next}
           data-testid="step2-continue"
           style={{
-            background: canContinue ? '#00C9B3' : 'rgba(255,255,255,0.08)',
+            background: canContinue ? 'var(--mood-teal, #00C9B3)' : 'rgba(255,255,255,0.08)',
             color: canContinue ? '#0A0A0B' : 'rgba(255,255,255,0.4)',
             border: 'none', borderRadius: 999,
             padding: '14px 32px', fontSize: '0.92rem',

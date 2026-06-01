@@ -102,10 +102,12 @@ from routers.admin_relations import router as admin_relations_router
 from routers.markets import router as markets_router
 from routers.tenant_activation import router as tenant_activation_router
 from routers.studio_v2 import router as studio_v2_router
+from routers.geo import router as geo_router
 app.include_router(admin_relations_router,   prefix="/api")
 app.include_router(markets_router)  # already prefixed with /api/markets
 app.include_router(tenant_activation_router)  # /api/admin/tenant-activation/*
 app.include_router(studio_v2_router, prefix="/api")  # /api/studio/v2/*
+app.include_router(geo_router, prefix="/api")        # /api/geo/*
 
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets

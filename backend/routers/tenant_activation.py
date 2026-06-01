@@ -42,15 +42,35 @@ async def pipeline(
         params["st"] = status
     async with AsyncSessionLocal() as s:
         rows = (await s.execute(text(f"""
-            SELECT id, studio_name, contact_name, contact_email,
-                   city, country, markets, archetype, locale, status,
-                   assigned_advisor_id, advisor_notes,
-                   created_at, reviewed_at, updated_at,
-                   attribution_advisor_id
-              FROM studio_requests
-              {where}
-             ORDER BY created_at DESC LIMIT :limit
+            SELECT sr.id, sr.studio_name, sr.contact_name, sr.contact_email,
+                   sr.city, sr.country, sr.markets, sr.archetype, sr.locale, sr.status,
+                   sr.assigned_advisor_id, sr.advisor_notes,
+                   sr.created_at, sr.reviewed_at, sr.updated_at,
+                   sr.attribution_advisor_id,
+                   sr.primary_operating_market_id,
+                   sr.headquarter_country_iso,
+                   sr.headquarter_lat, sr.headquarter_lng, sr.mapbox_place_id,
+                   m.code AS op_market_code,
+                   m.display_name->>'it-IT' AS op_market_label
+              FROM studio_requests sr
+              LEFT JOIN markets m ON m.id = sr.primary_operating_market_id
+              {where.replace('status', 'sr.status') if where else ''}
+             ORDER BY sr.created_at DESC LIMIT :limit
         """), params)).mappings().all()
+
+        # Bulk-fetch target countries for all loaded requests
+        req_ids = [r['id'] for r in rows]
+        targets_by_req: dict[str, list[str]] = {}
+        if req_ids:
+            tr = (await s.execute(text("""
+                SELECT studio_request_id, country_iso2
+                  FROM studio_request_target_countries
+                 WHERE studio_request_id = ANY(:ids)
+                 ORDER BY country_iso2
+            """), {"ids": req_ids})).mappings().all()
+            for row in tr:
+                targets_by_req.setdefault(str(row['studio_request_id']), []) \
+                              .append(row['country_iso2'])
 
     buckets = {
         "new":               [],
@@ -77,6 +97,16 @@ async def pipeline(
             "advisor_notes":  r['advisor_notes'],
             "created_at":     r['created_at'].isoformat() if r['created_at'] else None,
             "reviewed_at":    r['reviewed_at'].isoformat() if r['reviewed_at'] else None,
+            # V2 — Geografia commerciale
+            "geo": {
+                "operating_market_code":   r['op_market_code'],
+                "operating_market_label":  r['op_market_label'],
+                "headquarter_country_iso": r['headquarter_country_iso'],
+                "headquarter_lat":         r['headquarter_lat'],
+                "headquarter_lng":         r['headquarter_lng'],
+                "mapbox_place_id":         r['mapbox_place_id'],
+                "target_country_isos":     targets_by_req.get(str(r['id']), []),
+            },
         }
         st = r['status']
         if st == 'received':

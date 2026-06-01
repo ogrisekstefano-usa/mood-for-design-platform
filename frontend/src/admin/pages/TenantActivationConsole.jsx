@@ -193,10 +193,71 @@ const TenantActivationConsole = () => {
           }}>{selectedReq.studio_name || 'Studio'}</h2>
           <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: 24 }}>
             {selectedReq.contact_name || '—'} · {selectedReq.contact_email || '—'}<br/>
-            {selectedReq.city || '—'} · {selectedReq.country || '—'}<br/>
-            Mercati: {(selectedReq.markets || []).join(', ') || '—'}<br/>
             Archetipo: {selectedReq.archetype || '—'}
           </p>
+
+          {/* ── Geografia commerciale ─────────────────────────── */}
+          {selectedReq.geo && (
+            <div data-testid="drawer-geo" style={{
+              marginBottom: 24,
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 8, padding: '14px 16px',
+              background: 'rgba(255,255,255,0.02)',
+            }}>
+              <p style={{ fontSize: '0.7rem', letterSpacing: '0.18em',
+                          textTransform: 'uppercase', color: '#888',
+                          marginBottom: 12 }}>Geografia commerciale</p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8,
+                            fontSize: '0.86rem', color: '#DDD' }}>
+                <div>
+                  <span style={{ color: '#777' }}>Mercato MOOD: </span>
+                  <span data-testid="geo-op-market">
+                    {selectedReq.geo.operating_market_label
+                      || selectedReq.geo.operating_market_code
+                      || '—'}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ color: '#777' }}>Sede: </span>
+                  <span data-testid="geo-headquarter">
+                    {selectedReq.city || '—'}
+                    {selectedReq.geo.headquarter_country_iso
+                      ? `, ${selectedReq.geo.headquarter_country_iso}`
+                      : (selectedReq.country ? `, ${selectedReq.country}` : '')}
+                  </span>
+                </div>
+                {(selectedReq.geo.headquarter_lat != null && selectedReq.geo.headquarter_lng != null) && (
+                  <div data-testid="geo-coords">
+                    <span style={{ color: '#777' }}>Coordinate: </span>
+                    {Number(selectedReq.geo.headquarter_lat).toFixed(4)}° N · {Number(selectedReq.geo.headquarter_lng).toFixed(4)}° E
+                  </div>
+                )}
+                {selectedReq.geo.mapbox_place_id && (
+                  <div data-testid="geo-mapbox-id" style={{ fontSize: '0.74rem', color: '#666' }}>
+                    Mapbox: {selectedReq.geo.mapbox_place_id}
+                  </div>
+                )}
+                <div data-testid="geo-targets">
+                  <span style={{ color: '#777' }}>Paesi target: </span>
+                  {(selectedReq.geo.target_country_isos || []).length === 0
+                    ? <span style={{ color: '#555' }}>—</span>
+                    : (selectedReq.geo.target_country_isos || []).map((iso) => (
+                        <span key={iso} style={{
+                          display: 'inline-block', padding: '2px 8px',
+                          background: 'rgba(0,201,179,0.10)',
+                          border: '1px solid rgba(0,201,179,0.32)',
+                          borderRadius: 999, fontSize: '0.74rem',
+                          marginRight: 6, marginTop: 4, color: '#DDD',
+                        }}>{iso}</span>
+                      ))}
+                </div>
+                <div style={{ fontSize: '0.74rem', color: '#666', marginTop: 4 }}>
+                  Locale: {selectedReq.locale || '—'}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div style={{ marginBottom: 24 }}>
             <p style={{ fontSize: '0.74rem', letterSpacing: '0.16em', textTransform: 'uppercase',

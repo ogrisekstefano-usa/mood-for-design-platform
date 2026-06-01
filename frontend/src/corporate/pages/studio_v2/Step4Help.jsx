@@ -30,9 +30,15 @@ const Step4Help = ({ manifest, t, form, update, next, back,
       const r = await axios.post(`${BACKEND}/api/studio/v2/submit`, {
         draft_token:        draftToken,
         archetype_code:     form.archetype_code,
-        country:            form.country,
-        city:               form.city,
-        additional_markets: form.additional_markets || [],
+        // New V2 geo (Step 2 refactor)
+        primary_operating_market_code: form.primary_operating_market_code,
+        headquarter_country_iso:       form.headquarter_country_iso,
+        headquarter_city:              form.headquarter_city,
+        headquarter_lat:               form.headquarter_lat,
+        headquarter_lng:               form.headquarter_lng,
+        mapbox_place_id:               form.mapbox_place_id,
+        target_country_isos:           form.target_country_isos || [],
+        // Contact + help
         first_name:         form.first_name,
         last_name:          form.last_name,
         contact_email:      form.contact_email,

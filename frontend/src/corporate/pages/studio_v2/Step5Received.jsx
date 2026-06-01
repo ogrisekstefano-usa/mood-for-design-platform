@@ -13,7 +13,11 @@ const Step5Received = ({ manifest, t, submitResult, form, reset, navigate }) => 
   }, [reset]);
 
   const reference = submitResult?.reference || '—';
-  const country = (manifest?.countries || []).find((c) => c.code === form.country);
+  // Try operating market label first, then HQ country label fallback
+  const opMarketCode = form.primary_operating_market_code;
+  const opMarket = (manifest?.operating_markets || []).find((m) => m.code === opMarketCode);
+  const country  = (manifest?.countries || []).find((c) =>
+    c.iso2 === form.headquarter_country_iso || c.code === form.country);
 
   return (
     <div data-testid="step5-received">

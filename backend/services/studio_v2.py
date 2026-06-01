@@ -126,10 +126,15 @@ async def manifest(locale: str = 'it-IT') -> dict:
         "ui": {
             "step1_title":       _c("studio_v2.ui.step1.title",        "Parlaci del tuo studio."),
             "step1_sublead":     _c("studio_v2.ui.step1.sublead",      "Una scelta singola."),
-            "step2_title":       _c("studio_v2.ui.step2.title",        "Dove lavora principalmente il tuo studio?"),
+            "step2_title":       _c("studio_v2.ui.step2.title",        "Dove operate?"),
+            "step2_market_title":   _c("studio_v2.ui.step2.market.title",   "Qual è il vostro mercato operativo principale?"),
+            "step2_market_helper":  _c("studio_v2.ui.step2.market.helper",  "Lo useremo per assegnare la richiesta al team MOOD più adatto."),
+            "step2_hq_title":       _c("studio_v2.ui.step2.hq.title",       "Dove ha sede il vostro studio?"),
             "step2_country":     _c("studio_v2.ui.step2.country",      "Paese"),
             "step2_city":        _c("studio_v2.ui.step2.city",         "Città"),
-            "step2_more":        _c("studio_v2.ui.step2.more",         "Operiamo anche in altri mercati"),
+            "step2_targets_title":      _c("studio_v2.ui.step2.targets.title",      "Ci sono altri Paesi in cui lavorate o vorreste espandervi?"),
+            "step2_targets_helper":     _c("studio_v2.ui.step2.targets.helper",     "Puoi indicare mercati attuali o futuri."),
+            "step2_targets_placeholder":_c("studio_v2.ui.step2.targets.placeholder","Cerca un Paese…"),
             "step3_title":       _c("studio_v2.ui.step3.title",        "Chi sarà il referente principale?"),
             "step3_first_name":  _c("studio_v2.ui.step3.first_name",   "Nome"),
             "step3_last_name":   _c("studio_v2.ui.step3.last_name",    "Cognome"),
@@ -203,20 +208,35 @@ async def check_email_uniqueness(email: str) -> dict:
 async def submit_v2(*,
     draft_token: str,
     archetype_code: str,
-    country: str,
-    city: str | None,
-    additional_markets: list[str],
-    first_name: str,
-    last_name: str,
-    contact_email: str,
-    phone_prefix: str | None,
-    phone_number: str | None,
-    help_topics: list[str],
-    help_other_text: str | None,
-    locale: str,
+    # Legacy fields (kept for fallback / old clients)
+    country: str = '',
+    city: str | None = None,
+    additional_markets: list[str] = None,
+    # New geo fields (Step 2 refactor)
+    primary_operating_market_code: str | None = None,
+    headquarter_country_iso: str | None = None,
+    headquarter_city: str | None = None,
+    headquarter_lat: float | None = None,
+    headquarter_lng: float | None = None,
+    mapbox_place_id: str | None = None,
+    target_country_isos: list[str] = None,
+    # Contact + help
+    first_name: str = '',
+    last_name: str = '',
+    contact_email: str = '',
+    phone_prefix: str | None = None,
+    phone_number: str | None = None,
+    help_topics: list[str] = None,
+    help_other_text: str | None = None,
+    locale: str = 'it-IT',
     ip: str | None = None,
     user_agent: str | None = None,
 ) -> dict:
+    # Defaults
+    additional_markets  = additional_markets or []
+    target_country_isos = target_country_isos or []
+    help_topics         = help_topics or []
+
     # Server-side email uniqueness gate (defense in depth)
     uniq = await check_email_uniqueness(contact_email)
     if not uniq["available"]:
@@ -240,16 +260,22 @@ async def submit_v2(*,
             t['maps_to_experience'] for t in topics if t['maps_to_experience']
         })
 
-    # The V1 pipeline reads `archetype/experiences` from the draft row,
-    # not from the submit body. So patch the draft now and let submit_request
-    # pick them up. Same path for the identity payload.
+        # Resolve operating market id (if provided)
+        operating_market_id = None
+        if primary_operating_market_code:
+            mkt = (await s.execute(text(
+                "SELECT id FROM markets WHERE code = :c"
+            ), {"c": primary_operating_market_code})).mappings().first()
+            if mkt:
+                operating_market_id = str(mkt['id'])
+
+    # Use the new HQ values when provided (fall back to legacy fields).
+    final_country = (headquarter_country_iso or country or '').upper() or None
+    final_city    = headquarter_city or city or None
+
     full_name_parts = [p for p in [first_name, last_name] if p]
     contact_name = ' '.join(full_name_parts) or None
-    studio_label = contact_name  # V1 requires a non-null studio_name
-                                  # for some downstream UI; we use the
-                                  # contact's name as placeholder. The
-                                  # advisor edits the real studio name
-                                  # during qualification.
+    studio_label = contact_name
 
     await studio_activation.patch_draft(
         draft_token=draft_token,
@@ -257,24 +283,26 @@ async def submit_v2(*,
         experiences=v1_experiences,
         payload_patch={
             "studio_name":  studio_label,
-            "city":         (city or None),
-            "country":      country,
-            "markets":      list(additional_markets or []),
-            # V2-only intel persisted for the advisor
+            "city":         final_city,
+            "country":      final_country,
+            "markets":      list(additional_markets),
             "v2": {
-                "archetype_code":  archetype_code,
-                "help_topics":     list(help_topics or []),
-                "help_other_text": help_other_text or None,
-                "first_name":      first_name,
-                "last_name":       last_name,
+                "archetype_code":               archetype_code,
+                "primary_operating_market_code": primary_operating_market_code,
+                "help_topics":                  list(help_topics),
+                "help_other_text":              help_other_text or None,
+                "first_name":                   first_name,
+                "last_name":                    last_name,
+                "target_country_isos":          list(target_country_isos),
+                "mapbox_place_id":              mapbox_place_id,
+                "headquarter_lat":              headquarter_lat,
+                "headquarter_lng":              headquarter_lng,
             },
         },
         movement="contact",
         founder_email=contact_email,
     )
 
-    # Delegate to the validated V1 submit (fires the 3 transactional emails
-    # + audit log + studio_requests insert).
     res = await studio_activation.submit_request(
         draft_token=draft_token,
         contact_email=contact_email,
@@ -290,19 +318,48 @@ async def submit_v2(*,
     if not res.get('ok'):
         return res
 
-    # Persist V2 help topic mapping for advisor audit trail
     request_id = res['request_id']
-    if help_topics:
-        async with AsyncSessionLocal() as s:
-            for tc in help_topics:
-                await s.execute(text("""
-                    INSERT INTO studio_request_help_areas
-                      (request_id, help_topic_code, other_text)
-                    VALUES (:rid, :tc, :ot)
-                    ON CONFLICT (request_id, help_topic_code) DO NOTHING
-                """), {"rid": request_id, "tc": tc,
-                       "ot": help_other_text if tc == 'other' else None})
-            await s.commit()
+
+    # Persist V2-only fields: operating market FK + HQ geo + target countries
+    async with AsyncSessionLocal() as s:
+        await s.execute(text("""
+            UPDATE studio_requests
+               SET primary_operating_market_id = CAST(:opid AS uuid),
+                   headquarter_country_iso     = :hqc,
+                   headquarter_lat             = :lat,
+                   headquarter_lng             = :lng,
+                   mapbox_place_id             = :pid
+             WHERE id = :rid
+        """), {
+            "opid": operating_market_id,
+            "hqc":  final_country,
+            "lat":  headquarter_lat,
+            "lng":  headquarter_lng,
+            "pid":  mapbox_place_id,
+            "rid":  request_id,
+        })
+
+        for tc in help_topics:
+            await s.execute(text("""
+                INSERT INTO studio_request_help_areas
+                  (request_id, help_topic_code, other_text)
+                VALUES (:rid, :tc, :ot)
+                ON CONFLICT (request_id, help_topic_code) DO NOTHING
+            """), {"rid": request_id, "tc": tc,
+                   "ot": help_other_text if tc == 'other' else None})
+
+        for iso in target_country_isos:
+            iso_clean = (iso or '').upper()
+            if len(iso_clean) != 2:
+                continue
+            await s.execute(text("""
+                INSERT INTO studio_request_target_countries
+                  (studio_request_id, country_iso2)
+                VALUES (:rid, :iso)
+                ON CONFLICT DO NOTHING
+            """), {"rid": request_id, "iso": iso_clean})
+        await s.commit()
+
     return res
 
 
@@ -311,24 +368,21 @@ async def search_cities(query: str, country_iso: str,
                         limit: int = 5) -> list[dict]:
     """
     Forward-geocode a city query to Mapbox Places, scoped to the given
-    ISO country. Returns [{name, full_name, lat, lng}] or [].
-
-    If MAPBOX_ACCESS_TOKEN is missing, returns an empty list so the
-    frontend can degrade gracefully to a free-text input.
+    ISO country. Returns [{name, full_name, lat, lng, place_id}] or [].
     """
     token = os.environ.get('MAPBOX_ACCESS_TOKEN', '').strip()
     q = (query or '').strip()
     if not token or not q or len(q) < 2:
         return []
-    import httpx
-    url = (f"https://api.mapbox.com/geocoding/v5/mapbox.places/"
-           f"{httpx.URL(q).path}.json")
+    import httpx, urllib.parse
+    safe_q = urllib.parse.quote(q, safe='')
+    url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{safe_q}.json"
     try:
         async with httpx.AsyncClient(timeout=8) as cx:
             r = await cx.get(url, params={
                 "access_token":  token,
                 "country":       country_iso.lower(),
-                "types":         "place",        # cities only
+                "types":         "place",
                 "limit":         limit,
                 "language":      "en",
                 "autocomplete":  "true",
@@ -344,5 +398,6 @@ async def search_cities(query: str, country_iso: str,
             "full_name": f.get('place_name', ''),
             "lng":       center[0],
             "lat":       center[1],
+            "place_id":  f.get('id', ''),
         })
     return out

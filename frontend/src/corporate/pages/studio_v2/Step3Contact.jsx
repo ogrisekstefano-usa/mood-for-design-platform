@@ -3,13 +3,15 @@
  */
 import React from 'react';
 import { useEmailCheck } from './hooks/useEmailCheck';
+import { useCountries } from './hooks/useCountries';
 
-const dialPrefix = (countries, country) => {
-  const found = (countries || []).find((c) => c.code === country);
-  return found?.dial_code || '+39';
-};
-
-const Step3Contact = ({ manifest, t, form, update, next, back }) => {
+const Step3Contact = ({ manifest, t, form, update, next, back, locale }) => {
+  const { items: countries } = useCountries(locale || 'it-IT');
+  const dialPrefix = (() => {
+    const iso = form.headquarter_country_iso || form.country;
+    const c   = countries.find((x) => x.iso2 === iso);
+    return c?.dial_code || '+39';
+  })();
   const { checking, available, reason } = useEmailCheck(form.contact_email);
 
   const emailValid = /.+@.+\..+/.test(form.contact_email || '');
@@ -31,13 +33,13 @@ const Step3Contact = ({ manifest, t, form, update, next, back }) => {
                    && emailOK
                    && !checking;
 
-  // Default phone prefix from selected country
+  // Default phone prefix from selected HQ country
   React.useEffect(() => {
-    if (!form.phone_prefix && form.country) {
-      update({ phone_prefix: dialPrefix(manifest?.countries, form.country) });
+    if (!form.phone_prefix && dialPrefix) {
+      update({ phone_prefix: dialPrefix });
     }
     // eslint-disable-next-line
-  }, [form.country]);
+  }, [form.headquarter_country_iso, countries]);
 
   const inputStyle = {
     width: '100%',
