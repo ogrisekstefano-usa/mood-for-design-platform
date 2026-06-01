@@ -43,6 +43,8 @@ Founder ≠ Command Center user. Studio Request ≠ Tenant. Provisioning asincro
 - **Frontend Locale handling** — `LocaleContext` + `localizedSlugs` con BCP-47 + legacy alias
 - **CMS Update Pricing & Features** — 182 blocchi + 364 traduzioni (it-IT + en-US), zero prezzi pubblici, tier Blueprint Studio/Practice/Enterprise, CTA "Candida il tuo studio" / "Apply your studio"
 - **Preview Deploy** — `/caratteristiche` `/features` `/versioni-prezzi` `/pricing` verificati visivamente
+- **Market Architecture First** (2026-06) — Footer Market Selector DB-driven, BCP-47 strict, zero hardcoded locales
+- **TENANT ACTIVATION HARDENING SPRINT™** (2026-06-01) — CMS-driven email pipeline + Command Center Console + REAL_TENANT_SIMULATION PASS → classificato `READY_FOR_REAL_TENANT_ACQUISITION`
 
 ### 🟡 IN ATTESA APPROVAZIONE UTENTE
 - **Production Deployment** delle nuove pagine Features + Pricing (esplicitamente LOCKED)

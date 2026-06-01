@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
+import { adminAuth } from '../adminApi';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -34,7 +35,7 @@ const TenantActivationConsole = () => {
     setLoading(true);
     try {
       const r = await axios.get(`${BACKEND}/api/admin/tenant-activation/pipeline`, {
-        withCredentials: true,
+        headers: adminAuth.headers(),
       });
       setData(r.data);
       if (focusId) {
@@ -51,7 +52,7 @@ const TenantActivationConsole = () => {
     try {
       const r = await axios.get(
         `${BACKEND}/api/admin/tenant-activation/emails?request_id=${requestId}`,
-        { withCredentials: true },
+        { headers: adminAuth.headers() },
       );
       setEmails(r.data?.items || []);
     } catch { setEmails([]); }
@@ -64,7 +65,7 @@ const TenantActivationConsole = () => {
     setSavingId(id);
     try {
       await axios.patch(`${BACKEND}/api/admin/studio/requests/${id}`,
-        { status }, { withCredentials: true });
+        { status }, { headers: adminAuth.headers() });
       await fetchPipeline();
       if (selectedReq?.id === id) {
         setSelectedReq((prev) => ({ ...prev, status }));

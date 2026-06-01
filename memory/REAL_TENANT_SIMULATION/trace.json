@@ -1,0 +1,403 @@
+{
+  "trace": [
+    {
+      "step": "01_manifest_loaded",
+      "ts": "2026-06-01T05:47:01.194414+00:00",
+      "endpoint": "GET /api/studio/activation/manifest?locale=it",
+      "status_code": 200,
+      "archetypes_count": 6
+    },
+    {
+      "step": "02_draft_created",
+      "ts": "2026-06-01T05:47:02.086104+00:00",
+      "endpoint": "POST /api/studio/activation/draft",
+      "status_code": 200,
+      "draft_token": "vp-xiaYeJsSPpBytYkbTFDZWS4ujwZTo",
+      "current_movement": "entrance"
+    },
+    {
+      "step": "03_draft_patched_identity",
+      "ts": "2026-06-01T05:47:03.212074+00:00",
+      "endpoint": "PATCH /api/studio/activation/draft",
+      "status_code": 200,
+      "archetype": "interior_studio",
+      "experiences_count": 2,
+      "identity_keys": [
+        "studio_name",
+        "monogram",
+        "city",
+        "country",
+        "languages",
+        "markets",
+        "temperament",
+        "atelier",
+        "attribution_advisor_id"
+      ]
+    },
+    {
+      "step": "04_submit_request",
+      "ts": "2026-06-01T05:47:07.595241+00:00",
+      "endpoint": "POST /api/studio/activation/submit",
+      "status_code": 200,
+      "response": {
+        "ok": true,
+        "request_id": "fb122586-80e9-44dd-ac80-93a1f45f15be",
+        "reference": "MOOD-FB12-2586"
+      }
+    },
+    {
+      "step": "05_submit_emails_audit",
+      "ts": "2026-06-01T05:47:10.963653+00:00",
+      "endpoint": "DB studio_email_dispatch_log",
+      "before_count": 23,
+      "after_count": 25,
+      "emails_fired": [
+        {
+          "template_key": "studio_request_received",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "status": "sent",
+          "subject": "Abbiamo ricevuto la tua candidatura \u00b7 MOOD-FB12-2586"
+        },
+        {
+          "template_key": "admin_new_studio_request",
+          "to_email": "admin@moodfordesign.com",
+          "status": "sent",
+          "subject": "[MOOD] Nuova candidatura \u00b7 Studio Simulazione E2E (MOOD-FB12-2586)"
+        }
+      ]
+    },
+    {
+      "step": "06_studio_request_record",
+      "ts": "2026-06-01T05:47:11.828022+00:00",
+      "endpoint": "DB studio_requests",
+      "record": {
+        "id": "fb122586-80e9-44dd-ac80-93a1f45f15be",
+        "studio_name": "Studio Simulazione E2E",
+        "contact_email": "simulation+e2e@moodfordesign.com",
+        "status": "received",
+        "archetype": "interior_studio",
+        "locale": "it",
+        "created_at": "2026-06-01 05:47:05.915693+00:00"
+      }
+    },
+    {
+      "step": "07_relation_opened",
+      "ts": "2026-06-01T05:47:14.616678+00:00",
+      "endpoint": "POST /api/admin/relations/from-request/fb122586-80e9-44dd-ac80-93a1f45f15be",
+      "status_code": 200,
+      "response": {
+        "ok": true,
+        "relation_id": "5ee8d3b5-4666-44b5-9e70-244e3e4d4c7e"
+      }
+    },
+    {
+      "step": "08_status_reviewing",
+      "ts": "2026-06-01T05:47:17.248103+00:00",
+      "endpoint": "PATCH /api/admin/studio/requests/fb122586-80e9-44dd-ac80-93a1f45f15be",
+      "status_code": 200,
+      "body": {
+        "status": "reviewing"
+      },
+      "response": {
+        "ok": true
+      }
+    },
+    {
+      "step": "09_reviewing_email_audit",
+      "ts": "2026-06-01T05:47:20.114262+00:00",
+      "endpoint": "DB studio_email_dispatch_log",
+      "expected_template": "studio_request_review",
+      "found": [
+        {
+          "template_key": "studio_request_review",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 in revisione \u00b7 MOOD-FB12-2586"
+        }
+      ]
+    },
+    {
+      "step": "10_status_qualified",
+      "ts": "2026-06-01T05:47:23.117572+00:00",
+      "endpoint": "PATCH /api/admin/studio/requests/fb122586-80e9-44dd-ac80-93a1f45f15be",
+      "status_code": 200,
+      "response": {
+        "ok": true
+      }
+    },
+    {
+      "step": "11_qualified_email_audit",
+      "ts": "2026-06-01T05:47:25.984004+00:00",
+      "endpoint": "DB studio_email_dispatch_log",
+      "expected_template": "studio_request_qualified",
+      "found": [
+        {
+          "template_key": "studio_request_qualified",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 stata qualificata \u00b7 MOOD-FB12-2586"
+        }
+      ]
+    },
+    {
+      "step": "12_activate_ecosystem",
+      "ts": "2026-06-01T05:47:31.085605+00:00",
+      "endpoint": "POST /api/admin/relations/5ee8d3b5-4666-44b5-9e70-244e3e4d4c7e/activate-ecosystem",
+      "status_code": 200,
+      "response": {
+        "ok": true,
+        "tenant_id": "baaa2c22-e354-49b7-ac22-c4087c8c3727",
+        "slug": "studio-simulazione-e2e-4",
+        "founder_user_id": "8aba5ba7-e6fe-43e5-8ac8-9949e41d70ec",
+        "magic_link_sent": true
+      }
+    },
+    {
+      "step": "13_activated_email_audit",
+      "ts": "2026-06-01T05:47:34.950683+00:00",
+      "endpoint": "DB studio_email_dispatch_log",
+      "expected_template": "studio_request_approved",
+      "found": [
+        {
+          "template_key": "studio_request_approved",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "status": "sent",
+          "subject": "Il tuo Blueprint \u00e8 pronto \u00b7 Studio Simulazione E2E"
+        }
+      ],
+      "gap_detected": false
+    },
+    {
+      "step": "14_tenant_record",
+      "ts": "2026-06-01T05:47:36.251721+00:00",
+      "endpoint": "DB tenants",
+      "record": {
+        "id": "baaa2c22-e354-49b7-ac22-c4087c8c3727",
+        "slug": "studio-simulazione-e2e-4",
+        "name": "Studio Simulazione E2E",
+        "status": "active",
+        "default_locale_code": "it",
+        "active_plan": "studio",
+        "plan_assigned_at": "2026-06-01 05:47:27.321105+00:00"
+      }
+    },
+    {
+      "step": "15_founder_user",
+      "ts": "2026-06-01T05:47:37.117262+00:00",
+      "endpoint": "DB users",
+      "record": {
+        "id": "8aba5ba7-e6fe-43e5-8ac8-9949e41d70ec",
+        "email": "simulation+e2e@moodfordesign.com",
+        "full_name": "E2E Simulation",
+        "role": "owner",
+        "tenant_id": "baaa2c22-e354-49b7-ac22-c4087c8c3727",
+        "is_active": true
+      }
+    },
+    {
+      "step": "16_magic_link",
+      "ts": "2026-06-01T05:47:37.981514+00:00",
+      "endpoint": "DB access_magic_links",
+      "record": {
+        "id": "d2eecbd0-6987-4156-82a0-2acef9e90ca3",
+        "email": "simulation+e2e@moodfordesign.com",
+        "token_hash": "19cde2c498ec748903b7fb9fb923d6d2686b0bf8423d61121bbf6527ff336479",
+        "expires_at": "2026-06-01 06:01:18.446917+00:00",
+        "consumed_at": null,
+        "created_at": "2026-06-01 05:46:17.966695+00:00"
+      },
+      "magic_link_issued": true
+    },
+    {
+      "step": "17_full_email_timeline",
+      "ts": "2026-06-01T05:47:38.848737+00:00",
+      "endpoint": "DB studio_email_dispatch_log",
+      "total_emails": 18,
+      "timeline": [
+        {
+          "template_key": "studio_request_received",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Abbiamo ricevuto la tua candidatura \u00b7 MOOD-1E6E-E021",
+          "created_at": "2026-06-01 05:44:42.426982+00:00",
+          "external_id": "6ef1e6a1-b9d3-44aa-b592-faca191a0dbf"
+        },
+        {
+          "template_key": "admin_new_studio_request",
+          "to_email": "admin@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuova candidatura \u00b7 Studio Simulazione E2E (MOOD-1E6E-E021)",
+          "created_at": "2026-06-01 05:44:42.651838+00:00",
+          "external_id": "2581a191-9d9e-4931-a54d-32e6a33c27e7"
+        },
+        {
+          "template_key": "advisor_new_lead",
+          "to_email": "raffaella@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuovo lead assegnato \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:44:43.381187+00:00",
+          "external_id": "84b28fdd-ca47-415f-bb50-ef1f83e7d924"
+        },
+        {
+          "template_key": "studio_request_review",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 in revisione \u00b7 MOOD-1E6E-E021",
+          "created_at": "2026-06-01 05:44:52.700832+00:00",
+          "external_id": "7ceeaaf2-6beb-41ac-ad36-b156ee6b5705"
+        },
+        {
+          "template_key": "studio_request_qualified",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 stata qualificata \u00b7 MOOD-1E6E-E021",
+          "created_at": "2026-06-01 05:44:58.601584+00:00",
+          "external_id": "2364619c-fe58-4f4b-b17f-312c78cd1ecf"
+        },
+        {
+          "template_key": "studio_request_approved",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Il tuo Blueprint \u00e8 pronto \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:45:07.546262+00:00",
+          "external_id": "a6f7672a-9aad-427d-a0fb-a37c4453dad5"
+        },
+        {
+          "template_key": "studio_request_received",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Abbiamo ricevuto la tua candidatura \u00b7 MOOD-982F-460D",
+          "created_at": "2026-06-01 05:45:56.373762+00:00",
+          "external_id": "c680e864-7d72-4241-93e0-162814672aa2"
+        },
+        {
+          "template_key": "admin_new_studio_request",
+          "to_email": "admin@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuova candidatura \u00b7 Studio Simulazione E2E (MOOD-982F-460D)",
+          "created_at": "2026-06-01 05:45:56.789728+00:00",
+          "external_id": "34cedc4f-d2ac-46a6-948a-793f9a33d0f0"
+        },
+        {
+          "template_key": "advisor_new_lead",
+          "to_email": "raffaella@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuovo lead assegnato \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:45:57.066377+00:00",
+          "external_id": "9ad4ca9a-34cf-4539-9920-79c505f0c70c"
+        },
+        {
+          "template_key": "studio_request_review",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 in revisione \u00b7 MOOD-982F-460D",
+          "created_at": "2026-06-01 05:46:06.574959+00:00",
+          "external_id": "2fb58654-5677-4b27-b118-300f3fdd5dda"
+        },
+        {
+          "template_key": "studio_request_qualified",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 stata qualificata \u00b7 MOOD-982F-460D",
+          "created_at": "2026-06-01 05:46:12.027000+00:00",
+          "external_id": "e34f0643-d9c4-4338-aab8-b14d1048d2dd"
+        },
+        {
+          "template_key": "studio_request_approved",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Il tuo Blueprint \u00e8 pronto \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:46:21.166430+00:00",
+          "external_id": "7f6b2f80-bdaa-4e9e-816e-8fea7734b9a0"
+        },
+        {
+          "template_key": "studio_request_received",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Abbiamo ricevuto la tua candidatura \u00b7 MOOD-FB12-2586",
+          "created_at": "2026-06-01 05:47:08.240731+00:00",
+          "external_id": "1d60f44e-16f4-4da3-bfc1-04496a7e8972"
+        },
+        {
+          "template_key": "admin_new_studio_request",
+          "to_email": "admin@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuova candidatura \u00b7 Studio Simulazione E2E (MOOD-FB12-2586)",
+          "created_at": "2026-06-01 05:47:08.479420+00:00",
+          "external_id": "9cf8773d-7358-43a5-a45a-175be27fc259"
+        },
+        {
+          "template_key": "advisor_new_lead",
+          "to_email": "raffaella@moodfordesign.com",
+          "locale": "it-IT",
+          "status": "sent",
+          "subject": "[MOOD] Nuovo lead assegnato \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:47:09.651508+00:00",
+          "external_id": "778851d4-0eff-4ebb-a3fb-7b694264d99b"
+        },
+        {
+          "template_key": "studio_request_review",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 in revisione \u00b7 MOOD-FB12-2586",
+          "created_at": "2026-06-01 05:47:18.611150+00:00",
+          "external_id": "305115e0-fcce-4daa-9932-167eae346c71"
+        },
+        {
+          "template_key": "studio_request_qualified",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "La tua candidatura \u00e8 stata qualificata \u00b7 MOOD-FB12-2586",
+          "created_at": "2026-06-01 05:47:24.535056+00:00",
+          "external_id": "f47b8d9f-6faa-4bf2-ac0b-10df678b021c"
+        },
+        {
+          "template_key": "studio_request_approved",
+          "to_email": "simulation+e2e@moodfordesign.com",
+          "locale": "it",
+          "status": "sent",
+          "subject": "Il tuo Blueprint \u00e8 pronto \u00b7 Studio Simulazione E2E",
+          "created_at": "2026-06-01 05:47:33.361865+00:00",
+          "external_id": "153287b2-6b8c-4799-a158-4fe5500245a4"
+        }
+      ]
+    },
+    {
+      "step": "18_final_assertions",
+      "ts": "2026-06-01T05:47:38.848950+00:00",
+      "assertions": {
+        "submit_visitor_email": true,
+        "submit_admin_email": true,
+        "submit_advisor_email": true,
+        "reviewing_email": true,
+        "qualified_email": true,
+        "activated_email": true,
+        "tenant_created": true,
+        "founder_user_created": true,
+        "magic_link_issued": true
+      },
+      "classification": "PASS"
+    }
+  ],
+  "request_id": "fb122586-80e9-44dd-ac80-93a1f45f15be",
+  "reference": "MOOD-FB12-2586",
+  "relation_id": "5ee8d3b5-4666-44b5-9e70-244e3e4d4c7e",
+  "tenant_id": "baaa2c22-e354-49b7-ac22-c4087c8c3727",
+  "classification": "PASS"
+}

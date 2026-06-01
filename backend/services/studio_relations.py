@@ -698,6 +698,19 @@ async def activate_studio_ecosystem(*, relation_id: str,
         except Exception:
             pass
 
+    # Fire studio_request_approved transactional email. We update the
+    # studio_requests row via raw SQL above, which bypasses
+    # update_request_status' built-in status-email trigger. Calling the
+    # explicit helper here keeps the audit trail complete.
+    if rel.get('studio_request_id'):
+        try:
+            from services.studio_activation import send_activation_email_for_request
+            import asyncio as _aio
+            _aio.create_task(send_activation_email_for_request(
+                str(rel['studio_request_id'])))
+        except Exception:
+            pass
+
     return {"ok": True, "tenant_id": tenant_id, "slug": slug,
              "founder_user_id": user_id, "magic_link_sent": bool(rel['contact_email'])}
 

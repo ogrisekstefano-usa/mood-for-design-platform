@@ -463,6 +463,11 @@ async def submit_request(
         temperament = payload.get('temperament')
         if temperament not in VALID_TEMPERAMENTS:
             temperament = None
+        # Attribution carried by the payload (set when visitor lands via
+        # an advisor referral link ?ref=ADV-XXXXX). Stored on the request
+        # so the MOOD Advisor pipeline can route the lead correctly.
+        attribution_advisor_id = (payload.get('attribution_advisor_id')
+                                  or '').strip() or None
 
         # Insert the request
         new = (await s.execute(
@@ -473,13 +478,14 @@ async def submit_request(
                      atelier, markets, temperament,
                      contact_name, contact_role, contact_email,
                      phone_prefix, phone_number, website, notes,
-                     locale, ip, user_agent)
+                     locale, ip, user_agent, attribution_advisor_id)
                 VALUES (:did, :arc, :exp,
                         :sn, :mg, :ci, :co, :langs,
                         CAST(:atelier AS jsonb), :mk, :tmp,
                         :cn, :cr, :em,
                         :pp, :ph, :ws, :nt,
-                        :loc, :ip, :ua)
+                        :loc, :ip, :ua,
+                        CAST(:attr AS uuid))
                 RETURNING id, created_at
             """),
             {
@@ -498,6 +504,7 @@ async def submit_request(
                 "ws": (website or '').strip() or None,
                 "nt": (notes or '').strip() or None,
                 "loc": locale, "ip": ip, "ua": user_agent,
+                "attr": attribution_advisor_id,
             },
         )).mappings().first()
 
@@ -558,12 +565,12 @@ async def submit_request(
                     variables=base_vars,
                 ))
             # 3) Advisor notification (if attribution present)
-            attribution_advisor_id = drow.get('attribution_advisor_id')
             if attribution_advisor_id:
+                # attribution_advisor_id is FK to advisor_profiles(id).
                 adv_row = (await s.execute(text("""
                     SELECT email, name FROM advisor_profiles
-                     WHERE id = :aid AND status = 'active'
-                """), {"aid": str(attribution_advisor_id)})).mappings().first()
+                     WHERE id = CAST(:aid AS uuid) AND status = 'active'
+                """), {"aid": attribution_advisor_id})).mappings().first()
                 if adv_row and adv_row['email']:
                     _aio.create_task(email_dispatcher.dispatch_email(
                         template_key='advisor_new_lead',
@@ -748,8 +755,20 @@ async def _send_status_email(session, request_id: str, status: str) -> None:
         to_name=row['contact_name'],
         locale=row['locale'] or 'it-IT',
         variables={
+            'request_id':   str(row['id']),
             'reference':    _format_reference(str(row['id'])),
             'studio_name':  row['studio_name'] or '—',
             'contact_name': row['contact_name'] or '—',
         },
     ))
+
+
+async def send_activation_email_for_request(request_id: str) -> None:
+    """
+    Fire the studio_request_approved email after activate_studio_ecosystem
+    has completed (the relation activator updates studio_requests via raw
+    SQL, which bypasses update_request_status and its trigger).
+    Idempotent: caller is responsible for not double-firing.
+    """
+    async with AsyncSessionLocal() as s:
+        await _send_status_email(s, request_id, 'activated')
