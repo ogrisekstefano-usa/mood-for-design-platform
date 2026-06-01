@@ -179,23 +179,28 @@ function ChoiceCard({ icon, title, desc, onClick, testid }) {
   );
 }
 
+// ITER185.P1 · Fast Lead Capture™ — 4-field minimal intake (showroom <30s)
+const SOURCE_OPTIONS = [
+  { key: 'showroom',  label: 'Showroom' },
+  { key: 'phone',     label: 'Telefono' },
+  { key: 'email',     label: 'Email' },
+  { key: 'website',   label: 'Sito web' },
+  { key: 'referral',  label: 'Referral' },
+  { key: 'architect', label: 'Architetto' },
+  { key: 'event',     label: 'Evento' },
+  { key: 'import',    label: 'Import' },
+  { key: 'other',     label: 'Altro' },
+];
+
 function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
-  // Parse prefill query "Mario Rossi" → first_name="Mario", last_name="Rossi"
-  const parsedFirst = useMemo(() => {
+  // Parse prefill query "Mario Rossi" → name="Mario Rossi"
+  const parsedName = useMemo(() => {
     if (!prefill) return '';
-    if (prefill.first_name) return prefill.first_name;
-    if (prefill.query && !prefill.query.includes('@')) {
-      const parts = prefill.query.trim().split(/\s+/);
-      return parts[0] || '';
+    if (prefill.first_name || prefill.last_name) {
+      return [prefill.first_name, prefill.last_name].filter(Boolean).join(' ');
     }
-    return '';
-  }, [prefill]);
-  const parsedLast = useMemo(() => {
-    if (!prefill) return '';
-    if (prefill.last_name) return prefill.last_name;
     if (prefill.query && !prefill.query.includes('@')) {
-      const parts = prefill.query.trim().split(/\s+/);
-      return parts.slice(1).join(' ') || '';
+      return prefill.query.trim();
     }
     return '';
   }, [prefill]);
@@ -205,64 +210,48 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
     return '';
   }, [prefill]);
 
-  const [firstName, setFirstName] = useState(parsedFirst);
-  const [lastName, setLastName] = useState(parsedLast);
-  const [email, setEmail] = useState(parsedEmail);
-  const [phone, setPhone] = useState(prefill?.phone || '');
-  const [matches, setMatches] = useState([]);
-  const [checkedDedup, setCheckedDedup] = useState(false);
+  const [name, setName]                 = useState(parsedName);
+  const [email, setEmail]               = useState(parsedEmail);
+  const [phone, setPhone]               = useState(prefill?.phone || '');
+  const [source, setSource]             = useState('');
+  const [sourceDetail, setSourceDetail] = useState('');
+  const [dedupMatches, setDedupMatches] = useState([]);
 
-  const canSubmit = useMemo(
-    () => firstName.trim().length > 0 && (email.trim() || phone.trim()),
-    [firstName, email, phone]
-  );
+  const canSubmit = useMemo(() => {
+    if (name.trim().length < 2) return false;
+    if (!email.trim() && !phone.trim()) return false;
+    if (!source) return false;
+    if (source === 'other' && sourceDetail.trim().length < 3) return false;
+    return true;
+  }, [name, email, phone, source, sourceDetail]);
 
-  const runDedup = async () => {
-    if (!email && !phone && !firstName) return;
-    try {
-      const r = await axios.post(
-        `${API}/api/leads/dedup-check`,
-        { email, phone, first_name: firstName },
-        { headers: { ...auth(), 'Content-Type': 'application/json' } }
-      );
-      setMatches(r.data?.matches || []);
-      setCheckedDedup(true);
-    } catch (e) {
-      console.warn('dedup-check failed', e);
-    }
-  };
-
-  const submit = async (force = false) => {
+  const submit = async (skipDedup = false) => {
     if (!canSubmit || busy) return;
-    if (!force && !checkedDedup) {
-      await runDedup();
-      // If matches found, halt and show warning. User clicks again with force=true.
-      if (matches.length > 0) return;
-    }
     setBusy(true);
     try {
-      const lead = await axios.post(
-        `${API}/api/leads`,
+      const r = await axios.post(
+        `${API}/api/leads/fast-capture`,
         {
-          first_name: firstName.trim(),
-          last_name: lastName.trim() || null,
+          name: name.trim(),
           email: email.trim().toLowerCase() || null,
           phone: phone.trim() || null,
-          source: 'manual_showroom',
-          status: 'new',
+          source,
+          source_detail: source === 'other' ? sourceDetail.trim() : null,
+          skip_dedup_check: skipDedup,
         },
         { headers: { ...auth(), 'Content-Type': 'application/json' } }
       );
-      // Open discovery
-      const discovery = await axios.post(
-        `${API}/api/leads/${lead.data.id}/discovery`,
-        { notes: null },
-        { headers: { ...auth(), 'Content-Type': 'application/json' } }
-      );
       toast.success('Lead creato. Avvia la Discovery.');
-      onCreated?.({ lead: lead.data, discovery: discovery.data });
+      onCreated?.({ lead: r.data.lead, discovery: r.data.discovery });
     } catch (e) {
-      toast.error(e?.response?.data?.detail?.message || 'Errore creazione Lead');
+      const data = e?.response?.data;
+      // Dedup match → show warning instead of throwing
+      if (e?.response?.status === 409 && data?.code === 'LEAD-DEDUP-MATCH') {
+        setDedupMatches(data.matches || []);
+        toast.warning('Possibile duplicato. Conferma per creare comunque.');
+      } else {
+        toast.error(data?.detail?.message || data?.message || 'Errore creazione Lead');
+      }
     } finally {
       setBusy(false);
     }
@@ -272,45 +261,83 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
     <div data-testid="new-relationship-lead-form">
       <FormField label="Nome*">
         <input
-          data-testid="nr-lead-first-name"
-          value={firstName}
-          onChange={(e) => { setFirstName(e.target.value); setCheckedDedup(false); }}
-          placeholder="es. Stefano"
-          style={inputStyle}
-        />
-      </FormField>
-      <FormField label="Cognome">
-        <input
-          data-testid="nr-lead-last-name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          placeholder="es. Rossi"
-          style={inputStyle}
-        />
-      </FormField>
-      <FormField label="Email">
-        <input
-          data-testid="nr-lead-email"
-          type="email"
-          value={email}
-          onChange={(e) => { setEmail(e.target.value); setCheckedDedup(false); }}
-          onBlur={runDedup}
-          placeholder="es. stefano@studio.it"
-          style={inputStyle}
-        />
-      </FormField>
-      <FormField label="Telefono">
-        <input
-          data-testid="nr-lead-phone"
-          value={phone}
-          onChange={(e) => { setPhone(e.target.value); setCheckedDedup(false); }}
-          onBlur={runDedup}
-          placeholder="+39 ..."
+          data-testid="nr-lead-name"
+          value={name}
+          onChange={(e) => { setName(e.target.value); setDedupMatches([]); }}
+          placeholder="es. Marco Rossi"
+          autoFocus
           style={inputStyle}
         />
       </FormField>
 
-      {matches.length > 0 && (
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <FormField label="Email">
+          <input
+            data-testid="nr-lead-email"
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setDedupMatches([]); }}
+            placeholder="opzionale se hai il telefono"
+            style={inputStyle}
+          />
+        </FormField>
+        <FormField label="Telefono">
+          <input
+            data-testid="nr-lead-phone"
+            value={phone}
+            onChange={(e) => { setPhone(e.target.value); setDedupMatches([]); }}
+            placeholder="opzionale se hai l'email"
+            style={inputStyle}
+          />
+        </FormField>
+      </div>
+      <div style={{ fontSize: 11, color: '#9b9da3', marginTop: -8, marginBottom: 12 }}>
+        Inserisci almeno uno tra email e telefono.
+      </div>
+
+      <FormField label="Origine*">
+        <div
+          data-testid="nr-lead-source-picker"
+          style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}
+        >
+          {SOURCE_OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              data-testid={`nr-source-${opt.key}`}
+              onClick={() => setSource(opt.key)}
+              style={{
+                padding: '7px 12px',
+                borderRadius: 999,
+                border: source === opt.key ? '1px solid #0c0e12' : '1px solid #d8dade',
+                background: source === opt.key ? '#0c0e12' : '#ffffff',
+                color: source === opt.key ? '#ffffff' : '#3a3d44',
+                fontSize: 12,
+                fontWeight: 500,
+                cursor: 'pointer',
+                letterSpacing: '0.01em',
+                transition: 'background 120ms ease, color 120ms ease',
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </FormField>
+
+      {source === 'other' && (
+        <FormField label="Specifica origine*">
+          <input
+            data-testid="nr-lead-source-detail"
+            value={sourceDetail}
+            onChange={(e) => setSourceDetail(e.target.value)}
+            placeholder="es. LinkedIn DM, agenzia X, …"
+            style={inputStyle}
+          />
+        </FormField>
+      )}
+
+      {dedupMatches.length > 0 && (
         <div
           data-testid="new-relationship-dedup-warning"
           style={{
@@ -322,14 +349,15 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
           <div style={{ fontSize: 13, color: '#78350f' }}>
             <strong>Forse hai già parlato con loro:</strong>
             <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
-              {matches.slice(0, 3).map((m) => (
-                <li key={m.type + m.id} style={{ marginBottom: 2 }}>
-                  {m.display || '(senza nome)'} <em style={{ opacity: 0.7 }}>({m.type} · {m.reasons.join(', ')})</em>
+              {dedupMatches.slice(0, 3).map((m) => (
+                <li key={m.id} style={{ marginBottom: 2 }}>
+                  {m.first_name || ''} {m.last_name || ''}
+                  <em style={{ opacity: 0.7 }}> · {m.email || m.phone}</em>
                 </li>
               ))}
             </ul>
             <div style={{ marginTop: 8, fontSize: 12 }}>
-              Premi <strong>Crea comunque</strong> per procedere lo stesso.
+              Premi <strong>Crea comunque</strong> per procedere.
             </div>
           </div>
         </div>
@@ -339,11 +367,11 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
         <button onClick={onCancel} data-testid="nr-lead-cancel" style={btnSecondary}>Indietro</button>
         <button
           data-testid="new-relationship-submit"
-          onClick={() => submit(matches.length > 0)}
+          onClick={() => submit(dedupMatches.length > 0)}
           disabled={!canSubmit || busy}
           style={{ ...btnPrimary, opacity: !canSubmit || busy ? 0.5 : 1 }}
         >
-          {busy ? 'Creo…' : matches.length > 0 ? 'Crea comunque' : 'Crea Lead + apri Discovery'}
+          {busy ? 'Creo…' : dedupMatches.length > 0 ? 'Crea comunque' : 'Crea Lead'}
         </button>
       </div>
     </div>

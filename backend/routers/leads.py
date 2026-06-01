@@ -3,6 +3,7 @@ import uuid
 import logging
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query, Body, Request
+from fastapi.responses import JSONResponse
 from models.schemas import LeadCreate, LeadUpdate
 from middleware.auth import get_current_user
 from core.tenant_context import get_tenant_context, require_permission
@@ -68,6 +69,172 @@ def get_lead(lead_id: str, current_user: dict = Depends(require_permission(P_LEA
     if not result.data:
         raise HTTPException(404, "Lead not found")
     return result.data[0]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ITER185 · Phase 1 · FAST LEAD CAPTURE™
+#
+# Goal: <30s save in showroom. 3-4 mandatory fields:
+#   - name (required, free text)
+#   - email OR phone (at least one required)
+#   - source (mandatory, enum-validated)
+#   - source_detail (mandatory if source='other')
+#
+# Side effects (atomic):
+#   1. INSERT leads(status='new', source=<enum>)
+#   2. INSERT discovery_interviews(status='pending', lead_id=L, source=<lead.source>)
+#   3. INSERT funnel_events(stage='lead_captured', event='fast_capture.created')
+#
+# Idempotency: dedup-check on email/phone returns 409 with existing_lead_id.
+# Frontend can show "open existing" warning.
+# ─────────────────────────────────────────────────────────────────────────────
+LOCKED_SOURCE_ENUM = (
+    'showroom', 'phone', 'email', 'website',
+    'referral', 'architect', 'event', 'import', 'other',
+)
+
+
+@router.post("/fast-capture", status_code=201)
+def fast_capture(
+    body: dict = Body(...),
+    current_user: dict = Depends(require_permission(P_LEADS_WRITE)),
+):
+    """ITER185.P1 · Fast Lead Capture™ — 4-field minimal intake.
+
+    Body:
+      {
+        "name": "Marco Rossi",          # required
+        "phone": "+39333012345",         # required if email empty
+        "email": "marco@email.it",       # required if phone empty
+        "source": "showroom",            # required, LOCKED_SOURCE_ENUM
+        "source_detail": "string|null"   # required if source='other'
+      }
+    """
+    client = db()
+    tid = current_user['tenant_id']
+    now = _now()
+
+    # ── Validation ────────────────────────────────────────────────
+    name = (body.get('name') or '').strip()
+    if len(name) < 2:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "LEAD-NAME-REQUIRED", "message": "Name must be at least 2 characters."},
+        )
+
+    email = (body.get('email') or '').strip().lower() or None
+    phone = (body.get('phone') or '').strip() or None
+    if not email and not phone:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "LEAD-CONTACT-REQUIRED", "message": "At least one of email or phone is required."},
+        )
+
+    source = (body.get('source') or '').strip().lower()
+    if source not in LOCKED_SOURCE_ENUM:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "LEAD-INVALID-SOURCE",
+                "message": f"source must be one of {LOCKED_SOURCE_ENUM}",
+                "allowed": list(LOCKED_SOURCE_ENUM),
+            },
+        )
+
+    source_detail = (body.get('source_detail') or '').strip() or None
+    if source == 'other' and (not source_detail or len(source_detail) < 3):
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "LEAD-SOURCE-DETAIL-REQUIRED", "message": "source_detail is required when source='other'."},
+        )
+
+    # ── Dedup check (non-blocking unless explicit) ────────────────
+    skip_dedup = bool(body.get('skip_dedup_check'))
+    if not skip_dedup:
+        matches = []
+        if email:
+            r = client.table('leads').select('id, first_name, last_name, email, phone').eq(
+                'tenant_id', tid).eq('email', email).limit(3).execute()
+            matches.extend(r.data or [])
+        if phone:
+            r = client.table('leads').select('id, first_name, last_name, email, phone').eq(
+                'tenant_id', tid).eq('phone', phone).limit(3).execute()
+            matches.extend(r.data or [])
+        if matches:
+            return JSONResponse(
+                status_code=409,
+                content={
+                    "code": "LEAD-DEDUP-MATCH",
+                    "message": "Possible duplicate lead found.",
+                    "matches": matches,
+                    "hint": "Re-submit with skip_dedup_check=true to create anyway.",
+                },
+            )
+
+    # ── Split name (heuristic) ────────────────────────────────────
+    parts = name.split(None, 1)
+    first_name = parts[0]
+    last_name = parts[1] if len(parts) > 1 else None
+
+    # ── INSERT lead ───────────────────────────────────────────────
+    lead_id = str(uuid.uuid4())
+    lead_row = {
+        'id': lead_id,
+        'tenant_id': tid,
+        'status': 'new',
+        'first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+        'phone': phone,
+        'source': source,
+        'lead_type': 'private_client',
+        'metadata_json': {
+            'fast_capture': True,
+            'source_detail': source_detail,
+            'captured_by': current_user.get('user_id') or current_user.get('id'),
+        },
+        'created_at': now,
+        'updated_at': now,
+    }
+    client.table('leads').insert(lead_row).execute()
+
+    # ── INSERT discovery_interviews (pending) ─────────────────────
+    discovery_id = str(uuid.uuid4())
+    discovery_row = {
+        'id': discovery_id,
+        'tenant_id': tid,
+        'lead_id': lead_id,
+        'status': 'pending',
+        'source': source if source in ('showroom', 'phone', 'email', 'referral') else 'manual',
+        'conducted_by': current_user.get('user_id') or current_user.get('id'),
+        'qualification_signals': {},
+        'metadata_json': {'entry_path': 'fast_capture'},
+        'created_at': now,
+        'updated_at': now,
+    }
+    try:
+        client.table('discovery_interviews').insert(discovery_row).execute()
+    except Exception:
+        logger.exception("fast_capture: discovery_interviews insert failed (non-blocking)")
+
+    # ── INSERT funnel_event (audit) ───────────────────────────────
+    try:
+        client.table('funnel_events').insert({
+            'id': str(uuid.uuid4()),
+            'tenant_id': tid,
+            'lead_id': lead_id,
+            'stage': 'lead_captured',
+            'event_name': 'fast_capture.created',
+            'metadata_json': {'source': source, 'discovery_id': discovery_id},
+            'created_at': now,
+        }).execute()
+    except Exception:
+        logger.exception("fast_capture: funnel_events insert failed (non-blocking)")
+
+    return {
+        'lead': lead_row,
+        'discovery': discovery_row,
+    }
 
 
 @router.put("/{lead_id}")

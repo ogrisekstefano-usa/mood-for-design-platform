@@ -175,6 +175,9 @@ from routers import discovery as _discovery_router  # noqa: E402
 from routers import account_journeys as _account_journeys_router  # noqa: E402
 api_router.include_router(_discovery_router.router,                         tags=["discovery"])
 api_router.include_router(_account_journeys_router.router,                  tags=["account-journeys"])
+# ITER185 · Phase 1 — Account lifecycle (Prospect ↔ Customer)
+from routers import account_lifecycle as _account_lifecycle_router  # noqa: E402
+api_router.include_router(_account_lifecycle_router.router,                 tags=["account-lifecycle"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

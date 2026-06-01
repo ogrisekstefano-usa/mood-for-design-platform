@@ -1,0 +1,96 @@
+{
+  "summary": "ITER185 CRM Foundation Phase 1 — full backend + frontend test. Backend pytest 22/22 PASS (test_iter185_crm_foundation.py). Fast Capture chips picker, phone-only path, validation gating, and source 'other' detail conditional all work. AccountsPage Convert/Revert CTAs render correctly per lifecycle stage. CRITICAL bug found and fixed: LeadsPage.jsx crashed on load due to 3 missing imports (DesignerChip, Link, BookOpen) — page is now functional. Two remaining concerns for main agent: (1) After Fast Capture submit user lands on /dashboard instead of LeadDetailPage so live Discovery Progress widget couldn't be verified end-to-end in browser; (2) ~3 i18n missing keys per page (Editorial debug bar runtime 3 · missing 3).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LeadsPage.jsx (LeadCard)",
+        "issue": "FIXED by tester — runtime crash 'DesignerChip/Link/BookOpen is not defined' due to 3 missing imports. Added: import { Link } from 'react-router-dom'; import DesignerChip from './DesignerChip'; and BookOpen to lucide-react import. Page now renders 33 Leads correctly.",
+        "selector": "/relations/leads",
+        "priority": "HIGH"
+      },
+      {
+        "component": "NewRelationshipModal Fast Capture",
+        "issue": "After successful Fast Capture submission the app navigates to /dashboard rather than /relations/leads/{id} (LeadDetailPage). Per acceptance criteria, submit should land on LeadDetailPage so the user can immediately work on Discovery. As a result, in-app navigation flow is broken AND the in-LeadDetailPage Discovery Progress widget couldn't be exercised live in browser. Toast 'Lead creato' was not visually verified either.",
+        "selector": "[data-testid=\"new-relationship-submit\"]",
+        "priority": "HIGH"
+      },
+      {
+        "component": "LeadCard navigation",
+        "issue": "Lead cards on /relations/leads do not expose <a href=\"/relations/leads/{id}\"> link — likely button+useNavigate. Makes deep-linking/automation harder. Recommend wrapping card content in a <Link> for accessibility and testability.",
+        "selector": "lead-card-*",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "LocalizationOverlay",
+        "issue": "Console warning repeated on every route: 'Cannot update a component (LocalizationOverlay) while rendering a different component (LoginPage / Sidebar)'. setState-in-render pattern needs to be moved into useEffect.",
+        "selector": "LocalizationOverlay",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "i18n catalogs",
+        "issue": "EDITORIAL · DEBUG bar reports 'runtime 3 · missing 3' on /relations/accounts and 'missing 16' on /dashboard. Some keys aren't resolved at runtime in it-IT locale.",
+        "selector": "[data-testid=\"editorial-debug-bar\"]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Fast Capture → LeadDetailPage",
+        "issue": "POST /api/leads/fast-capture returns 201 (verified via pytest) but frontend onCreated handler redirects to /dashboard instead of LeadDetailPage. Discovery Progress widget therefore not displayed to the user after fast-capture.",
+        "affected_selectors": ["new-relationship-submit", "lead-detail-page"]
+      },
+      {
+        "flow": "Dashboard initial load",
+        "issue": "Multiple 401/403/503 errors logged on /dashboard for resource fetches. Need triage whether these are graceful optional features or required endpoints with auth misalignment.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": []
+  },
+  "verified_working": [
+    "Backend POST /api/leads/fast-capture (happy path, dedup, source validation, source_detail conditional, phone-only, email-only) — 22/22 pytest PASS",
+    "Backend POST /api/discovery/{did}/qualify with 75% gate + admin force=true bypass — pytest PASS",
+    "Backend POST /api/accounts/{aid}/convert-to-customer + revert-to-prospect with audit/reason — pytest PASS",
+    "Backend POST /api/relations/leads/{lid}/promote returns 410 Gone — pytest PASS",
+    "Frontend: Sidebar '+ Nuovo Lead' opens NewRelationshipModal stage picker",
+    "Frontend: 9 source chips render (showroom/phone/email/website/referral/architect/event/import/other) with data-testid nr-source-{key}",
+    "Frontend: Submit button correctly disabled until name + (email OR phone) + source provided; phone-only path enables submit (Founder rule confirmed)",
+    "Frontend: AccountsPage at /relations/accounts shows Convert CTA on prospect cards (data-testid=account-convert-customer-{id}) and Revert CTA on customer cards (data-testid=account-revert-prospect-{id}) — 11 Conferma cliente + 6 Rollback prospect visible",
+    "Frontend: ConvertToCustomerModal opens with proposal_id / signed_at / notes / admin_override fields; submit disabled until valid",
+    "Frontend: LeadsPage renders 33 Leads after import-fix"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_iter185_crm_foundation.py",
+    "/app/test_reports/pytest/iter185_results.xml"
+  ],
+  "action_items": [
+    "Fix Fast Capture post-submit navigation: should push('/relations/leads/'+leadId) so user lands on LeadDetailPage with Discovery interview ready",
+    "Verify DiscoveryProgressWidget live update behaviour end-to-end in browser (couldn't be tested due to navigation bug above)",
+    "Resolve 3 missing i18n keys reported by EDITORIAL · DEBUG bar on /relations/accounts and ~16 on /dashboard",
+    "Fix setState-in-render warning in LocalizationOverlay (wrap state update in useEffect)",
+    "Consider wrapping LeadCard click area in <Link to='/relations/leads/{id}'> for accessibility/deep-link/test-id parity with AccountsPage",
+    "Triage dashboard 401/403/503 fetches — confirm if optional or auth-mismatch"
+  ],
+  "critical_code_review_comments": [
+    "LeadsPage.jsx had 3 missing imports landing in prod build — main agent should add a CI lint check or run yarn build pre-commit. ESLint 'no-undef' would have caught this.",
+    "NewRelationshipModal.jsx onCreated callback should route caller to LeadDetailPage rather than parent navigating to /dashboard — review the modal's onCreated contract and the caller in Sidebar/Topbar trigger.",
+    "Backend graceful fallback for missing signed_proposal_id column (migration 115 not yet executed) is correct, but main agent must run the migration before prod ship — flagged in problem statement."
+  ],
+  "updated_files": [
+    "/app/frontend/src/pages/relations/LeadsPage.jsx (added 3 missing imports: Link from react-router-dom, DesignerChip, BookOpen)"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "75%"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (works, login → /dashboard)",
+  "seed_data_creation": "None — used existing 33 Leads, 11 Prospects, 6 Customers seeded in environment",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest 22/22 stable, do not re-run unless code changes. Frontend Fast Capture flow works through validation but lands on /dashboard not LeadDetailPage — re-test once main agent fixes onCreated navigation. Then verify DiscoveryProgressWidget renders 4 sections (Informazioni di contatto, Tipo di progetto, Budget, Tempistiche) with 0/25/50/75/100 pct + live updates after autosave. AccountsPage Convert/Revert modals already render correctly; happy-path submission of ConvertToCustomerModal and RevertToProspectModal (reason ≥10 char) still needs in-browser confirmation. Correct route paths: /relations/leads, /relations/accounts (NOT /workspace/relations/*).",
+  "rca_of_the_issue": "LeadsPage.jsx crash RCA: LeadCard JSX referenced DesignerChip, Link and BookOpen but the file only imported {Search, X, Plus} from lucide-react and useDesigners hook. Three identifiers were undefined at render time → ReferenceError caught by React's error boundary which shows the 'Uncaught runtime errors' overlay. Fix: added the three missing imports. Reproduction: login as admin → click sidebar Leads / navigate to /relations/leads → page shows red 'Uncaught runtime errors' panel. Mitigation: yarn build + ESLint no-undef rule should be required pre-commit."
+}

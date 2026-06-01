@@ -187,13 +187,16 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         _phone_meta["dial_code"] = body.welcome.dial_code
 
     # 1. Account
+    # ITER185.P1 · Forward-only: start as 'prospect' (canon LOCKED) since Begin
+    # Journey contains qualifying signals (budget, timeline). Discovery row is
+    # created qualified later in the same transaction.
     account_id = str(uuid.uuid4())
     c.table('accounts').insert({
         "id":              account_id,
         "tenant_id":       tid,
         "account_name":    first_name,
         "account_type":    "private_client",
-        "lifecycle_stage": "conversation_open",
+        "lifecycle_stage": "prospect",
         "source":          "begin_journey_ritual",
         "email":           email,
         "phone":           _phone_normalized,

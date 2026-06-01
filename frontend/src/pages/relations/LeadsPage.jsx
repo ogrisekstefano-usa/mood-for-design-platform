@@ -7,10 +7,12 @@
  *   - aggiunta CTA primary "+ Nuovo Lead" che apre il modal CRM
  */
 import React, { useMemo, useState } from 'react';
-import { Search, X, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, X, Plus, BookOpen } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
+import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
 import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
 import { useNewRelationship } from '../../hooks/useNewRelationship';

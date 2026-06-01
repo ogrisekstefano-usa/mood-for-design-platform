@@ -9,12 +9,14 @@
  */
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, X, BookOpen } from 'lucide-react';
+import { Search, X, BookOpen, CheckCircle2, RotateCcw } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
 import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
+import ConvertToCustomerModal from '../../components/relations/ConvertToCustomerModal';
+import RevertToProspectModal from '../../components/relations/RevertToProspectModal';
 
 const HEALTHS = [
   { v: 'thriving', l: 'Thriving' },
@@ -51,7 +53,12 @@ const swatchesFor = (id, atmospheres = []) => {
   });
 };
 
-const AccountCard = ({ a, designer, onOpen }) => {
+const isProspectStage = (s) =>
+  ['prospect', 'in_proposal', 'new_inquiry', 'lead', 'discovery', 'conversation_open'].includes(String(s || '').toLowerCase());
+const isCustomerStage = (s) =>
+  ['customer', 'active_project', 'existing_client', 'repeat_client'].includes(String(s || '').toLowerCase());
+
+const AccountCard = ({ a, designer, onOpen, onConvert, onRevert }) => {
   const name = a.account_name || a.email || 'Account';
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const score = Math.max(0, Math.min(100, Math.round(Number(a.relationship_score || 0))));
@@ -143,6 +150,53 @@ const AccountCard = ({ a, designer, onOpen }) => {
           <BookOpen size={14} strokeWidth={1.6} /> memory
         </Link>
       </footer>
+
+      {/* ITER185.P1 · Lifecycle CTAs (Convert / Revert) */}
+      <div
+        className="account-card__lifecycle"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex', gap: 8, justifyContent: 'flex-end',
+        }}
+      >
+        {isProspectStage(a.lifecycle_stage) && (
+          <button
+            type="button"
+            onClick={() => onConvert?.(a)}
+            data-testid={`account-convert-customer-${a.id}`}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '6px 12px', fontSize: 11, letterSpacing: '0.02em',
+              background: 'transparent', color: '#D6B48A',
+              border: '1px solid rgba(214, 180, 138, 0.4)', borderRadius: 6,
+              cursor: 'pointer', transition: 'all 160ms ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(214, 180, 138, 0.1)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+          >
+            <CheckCircle2 size={12} /> Conferma cliente
+          </button>
+        )}
+        {isCustomerStage(a.lifecycle_stage) && (
+          <button
+            type="button"
+            onClick={() => onRevert?.(a)}
+            data-testid={`account-revert-prospect-${a.id}`}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '6px 12px', fontSize: 11, letterSpacing: '0.02em',
+              background: 'transparent', color: '#9b9da3',
+              border: '1px solid rgba(155, 157, 163, 0.3)', borderRadius: 6,
+              cursor: 'pointer', transition: 'all 160ms ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(155, 157, 163, 0.08)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+          >
+            <RotateCcw size={12} /> Rollback prospect
+          </button>
+        )}
+      </div>
     </article>
   );
 };
@@ -151,12 +205,15 @@ const AccountsPage = () => {
   const [q, setQ] = useState('');
   const [health, setHealth] = useState(null);
   const filters = useMemo(() => ({ q, health }), [q, health]);
-  const { items, total, counts, loading } = useRelations('/api/relations/accounts', filters);
+  const { items, total, counts, loading, refresh } = useRelations('/api/relations/accounts', filters);
   const { pickDesigner } = useDesigners();
 
   const [welcomeId, setWelcomeId] = useState(null);
+  const [convertAccount, setConvertAccount] = useState(null);
+  const [revertAccount, setRevertAccount]   = useState(null);
   const handleOpen = (a) => setWelcomeId(a.id);
   const handleWelcomeAction = () => setWelcomeId(null);
+  const handleLifecycleUpdated = () => { if (typeof refresh === 'function') refresh(); };
 
   const toolbar = (
     <>
@@ -221,6 +278,8 @@ const AccountsPage = () => {
               a={a}
               designer={pickDesigner(a.id)}
               onOpen={handleOpen}
+              onConvert={setConvertAccount}
+              onRevert={setRevertAccount}
             />
           ))}
         </div>
@@ -231,6 +290,19 @@ const AccountsPage = () => {
         open={Boolean(welcomeId)}
         onClose={() => setWelcomeId(null)}
         onAction={handleWelcomeAction}
+      />
+
+      <ConvertToCustomerModal
+        open={Boolean(convertAccount)}
+        account={convertAccount}
+        onClose={() => setConvertAccount(null)}
+        onConverted={handleLifecycleUpdated}
+      />
+      <RevertToProspectModal
+        open={Boolean(revertAccount)}
+        account={revertAccount}
+        onClose={() => setRevertAccount(null)}
+        onReverted={handleLifecycleUpdated}
       />
     </ClientRelationsLayout>
   );

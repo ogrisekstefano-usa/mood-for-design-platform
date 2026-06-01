@@ -54,10 +54,21 @@ const useRelations = (endpoint, filters = {}) => {
   useEffect(() => { fetchCounts(); }, [fetchCounts]);
   useEffect(() => { fetchList(); }, [fetchList]);
 
-  const promote = useCallback(async (leadId, target) => {
-    await api.post(`/api/relations/leads/${leadId}/promote`, { target });
-    await Promise.all([fetchList(), fetchCounts()]);
-  }, [fetchList, fetchCounts]);
+  const promote = useCallback(async (leadId, _target) => {
+    // ITER185.P1 · Legacy /promote endpoint deprecated (410 Gone).
+    // The proper Lead → Prospect transition now happens via
+    //   POST /api/discovery/{discovery_id}/qualify
+    // which requires Discovery progress >= 75% (or admin force).
+    //
+    // This stub remains for backward compat with callers, but throws
+    // a developer-facing error to surface the migration need.
+    const err = new Error(
+      'useRelations.promote() is deprecated. Open Discovery and call POST /api/discovery/{id}/qualify instead.'
+    );
+    err.code = 'PROMOTE_DEPRECATED';
+    console.warn('[ITER185] promote() called for lead', leadId, '— route through Discovery qualify instead.');
+    throw err;
+  }, []);
 
   return { items, total, counts, loading, error, refresh: fetchList, refreshCounts: fetchCounts, promote };
 };

@@ -10,6 +10,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { CheckCircle2, XCircle, RotateCw, Loader2, Sparkles } from 'lucide-react';
+import DiscoveryProgressWidget from '../discovery/DiscoveryProgressWidget';
+import useDiscoveryProgress from '../../hooks/useDiscoveryProgress';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 const auth = () => {
@@ -30,6 +32,9 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
   const [notes, setNotes]       = useState('');
   const [busy, setBusy]         = useState(false);
   const [disqReason, setDisqReason] = useState('');
+
+  // ITER185.P1 · Live deterministic progress (refetched after autosave)
+  const { progress, refetch: refetchProgress } = useDiscoveryProgress(discovery?.id, leadId);
 
   // Initial load
   useEffect(() => {
@@ -69,7 +74,11 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
         { headers: { ...auth(), 'Content-Type': 'application/json' } }
       );
       setDiscovery(r.data);
-    } catch {}
+      // Trigger live progress refresh after autosave
+      if (refetchProgress) refetchProgress();
+    } catch (e) {
+      console.warn('persist discovery failed', e);
+    }
   };
 
   const start = async () => {
@@ -151,6 +160,13 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
         </div>
         <StatusBadge status={status} />
       </header>
+
+      {/* ITER185.P1 · Live progress widget (named checklist + bar) */}
+      {progress && (
+        <div style={{ marginBottom: 16 }}>
+          <DiscoveryProgressWidget progress={progress} />
+        </div>
+      )}
 
       {status === 'pending' && (
         <button

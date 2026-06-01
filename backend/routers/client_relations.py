@@ -236,43 +236,36 @@ def promote(
     body: dict = None,
     current_user: dict = Depends(require_permission(P_LEADS_WRITE)),
 ):
-    if not db_available():
-        raise HTTPException(503, "Database not configured")
-    body = body or {}
-    target = (body.get("target") or "").strip()
-    if target not in ('prospect', 'account', 'dormant'):
-        raise HTTPException(400, "target must be 'prospect' | 'account' | 'dormant'")
-    client = db()
-    res = (client.table('leads').select('id, progression_state, tenant_id')
-           .eq('id', lead_id).limit(1).execute())
-    if not res.data:
-        raise HTTPException(404, "Lead not found")
-    lead = res.data[0]
-    if lead['tenant_id'] != current_user['tenant_id']:
-        raise HTTPException(404, "Lead not found")
-    current = lead['progression_state'] or 'lead'
+    """ITER185.P1 · DEPRECATED endpoint.
 
-    transitions = {
-        ('lead', 'prospect'): True,
-        ('prospect', 'account'): True,
-        ('lead', 'account'): True,    # skip-step allowed but discouraged
-        ('account', 'dormant'): True,
-        ('prospect', 'dormant'): True,
-    }
-    if (current, target) not in transitions:
-        raise HTTPException(400, f"Cannot transition {current} → {target}")
+    Legacy promote() mutated leads.progression_state directly, bypassing
+    Discovery and account creation. Replaced by:
+      - POST /api/discovery/{did}/qualify   (Lead → Prospect)
+      - POST /api/accounts/{aid}/convert-to-customer  (Prospect → Customer)
 
-    now = _now()
-    updates = {
-        "progression_state": target,
-        "updated_at": now,
-    }
-    if target == 'prospect':
-        updates['relationship_temperature'] = max(0.5, lead.get('relationship_temperature') or 0.0)
-    elif target == 'account':
-        updates['relationship_temperature'] = max(0.8, lead.get('relationship_temperature') or 0.0)
-    client.table('leads').update(updates).eq('id', lead_id).execute()
-    return {"id": lead_id, "from": current, "to": target, "promoted_at": now}
+    Returns 410 Gone to force migration.
+    """
+    raise HTTPException(
+        status_code=410,
+        detail={
+            "code": "ENDPOINT-DEPRECATED",
+            "message": (
+                "/api/relations/leads/{id}/promote is deprecated. "
+                "Use POST /api/discovery/{did}/qualify for Lead → Prospect, "
+                "or POST /api/accounts/{aid}/convert-to-customer for Prospect → Customer."
+            ),
+            "migration_endpoints": {
+                "lead_to_prospect": "POST /api/discovery/{discovery_id}/qualify",
+                "prospect_to_customer": "POST /api/accounts/{account_id}/convert-to-customer",
+                "customer_to_prospect": "POST /api/accounts/{account_id}/revert-to-prospect",
+            },
+        },
+    )
+
+
+def _legacy_promote_disabled(*args, **kwargs):
+    """Kept for compatibility; actual function above raises 410."""
+    pass
 
 
 # ── ITER148 · Sprint C · Designer Presence™ + Welcome Experience™ ────
