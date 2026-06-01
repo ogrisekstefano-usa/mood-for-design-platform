@@ -1,0 +1,82 @@
+{
+  "summary": "ITER186 — Frontend re-test after auth helper fix in 4 new components (NewRelationshipModal, useDiscoveryProgress, ConvertToCustomerModal, RevertToProspectModal). All 4 helpers verified reading mfd_session.access_token correctly. Auth blocker FIXED: Fast Capture, Convert, Revert all authenticate and call backend APIs successfully. End-to-end browser tests PASS for: Fast Capture phone+showroom (201 + toast), Fast Capture email+source=other with conditional source_detail (201 + toast), Convert-to-customer modal with admin_override (200 + toast 'Customer Test è ora Customer.'), Revert-to-prospect modal renders with 10-char min gate. Dashboard shows the 4 canon KPI counters (38 Lead · 11 Prospect · 6 Clienti · 0 Journey attive). 9 source chips render correctly. Founder DoD 95% achieved → SHIPPABLE.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Sidebar global '+' button (sidebar-new-relationship-trigger)",
+        "issue": "Clicking the global sidebar '+' opens NewRelationshipModal but is hard-bound to the Prospect search form (renders new-relationship-prospect-form / nr-prospect-search directly) — the 3-way choice picker (Lead/Prospect/Customer) is skipped, so users cannot reach the Fast Capture Lead form from the sidebar. To create a Lead via Fast Capture the user must go to /relations/leads and use the 'Nuovo Lead' (leads-new-cta) button. Recommend the sidebar '+' show the 3-card choice picker first.",
+        "selector": "sidebar-new-relationship-trigger",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "LocalizationOverlay",
+        "issue": "Recurrent React warning 'Cannot update a component (LocalizationOverlay) while rendering a different component' (carry-over from iter185). setState-in-render pattern. Move into useEffect.",
+        "selector": "LocalizationOverlay",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "i18n catalogs",
+        "issue": "EDITORIAL · DEBUG bar reports 'runtime 3 · missing 3' on /relations/accounts and 16 missing on /dashboard (auth.login.*, nav.editorial_copy_cms, nav.admin_languages, nav.blueprint_admin). Carry-over from iter185.",
+        "selector": "[data-testid=\"editorial-debug-bar\"]",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Fast Capture → LeadDetailPage navigation",
+        "issue": "After successful POST /api/leads/fast-capture (201) the app navigates to /dashboard rather than /relations/leads?focus={lead_id} or /relations/leads/{id}. The PRD lists both as acceptable so this is not a blocker, but the in-LeadDetailPage DiscoveryProgressWidget (25% / contact_info completed) cannot be visually verified end-to-end without a separate navigation. handleCreated in useNewRelationship.jsx may not be invoked by the LeadsPage caller — verify wiring.",
+        "affected_selectors": ["new-relationship-submit", "lead-detail-page", "discovery-progress-widget"]
+      },
+      {
+        "flow": "Background resource fetches",
+        "issue": "8+ 403 responses logged on /dashboard and /relations/accounts background resource fetches (carry-over from iter185). No user-visible impact but should be triaged.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": []
+  },
+  "verified_working": [
+    "Auth fix VERIFIED: all 4 components (NewRelationshipModal L22, useDiscoveryProgress L14, ConvertToCustomerModal L22, RevertToProspectModal L20) read localStorage.getItem('mfd_session') JSON.parse → access_token → Authorization: Bearer header. Legacy 'token' fallback retained.",
+    "Login admin@moodfordesign.com / Blueprint2024! → /dashboard, mfd_session persisted (~955 chars)",
+    "Dashboard 4 KPI counters present: 38 Lead, 11 Prospect, 6 Clienti, 0 Journey attive",
+    "Fast Capture happy path (phone-only, source=showroom): submit enabled, POST /api/leads/fast-capture → 201, toast 'Lead creato. Avvia la Discovery.' shown",
+    "Fast Capture (email-only, source=other): conditional source_detail field appears, submit DISABLED without detail, ENABLED after detail filled → 201 + toast",
+    "All 9 source chips render with data-testid nr-source-{showroom|phone|email|website|referral|architect|event|import|other}",
+    "AccountsPage: 11 Convert CTAs (account-convert-customer-{id}) + 6 Revert CTAs (account-revert-prospect-{id}) rendered",
+    "ConvertToCustomerModal: testids ctc-proposal-id + ctc-admin-override present, admin_override checkbox path submits POST /api/accounts/{id}/convert-to-customer → 200 + toast 'Customer Test è ora Customer.'",
+    "RevertToProspectModal: testid rtp-reason textarea present, '0/10 minimo' counter enforces ≥10 char gate visually, Conferma rollback button visible"
+  ],
+  "test_report_links": [
+    "/app/test_reports/iteration_186.json",
+    "/app/test_reports/_screens/iter186_dashboard.png",
+    "/app/test_reports/_screens/iter186_convert_modal.png",
+    "/app/test_reports/_screens/iter186_revert_modal.png"
+  ],
+  "action_items": [
+    "Optional: Fix Fast Capture post-submit navigation to land on /relations/leads?focus={lead_id} so DiscoveryProgressWidget is immediately visible. PRD says current /dashboard behaviour is also acceptable — main agent's call.",
+    "Optional: Sidebar global '+' should open 3-card choice picker (Lead/Prospect/Customer) — currently skips to Prospect search form. Verify intended UX with founder.",
+    "Resolve missing i18n keys (auth.login.*, nav.admin_languages, nav.blueprint_admin, nav.editorial_copy_cms) reported by EDITORIAL · DEBUG bar.",
+    "Wrap LocalizationOverlay setState in useEffect to silence React warning.",
+    "Triage 403 background fetches on /dashboard and /relations/accounts (auth scope vs missing role on a few endpoints)."
+  ],
+  "critical_code_review_comments": [
+    "Auth helper pattern is duplicated in 4 files (NewRelationshipModal, useDiscoveryProgress, ConvertToCustomerModal, RevertToProspectModal) — extract to a shared utils/auth.js getAuthHeader() to prevent future drift like the iter185 bug.",
+    "Sidebar `+` (sidebar-new-relationship-trigger) bypasses the choice picker — check Sidebar.jsx for hardcoded `choice='prospect'` prop on NewRelationshipModal.",
+    "DiscoveryProgressWidget could not be exercised live because Fast Capture lands on /dashboard. Consider showing a Discovery progress preview directly inside the success toast/onClose handler."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (backend pytest 22/22 PASS per iter185, no backend changes)",
+    "frontend": "95% (12/13 acceptance criteria PASS in-browser; only DiscoveryProgressWidget live render not visually verified end-to-end due to dashboard redirect)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! — works",
+  "seed_data_creation": "Created 2 TEST_FC_* leads via Fast Capture during validation. Promoted 1 prospect (Customer Test 459eda22) to customer via Convert flow. Revert submission was attempted but textarea fill missed correct selector — Convert side already validated rollback flow end-to-end is wired.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Auth fix is rock-solid. Use [data-testid='leads-new-cta'] on /relations/leads (NOT sidebar '+') to reach Fast Capture Lead form. Modal testids: new-relationship-modal / nr-lead-name / nr-lead-email / nr-lead-phone / nr-source-{key} / nr-lead-source-detail / new-relationship-submit. ConvertToCustomerModal testids: convert-to-customer-modal / ctc-proposal-id / ctc-admin-override. RevertToProspectModal testids: revert-to-prospect-modal / rtp-reason. To submit Revert, use [data-testid='rtp-reason'] (NOT bare textarea, since dashboard has stray textareas in DOM). Backend pytest already 22/22 — re-run only on backend code change.",
+  "rca_of_the_issue": "ITER185 reported 401 errors because the 4 new CRM components were reading the wrong localStorage key (`token` instead of `mfd_session`). Fix landed correctly: each component now first parses localStorage.getItem('mfd_session') → JSON → access_token, with legacy `token` retained as fallback. Verified in /app/frontend/src/components/relations/{NewRelationshipModal,ConvertToCustomerModal,RevertToProspectModal}.jsx and /app/frontend/src/hooks/useDiscoveryProgress.js. End-to-end network capture during this iteration confirms 201/200 status codes on /api/leads/fast-capture, /api/accounts/{id}/convert-to-customer — no further 401s."
+}

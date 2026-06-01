@@ -17,8 +17,17 @@ import { X, UserPlus, Search, Briefcase, AlertCircle } from 'lucide-react';
 const API = process.env.REACT_APP_BACKEND_URL;
 
 const auth = () => {
-  const t = localStorage.getItem('token');
-  return t ? { Authorization: `Bearer ${t}` } : {};
+  // ITER185.P1 · Match canonical session storage key from AuthContext
+  try {
+    const raw = localStorage.getItem('mfd_session');
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s?.access_token) return { Authorization: `Bearer ${s.access_token}` };
+    }
+  } catch (_) {}
+  // Fallback for legacy code paths
+  const legacy = localStorage.getItem('token');
+  return legacy ? { Authorization: `Bearer ${legacy}` } : {};
 };
 
 export default function NewRelationshipModal({ open, onClose, onCreated, prefill }) {

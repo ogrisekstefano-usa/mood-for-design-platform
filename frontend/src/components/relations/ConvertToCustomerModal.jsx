@@ -18,8 +18,15 @@ import { X, CheckCircle2 } from 'lucide-react';
 const API = process.env.REACT_APP_BACKEND_URL;
 
 const auth = () => {
-  const t = localStorage.getItem('token');
-  return t ? { Authorization: `Bearer ${t}` } : {};
+  try {
+    const raw = localStorage.getItem('mfd_session');
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s?.access_token) return { Authorization: `Bearer ${s.access_token}` };
+    }
+  } catch (_) {}
+  const legacy = localStorage.getItem('token');
+  return legacy ? { Authorization: `Bearer ${legacy}` } : {};
 };
 
 export default function ConvertToCustomerModal({ open, account, onClose, onConverted }) {
