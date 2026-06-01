@@ -216,9 +216,13 @@ async def submit_v2(*,
     primary_operating_market_code: str | None = None,
     headquarter_country_iso: str | None = None,
     headquarter_city: str | None = None,
+    headquarter_region: str | None = None,
     headquarter_lat: float | None = None,
     headquarter_lng: float | None = None,
     mapbox_place_id: str | None = None,
+    # target_countries: list of dicts {iso2, priority, status} OR legacy
+    # list of ISO strings (kept for back-compat). Limit 3 enforced server-side.
+    target_countries: list = None,
     target_country_isos: list[str] = None,
     # Contact + help
     first_name: str = '',
@@ -232,17 +236,36 @@ async def submit_v2(*,
     ip: str | None = None,
     user_agent: str | None = None,
 ) -> dict:
-    # Defaults
     additional_markets  = additional_markets or []
-    target_country_isos = target_country_isos or []
     help_topics         = help_topics or []
 
-    # Server-side email uniqueness gate (defense in depth)
+    # Normalize target_countries to a list of dicts with priority+status
+    targets: list[dict] = []
+    if target_countries:
+        for i, tc in enumerate(target_countries[:3]):
+            if isinstance(tc, dict):
+                iso = (tc.get('iso2') or '').upper()
+                if len(iso) != 2: continue
+                targets.append({
+                    'iso2': iso,
+                    'priority': int(tc.get('priority') or (i + 1)),
+                    'status':   tc.get('status') if tc.get('status') in ('active','planned') else 'planned',
+                })
+            else:
+                iso = (str(tc) or '').upper()
+                if len(iso) == 2:
+                    targets.append({'iso2': iso, 'priority': i + 1, 'status': 'planned'})
+    elif target_country_isos:
+        for i, iso in enumerate((target_country_isos or [])[:3]):
+            cl = (iso or '').upper()
+            if len(cl) == 2:
+                targets.append({'iso2': cl, 'priority': i + 1, 'status': 'planned'})
+
+    # Server-side email uniqueness gate
     uniq = await check_email_uniqueness(contact_email)
     if not uniq["available"]:
         return {"ok": False, "reason": f"email_{uniq['reason']}"}
 
-    # Translate V2 codes → V1 fields via DB lookup
     async with AsyncSessionLocal() as s:
         arch = (await s.execute(text(
             "SELECT maps_to_archetype FROM studio_archetypes_v2 WHERE code = :c"
@@ -250,29 +273,23 @@ async def submit_v2(*,
         if not arch:
             return {"ok": False, "reason": "invalid_archetype"}
         v1_archetype = arch['maps_to_archetype']
-
         topics = (await s.execute(text("""
-            SELECT code, maps_to_experience
-              FROM studio_help_topics
+            SELECT code, maps_to_experience FROM studio_help_topics
              WHERE code = ANY(:codes) AND is_active = TRUE
         """), {"codes": list(help_topics)})).mappings().all()
         v1_experiences = sorted({
             t['maps_to_experience'] for t in topics if t['maps_to_experience']
         })
 
-        # Resolve operating market id (if provided)
         operating_market_id = None
         if primary_operating_market_code:
             mkt = (await s.execute(text(
                 "SELECT id FROM markets WHERE code = :c"
             ), {"c": primary_operating_market_code})).mappings().first()
-            if mkt:
-                operating_market_id = str(mkt['id'])
+            if mkt: operating_market_id = str(mkt['id'])
 
-    # Use the new HQ values when provided (fall back to legacy fields).
     final_country = (headquarter_country_iso or country or '').upper() or None
     final_city    = headquarter_city or city or None
-
     full_name_parts = [p for p in [first_name, last_name] if p]
     contact_name = ' '.join(full_name_parts) or None
     studio_label = contact_name
@@ -287,16 +304,17 @@ async def submit_v2(*,
             "country":      final_country,
             "markets":      list(additional_markets),
             "v2": {
-                "archetype_code":               archetype_code,
+                "archetype_code":                archetype_code,
                 "primary_operating_market_code": primary_operating_market_code,
-                "help_topics":                  list(help_topics),
-                "help_other_text":              help_other_text or None,
-                "first_name":                   first_name,
-                "last_name":                    last_name,
-                "target_country_isos":          list(target_country_isos),
-                "mapbox_place_id":              mapbox_place_id,
-                "headquarter_lat":              headquarter_lat,
-                "headquarter_lng":              headquarter_lng,
+                "headquarter_region":            headquarter_region,
+                "headquarter_lat":               headquarter_lat,
+                "headquarter_lng":               headquarter_lng,
+                "mapbox_place_id":               mapbox_place_id,
+                "target_countries":              targets,
+                "help_topics":                   list(help_topics),
+                "help_other_text":               help_other_text or None,
+                "first_name":                    first_name,
+                "last_name":                     last_name,
             },
         },
         movement="contact",
@@ -310,34 +328,27 @@ async def submit_v2(*,
         contact_role=None,
         phone_prefix=phone_prefix,
         phone_number=phone_number,
-        website=None,
-        notes=None,
-        locale=locale,
+        website=None, notes=None, locale=locale,
         ip=ip, user_agent=user_agent,
     )
     if not res.get('ok'):
         return res
-
     request_id = res['request_id']
 
-    # Persist V2-only fields: operating market FK + HQ geo + target countries
     async with AsyncSessionLocal() as s:
         await s.execute(text("""
             UPDATE studio_requests
                SET primary_operating_market_id = CAST(:opid AS uuid),
                    headquarter_country_iso     = :hqc,
+                   headquarter_region          = :hreg,
                    headquarter_lat             = :lat,
                    headquarter_lng             = :lng,
                    mapbox_place_id             = :pid
              WHERE id = :rid
-        """), {
-            "opid": operating_market_id,
-            "hqc":  final_country,
-            "lat":  headquarter_lat,
-            "lng":  headquarter_lng,
-            "pid":  mapbox_place_id,
-            "rid":  request_id,
-        })
+        """), {"opid": operating_market_id, "hqc": final_country,
+                "hreg": headquarter_region, "lat": headquarter_lat,
+                "lng": headquarter_lng, "pid": mapbox_place_id,
+                "rid": request_id})
 
         for tc in help_topics:
             await s.execute(text("""
@@ -348,18 +359,17 @@ async def submit_v2(*,
             """), {"rid": request_id, "tc": tc,
                    "ot": help_other_text if tc == 'other' else None})
 
-        for iso in target_country_isos:
-            iso_clean = (iso or '').upper()
-            if len(iso_clean) != 2:
-                continue
+        for t in targets:
             await s.execute(text("""
                 INSERT INTO studio_request_target_countries
-                  (studio_request_id, country_iso2)
-                VALUES (:rid, :iso)
-                ON CONFLICT DO NOTHING
-            """), {"rid": request_id, "iso": iso_clean})
+                  (studio_request_id, country_iso2, priority, status)
+                VALUES (:rid, :iso, :pri, :st)
+                ON CONFLICT (studio_request_id, country_iso2) DO UPDATE
+                  SET priority = EXCLUDED.priority,
+                      status   = EXCLUDED.status
+            """), {"rid": request_id, "iso": t['iso2'],
+                   "pri": t['priority'], "st": t['status']})
         await s.commit()
-
     return res
 
 
@@ -368,7 +378,7 @@ async def search_cities(query: str, country_iso: str,
                         limit: int = 5) -> list[dict]:
     """
     Forward-geocode a city query to Mapbox Places, scoped to the given
-    ISO country. Returns [{name, full_name, lat, lng, place_id}] or [].
+    ISO country. Returns [{name, full_name, region, lat, lng, place_id}].
     """
     token = os.environ.get('MAPBOX_ACCESS_TOKEN', '').strip()
     q = (query or '').strip()
@@ -388,14 +398,25 @@ async def search_cities(query: str, country_iso: str,
                 "autocomplete":  "true",
             })
             data = r.json()
+            if r.status_code != 200:
+                return []
     except Exception:
         return []
     out: list[dict] = []
     for f in (data.get('features') or [])[:limit]:
-        center = f.get('center') or [None, None]
+        center  = f.get('center') or [None, None]
+        context = f.get('context') or []
+        # Extract region/state from context
+        region = None
+        for c in context:
+            cid = c.get('id', '')
+            if cid.startswith('region.') or cid.startswith('district.'):
+                region = c.get('text')
+                break
         out.append({
             "name":      f.get('text', ''),
             "full_name": f.get('place_name', ''),
+            "region":    region,
             "lng":       center[0],
             "lat":       center[1],
             "place_id":  f.get('id', ''),

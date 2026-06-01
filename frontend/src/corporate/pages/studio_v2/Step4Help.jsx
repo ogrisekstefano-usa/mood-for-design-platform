@@ -34,10 +34,12 @@ const Step4Help = ({ manifest, t, form, update, next, back,
         primary_operating_market_code: form.primary_operating_market_code,
         headquarter_country_iso:       form.headquarter_country_iso,
         headquarter_city:              form.headquarter_city,
+        headquarter_region:            form.headquarter_region,
         headquarter_lat:               form.headquarter_lat,
         headquarter_lng:               form.headquarter_lng,
         mapbox_place_id:               form.mapbox_place_id,
-        target_country_isos:           form.target_country_isos || [],
+        // Target countries with priority + status (new structure)
+        target_countries:              form.target_countries || [],
         // Contact + help
         first_name:         form.first_name,
         last_name:          form.last_name,

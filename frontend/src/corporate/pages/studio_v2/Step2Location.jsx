@@ -6,11 +6,11 @@
  *
  * NO hardcoded labels, no technical codes shown to the visitor.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useCountries } from './hooks/useCountries';
 import { useOperatingMarkets } from './hooks/useOperatingMarkets';
-import TargetCountriesCombobox from './components/TargetCountriesCombobox';
+import TargetCountriesPicker from './components/TargetCountriesCombobox';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -81,6 +81,46 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
     }
   }, [countries]); // eslint-disable-line
 
+  // Auto-suggest operating market when HQ country changes.
+  // The suggestion mirrors the country: if HQ=IT → italy, HQ=US → usa_national,
+  // HQ=DE/AT/CH → dach, HQ=FR/BE/LU → france_fr_europe, etc. The user can
+  // still override by picking another market manually.
+  const HQ_TO_MARKET = {
+    IT: 'italy', SM: 'italy', VA: 'italy',
+    DE: 'dach', AT: 'dach', CH: 'dach', LI: 'dach',
+    FR: 'france_fr_europe', BE: 'france_fr_europe', LU: 'france_fr_europe',
+    MC: 'france_fr_europe', AD: 'france_fr_europe',
+    GB: 'uk_ireland', IE: 'uk_ireland',
+    ES: 'spain_iberian', PT: 'spain_iberian',
+    SE: 'scandinavia', NO: 'scandinavia', DK: 'scandinavia',
+    FI: 'scandinavia', IS: 'scandinavia',
+    US: 'usa_national',
+    AE: 'gcc_luxury', SA: 'gcc_luxury', QA: 'gcc_luxury', KW: 'gcc_luxury',
+    BH: 'gcc_luxury', OM: 'gcc_luxury',
+    GT: 'central_america', PA: 'central_america', CR: 'central_america',
+    HN: 'central_america', NI: 'central_america', SV: 'central_america',
+    BZ: 'central_america', DO: 'central_america', CU: 'central_america',
+    AR: 'spanish_latam', CL: 'spanish_latam', CO: 'spanish_latam',
+    PE: 'spanish_latam', UY: 'spanish_latam', BO: 'spanish_latam',
+    EC: 'spanish_latam', PY: 'spanish_latam', VE: 'spanish_latam',
+    BR: 'brazil',
+    MX: 'spanish_mexico',
+  };
+  const hqAutoApplied = useRef(false);
+  useEffect(() => {
+    if (!form.headquarter_country_iso) return;
+    const suggested = HQ_TO_MARKET[form.headquarter_country_iso];
+    if (suggested && markets.find((m) => m.code === suggested)) {
+      // Only auto-apply on the very first time we see the HQ country,
+      // unless the user has manually picked something. We never overwrite
+      // a user-chosen market on subsequent renders.
+      if (!hqAutoApplied.current) {
+        update({ primary_operating_market_code: suggested });
+        hqAutoApplied.current = true;
+      }
+    }
+  }, [form.headquarter_country_iso, markets]); // eslint-disable-line
+
   if (!marketsReady || !countriesReady) {
     return <p data-testid="step2-loading" style={{ opacity: 0.55 }}>…</p>;
   }
@@ -92,10 +132,11 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
 
   const pickCity = (sug) => {
     update({
-      headquarter_city: sug.name,
-      headquarter_lat:  sug.lat,
-      headquarter_lng:  sug.lng,
-      mapbox_place_id:  sug.place_id,
+      headquarter_city:   sug.name,
+      headquarter_region: sug.region,
+      headquarter_lat:    sug.lat,
+      headquarter_lng:    sug.lng,
+      mapbox_place_id:    sug.place_id,
     });
     setCitySuggestions([]);
     setShowCityDropdown(false);
@@ -211,11 +252,13 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
         <h2 style={sectionTitleStyle}>{t('step2_targets_title')}</h2>
         <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_targets_helper')}</p>
 
-        <TargetCountriesCombobox
+        <TargetCountriesPicker
           allCountries={countries.filter((c) => c.iso2 !== form.headquarter_country_iso)}
-          selected={form.target_country_isos || []}
-          onChange={(next) => update({ target_country_isos: next })}
-          placeholder={t('step2_targets_placeholder')} />
+          selected={form.target_countries || []}
+          onChange={(next) => update({ target_countries: next })}
+          placeholder={t('step2_targets_placeholder')}
+          locale={locale}
+          max={3} />
       </section>
 
       {/* ─── Nav ─────────────────────────────────────────────────────── */}

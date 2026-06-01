@@ -222,8 +222,11 @@ const TenantActivationConsole = () => {
                   <span style={{ color: '#777' }}>Sede: </span>
                   <span data-testid="geo-headquarter">
                     {selectedReq.city || '—'}
+                    {selectedReq.geo.headquarter_region
+                      ? `, ${selectedReq.geo.headquarter_region}`
+                      : ''}
                     {selectedReq.geo.headquarter_country_iso
-                      ? `, ${selectedReq.geo.headquarter_country_iso}`
+                      ? ` · ${selectedReq.geo.headquarter_country_iso}`
                       : (selectedReq.country ? `, ${selectedReq.country}` : '')}
                   </span>
                 </div>
@@ -240,17 +243,34 @@ const TenantActivationConsole = () => {
                 )}
                 <div data-testid="geo-targets">
                   <span style={{ color: '#777' }}>Paesi target: </span>
-                  {(selectedReq.geo.target_country_isos || []).length === 0
+                  {(selectedReq.geo.target_countries || []).length === 0
                     ? <span style={{ color: '#555' }}>—</span>
-                    : (selectedReq.geo.target_country_isos || []).map((iso) => (
-                        <span key={iso} style={{
-                          display: 'inline-block', padding: '2px 8px',
-                          background: 'rgba(0,201,179,0.10)',
-                          border: '1px solid rgba(0,201,179,0.32)',
-                          borderRadius: 999, fontSize: '0.74rem',
-                          marginRight: 6, marginTop: 4, color: '#DDD',
-                        }}>{iso}</span>
-                      ))}
+                    : (
+                      <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 6,
+                                     marginTop: 4 }}>
+                        {(selectedReq.geo.target_countries || []).map((tc) => (
+                          <span key={tc.iso2} data-testid={`geo-target-${tc.iso2}`} style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 6,
+                            padding: '4px 10px',
+                            background: tc.status === 'active'
+                              ? 'rgba(0,201,179,0.15)'
+                              : 'rgba(255,255,255,0.05)',
+                            border: '1px solid ' + (tc.status === 'active'
+                              ? 'rgba(0,201,179,0.45)'
+                              : 'rgba(255,255,255,0.15)'),
+                            borderRadius: 999, fontSize: '0.74rem', color: '#DDD',
+                          }}>
+                            <span style={{
+                              fontSize: '0.66rem', opacity: 0.7,
+                            }}>{tc.priority}</span>
+                            <span>{tc.iso2}</span>
+                            <span style={{
+                              fontSize: '0.62rem', opacity: 0.6, letterSpacing: '0.04em',
+                            }}>{tc.status === 'active' ? '· attivo' : '· planned'}</span>
+                          </span>
+                        ))}
+                      </span>
+                    )}
                 </div>
                 <div style={{ fontSize: '0.74rem', color: '#666', marginTop: 4 }}>
                   Locale: {selectedReq.locale || '—'}

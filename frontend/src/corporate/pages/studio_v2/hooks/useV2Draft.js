@@ -19,7 +19,8 @@ const emptyForm = {
   headquarter_lat:               null,
   headquarter_lng:               null,
   mapbox_place_id:               null,
-  target_country_isos:           [],
+  // New: target_countries = [{iso2, priority, status}]
+  target_countries:              [],
   // Legacy mirrors (still read by some downstream)
   country:                       null,
   city:                          '',

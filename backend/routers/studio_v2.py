@@ -44,9 +44,11 @@ async def submit(request: Request, body: dict = Body(...)):
             primary_operating_market_code = body.get("primary_operating_market_code"),
             headquarter_country_iso       = body.get("headquarter_country_iso"),
             headquarter_city              = body.get("headquarter_city"),
+            headquarter_region            = body.get("headquarter_region"),
             headquarter_lat               = body.get("headquarter_lat"),
             headquarter_lng               = body.get("headquarter_lng"),
             mapbox_place_id               = body.get("mapbox_place_id"),
+            target_countries              = body.get("target_countries") or [],
             target_country_isos           = body.get("target_country_isos") or [],
             # Contact + help
             first_name        = body.get("first_name") or "",

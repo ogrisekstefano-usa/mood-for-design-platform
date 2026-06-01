@@ -42,6 +42,7 @@ async def pipeline(
         params["st"] = status
     async with AsyncSessionLocal() as s:
         rows = (await s.execute(text(f"""
+            # Need to fetch headquarter_region too
             SELECT sr.id, sr.studio_name, sr.contact_name, sr.contact_email,
                    sr.city, sr.country, sr.markets, sr.archetype, sr.locale, sr.status,
                    sr.assigned_advisor_id, sr.advisor_notes,
@@ -49,6 +50,7 @@ async def pipeline(
                    sr.attribution_advisor_id,
                    sr.primary_operating_market_id,
                    sr.headquarter_country_iso,
+                   sr.headquarter_region,
                    sr.headquarter_lat, sr.headquarter_lng, sr.mapbox_place_id,
                    m.code AS op_market_code,
                    m.display_name->>'it-IT' AS op_market_label
@@ -63,14 +65,18 @@ async def pipeline(
         targets_by_req: dict[str, list[str]] = {}
         if req_ids:
             tr = (await s.execute(text("""
-                SELECT studio_request_id, country_iso2
+                SELECT studio_request_id, country_iso2, priority, status
                   FROM studio_request_target_countries
                  WHERE studio_request_id = ANY(:ids)
-                 ORDER BY country_iso2
+                 ORDER BY priority, country_iso2
             """), {"ids": req_ids})).mappings().all()
             for row in tr:
                 targets_by_req.setdefault(str(row['studio_request_id']), []) \
-                              .append(row['country_iso2'])
+                              .append({
+                                  'iso2': row['country_iso2'],
+                                  'priority': row['priority'],
+                                  'status': row['status'],
+                              })
 
     buckets = {
         "new":               [],
@@ -102,10 +108,11 @@ async def pipeline(
                 "operating_market_code":   r['op_market_code'],
                 "operating_market_label":  r['op_market_label'],
                 "headquarter_country_iso": r['headquarter_country_iso'],
+                "headquarter_region":      r.get('headquarter_region'),
                 "headquarter_lat":         r['headquarter_lat'],
                 "headquarter_lng":         r['headquarter_lng'],
                 "mapbox_place_id":         r['mapbox_place_id'],
-                "target_country_isos":     targets_by_req.get(str(r['id']), []),
+                "target_countries":        targets_by_req.get(str(r['id']), []),
             },
         }
         st = r['status']
