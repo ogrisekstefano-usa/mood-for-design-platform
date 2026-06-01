@@ -121,7 +121,7 @@ const EditorialFooter = () => {
               fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
               color: 'var(--mood-text-3)', marginTop: '0.9rem', lineHeight: 1.5,
             }}>
-              Scegli il mercato di riferimento per definire lingua, valuta e
+              Scegli il mercato di riferimento per definire lingua e
               advisor del tuo studio.
             </p>
           </div>

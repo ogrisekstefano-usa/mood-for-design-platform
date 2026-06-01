@@ -59,9 +59,7 @@ const MarketTrigger = () => {
         <Globe size={14} strokeWidth={1.4} color="var(--mood-teal, #00C9B3)" />
         <span style={{ fontWeight: 500 }}>{market.display_name || market.code}</span>
         <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span>
-        <span style={{ color: 'rgba(255,255,255,0.75)' }}>{market.effective_locale}</span>
-        <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span>
-        <span style={{ color: 'rgba(255,255,255,0.75)' }}>{market.currency}</span>
+        <span style={{ color: 'rgba(255,255,255,0.75)' }}>{market.primary_locale}</span>
         <ChevronDown size={14} strokeWidth={1.6} style={{ opacity: 0.5, marginLeft: 4 }} />
       </button>
 

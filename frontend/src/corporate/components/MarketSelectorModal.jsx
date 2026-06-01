@@ -110,7 +110,7 @@ const MarketSelectorModal = ({ open, onClose }) => {
               color: 'var(--mood-text-2)', marginTop: '0.8rem',
               maxWidth: 560, lineHeight: 1.55,
             }}>
-              Ogni mercato definisce lingua, valuta, advisor di riferimento e
+              Ogni mercato definisce lingua, advisor di riferimento e
               il modo in cui MOOD si presenta al tuo studio.
             </p>
           </div>
@@ -215,9 +215,7 @@ const MarketSelectorModal = ({ open, onClose }) => {
                             color: 'var(--mood-text-3)', fontFamily: 'Inter, sans-serif',
                             display: 'inline-flex', alignItems: 'center', gap: 8,
                           }}>
-                            <span>{m.effective_locale}</span>
-                            <span style={{ opacity: 0.4 }}>·</span>
-                            <span>{m.currency}</span>
+                            <span>{m.primary_locale}</span>
                             {isCurrent && <Check size={13} strokeWidth={2} color="var(--mood-teal, #00C9B3)" />}
                           </span>
                         </button>
