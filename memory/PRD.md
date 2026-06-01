@@ -1,6 +1,68 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🔒 ITER185 · Phase 0 · CRM FOUNDATION LOCKED MODEL™ · ✅ DELIVERED · 01 Jun 2026 (AWAITING FOUNDER APPROVAL)
+
+**🎯 Goal:** Bloccare definitivamente il modello CRM PRIMA di implementare Lead Wizard / Prospect Qualification / Customer Conversion / Journey Creation Rules. **Audit + Architecture + Model Lock only** — zero code changes.
+
+**Insight Founder (paradigm shift):**
+> Il Design Journey **NON è uno stato CRM successivo al Customer**. È un **contenitore operativo parallelo** aperto **da** Prospect O **da** Customer. Il modello LINEAR `Lead → Discovery → Prospect → Customer → Journey` è ERRATO. Il modello LOCKED è: `Lead → Discovery → Prospect → [Customer opzionale]` con **Design Journey come container in parallelo**.
+
+**Deliverable:**
+- ✅ `/app/memory/CRM_FOUNDATION_LOCKED_MODEL.md` (764 righe · 15 sezioni A-O)
+  - §A CRM Locked Model + diagramma stati definitivo
+  - §B Lifecycle rules (Lead→Discovery automatic, Discovery→Prospect manual gated, Prospect→Journey optional, Prospect→Customer explicit)
+  - §C Design Journey Rules (R1-R5 LOCKED, scenari A Prospect→Journey e B Customer→Journey supportati)
+  - §D Conversion Rules (no skip Discovery, no skip Prospect, Customer non obbligatorio)
+  - §E Ownership Rules (CRM commercial vs Journey operational, compat ITER186)
+  - §F Lifecycle Enforcement (public-form special case, crm_lifecycle_lint.py script, DB/API/FE rules)
+  - §G Lead Wizard canonical 6-step design (LOCKED)
+  - §H Dashboard KPI (4 only: Lead, Prospect, Customer, Journey — no score astratti)
+  - §I Gap residui (6 DB · 5 API · 9 UX · 4 workflow · 4 DQ)
+  - §J Roadmap ITER185 (4 phase · ~6.5g effettivi)
+  - §K Verification Checklist (must-pass prima di chiudere)
+  - §L Vincolo rispettato (zero changes)
+  - §M Decision Gate (5 domande aperte al Founder)
+
+**Modello LOCKED (diagramma):**
+```
+Lead → Discovery → Prospect ─────┐
+                                  ├── Design Journey (container, parallel)
+                       Customer ──┘
+```
+
+**Lead Wizard 6-step canonico:**
+1. Informazioni base (nome*, cognome, azienda, ruolo)
+2. Contatti (email/phone mandatory OR, città, paese)
+3. **Origine MANDATORY** enum: showroom · phone · email · website · referral · architect · event · import · other
+4. Interesse enum: residential · hospitality · retail · office · contract · other
+5. Note operative
+6. Owner iniziale
+
+**Salvataggio immediato. Nessuna Journey. Solo Lead + Discovery(pending).**
+
+**5 domande aperte al Founder (sezione §M):**
+1. Customer → Prospect rollback consentito? (default: NO)
+2. `source='other'` → `source_detail` come gestire? (default: testo libero in metadata_json)
+3. Discovery progress %: deterministico o soggettivo? (default: deterministico, 5 sezioni × 20%)
+4. Trigger automatico `signed_proposal → customer` Phase 1 o Phase 4? (default: Phase 4 P3)
+5. CSV import in Phase 4 o ITER186+? (default: ITER186+)
+
+**Roadmap ITER185 (post-approval):**
+- 🔴 Phase 1 P0 (~2g): ProspectsPage audit-trace · convert-to-customer endpoint · Lead Wizard 6-step · Source picker mandatory · Discovery Progress 0-100%
+- 🟠 Phase 2 P1 (~2g): account_lifecycle_stage enum · leads.source enum · leads.market_sector colonna · v_crm_funnel view · put-on-hold/resume/churn endpoint · CTA conferma cliente · KPI 4-count dashboard · CTA Nuovo Design Journey in AccountsPage
+- 🟡 Phase 3 P2 (~1.5g): deprecate first_journey_id · filtri status LeadsPage · tooltip "no journey from Lead" · enum API validation · qualification_signals schema validation
+- 🟢 Phase 4 P3 (~1g): crm_lifecycle_lint.py CI · FK signed_proposal_id · trigger automatico signed→customer (opzionale)
+
+**Status:** 🔒 **AWAITING FOUNDER APPROVAL** — niente Phase 1 finché Locked Model non è approvato esplicitamente.
+
+**Next gating (BLOCKED):**
+- Tutta ITER185 Phase 1-4
+- ITER186 Notification Bus + Journey Assignments Phase 2 + Editorial Onboarding + Error Registry + Client Chameleon
+
+---
+
+
 ## 🆕 ITER184 · CRM FOUNDATION AUDIT™ · ✅ DELIVERED · 01 Jun 2026
 
 **🎯 Goal:** Bloccare definitivamente il modello operativo CRM (Lead → Discovery → Prospect → Customer → Design Journey) prima di sviluppare Notification Bus / Journey Assignments Phase 2 / Editorial Onboarding / Error Registry / Client Chameleon. **AUDIT + ARCHITECTURE + VALIDATION ONLY** — zero code/DB/API/UI changes.
