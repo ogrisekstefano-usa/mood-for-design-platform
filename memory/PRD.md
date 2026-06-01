@@ -29,7 +29,7 @@ Founder ≠ Command Center user. Studio Request ≠ Tenant. Provisioning asincro
 ## Implementation Status
 
 ### ✅ COMPLETATO
-- Hybrid Auth Founder (magic-link → password)
+- **STUDIO ACTIVATION FLOW V2** (2026-06-01) — Nuovo funnel pubblico `/studio` a 5 step DB-driven (categoria · paese · referente · aiuto · ricevuto). Zero foto reali, zero hardcoded, lifecycle V1 riutilizzato senza duplicazione. V1 quarantenato su `/studio-legacy`. Report `STUDIO_V2_IMPLEMENTATION_REPORT.md` (READY_FOR_USER_ACCEPTANCE).
 - Resend Production Go-Live (`no-reply@mail.moodfordesign.com`)
 - Tenant Lifecycle (validazione E2E)
 - MOOD Advisor Mini CRM™ — Migration 025 (schema applicato, codice paused)

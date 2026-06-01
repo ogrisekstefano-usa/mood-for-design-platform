@@ -24,6 +24,7 @@ import MovementPractice from './pages/studio/MovementPractice';
 import MovementEcosystem from './pages/studio/MovementEcosystem';
 import MovementIdentity from './pages/studio/MovementIdentity';
 import MovementRequest from './pages/studio/MovementRequest';
+import StudioFunnelV2 from './pages/studio_v2/StudioFunnelV2';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -66,9 +67,9 @@ const CorporateApp = () => {
   const isAccessRoute =
     location.pathname === '/journey/continue' ||
     accessSlugs.includes(location.pathname);
-  // ITER160 — Studio Activation Flow: full-bleed editorial shell,
-  // top nav + footer hidden. The page is the experience.
-  const isStudioActivationRoute = location.pathname.startsWith('/studio');
+  // V2 funnel (mount at /studio) + V1 quarantined to /studio-legacy.
+  const isStudioActivationRoute = location.pathname.startsWith('/studio')
+                               || location.pathname.startsWith('/studio-legacy');
 
   const stripChrome = isAccessRoute || isStudioActivationRoute;
 
@@ -91,12 +92,16 @@ const CorporateApp = () => {
         {/* ITER167 — Magic link landing (universal route, all locales). */}
         <Route path="/journey/continue" element={<AccessContinuityPage />} />
 
-        {/* ITER160 — Studio Activation Flow (all 5 movements) */}
-        <Route path="/studio"           element={<MovementEntrance />} />
-        <Route path="/studio/practice"  element={<MovementPractice />} />
-        <Route path="/studio/ecosystem" element={<MovementEcosystem />} />
-        <Route path="/studio/identity"  element={<MovementIdentity />} />
-        <Route path="/studio/request"   element={<MovementRequest />} />
+        {/* Studio Activation Flow V2 — public funnel (5 step) */}
+        <Route path="/studio"           element={<StudioFunnelV2 />} />
+
+        {/* V1 quarantined to /studio-legacy (QA / regression only,
+            not linked from any public navigation, not indexed). */}
+        <Route path="/studio-legacy"           element={<MovementEntrance />} />
+        <Route path="/studio-legacy/practice"  element={<MovementPractice />} />
+        <Route path="/studio-legacy/ecosystem" element={<MovementEcosystem />} />
+        <Route path="/studio-legacy/identity"  element={<MovementIdentity />} />
+        <Route path="/studio-legacy/request"   element={<MovementRequest />} />
 
         {/* Legacy redirects */}
         <Route path="/start-studio"         element={<Navigate to="/studio" replace />} />

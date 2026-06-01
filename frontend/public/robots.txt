@@ -3,6 +3,7 @@ Allow: /
 Disallow: /admin
 Disallow: /command-center
 Disallow: /blueprint
+Disallow: /studio-legacy
 Disallow: /api
 
 Sitemap: https://www.moodfordesign.com/api/site/sitemap.xml
