@@ -99,7 +99,9 @@ app.include_router(auth_router)  # already prefixed with /api/auth
 app.include_router(studio_activation_router, prefix="/api")
 app.include_router(admin_studio_router,      prefix="/api")
 from routers.admin_relations import router as admin_relations_router
+from routers.markets import router as markets_router
 app.include_router(admin_relations_router,   prefix="/api")
+app.include_router(markets_router)  # already prefixed with /api/markets
 
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets

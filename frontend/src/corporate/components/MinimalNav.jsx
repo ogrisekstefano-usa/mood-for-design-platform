@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useSiteNavigation } from '../hooks/useSiteChrome';
-import LocaleSwitcher from './LocaleSwitcher';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/chlucgqo_Artboard%201.png";
 
@@ -136,10 +135,6 @@ const MinimalNav = () => {
               </Link>
             );
           })}
-          {/* Locale switcher — fed dynamically by platform_languages */}
-          <div className="ml-1">
-            <LocaleSwitcher dark={true} />
-          </div>
         </div>
 
         {/* Mobile hamburger */}
@@ -174,9 +169,6 @@ const MinimalNav = () => {
               {item.label}
             </Link>
           ))}
-          <div className="pt-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <LocaleSwitcher dark={true} />
-          </div>
         </div>
       )}
     </nav>

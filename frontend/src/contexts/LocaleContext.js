@@ -1,139 +1,226 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { LOCALIZED_SLUGS } from '../corporate/routes/localizedSlugs';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Locale Architecture Directive (2026-05-31): BCP-47 with region.
-// These labels are pure display helpers — the canonical source is the
-// /api/site/locales endpoint backed by platform_languages.
-const LOCALE_LABELS = {
-  'it-IT': 'IT',
-  'en-US': 'EN',
-  'en-GB': 'EN',
-  'fr-FR': 'FR',
-  'de-DE': 'DE',
-  'es-ES': 'ES',
-  'es-MX': 'ES',
-  'ar-AE': 'AR',
-  'pt-BR': 'PT',
-  'pt-PT': 'PT',
-  'zh-CN': 'ZH',
-  'ja-JP': 'JA',
-};
-
-const LOCALE_FULL_NAMES = {
-  'it-IT': 'Italiano',
-  'en-US': 'English (US)',
-  'en-GB': 'English (UK)',
-  'fr-FR': 'Français',
-  'de-DE': 'Deutsch',
-  'es-ES': 'Español',
-  'es-MX': 'Español (MX)',
-  'ar-AE': 'العربية',
-  'pt-BR': 'Português (BR)',
-  'pt-PT': 'Português',
-  'zh-CN': '中文',
-  'ja-JP': '日本語',
-};
-
-// Legacy alias map for migration from old non-region codes.
-const LEGACY_ALIAS = {
-  'it': 'it-IT',
-  'en': 'en-US',
-  'en-us': 'en-US',
-  'en-uk': 'en-GB',
-  'en-gb': 'en-GB',
-  'fr': 'fr-FR',
-  'de': 'de-DE',
-  'es': 'es-ES',
-};
-
-const normalize = (code) => LEGACY_ALIAS[code] || code;
-
-const BOOTSTRAP_DEFAULT = 'it-IT';
-
+/**
+ * LocaleContext — Market-first locale architecture.
+ *
+ * Source of truth is the DB:
+ *   • GET /api/site/locales  → platform_languages (enabled BCP-47 codes)
+ *   • GET /api/markets       → markets catalog enriched with effective_locale, rtl
+ *
+ * NO HARDCODED:
+ *   - no LOCALE_LABELS, no LOCALE_FULL_NAMES, no LEGACY_ALIAS
+ *   - no static market or country arrays
+ *   - default locale and default market come from the API responses
+ */
 const LocaleContext = createContext({
-  locale: BOOTSTRAP_DEFAULT,
+  // Lingua
+  locale: null,
   setLocale: () => {},
   locales: [],
-  localeLabel: 'IT',
-  localeFullName: 'Italiano',
+  localeLabel: '',
+  // Mercato
+  market: null,
+  setMarket: () => {},
+  markets: [],
+  marketGroups: [],
+  defaultMarketCode: null,
+  // Derivati
+  currency: null,
+  direction: 'ltr',
+  countries: [],
+  // Stato
+  ready: false,
 });
 
-export const LocaleProvider = ({ children }) => {
-  const [locale, setLocaleState] = useState(() => {
-    const stored = localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale');
-    // 1) Detect locale from URL path (slug matches localized variant).
-    const path = typeof window !== 'undefined' ? window.location.pathname : '/';
-    for (const [, locales] of Object.entries(LOCALIZED_SLUGS)) {
-      for (const [code, slug] of Object.entries(locales)) {
-        if (slug === path) return normalize(code);
-      }
+// Reverse-lookup: from a path like "/audience" find its canonical key.
+const slugToCanonical = (path) => {
+  for (const [canonical, locales] of Object.entries(LOCALIZED_SLUGS)) {
+    for (const [code, slug] of Object.entries(locales)) {
+      if (slug === path) return { canonical, locale: code };
     }
-    // 2) Honor an explicit prior user choice (normalized).
-    if (stored) return normalize(stored);
-    // 3) Bootstrap default. The actual platform default is loaded async
-    //    from /api/site/locales below.
-    return BOOTSTRAP_DEFAULT;
-  });
-  const [locales, setLocales] = useState([
-    { code: 'it-IT', name: 'Italiano',     flag: 'IT' },
-    { code: 'en-US', name: 'English (US)', flag: 'EN' },
-  ]);
+  }
+  return null;
+};
 
+const readStored = (key) => {
+  try { return localStorage.getItem(key); } catch { return null; }
+};
+const writeStored = (key, value) => {
+  try { localStorage.setItem(key, value); } catch { /* ignore */ }
+};
+
+export const LocaleProvider = ({ children }) => {
+  const [locales, setLocales]   = useState([]);   // from /api/site/locales
+  const [markets, setMarkets]   = useState([]);   // from /api/markets
+  const [groups, setGroups]     = useState([]);
+  const [defaultLocale, setDefaultLocale] = useState(null);
+  const [defaultMarketCode, setDefaultMarketCode] = useState(null);
+  const [marketCode, setMarketCode] = useState(null);
+  const [locale, setLocaleState]   = useState(null);
+  const [ready, setReady] = useState(false);
+
+  // ── Bootstrap: fetch catalogs in parallel, then resolve initial state ──
   useEffect(() => {
-    // Fetch enabled locales from the canonical source (platform_languages).
-    axios.get(`${BACKEND_URL}/api/site/locales`)
-      .then(res => {
-        const enabled = res.data?.enabled || [];
-        const enrichedLocales = res.data?.locales || [];
-        if (enabled.length) {
-          setLocales(enabled.map(code => {
-            const meta = enrichedLocales.find(l => l.code === code) || {};
-            return {
-              code,
-              name: meta.native_name || LOCALE_FULL_NAMES[code] || code,
-              flag: meta.short_label || LOCALE_LABELS[code] || code.split('-')[0].toUpperCase(),
-              rtl: !!meta.rtl,
-            };
-          }));
-        }
-        // If current locale is not in enabled list, fall back to platform default
-        const defaultLocale = res.data?.default;
-        if (defaultLocale && enabled.length && !enabled.includes(locale)) {
-          setLocaleState(defaultLocale);
-        }
-      })
-      .catch(() => {});
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    let cancelled = false;
+    (async () => {
+      try {
+        const [localesRes, marketsRes] = await Promise.all([
+          axios.get(`${BACKEND_URL}/api/site/locales`),
+          axios.get(`${BACKEND_URL}/api/markets`),
+        ]);
+        if (cancelled) return;
 
-  // Sync <html lang> and <html dir> with current locale (BCP-47 + RTL support).
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    document.documentElement.setAttribute('lang', locale);
-    const currentLocaleMeta = locales.find(l => l.code === locale);
-    const isRtl = !!currentLocaleMeta?.rtl;
-    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
-  }, [locale, locales]);
+        const enrichedLocales = localesRes.data?.locales || [];
+        const defLocale = localesRes.data?.default || null;
+        const mkList    = marketsRes.data?.markets || [];
+        const mkGroups  = marketsRes.data?.groups  || [];
+        const defMkCode = marketsRes.data?.default_market || null;
 
-  const setLocale = useCallback((code) => {
-    const norm = normalize(code);
-    setLocaleState(norm);
-    localStorage.setItem('mood-locale', norm);
+        setLocales(enrichedLocales);
+        setMarkets(mkList);
+        setGroups(mkGroups);
+        setDefaultLocale(defLocale);
+        setDefaultMarketCode(defMkCode);
+
+        // Resolve initial market + locale.
+        const initial = resolveInitial({
+          path: window.location.pathname,
+          markets: mkList,
+          enabled: enrichedLocales.map(l => l.code),
+          defaultMarket: defMkCode,
+          defaultLocale: defLocale,
+        });
+        setMarketCode(initial.market);
+        setLocaleState(initial.locale);
+        setReady(true);
+      } catch (err) {
+        // API unreachable: keep ready=false but do not crash UI.
+        if (!cancelled) setReady(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
+  // ── Sync <html lang> and <html dir> when locale or markets change ──
+  useEffect(() => {
+    if (!locale) return;
+    document.documentElement.setAttribute('lang', locale);
+    const meta = locales.find(l => l.code === locale);
+    document.documentElement.setAttribute('dir', meta?.rtl ? 'rtl' : 'ltr');
+  }, [locale, locales]);
+
+  // ── Public setters ──
+  const setMarket = (code) => {
+    const m = markets.find(x => x.code === code);
+    if (!m) return;
+    setMarketCode(code);
+    setLocaleState(m.effective_locale);
+    writeStored('mood-market', code);
+    writeStored('mood-locale', m.effective_locale);
+  };
+
+  const setLocale = (code) => {
+    // Legacy setter (locale-only). Used by Studio Activation language chooser.
+    if (!locales.find(l => l.code === code)) return;
+    setLocaleState(code);
+    writeStored('mood-locale', code);
+  };
+
+  // ── Derived values ──
+  const market = useMemo(
+    () => markets.find(m => m.code === marketCode) || null,
+    [markets, marketCode],
+  );
+
+  const localeMeta = useMemo(
+    () => locales.find(l => l.code === locale) || null,
+    [locales, locale],
+  );
+
+  const ctxValue = useMemo(() => ({
+    // Lingua
+    locale,
+    setLocale,
+    locales,
+    localeLabel: localeMeta?.short_label || localeMeta?.code || '',
+    // Mercato
+    market,
+    setMarket,
+    markets,
+    marketGroups: groups,
+    defaultMarketCode,
+    // Derivati
+    currency:  market?.currency  || null,
+    direction: localeMeta?.rtl ? 'rtl' : 'ltr',
+    countries: market?.countries || [],
+    // Stato
+    ready,
+  }), [locale, locales, localeMeta, market, markets, groups, defaultMarketCode, ready]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <LocaleContext.Provider value={{
-      locale,
-      setLocale,
-      locales,
-      localeLabel: LOCALE_LABELS[locale] || locale.split('-')[0].toUpperCase(),
-      localeFullName: LOCALE_FULL_NAMES[locale] || locale,
-    }}>
+    <LocaleContext.Provider value={ctxValue}>
       {children}
     </LocaleContext.Provider>
   );
+};
+
+/**
+ * Resolve which market to bootstrap with at first paint.
+ * Strategy (in order):
+ *   1) URL slug already implies a locale → pick a market whose primary/effective_locale matches.
+ *   2) localStorage mood-market → use it if still valid.
+ *   3) localStorage mood-locale → pick first market with that primary_locale.
+ *   4) navigator.language base-match → first market whose primary_locale begins with that base.
+ *   5) defaultMarket from API.
+ */
+const resolveInitial = ({ path, markets, enabled, defaultMarket, defaultLocale }) => {
+  const findMarketByLocale = (loc) =>
+    markets.find(m => m.primary_locale === loc) ||
+    markets.find(m => m.effective_locale === loc);
+
+  // 1) URL slug
+  const fromSlug = slugToCanonical(path);
+  if (fromSlug) {
+    const m = findMarketByLocale(fromSlug.locale);
+    if (m) return { market: m.code, locale: m.effective_locale };
+  }
+
+  // 2) localStorage mood-market
+  const storedMarket = readStored('mood-market');
+  if (storedMarket) {
+    const m = markets.find(x => x.code === storedMarket);
+    if (m) return { market: m.code, locale: m.effective_locale };
+  }
+
+  // 3) localStorage mood-locale
+  const storedLocale = readStored('mood-locale') || readStored('mood_locale');
+  if (storedLocale) {
+    const m = findMarketByLocale(storedLocale);
+    if (m) return { market: m.code, locale: m.effective_locale };
+    if (enabled.includes(storedLocale)) {
+      // Locale enabled but no matching market — pick default market, keep locale.
+      const fb = markets.find(x => x.code === defaultMarket) || markets[0];
+      return { market: fb?.code || null, locale: storedLocale };
+    }
+  }
+
+  // 4) navigator.language base-match
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    const base = navigator.language.split('-')[0];
+    const m = markets.find(x => x.primary_locale.split('-')[0] === base);
+    if (m) return { market: m.code, locale: m.effective_locale };
+  }
+
+  // 5) API default
+  const fb = markets.find(x => x.code === defaultMarket) || markets[0];
+  return {
+    market: fb?.code || null,
+    locale: fb?.effective_locale || defaultLocale || null,
+  };
 };
 
 export const useLocale = () => useContext(LocaleContext);
