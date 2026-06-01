@@ -2164,13 +2164,19 @@
         },
         "eyebrow": "Studio Pulse™ · Ritmo Progettuale",
         "summary_template": "{active} Design Journey™ attive · {voices} voci ricevute oggi",
-        "signature": "Diamo forma a spazi belli."
+        "signature": "Diamo forma a spazi belli.",
+        "eyebrow_v2": "Dashboard operativa",
+        "summary_template_v2": "{leads} Lead · {prospects} Prospect · {journeys} Journey attive"
       },
       "kpi": {
         "active_journeys": "Design Journey™ attivi",
         "dossier_in_progress": "Dossier in corso",
         "awaiting_feedback": "In attesa di voce",
-        "deliveries_week": "Consegne della settimana"
+        "deliveries_week": "Consegne della settimana",
+        "leads": "Lead",
+        "prospects": "Prospect",
+        "customers": "Clienti",
+        "active_journeys_v2": "Journey attive"
       },
       "card": {
         "status": {
@@ -2193,13 +2199,19 @@
         "daily_inspiration": "Ispirazione del giorno",
         "activity_empty": "Nessuna attività recente.",
         "milestones_empty": "In attesa del prossimo progetto.",
-        "inspiration_empty": "Nessuna citazione curata ancora."
+        "inspiration_empty": "Nessuna citazione curata ancora.",
+        "recent_activity_v2": "Attività recenti",
+        "upcoming_milestones_v2": "Prossime scadenze",
+        "activity_empty_v2": "Nessuna attività registrata. Le attività appariranno qui quando inizierai a gestire relazioni e progetti.",
+        "milestones_empty_v2": "Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate."
       },
       "projects": {
         "title": "Design Journey™ attive",
-        "see_all": "Vedi tutti",
+        "see_all": "Vedi tutte",
         "empty": "Il tuo atelier è in silenzio. Il prossimo journey aspetta di iniziare.",
-        "empty_cta": "Inizia un nuovo journey"
+        "empty_cta": "Inizia un nuovo journey",
+        "title_v2": "Journey attive",
+        "empty_v2": "Nessuna Journey attiva. Le Journey appariranno qui quando convertirai un Prospect."
       },
       "time": {
         "just_now": "adesso",

@@ -207,9 +207,9 @@ const RelationshipLiveTimeline = ({ locale = 'it' }) => {
     <section className="rl-timeline" data-testid="relationship-live-timeline">
       <header className="rl-timeline__head">
         <div>
-          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'Vita relazionale' : 'Living relationships'}</p>
+          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'Attività relazioni' : 'Relationship activity'}</p>
           <h3 className="rl-timeline__title">
-            {locale === 'it' ? 'Memoria in evoluzione' : 'Memory in evolution'}
+            {locale === 'it' ? 'Timeline relazioni' : 'Relationships timeline'}
           </h3>
         </div>
         <span className="rl-timeline__pulse" aria-hidden="true" title={polledAt || ''}>

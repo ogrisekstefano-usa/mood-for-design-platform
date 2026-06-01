@@ -1,0 +1,38 @@
+{
+  "summary": "ITER181.A Dashboard Refocus retest after fixes — ALL CRITERIA PASS. Banned phrase 'Memoria in evoluzione' (and all 7 banned tokens) NO LONGER present in dashboard body.innerText or page.content(). RelationshipLiveTimeline now renders new copy: eyebrow='Attività relazioni', title='Timeline relazioni' (it-IT). Previously passing acceptance criteria re-verified intact: 5-step activation foundation [identity, blueprint, team, market, workspace] with no legacy keys; 5 Recommended Actions cards (register-lead, qualify-prospect, open-journey, upload-materials, editorial-calendar) all present with stable testids; topbar smart CTA shows 'Nuova Relazione' (prospects=0) and topbar-new-journey-cta correctly absent; new KPIs (kpi-leads/kpi-prospects/kpi-customers/kpi-active-journeys) all present; legacy KPIs (kpi-active/chapters/voices/revisions) all absent; FirstMovesCards and InspirationColumn not rendered. i18n keys requested (hero.eyebrow_v2, summary_template_v2, kpi.{leads,prospects,customers,active_journeys_v2}, projects.{title_v2,empty_v2,see_all}, col.{recent_activity_v2,upcoming_milestones_v2,activity_empty_v2,milestones_empty_v2}) are all seeded in it-IT.json and resolve correctly (UI shows resolved Italian strings, no 'missing string key' warnings for these dashboard keys).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/login page",
+        "issues": [
+          "Console still floods with ~13 missing i18n keys for auth.login.* and auth.access.* on the login screen (it-IT). Out of ITER181.A scope but worth tracking — keys: auth.login.{eyebrow,email_label,email_placeholder,password_label,password_placeholder,cta,hero_image,brand_logo}, auth.access.{quote,quote_author,need_help,support,support_email}. Fallback text renders OK but i18n catalogue lags."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter181a_dashboard_refocus.py",
+    "/app/test_reports/pytest/iter181a_results.xml"
+  ],
+  "action_items": [
+    "(Optional, out of scope) Seed auth.login.* and auth.access.* i18n keys for it-IT to silence remaining console warnings on /login."
+  ],
+  "critical_code_review_comments": [
+    "RelationshipLiveTimeline.jsx:210-213 — new copy is hard-coded as Italian literal in `locale === 'it' ? ... : ...`. Consider moving these to the i18n catalogue (atelier.dashboard.timeline.{eyebrow,title}) for consistency with the rest of dashboard which uses the v2 string-key path.",
+    "Dashboard refocus structure looks clean: KPIs, recommended actions, activation foundation, and smart-CTA topbar all behave per ITER181.A spec."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (not re-run; no backend changes)", "frontend": "100% (all ITER181.A acceptance criteria PASS)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (verified working)",
+  "seed_data_creation": "None — used existing seed tenant (business_counts: leads=0, prospects=0, customers=0, active_journeys=0).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "ITER181.A Dashboard Refocus is complete and regression-free. To exercise the smart-CTA prospect>0 branch end-to-end, seed a prospect account first (POST /api/accounts {lifecycle_stage:'prospect'}) then assert data-testid='topbar-new-journey-cta' is present with label 'Nuovo Design Journey™' AND data-testid='topbar-new-relationship-cta' is absent. Login-screen i18n keys (auth.login.*, auth.access.*) for it-IT are still missing — outside ITER181.A scope but ready to be filed as a separate ticket.",
+  "rca of the issue": "Original ITER181.A leak was a hard-coded Italian literal 'Memoria in evoluzione' in RelationshipLiveTimeline.jsx:212 inside a locale ternary. Main agent replaced the literal with 'Timeline relazioni' (title) and 'Attività relazioni' (eyebrow) — verified rendering correctly. All 7 banned tokens now absent from dashboard surface."
+}
