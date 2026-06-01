@@ -638,6 +638,290 @@
  * Devono apparire come parte integrante della dashboard, non come widget.
  * ═══════════════════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════════════════════
+ * ITER181.A.2 · WorkspaceActionHub™ (unifica setup + quick actions)
+ *
+ * Container singolo full-width, due modi:
+ *   - setup: header con bar + body 70/30 (checklist | actions)
+ *   - ready: header banner + actions rail full-width
+ * Ereditia 100% il Design System del dashboard. Zero nuovi token.
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+.atd-hub {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  overflow: hidden;
+}
+
+/* Header (setup) — eyebrow + counter + progress bar */
+.atd-hub__header {
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--bp-border);
+}
+.atd-hub__header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.atd-hub__eyebrow {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+  margin: 0;
+}
+.atd-hub__counter {
+  font-family: var(--atelier-sans);
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--bp-text-secondary);
+  margin: 0;
+}
+.atd-hub__bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bp-border);
+  overflow: hidden;
+}
+.atd-hub__bar-fill {
+  height: 100%;
+  background: var(--atelier-cyan);
+  transition: width 320ms var(--bp-ease-soft, ease);
+}
+
+/* Header (ready) — banner */
+.atd-hub__ready {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--bp-border);
+}
+.atd-hub__ready-icon {
+  color: var(--atelier-cyan);
+  flex-shrink: 0;
+}
+.atd-hub__ready-text {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+/* Body — setup: 70/30 grid */
+.atd-hub__body { padding: 0; }
+.atd-hub__body--setup {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  align-items: stretch;
+}
+.atd-hub__col {
+  padding: 16px 24px 18px;
+}
+.atd-hub__col--actions {
+  border-left: 1px solid var(--bp-border);
+  background: rgba(255, 255, 255, 0.015);
+}
+.atd-hub__col-eyebrow {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  margin: 0 0 12px;
+}
+
+/* Checklist (inside setup body) */
+.atd-hub__list { list-style: none; margin: 0; padding: 0; }
+.atd-hub__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--bp-border);
+}
+.atd-hub__item:first-child { border-top: 0; padding-top: 4px; }
+.atd-hub__item[data-step-done="true"] { opacity: 0.58; }
+.atd-hub__item-icon {
+  flex-shrink: 0;
+  padding-top: 2px;
+  color: var(--bp-text-faint);
+}
+.atd-hub__item[data-step-done="true"] .atd-hub__item-icon { color: var(--atelier-cyan); }
+.atd-hub__item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.atd-hub__item-title {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bp-text-headline);
+  letter-spacing: 0.01em;
+  margin: 0 0 2px;
+}
+.atd-hub__item[data-step-done="true"] .atd-hub__item-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--bp-text-faint);
+}
+.atd-hub__item-ordinal { color: var(--bp-text-faint); margin-right: 6px; font-weight: 400; }
+.atd-hub__item-desc {
+  font-family: var(--atelier-sans);
+  font-size: 11.5px;
+  color: var(--bp-text-secondary);
+  line-height: 1.45;
+}
+.atd-hub__item-missing {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  color: var(--bp-warning, #D6A756);
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+.atd-hub__item-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 11px;
+  background: transparent;
+  color: var(--atelier-cyan);
+  border: 1px solid var(--atelier-cyan-line);
+  border-radius: var(--bp-radius-pill);
+  cursor: pointer;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  transition: all var(--bp-dur-quick, 160ms) var(--bp-ease-soft, ease);
+}
+.atd-hub__item-cta:hover {
+  background: rgba(0, 201, 179, 0.06);
+  border-color: var(--atelier-cyan);
+}
+
+/* Quick Actions list (setup mode, 30% column — vertical rows) */
+.atd-hub__actions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.atd-hub__action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bp-radius-md);
+  cursor: pointer;
+  text-align: left;
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  transition: background var(--bp-dur-quick, 160ms) ease,
+              border-color var(--bp-dur-quick, 160ms) ease;
+}
+.atd-hub__action-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--bp-border);
+}
+.atd-hub__action-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 201, 179, 0.08);
+  border: 1px solid var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.atd-hub__action-label {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--bp-text-headline);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.atd-hub__action-arrow { color: var(--atelier-cyan); flex-shrink: 0; }
+
+/* Quick Actions rail (ready mode, full-width 5-up cards) */
+.atd-hub__body--ready { padding: 18px 24px 20px; }
+.atd-hub__actions-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.atd-hub__action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-md);
+  padding: 14px;
+  cursor: pointer;
+  min-height: 90px;
+  max-height: 110px;
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  transition: border-color var(--bp-dur-base, 220ms) var(--bp-ease-cinema, ease),
+              transform var(--bp-dur-base, 220ms) var(--bp-ease-cinema, ease);
+}
+.atd-hub__action-card:hover {
+  border-color: var(--atelier-cyan-line);
+  transform: translateY(-1px);
+}
+.atd-hub__action-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.atd-hub__action-card .atd-hub__action-label {
+  font-size: 12.5px;
+}
+.atd-hub__action-desc {
+  font-size: 11px;
+  color: var(--bp-text-secondary);
+  line-height: 1.35;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .atd-hub__body--setup { grid-template-columns: 1fr; }
+  .atd-hub__col--actions {
+    border-left: 0;
+    border-top: 1px solid var(--bp-border);
+  }
+  .atd-hub__actions-rail { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
+  .atd-hub__item { flex-wrap: wrap; }
+  .atd-hub__item-cta { margin-left: 29px; }
+  .atd-hub__actions-rail { grid-template-columns: 1fr; }
+}
+
 /* Section wrapper inherits horizontal rhythm di .atd-projects */
 .atd-section {
   padding: 0 clamp(40px, 5vw, 72px);

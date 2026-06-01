@@ -24,8 +24,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
-import { ActivationMeter, WorkspaceActivationChecklist } from '../../components/activation/ActivationMeter';
-import RecommendedActions from '../../components/activation/RecommendedActions';
+import WorkspaceActionHub from '../../components/activation/WorkspaceActionHub';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import './atelier-dashboard.css';
 
@@ -333,7 +332,7 @@ const AtelierDashboardPage = () => {
     <div className="atd-canvas" data-testid="atelier-dashboard">
       <Hero config={config} biz={biz} userName={userName} />
 
-      <ActivationFoundationSection />
+      <WorkspaceActionHub />
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
@@ -374,34 +373,8 @@ const AtelierDashboardPage = () => {
         <PendingBookingsPanel locale="it" />
         <RelationshipLiveTimeline locale="it" />
       </section>
-
-      <QuickActionsSection />
     </div>
   );
 };
-
-// ── Activation Foundation — single full-width card ──────────────
-function ActivationFoundationSection() {
-  const { data } = useActivationFoundation();
-  if (!data || data.activated) return null;
-  return (
-    <section className="atd-section" data-testid="dashboard-activation-section">
-      <div className="atd-activation" data-testid="dashboard-activation-card">
-        <ActivationMeter />
-        <WorkspaceActivationChecklist />
-      </div>
-    </section>
-  );
-}
-
-// ── Quick Actions — compact rail (ex Recommended Actions) ───────
-function QuickActionsSection() {
-  return (
-    <section className="atd-section atd-section--quick-actions" data-testid="dashboard-recommended-actions">
-      <p className="atd-section__eyebrow">Quick Actions</p>
-      <RecommendedActions />
-    </section>
-  );
-}
 
 export default AtelierDashboardPage;
