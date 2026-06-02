@@ -10648,3 +10648,47 @@ Verified designers: 0 → **10**.
 - Onboarding Arrital, Margraf, Nemo, Samoa, Riva1920
 - Refactoring App.js (>870 righe) e ProjectDetailPage.jsx (>1350 righe)
 - Gmail/Outlook OAuth per Mail Phase 2
+
+---
+
+## ITER201 · REVIEW WORKSPACE™ (2026-06-02)
+
+### 🎯 Human-in-the-Loop Validation Layer
+
+Validation Dashboard trasformata in workspace operativo. ARBI completamente
+revisionabile e pubblicabile dalla UI — zero SQL, zero intervento dev.
+
+### Acceptance criteria · 10/10 ✅
+1. needs_review cliccabile · 2. Drawer Sheet 40% · 3-6. Approve/Merge/Reject/Promote persistono
+7. Audit refresh automatico · 8. Publish Gate operativo · 9. Zero SQL · 10. ARBI revisionato end-to-end
+
+### Implementato
+**Backend** (`routers/extraction_jobs.py`):
+- `GET /catalog-sets/{id}/review-summary` (totals + breakdown sort-by-impact)
+- `GET /catalog-sets/{id}/entities/{eid}/detail` (drawer payload completo)
+- `POST /catalog-sets/{id}/entities/merge-aliases` (multi-source → target)
+- `POST /catalog-sets/{id}/entities/bulk-action` (approve/reject/promote)
+- `GET /catalog-sets/{id}/publish-gate` (criterion c readiness check)
+- `POST /catalog-sets/{id}/publish` aggiornato a criterion (c)
+
+**Frontend** (`pages/inspirations/ReviewWorkspace.jsx` nuovo + integrato in `CatalogSetWorkspacePage.jsx`):
+- 9 sezioni: Queue Header / Entity Cards / Review Drawer (Sheet) / Actions / Bulk Bar / Collection-mode / Designer-mode / Audit refresh / Publish Gate
+- Auto-refresh audit dopo ogni azione (no extraction re-run)
+- Filter pills + multi-select + sticky bulk bar
+- Designer/Collection specialized guidance dentro drawer
+
+### Publish Gate (criterion c)
+- Collezioni 100% · Designer 100% · Prodotti linked ≥80% · Graph ≥90
+- Finiture / materiali / prodotti in coda = non-critical review (non bloccano)
+
+### Test live eseguito
+Bulk approve 16 collezioni → Gate flip 75% → 100% → Publish → status='published'. Tutto via UI/API, zero SQL.
+
+### Report
+`/app/memory/ITER201_REVIEW_WORKSPACE_REPORT.md`
+
+### Multi-brand ready
+Zero modifiche di codice per onboardare Arrital/Margraf/Nemo/Samoa/Riva1920. Brand-agnostic.
+
+### Strict lock rispettato
+Nessuna feature Academy / Magazine / Marketboard / Moodboard.

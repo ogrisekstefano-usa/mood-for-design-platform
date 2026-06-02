@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import os
 from datetime import datetime, timezone, timedelta
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -479,4 +479,381 @@ def smoke_test(ctx=Depends(get_tenant_context)):
         "ok": overall, "tenant_id": tid,
         "checked_at": runner._now(),
         "checks": checks,
+    }
+
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  ITER201 · REVIEW WORKSPACE™ — Human-in-the-Loop Validation Layer
+# ══════════════════════════════════════════════════════════════════════
+
+# Critical entity types that gate publishing (Founder Lock from PRD).
+_CRITICAL_TYPES = {"collection", "designer_registered"}
+_ALL_REVIEW_TYPES = ["collection", "demoted_collection",
+                      "designer", "designer_registered", "demoted_designer",
+                      "material", "finish", "demoted_finish", "product"]
+
+
+def _readiness_for_type(c, set_id: str, etype: str) -> Dict[str, int]:
+    rows = (c.table("brand_detected_entities").select("id,status")
+            .eq("catalog_set_id", set_id).eq("entity_type", etype)
+            .execute().data or [])
+    total = len(rows)
+    validated = sum(1 for r in rows if r.get("status") == "validated")
+    return {"total": total, "validated": validated,
+            "pct": round(100.0 * validated / total, 2) if total else 100.0}
+
+
+@router.get("/catalog-sets/{set_id}/review-summary")
+def review_summary(set_id: str, ctx=Depends(get_tenant_context)):
+    """Top-of-page Review Queue header for ITER201.
+
+    Returns:
+      - totals: all reviewable entities, auto_validated, needs_review, blocked
+      - breakdown[type]: total, needs_review, validated, pct
+      - sort_order: explicit type priority (collection > designer > material > product > finish)
+    """
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+
+    rows = (c.table("brand_detected_entities")
+            .select("id,entity_type,status,confidence_score")
+            .eq("catalog_set_id", set_id)
+            .in_("entity_type", _ALL_REVIEW_TYPES)
+            .execute().data or [])
+
+    by_type: Dict[str, Dict[str, int]] = {}
+    totals = {"total": 0, "validated": 0, "needs_review": 0,
+              "rejected": 0, "auto_validated": 0}
+    for r in rows:
+        et = r["entity_type"]
+        st = r.get("status") or "detected"
+        d = by_type.setdefault(et, {"total": 0, "needs_review": 0,
+                                      "validated": 0, "rejected": 0,
+                                      "auto_validated": 0})
+        d["total"] += 1
+        totals["total"] += 1
+        if st == "validated":
+            d["validated"] += 1
+            totals["validated"] += 1
+        elif st == "needs_review":
+            d["needs_review"] += 1
+            totals["needs_review"] += 1
+        elif st == "rejected":
+            d["rejected"] += 1
+            totals["rejected"] += 1
+        elif st == "auto_merged":
+            d["auto_validated"] += 1
+            totals["auto_validated"] += 1
+        # Demoted types count as 'blocked' for queue purposes
+        if et.startswith("demoted_"):
+            d["rejected"] = d.get("rejected", 0) + 0  # already counted via status
+    for et, d in by_type.items():
+        d["pct_validated"] = round(100.0 * d["validated"] / d["total"], 2) if d["total"] else 0
+
+    # Impact ordering — collections/designers first
+    sort_order = ["collection", "designer_registered", "designer",
+                  "material", "product",
+                  "demoted_collection", "demoted_designer",
+                  "finish", "demoted_finish"]
+    return {
+        "set_id": set_id,
+        "totals": totals,
+        "breakdown": by_type,
+        "sort_order": sort_order,
+    }
+
+
+@router.get("/catalog-sets/{set_id}/entities/{entity_id}/detail")
+def entity_detail(set_id: str, entity_id: str,
+                   ctx=Depends(get_tenant_context)):
+    """Drawer payload: entity info, aliases, suggested canonical, graph impact."""
+    c = db(); tid = ctx["tenant_id"]
+    cset = _require_set_ownership(c, tid, set_id)
+    rows = (c.table("brand_detected_entities").select("*")
+            .eq("id", entity_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Entità non trovata")
+    e = rows[0]
+
+    # Source pages (look up via source_page_ids if present)
+    page_ids = e.get("source_page_ids") or []
+    pages: List[Dict[str, Any]] = []
+    if page_ids:
+        try:
+            pages = (c.table("product_pages").select("id,page_number,source_document_id")
+                     .in_("id", page_ids[:50]).execute().data or [])
+        except Exception:
+            pages = []
+    doc_ids = e.get("source_document_ids") or []
+    docs: List[Dict[str, Any]] = []
+    if doc_ids:
+        try:
+            docs = (c.table("brand_catalog_documents").select("source_document_id,display_name")
+                    .in_("source_document_id", doc_ids[:50])
+                    .eq("catalog_set_id", set_id).execute().data or [])
+        except Exception:
+            docs = []
+
+    # Graph impact — count outgoing/incoming edges referencing this entity
+    impact = {"products_linked": 0, "materials_linked": 0,
+              "collections_linked": 0, "finishes_linked": 0}
+    try:
+        # Edges where this entity is the source OR target
+        es = (c.table("knowledge_graph_edges")
+              .select("source_type,source_id,target_type,target_id,edge_type")
+              .eq("tenant_id", tid)
+              .contains("metadata_json", {"catalog_set_id": set_id})
+              .or_(f"source_id.eq.{entity_id},target_id.eq.{entity_id},"
+                   f"source_id.eq.{e.get('canonical_ref_id') or entity_id},"
+                   f"target_id.eq.{e.get('canonical_ref_id') or entity_id}")
+              .limit(500).execute().data or [])
+        for x in es:
+            other_type = x["target_type"] if x["source_id"] in (entity_id, e.get("canonical_ref_id")) else x["source_type"]
+            if other_type == "product":   impact["products_linked"] += 1
+            if other_type == "material":  impact["materials_linked"] += 1
+            if other_type == "collection": impact["collections_linked"] += 1
+            if other_type == "finish":    impact["finishes_linked"] += 1
+    except Exception as ex:
+        logger.warning(f"graph impact lookup: {ex}")
+
+    # Suggested canonical — if entity has canonical_ref_id, fetch the target
+    suggested = None
+    if e.get("canonical_ref_id") and e.get("canonical_ref_table") == "collections_canonical":
+        try:
+            sc = (c.table("collections_canonical").select("id,display_name,collection_key")
+                  .eq("id", e["canonical_ref_id"]).limit(1).execute().data or [])
+            if sc:
+                suggested = {"kind": "collection_canonical", **sc[0],
+                              "confidence": e.get("confidence_score")}
+        except Exception:
+            pass
+    elif e.get("entity_type") == "designer":
+        # Suggest registry match
+        from services import brand_designer_registry as bdr
+        brand_id = cset.get("brand_id")
+        # Resolve brand_slug via brands table → simplified using bdr helper
+        entries = bdr.get_registry_for_brand_id(c, brand_id)
+        slug = None
+        if entries:
+            # Find by name normalisation
+            for ent in entries:
+                if bdr._normalize(ent["name"]) == bdr._normalize(e.get("display_name") or ""):
+                    suggested = {"kind": "designer_registry", "name": ent["name"],
+                                  "confidence": 1.0,
+                                  "verified_by": ent.get("verified_by")}
+                    break
+
+    return {
+        "entity": e,
+        "documents": docs,
+        "pages": pages[:20],
+        "graph_impact": impact,
+        "suggested_canonical": suggested,
+    }
+
+
+class MergeAliasesBody(BaseModel):
+    source_entity_ids: List[str]  # entities to absorb
+    target_entity_id: str  # canonical winner (keeps its identity)
+
+
+@router.post("/catalog-sets/{set_id}/entities/merge-aliases")
+def merge_aliases(set_id: str, body: MergeAliasesBody,
+                   ctx=Depends(get_tenant_context)):
+    """Merge multiple source entities INTO a target as aliases.
+    The target gains the source display_names as aliases and absorbs
+    mention counts. Sources become status=merged_into."""
+    if not body.source_entity_ids:
+        raise HTTPException(400, "source_entity_ids vuoto")
+    if body.target_entity_id in body.source_entity_ids:
+        raise HTTPException(400, "Target non può essere fra le source")
+
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+
+    tgt_rows = (c.table("brand_detected_entities").select("*")
+                .eq("id", body.target_entity_id)
+                .eq("catalog_set_id", set_id).limit(1).execute().data or [])
+    if not tgt_rows:
+        raise HTTPException(404, "Target non trovato")
+    tgt = tgt_rows[0]
+
+    src_rows = (c.table("brand_detected_entities").select("*")
+                .in_("id", body.source_entity_ids)
+                .eq("catalog_set_id", set_id).execute().data or [])
+    if not src_rows:
+        raise HTTPException(404, "Source non trovate")
+
+    new_aliases = set(tgt.get("aliases") or [])
+    new_docs = set(tgt.get("source_document_ids") or [])
+    new_mentions = tgt.get("mention_count") or 0
+    max_conf = tgt.get("confidence_score") or 0
+    for s in src_rows:
+        new_aliases.add(s["display_name"])
+        for a in (s.get("aliases") or []):
+            new_aliases.add(a)
+        for d in (s.get("source_document_ids") or []):
+            new_docs.add(d)
+        new_mentions += s.get("mention_count") or 0
+        max_conf = max(max_conf, s.get("confidence_score") or 0)
+
+    new_conf = round(min(0.99, max_conf + 0.05 * len(src_rows)), 3)
+    c.table("brand_detected_entities").update({
+        "aliases": sorted(new_aliases),
+        "source_document_ids": sorted(new_docs),
+        "mention_count": new_mentions,
+        "confidence_score": new_conf,
+        "status": "validated",
+        "reviewed_by": ctx.get("profile_id"),
+        "reviewed_at": runner._now(),
+        "updated_at": runner._now(),
+    }).eq("id", body.target_entity_id).execute()
+
+    for s in src_rows:
+        c.table("brand_detected_entities").update({
+            "status": "merged_into",
+            "merged_into_id": body.target_entity_id,
+            "reviewed_by": ctx.get("profile_id"),
+            "reviewed_at": runner._now(),
+            "updated_at": runner._now(),
+        }).eq("id", s["id"]).execute()
+    return {"ok": True, "target": body.target_entity_id,
+            "absorbed_count": len(src_rows),
+            "new_alias_count": len(new_aliases),
+            "new_mention_count": new_mentions}
+
+
+class BulkActionBody(BaseModel):
+    entity_ids: List[str]
+    action: str  # 'approve' | 'reject' | 'promote'
+
+
+@router.post("/catalog-sets/{set_id}/entities/bulk-action")
+def bulk_action(set_id: str, body: BulkActionBody,
+                 ctx=Depends(get_tenant_context)):
+    """Apply approve / reject / promote to many entities at once."""
+    if body.action not in ("approve", "reject", "promote"):
+        raise HTTPException(400, f"Azione non valida: {body.action}")
+    if not body.entity_ids:
+        raise HTTPException(400, "Nessuna entità selezionata")
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+
+    rows = (c.table("brand_detected_entities").select("id,entity_type,attributes")
+            .in_("id", body.entity_ids).eq("catalog_set_id", set_id)
+            .execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Nessuna entità trovata")
+
+    applied = 0; errors: List[Dict[str, Any]] = []
+    for e in rows:
+        try:
+            et = e["entity_type"]
+            attrs = dict(e.get("attributes") or {})
+            attrs[f"{body.action}d_at"] = runner._now()
+            attrs[f"{body.action}d_by"] = ctx.get("profile_id")
+            update: Dict[str, Any] = {
+                "attributes": attrs,
+                "reviewed_by": ctx.get("profile_id"),
+                "reviewed_at": runner._now(),
+                "updated_at": runner._now(),
+            }
+            if body.action == "approve":
+                target_type = et.replace("demoted_", "", 1) if et.startswith("demoted_") else et
+                if target_type == "designer":
+                    target_type = "designer_registered"
+                update["entity_type"] = target_type
+                update["status"] = "validated"
+            elif body.action == "reject":
+                if et.startswith("demoted_"):
+                    target_type = et
+                else:
+                    base = et.replace("_registered", "")
+                    target_type = f"demoted_{base}"
+                update["entity_type"] = target_type
+                update["status"] = "rejected"
+            elif body.action == "promote":
+                base = et.replace("demoted_", "", 1) if et.startswith("demoted_") else et
+                update["entity_type"] = (
+                    "designer_registered" if base == "designer" else base
+                )
+                update["status"] = "validated"
+                if base == "finish":
+                    attrs["is_canonical_anchor"] = True
+                    attrs["self_canonical"] = True
+                    attrs["canonical_label"] = e.get("display_name") if isinstance(e, dict) else None
+                    update["attributes"] = attrs
+            c.table("brand_detected_entities").update(update) \
+                .eq("id", e["id"]).execute()
+            applied += 1
+        except Exception as ex:
+            errors.append({"id": e["id"], "error": str(ex)})
+    return {"ok": True, "applied": applied,
+            "total": len(body.entity_ids),
+            "errors": errors}
+
+
+@router.get("/catalog-sets/{set_id}/publish-gate")
+def publish_gate(set_id: str, ctx=Depends(get_tenant_context)):
+    """ITER201 · Publish Gate readiness check (criterion (c)):
+      • Collections (canonical-promoted): 100% validated
+      • Designers (registered):          100% validated
+      • Products linked to collection:   ≥ 80%
+      • Graph completeness:              ≥ 90
+    Returns per-criterion status + overall ready_to_publish.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+
+    col_r = _readiness_for_type(c, set_id, "collection")
+    des_r = _readiness_for_type(c, set_id, "designer_registered")
+    mat_r = _readiness_for_type(c, set_id, "material")
+    prod_r = _readiness_for_type(c, set_id, "product")
+
+    # Linked-product %
+    audit = resolver.compute_knowledge_audit(set_id)
+    total_p = audit.get("metrics", {}).get("products_total", 0) or 0
+    linked = audit.get("metrics", {}).get("products_linked_to_collection", 0) or 0
+    linked_pct = round(100.0 * linked / total_p, 2) if total_p else 0.0
+    graph_pct = audit.get("graph_completeness", 0) or 0
+
+    criteria = [
+        {"key": "collections_validated",
+         "label": "Collezioni validate",
+         "value_pct": col_r["pct"], "threshold": 100,
+         "ok": col_r["pct"] >= 100,
+         "count": f"{col_r['validated']}/{col_r['total']}"},
+        {"key": "designers_validated",
+         "label": "Designer verificati",
+         "value_pct": des_r["pct"], "threshold": 100,
+         "ok": des_r["pct"] >= 100,
+         "count": f"{des_r['validated']}/{des_r['total']}"},
+        {"key": "products_linked",
+         "label": "Prodotti linkati a collezione",
+         "value_pct": linked_pct, "threshold": 80,
+         "ok": linked_pct >= 80,
+         "count": f"{linked}/{total_p}"},
+        {"key": "graph_completeness",
+         "label": "Knowledge Graph completo",
+         "value_pct": graph_pct, "threshold": 90,
+         "ok": graph_pct >= 90,
+         "count": f"{graph_pct}/100"},
+    ]
+    ready_to_publish = all(x["ok"] for x in criteria)
+    overall_pct = round(sum(min(100, x["value_pct"]) for x in criteria) / len(criteria), 2)
+
+    # Non-critical: finishes/materials in needs_review (info-only)
+    nc_finish = _readiness_for_type(c, set_id, "finish")
+    return {
+        "ready_to_publish": ready_to_publish,
+        "overall_readiness_pct": overall_pct,
+        "criteria": criteria,
+        "non_critical": {
+            "finishes": nc_finish,
+            "materials": mat_r,
+            "products": prod_r,
+        },
+        "blockers": [c["label"] for c in criteria if not c["ok"]],
     }

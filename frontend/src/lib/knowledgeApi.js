@@ -58,7 +58,7 @@ export const mergeEntity = (setId, entityId, targetId) =>
 export const publishSet = (setId) =>
   api.post(`${BASE}/catalog-sets/${setId}/publish`);
 
-// ─── ITER199 / ITER200 · Resolution + Audit + Review Actions ────────
+// ─── ITER199 / ITER200 / ITER201 · Resolution + Review Workspace ────
 export const resolveEntities = (setId) =>
   api.post(`${BASE}/catalog-sets/${setId}/resolve-entities`);
 export const knowledgeAudit = (setId) =>
@@ -71,6 +71,17 @@ export const rejectEntity = (setId, entityId) =>
   api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/reject`);
 export const promoteEntityToCanonical = (setId, entityId) =>
   api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/promote-canonical`);
+// ITER201 · Review Workspace™
+export const reviewSummary = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/review-summary`);
+export const entityDetail = (setId, entityId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities/${entityId}/detail`);
+export const mergeAliases = (setId, payload) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/merge-aliases`, payload);
+export const bulkAction = (setId, payload) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/bulk-action`, payload);
+export const publishGate = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/publish-gate`);
 
 export default {
   listBrands, getBrand, createBrand,
@@ -83,4 +94,5 @@ export default {
   resolveEntities, knowledgeAudit,
   listNeedsReview, approveEntity, rejectEntity,
   promoteEntityToCanonical,
+  reviewSummary, entityDetail, mergeAliases, bulkAction, publishGate,
 };

@@ -1283,18 +1283,42 @@ def merge_entity(set_id: str, entity_id: str, body: EntityMergeBody,
 
 @router.post("/catalog-sets/{set_id}/publish")
 def publish_set(set_id: str, ctx=Depends(get_tenant_context)):
-    """Mark the Catalog Set as published once validation is complete."""
+    """Mark the Catalog Set as published once the ITER201 Publish Gate
+    is satisfied (criterion (c)): collections 100% + designers 100%
+    + products linked ≥ 80% + graph ≥ 90. Non-critical entities
+    (finishes/materials/products in review) do NOT block publish."""
     c = db()
     tid = ctx["tenant_id"]
     cset = _require_set(c, tid, set_id)
     if cset["status"] in ("draft", "uploading"):
         raise HTTPException(409, "Estrazione non eseguita")
-    # Verify no remaining needs_review entities
-    pending = (c.table("brand_detected_entities").select("id", count="exact")
-               .eq("catalog_set_id", set_id)
-               .eq("status", "needs_review").execute().count or 0)
-    if pending > 0:
-        raise HTTPException(409, f"{pending} entità ancora in review")
+
+    # Apply ITER201 Publish Gate (criterion (c))
+    from services import entity_resolution_service as _resolver
+
+    def _readiness(et: str):
+        rows = (c.table("brand_detected_entities").select("id,status")
+                .eq("catalog_set_id", set_id).eq("entity_type", et)
+                .execute().data or [])
+        total = len(rows)
+        validated = sum(1 for r in rows if r.get("status") == "validated")
+        return round(100.0 * validated / total, 2) if total else 100.0
+
+    col_pct = _readiness("collection")
+    des_pct = _readiness("designer_registered")
+    audit = _resolver.compute_knowledge_audit(set_id)
+    total_p = audit.get("metrics", {}).get("products_total", 0) or 0
+    linked = audit.get("metrics", {}).get("products_linked_to_collection", 0) or 0
+    linked_pct = round(100.0 * linked / total_p, 2) if total_p else 0.0
+    graph_pct = audit.get("graph_completeness", 0) or 0
+    blockers = []
+    if col_pct < 100:  blockers.append(f"Collezioni validate {col_pct}% < 100%")
+    if des_pct < 100:  blockers.append(f"Designer validati {des_pct}% < 100%")
+    if linked_pct < 80: blockers.append(f"Prodotti linkati {linked_pct}% < 80%")
+    if graph_pct < 90: blockers.append(f"Graph completeness {graph_pct} < 90")
+    if blockers:
+        raise HTTPException(409, "Publish Gate non superato: " + " · ".join(blockers))
+
     c.table("brand_catalog_sets").update({
         "status": "published",
         "validated_at": _now(),
