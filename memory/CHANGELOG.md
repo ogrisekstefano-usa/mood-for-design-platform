@@ -1,5 +1,32 @@
 # Changelog
 
+## ITER188 · Journey Mail™ Live Validation — 2026-06-02
+
+**Stato:** 🟡 CONDITIONAL GO · Validation-only sprint · 0 modifiche al codice applicativo
+
+### Risultati per test (8/10 PASS · 0 FAIL · 2 deferred)
+- ✅ T1 IMAP connection · T2 Read-Only Guarantee (code audit + runtime audit) · T3 message import · T5 manual linking · T6 SMTP send · T7 Sent folder APPEND · T9 error handling · T10 Design Journey integration
+- ⏸️ T2.c (live inbound unread proof) · T4 (attachments) · T8 (multi-mailbox isolation) — richiedono azione Founder
+
+### Bug trovati
+- 🐞 **P1** · Bucket `mailbox-bodies` mancante in Supabase Storage → bodies email non uploadate (snippet OK, full body NO). Fix in ITER189-pre.
+- 🐞 P2 · `/api/relations/leads` POST 405 (CRM, fuori scope)
+
+### Deliverable
+- `/app/memory/ITER188_JOURNEY_MAIL_LIVE_VALIDATION_REPORT.md` (18 sezioni)
+- 6 script in `/app/scripts/iter188_*.py` (riusabili per regression future)
+- Screenshot `/tmp/dj_comm_iter188.png` (T10 proof: Design Journey · Communications tab con 1 email collegata)
+
+### Mailbox sotto test
+- `me@moodfordesign.com` · SiteGround · `gnldm1105.siteground.biz` · 7 folder discovered · IMAP + SMTP healthy
+
+### Next blockers per FULL GO
+1. Founder invia un'email reale da `slabreality@gmail.com` (o altro) a `me@moodfordesign.com`, la lascia non letta, conferma screenshot SiteGround.
+2. Founder conferma ricezione su `slabreality@gmail.com` del send Blueprint (T6 final mile).
+3. ITER189-pre: hotfix bucket `mailbox-bodies` (create + reset cursors + re-sync).
+
+
+
 ## ITER187.B · Journey Mail Workspace™ — UI Phase 1 · 2026-06-02
 
 **Stato:** ✅ Completato · Frontend solo · backend ITER187.A invariato (25/25 test passano)
