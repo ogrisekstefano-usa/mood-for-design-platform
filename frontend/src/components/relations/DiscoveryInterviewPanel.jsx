@@ -12,12 +12,10 @@ import { toast } from 'sonner';
 import { CheckCircle2, XCircle, RotateCw, Loader2, Sparkles } from 'lucide-react';
 import DiscoveryProgressWidget from '../discovery/DiscoveryProgressWidget';
 import useDiscoveryProgress from '../../hooks/useDiscoveryProgress';
+import { getAuthHeader } from '../../lib/authHeader';
 
 const API = process.env.REACT_APP_BACKEND_URL;
-const auth = () => {
-  const t = localStorage.getItem('token');
-  return t ? { Authorization: `Bearer ${t}` } : {};
-};
+const auth = () => getAuthHeader();
 
 const QUAL_FIELDS = [
   { key: 'budget',   label: 'Budget indicativo',  placeholder: 'es. 50-80k €' },

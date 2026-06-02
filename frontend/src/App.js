@@ -194,6 +194,7 @@ const MediaSystemPreviewPage = lazy(() => import('./pages/admin/MediaSystemPrevi
 
 // ITER148 · P0 · Client Relations™ — editorial Lead/Prospect/Account layer
 const LeadsPage                = lazy(() => import('./pages/relations/LeadsPage'));
+const LeadDetailPage           = lazy(() => import('./pages/relations/LeadDetailPage'));
 const ProspectsPage            = lazy(() => import('./pages/relations/ProspectsPage'));
 const AccountsPage             = lazy(() => import('./pages/relations/AccountsPage'));
 const RelationshipMemoryPage   = lazy(() => import('./pages/relations/RelationshipMemoryPage'));
@@ -674,6 +675,7 @@ function App() {
 
                   {/* ── CLIENT RELATIONS\u2122 (ITER148 · P0 sidebar) ── */}
                   <Route path="/relations/leads"      element={<LeadsPage />} />
+                  <Route path="/relations/leads/:leadId" element={<LeadDetailPage />} />
                   <Route path="/relations/prospects"  element={<ProspectsPage />} />
                   <Route path="/relations/accounts"   element={<AccountsPage />} />
                   <Route path="/relations/memory"     element={<RelationshipMemoryPage />} />

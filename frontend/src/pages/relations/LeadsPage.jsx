@@ -7,7 +7,7 @@
  *   - aggiunta CTA primary "+ Nuovo Lead" che apre il modal CRM
  */
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, X, Plus, BookOpen } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
@@ -133,6 +133,7 @@ const LeadCard = ({ lead, designer, onOpen }) => {
 };
 
 const LeadsPage = () => {
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const filters = useMemo(() => ({ q }), [q]);
   const { items, total, counts, loading } = useRelations('/api/relations/leads', filters);
@@ -143,7 +144,10 @@ const LeadsPage = () => {
   const [welcomeId, setWelcomeId] = useState(null);
   const [interviewLead, setInterviewLead] = useState(null);
 
-  const handleOpen = (lead) => setWelcomeId(lead.id);
+  // ITER186.A · P0.2 — clicking a Lead card navigates to LeadDetailPage
+  // so the user can immediately resume Discovery. (Welcome drawer remains
+  // available via secondary affordances, but the primary path is now detail.)
+  const handleOpen = (lead) => navigate(`/relations/leads/${lead.id}`);
   const handleWelcomeAction = (moment, lead) => {
     if (moment.kind === 'continuation_interview') {
       setInterviewLead(lead);
@@ -210,9 +214,36 @@ const LeadsPage = () => {
       )}
 
       {!loading && items.length === 0 && (
-        <div className="cr-empty" data-testid="leads-empty">
-          <p className="cr-empty__title">Nessun Lead registrato.</p>
-          <p className="cr-empty__sub">Usa "+ Nuovo Lead" per registrare il primo contatto.</p>
+        <div
+          className="cr-empty"
+          data-testid="leads-empty"
+          style={{ textAlign: 'center', padding: '48px 24px' }}
+        >
+          <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
+            Nessun Lead registrato.
+          </p>
+          <p
+            className="cr-empty__sub"
+            data-testid="leads-empty-sub"
+            style={{ fontSize: 13, color: '#5a5d63', marginBottom: 20, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}
+          >
+            Un Lead è un contatto che ha manifestato interesse verso lo studio.
+            Fast Capture in &lt;30 secondi: nome + email o telefono. Da qui parte
+            la Discovery e la qualifica a Prospect.
+          </p>
+          <button
+            type="button"
+            data-testid="leads-empty-cta"
+            onClick={handleNewLead}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '10px 18px', fontSize: 13, fontWeight: 500,
+              color: '#ffffff', background: '#0c0e12', border: 0,
+              borderRadius: 8, cursor: 'pointer',
+            }}
+          >
+            <Plus size={14} strokeWidth={2} /> Crea il primo Lead
+          </button>
         </div>
       )}
 

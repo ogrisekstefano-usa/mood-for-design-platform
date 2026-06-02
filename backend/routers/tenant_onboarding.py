@@ -217,19 +217,23 @@ def dismiss(ctx: dict = Depends(get_tenant_context)):
 # Distinct from the legacy 8-step `_checklist` which targets full Studio Activation.
 
 def _activation_state(tenant_id: str) -> dict:
-    """Compute the 5-step Activation Foundation™ state from live data.
+    """Compute the Activation Foundation™ state from live data.
 
-    ITER181.A · Foundation = WORKSPACE SETUP ONLY.
-    Lead/Prospect/Journey are *operational* activities and live in
-    "Recommended Actions" — they do NOT influence activation %.
+    ITER186.A · P0.7 — CRM Canon Alignment.
+    The Foundation = Workspace Setup (identity, blueprint, team, market,
+    workspace) + a CRM-canonical milestone: `first_lead` (the first real
+    Lead created via Fast Capture).  Operational milestones beyond Lead
+    (prospect / customer / journey) remain in Recommended Actions because
+    they require business activity, not configuration.
     """
     c = db()
     out = {
-        "identity":  {"done": False, "missing": []},
-        "blueprint": {"done": False},
-        "team":      {"done": False},
-        "market":    {"done": False, "missing": []},
-        "workspace": {"done": False, "missing": []},
+        "identity":   {"done": False, "missing": []},
+        "blueprint":  {"done": False},
+        "team":       {"done": False},
+        "market":     {"done": False, "missing": []},
+        "workspace":  {"done": False, "missing": []},
+        "first_lead": {"done": False, "count": 0},
     }
 
     # Step 0 · Identity (name + language + timezone)
@@ -298,6 +302,19 @@ def _activation_state(tenant_id: str) -> dict:
     out["workspace"] = {
         "done": workspace_done,
         "missing": [] if workspace_done else ["project_type"],
+    }
+
+    # ITER186.A · Step 5 · First Lead — CRM canon entry-point
+    leads_count = 0
+    try:
+        lr = c.table("leads").select("id", count="exact") \
+              .eq("tenant_id", tenant_id).limit(1).execute()
+        leads_count = lr.count or 0
+    except Exception:
+        leads_count = 0
+    out["first_lead"] = {
+        "done": leads_count > 0,
+        "count": leads_count,
     }
 
     return out
@@ -380,6 +397,15 @@ _AF_CATALOGUE = [
         "description": "Configura almeno un tipo di progetto (residenziale, retail, hospitality…).",
         "cta_label": "Apri workspace",
         "cta_route": "/workspace/projects",
+        "critical": True,
+    },
+    {
+        "key": "first_lead",
+        "ordinal": 5,
+        "title": "Primo Lead",
+        "description": "Registra il primo contatto via Fast Capture per attivare il CRM Canon.",
+        "cta_label": "Crea il primo Lead",
+        "cta_route": "/relations/leads?new=1",
         "critical": True,
     },
 ]

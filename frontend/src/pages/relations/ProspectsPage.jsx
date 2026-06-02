@@ -232,9 +232,36 @@ const ProspectsPage = () => {
       )}
 
       {!loading && items.length === 0 && (
-        <div className="cr-empty" data-testid="prospects-empty">
-          <p className="cr-empty__title">Nessuna relazione in coltivazione.</p>
-          <p className="cr-empty__sub">Promuovi un lead da Leads per iniziare la conversazione.</p>
+        <div
+          className="cr-empty"
+          data-testid="prospects-empty"
+          style={{ textAlign: 'center', padding: '48px 24px' }}
+        >
+          <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
+            Nessun Prospect qualificato.
+          </p>
+          <p
+            className="cr-empty__sub"
+            data-testid="prospects-empty-sub"
+            style={{ fontSize: 13, color: '#5a5d63', marginBottom: 20, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}
+          >
+            Un Prospect è un Lead che ha completato la Discovery
+            (almeno 75% di progresso) ed è pronto per essere coltivato.
+            Apri un Lead, compila i signal (budget · timeline · stile · ambito)
+            e clicca "Qualifica" per promuoverlo.
+          </p>
+          <Link
+            to="/relations/leads"
+            data-testid="prospects-empty-cta"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '10px 18px', fontSize: 13, fontWeight: 500,
+              color: '#ffffff', background: '#0c0e12', border: 0,
+              borderRadius: 8, textDecoration: 'none',
+            }}
+          >
+            <ArrowRight size={14} strokeWidth={2} /> Vai ai Leads da qualificare
+          </Link>
         </div>
       )}
 

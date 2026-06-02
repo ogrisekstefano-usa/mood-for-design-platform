@@ -27,15 +27,16 @@ export function NewRelationshipProvider({ children }) {
   const closeCmdK = useCallback(() => setCmdkOpen(false), []);
 
   // ITER185.P1 · Post-create routing
+  // ITER186.A · P0.2/P0.3 — naviga al detail Lead per chiudere il gap
+  // "Lead resumption UX rotto": la Discovery è già embedded nella pagina.
   const handleCreated = useCallback((payload) => {
     setIsOpen(false);
     if (!payload) return;
-    // Lead created via Fast Capture → land on Leads list (Discovery panel
-    // will be embedded once LeadDetailPage exists; for now the user sees the
-    // new lead at the top of the CRM list with a clear confirmation toast).
+    // Lead created via Fast Capture → land on LeadDetailPage which embeds
+    // the Discovery panel inline, so the user knows exactly where to resume.
     const leadId = payload?.lead?.id;
     if (leadId) {
-      navigate(`/relations/leads?focus=${leadId}`);
+      navigate(`/relations/leads/${leadId}`);
       return;
     }
     // Account-targeted Journey created → land on workspace project

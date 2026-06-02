@@ -1,0 +1,42 @@
+{
+  "summary": "ITER186.A P0 Hardening verified — Backend 41/41 pass (11 new P0 tests + 30 regression). Frontend critical flows OK: Fast Capture → LeadDetailPage navigation, breadcrumb + hero + discovery panel render, auth fix verified. Two non-blocking gaps: ?new=1 doesn't auto-open modal; empty-state CTAs unverifiable (tenant has data).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "LeadsPage", "issue": "Query param ?new=1 does NOT auto-open NewRelationshipModal. P0.7 first_lead CTA routes to /relations/leads?new=1 expecting modal — user must click 'Nuovo Lead' manually.", "selector": "/relations/leads?new=1", "priority": "MEDIUM"},
+      {"component": "DiscoveryInterviewPanel", "issue": "Wrapper element lacks data-testid='discovery-interview-panel' (panel renders correctly otherwise — progress widget 25%, 4 checklist items, Avvia Discovery CTA all visible).", "selector": "[data-testid='discovery-interview-panel']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Login", "issues": ["Many missing i18n keys for it-IT (auth.login.eyebrow, auth.access.quote, etc.) — fallback text still renders OK."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter186_p0_hardening.py",
+    "/app/test_reports/pytest/iter186_p0.xml",
+    "/app/test_reports/pytest/iter186_regression.xml"
+  ],
+  "action_items": [
+    "[Optional/MEDIUM] LeadsPage.jsx — read ?new=1 from URL and auto-open NewRelationshipModal so P0.7 first_lead CTA opens form directly (currently user must click 'Nuovo Lead').",
+    "[LOW] DiscoveryInterviewPanel.jsx — add data-testid='discovery-interview-panel' on root element for automated testing.",
+    "[NICE-TO-HAVE] Add empty-state CTA verification via fresh-tenant test fixture (current tenant has 89 leads / 22 prospects / 38 accounts so empty states never render)."
+  ],
+  "critical_code_review_comments": [
+    "Backend P0.5 stats correctly derives prospect/customer from accounts.lifecycle_stage and exposes account=prospect+customer. dormant=0 (deprecated key kept for backward compat).",
+    "Backend P0.7 activation-foundation returns exactly 6 steps in canon order: identity → blueprint → team → market → workspace → first_lead. first_lead has critical=true, cta_route='/relations/leads?new=1', cta_label='Crea il primo Lead', metadata.count = leads count.",
+    "Backend P0.1 email-smoke-test endpoint validates 'to' (400 on missing/no @), returns {ok, provider, env:{api_key_present, from_address, reply_to}, next_steps[]}. Persists to email_events.",
+    "Backend P0.3 /api/leads/{id} returns 404 (not 500) for unknown IDs; fetches lead detail correctly after Fast Capture."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter186_p0_hardening.py (NEW — 11 tests)"
+  ],
+  "success_rate": {"backend": "100% (41/41)", "frontend": "85% (critical flow works; 2 minor gaps)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (session.access_token in /api/auth/login response)",
+  "seed_data_creation": "Created lead 75fe3878-d0a3-4131-b263-c10ce4c71db2 (TEST P0 1780359788383) via Fast Capture during UI flow test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Tenant has 89 leads / 22 prospects / 38 accounts → empty-state CTAs (leads-empty-cta, prospects-empty-cta, accounts-empty-cta) cannot be triggered in this DB. Customer card CTAs work: 16x account-new-journey-{id} + 16x account-revert-prospect-{id} found on AccountsPage. Auth uses Bearer token from login response session.access_token — when calling /api endpoints from page.evaluate() use Authorization header (not credentials:'include' cookies). NewRelationshipModal opens via 'Nuovo Lead' button (testid leads-new-cta or text button), NOT via ?new=1 URL param."
+}

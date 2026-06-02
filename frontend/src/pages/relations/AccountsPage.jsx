@@ -9,7 +9,7 @@
  */
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, X, BookOpen, CheckCircle2, RotateCcw } from 'lucide-react';
+import { Search, X, BookOpen, CheckCircle2, RotateCcw, Compass } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
@@ -17,6 +17,7 @@ import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
 import ConvertToCustomerModal from '../../components/relations/ConvertToCustomerModal';
 import RevertToProspectModal from '../../components/relations/RevertToProspectModal';
+import { useNewRelationship } from '../../hooks/useNewRelationship';
 
 const HEALTHS = [
   { v: 'thriving', l: 'Thriving' },
@@ -58,7 +59,7 @@ const isProspectStage = (s) =>
 const isCustomerStage = (s) =>
   ['customer', 'active_project', 'existing_client', 'repeat_client'].includes(String(s || '').toLowerCase());
 
-const AccountCard = ({ a, designer, onOpen, onConvert, onRevert }) => {
+const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney }) => {
   const name = a.account_name || a.email || 'Account';
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const score = Math.max(0, Math.min(100, Math.round(Number(a.relationship_score || 0))));
@@ -179,22 +180,40 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert }) => {
           </button>
         )}
         {isCustomerStage(a.lifecycle_stage) && (
-          <button
-            type="button"
-            onClick={() => onRevert?.(a)}
-            data-testid={`account-revert-prospect-${a.id}`}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '6px 12px', fontSize: 11, letterSpacing: '0.02em',
-              background: 'transparent', color: '#9b9da3',
-              border: '1px solid rgba(155, 157, 163, 0.3)', borderRadius: 6,
-              cursor: 'pointer', transition: 'all 160ms ease',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(155, 157, 163, 0.08)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-          >
-            <RotateCcw size={12} /> Rollback prospect
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={() => onNewJourney?.(a)}
+              data-testid={`account-new-journey-${a.id}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '6px 12px', fontSize: 11, letterSpacing: '0.02em',
+                background: '#0c0e12', color: '#ffffff',
+                border: '1px solid #0c0e12', borderRadius: 6,
+                cursor: 'pointer', transition: 'all 160ms ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#1f2530'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#0c0e12'; }}
+            >
+              <Compass size={12} /> Nuovo Design Journey
+            </button>
+            <button
+              type="button"
+              onClick={() => onRevert?.(a)}
+              data-testid={`account-revert-prospect-${a.id}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '6px 12px', fontSize: 11, letterSpacing: '0.02em',
+                background: 'transparent', color: '#9b9da3',
+                border: '1px solid rgba(155, 157, 163, 0.3)', borderRadius: 6,
+                cursor: 'pointer', transition: 'all 160ms ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(155, 157, 163, 0.08)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              <RotateCcw size={12} /> Rollback prospect
+            </button>
+          </>
         )}
       </div>
     </article>
@@ -207,6 +226,7 @@ const AccountsPage = () => {
   const filters = useMemo(() => ({ q, health }), [q, health]);
   const { items, total, counts, loading, refresh } = useRelations('/api/relations/accounts', filters);
   const { pickDesigner } = useDesigners();
+  const newRel = useNewRelationship();
 
   const [welcomeId, setWelcomeId] = useState(null);
   const [convertAccount, setConvertAccount] = useState(null);
@@ -214,6 +234,13 @@ const AccountsPage = () => {
   const handleOpen = (a) => setWelcomeId(a.id);
   const handleWelcomeAction = () => setWelcomeId(null);
   const handleLifecycleUpdated = () => { if (typeof refresh === 'function') refresh(); };
+
+  // ITER186.A · P0.6 — "Nuovo Design Journey" inline CTA su Customer cards
+  const handleNewJourney = (account) => {
+    if (newRel && typeof newRel.open === 'function') {
+      newRel.open({ choice: 'customer', account_id: account.id });
+    }
+  };
 
   const toolbar = (
     <>
@@ -264,9 +291,34 @@ const AccountsPage = () => {
       )}
 
       {!loading && items.length === 0 && (
-        <div className="cr-empty" data-testid="accounts-empty">
-          <p className="cr-empty__title">Nessun progetto attivo.</p>
-          <p className="cr-empty__sub">Un account nasce quando un prospect viene promosso con un Design&nbsp;Journey™.</p>
+        <div
+          className="cr-empty"
+          data-testid="accounts-empty"
+          style={{ textAlign: 'center', padding: '48px 24px' }}
+        >
+          <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
+            Nessun account attivo.
+          </p>
+          <p
+            className="cr-empty__sub"
+            data-testid="accounts-empty-sub"
+            style={{ fontSize: 13, color: '#5a5d63', marginBottom: 20, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}
+          >
+            Un account nasce quando un Prospect viene qualificato (75% Discovery).
+            Da qui apri una Design Journey o conferma il cliente con una proposta firmata.
+          </p>
+          <Link
+            to="/relations/prospects"
+            data-testid="accounts-empty-cta"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '10px 18px', fontSize: 13, fontWeight: 500,
+              color: '#ffffff', background: '#0c0e12', border: 0,
+              borderRadius: 8, textDecoration: 'none',
+            }}
+          >
+            Vai ai Prospects da convertire
+          </Link>
         </div>
       )}
 
@@ -280,6 +332,7 @@ const AccountsPage = () => {
               onOpen={handleOpen}
               onConvert={setConvertAccount}
               onRevert={setRevertAccount}
+              onNewJourney={handleNewJourney}
             />
           ))}
         </div>

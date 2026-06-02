@@ -94,23 +94,46 @@ def _list_leads_by_state(
 def relationship_stats(
     current_user: dict = Depends(require_permission(P_LEADS_READ)),
 ):
+    """ITER186.A · P0.5 — KPI Consistency Fix.
+
+    Single source of truth aligned to the CRM canon (Lead → Prospect → Customer):
+      - lead       = leads table count (any progression_state)
+      - prospect   = accounts.lifecycle_stage='prospect'
+      - account    = accounts.lifecycle_stage IN ('prospect', 'customer') · backward-compat key
+      - customer   = accounts.lifecycle_stage='customer'
+      - dormant    = legacy 0 (deprecated, kept for backward compat)
+
+    Replaces the previous logic which read from `leads.progression_state`
+    (now legacy) and double-counted accounts.
+    """
     if not db_available():
         raise HTTPException(503, "Database not configured")
     client = db()
     tenant_id = current_user['tenant_id']
-    out = {}
-    for state in ('lead', 'prospect', 'account', 'dormant'):
-        r = (client.table('leads').select('id', count='exact')
-             .eq('tenant_id', tenant_id)
-             .eq('progression_state', state).limit(1).execute())
-        out[state] = r.count or 0
-    # accounts table count
+    out = {"lead": 0, "prospect": 0, "account": 0, "customer": 0, "dormant": 0}
     try:
-        ar = (client.table('accounts').select('id', count='exact')
-              .eq('tenant_id', tenant_id).limit(1).execute())
-        out['account'] += ar.count or 0
+        r = (client.table('leads').select('id', count='exact')
+             .eq('tenant_id', tenant_id).limit(1).execute())
+        out['lead'] = r.count or 0
     except Exception:
-        logger.exception("accounts count failed")
+        logger.exception("leads count failed")
+    try:
+        rp = (client.table('accounts').select('id', count='exact')
+              .eq('tenant_id', tenant_id).eq('lifecycle_stage', 'prospect')
+              .limit(1).execute())
+        out['prospect'] = rp.count or 0
+    except Exception:
+        logger.exception("prospect accounts count failed")
+    try:
+        rc = (client.table('accounts').select('id', count='exact')
+              .eq('tenant_id', tenant_id).eq('lifecycle_stage', 'customer')
+              .limit(1).execute())
+        out['customer'] = rc.count or 0
+    except Exception:
+        logger.exception("customer accounts count failed")
+    # `account` (backward-compat) = prospects + customers (any account row that
+    # belongs to the active relationship layer in canon terms).
+    out['account'] = out['prospect'] + out['customer']
     return out
 
 

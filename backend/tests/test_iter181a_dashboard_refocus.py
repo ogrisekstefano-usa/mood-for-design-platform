@@ -1,9 +1,10 @@
 """ITER181.A — Dashboard Refocus™ backend tests.
 
 Covers:
-- GET /api/tenant-onboarding/activation-foundation must now return EXACTLY 5
-  setup-only steps (identity, blueprint, team, market, workspace).
-- Old keys (first_lead, first_prospect, first_journey) MUST be absent.
+- GET /api/tenant-onboarding/activation-foundation must now return EXACTLY 6
+  steps (identity, blueprint, team, market, workspace, first_lead).
+  ITER186.A · P0.7 — `first_lead` added as the CRM Canon entry-point.
+- Old legacy keys (first_prospect, first_journey) MUST be absent.
 - Response must include new business_counts payload (leads/prospects/customers/active_journeys).
 - POST /api/tenant-onboarding/identity remains admin-only and idempotent.
 """
@@ -15,8 +16,8 @@ BASE_URL = os.environ.get("REACT_APP_BACKEND_URL").rstrip("/")
 ADMIN_EMAIL = "admin@moodfordesign.com"
 ADMIN_PASSWORD = "Blueprint2024!"
 
-EXPECTED_KEYS = ["identity", "blueprint", "team", "market", "workspace"]
-LEGACY_KEYS = {"first_lead", "first_prospect", "first_journey"}
+EXPECTED_KEYS = ["identity", "blueprint", "team", "market", "workspace", "first_lead"]
+LEGACY_KEYS = {"first_prospect", "first_journey"}
 
 
 @pytest.fixture(scope="module")
@@ -40,16 +41,16 @@ def admin_headers(admin_token):
 
 # ─────────── GET /activation-foundation (ITER181.A · 5 steps) ───────────
 class TestActivationFoundation5Steps:
-    def test_returns_exactly_5_steps_in_order(self, admin_headers):
+    def test_returns_exactly_6_steps_in_order(self, admin_headers):
         r = requests.get(
             f"{BASE_URL}/api/tenant-onboarding/activation-foundation",
             headers=admin_headers, timeout=20,
         )
         assert r.status_code == 200, r.text
         data = r.json()
-        assert data["total"] == 5, f"Expected total=5, got {data['total']}"
+        assert data["total"] == 6, f"Expected total=6, got {data['total']}"
         assert isinstance(data["items"], list)
-        assert len(data["items"]) == 5
+        assert len(data["items"]) == 6
         actual_keys = [it["key"] for it in data["items"]]
         assert actual_keys == EXPECTED_KEYS, f"Step order mismatch: {actual_keys}"
 

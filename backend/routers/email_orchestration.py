@@ -268,3 +268,103 @@ def provider_health(user: dict = Depends(require_root_superadmin)):
     for t, s in tenants.items():
         s["delivery_score"] = round(100 * s["sent"] / s["total"]) if s["total"] else 100
     return {"providers": providers, "tenants": tenants, "sample_size": len(rows)}
+
+
+# ─── ITER186.A · P0.1 — Email Smoke Test ─────────────────────────────
+# Real end-to-end deliverability validation. Founder/admin can ping
+# this endpoint with a target recipient to verify:
+#   - RESEND_API_KEY is valid
+#   - Sender domain is configured (DKIM/SPF expected to be set on
+#     mail.moodfordesign.com)
+#   - Resend accepts the message and returns a provider_message_id
+#   - Audit trail is persisted in email_events
+#
+# This is a synchronous send. The caller is then expected to verify
+# the inbox / spam folder / link click manually (no automated click
+# verification from the container).
+@router.post("/admin/email-smoke-test")
+def email_smoke_test(
+    payload: Dict[str, Any] = None,
+    user: dict = Depends(require_root_superadmin),
+):
+    """POST /api/email/admin/email-smoke-test
+    Body: { "to": "tester@gmail.com" }
+
+    Returns:
+      {
+        ok: bool,
+        provider: "resend",
+        provider_message_id: "…",
+        event_id: "…",
+        identity_source: "platform_default" | "tenant_settings" | …,
+        env: {
+          provider: "resend",
+          api_key_present: true,
+          from_address: "MOOD for DESIGN™ <no-reply@mail.moodfordesign.com>",
+          reply_to: "support@moodfordesign.com"
+        },
+        next_steps: [...checklist for manual verification...]
+      }
+    """
+    from services.email_service import (
+        send_template_email,
+        EMAIL_PROVIDER, RESEND_API_KEY, DEFAULT_FROM, DEFAULT_REPLY,
+    )
+    payload = payload or {}
+    to = (payload.get("to") or "").strip()
+    if not to or "@" not in to:
+        raise HTTPException(400, "Recipient email required (field: to).")
+
+    env_audit = {
+        "provider": EMAIL_PROVIDER,
+        "api_key_present": bool(RESEND_API_KEY),
+        "from_address": DEFAULT_FROM,
+        "reply_to": DEFAULT_REPLY,
+    }
+    if EMAIL_PROVIDER == "resend" and not RESEND_API_KEY:
+        return {
+            "ok": False,
+            "env": env_audit,
+            "error": "RESEND_API_KEY missing — set it in backend/.env and restart.",
+            "next_steps": [
+                "Aggiungi RESEND_API_KEY a /app/backend/.env",
+                "sudo supervisorctl restart backend",
+                "Riprova questo endpoint",
+            ],
+        }
+
+    ctx = {
+        "title": "MOOD for DESIGN™ · Smoke Test Email",
+        "body": (
+            "Questo è un test di consegna inviato dall'admin endpoint "
+            "/api/email/admin/email-smoke-test. Se ricevi questa email, "
+            "Resend è configurato correttamente e i parametri DKIM/SPF "
+            "del dominio mittente stanno funzionando. Verifica anche "
+            "che NON sia finita nella cartella spam."
+        ),
+        "subject": "MOOD for DESIGN™ · Smoke Test Email",
+        "preview": "Test di consegna · ITER186.A · P0.1",
+    }
+    r = send_template_email(
+        to=to,
+        template_key="generic",
+        context=ctx,
+        event_type="smoke_test",
+        tenant_id=None,
+        user_id=user.get("profile_id"),
+        source_host=None,
+        locale="it",
+        metadata={
+            "iter": "ITER186.A",
+            "category": "smoke_test",
+            "initiated_by": user.get("email"),
+        },
+    )
+    next_steps = [
+        f"Apri la mailbox di {to} e verifica che l'email sia arrivata.",
+        "Controlla anche la cartella Spam/Junk.",
+        "Apri Resend Dashboard → Logs e verifica lo stato della consegna.",
+        "Verifica DKIM/SPF su MXToolbox per mail.moodfordesign.com.",
+        "Verifica che il sender appaia come MOOD for DESIGN™.",
+    ]
+    return {**r, "env": env_audit, "next_steps": next_steps, "to": to}
