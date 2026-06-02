@@ -5,8 +5,9 @@ import { adminAuth, adminApi } from './adminApi';
 import BlueprintApp from './BlueprintApp';
 import CommandCenterApp from './CommandCenterApp';
 import FounderWelcome from './pages/FounderWelcome';
+import AccessRecoveryModal from './components/AccessRecoveryModal';
 
-const Field = ({ label, value, onChange, testid, type = 'text' }) => (
+const Field = ({ label, value, onChange, testid, type = 'text', autoComplete }) => (
   <label className="block">
     <span style={{ display: 'block', fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 8 }}>
       {label}
@@ -15,6 +16,7 @@ const Field = ({ label, value, onChange, testid, type = 'text' }) => (
       type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      autoComplete={autoComplete}
       style={{
         width: '100%', background: 'rgba(255,255,255,0.04)',
         border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6,
@@ -34,9 +36,7 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
   const [tenantSlug, setTenantSlug] = useState(null);
   const [err, setErr]           = useState(null);
   const [busy, setBusy]         = useState(false);
-  const [advanced, setAdvanced] = useState(false);
-  const [tenant, setTenant]     = useState(adminAuth.getTenant());
-  const [key, setKey]           = useState(adminAuth.getKey());
+  const [modal, setModal]       = useState(null); // null | 'forgot' | 'magic_link' | 'resend' | 'recovery'
 
   const submitJwt = async (e) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
     try {
       const data = await adminAuth.login(email, password, tenantSlug);
       if (data?.requires_tenant_selection) setTenants(data.tenants || []);
-      else if (data?.token) onSuccess();
+      else if (data?.token) onSuccess(data);
     } catch (e2) {
       const s = e2?.response?.status;
       if (s === 423)      setErr('Troppi tentativi falliti. Riprova fra 15 minuti.');
@@ -53,17 +53,11 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
     } finally { setBusy(false); }
   };
 
-  const submitLegacy = async (e) => {
-    e.preventDefault();
-    setBusy(true); setErr(null);
-    adminAuth.setKey(key);
-    adminAuth.setTenant(tenant);
-    try {
-      await adminApi.whoami();
-      onSuccess();
-    } catch (e2) {
-      setErr(e2?.response?.status === 401 ? 'Chiave non valida' : 'Errore di connessione');
-    } finally { setBusy(false); }
+  const linkStyle = {
+    background: 'transparent', border: 'none',
+    color: 'rgba(255,255,255,0.55)', cursor: 'pointer',
+    fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
+    padding: 0, textDecoration: 'underline', textUnderlineOffset: 4,
   };
 
   return (
@@ -74,12 +68,12 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
           {workspaceLabel}
         </p>
         <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: '#FFFFFF', lineHeight: 1.1, marginBottom: '2rem' }}>
-          Accesso amministratore
+          Accedi al tuo workspace
         </h1>
 
         <form onSubmit={submitJwt} className="space-y-5">
-          <Field label="Email" value={email} onChange={setEmail} testid="admin-email" type="email" />
-          <Field label="Password" value={password} onChange={setPassword} testid="admin-password" type="password" />
+          <Field label="Email"    value={email}    onChange={setEmail}    testid="admin-email"    type="email"    autoComplete="email" />
+          <Field label="Password" value={password} onChange={setPassword} testid="admin-password" type="password" autoComplete="current-password" />
 
           {tenants && tenants.length > 0 && (
             <div data-testid="admin-tenant-picker">
@@ -111,36 +105,33 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
           </button>
         </form>
 
-        <button type="button" onClick={() => setAdvanced((v) => !v)} data-testid="admin-toggle-advanced"
-          style={{
-            marginTop: '1.4rem', background: 'transparent', border: 'none',
-            color: 'rgba(255,255,255,0.4)', fontFamily: 'Montserrat, sans-serif',
-            fontSize: '0.66rem', letterSpacing: '0.24em', textTransform: 'uppercase',
-            cursor: 'pointer', padding: 0,
-          }}>
-          {advanced ? '— Nascondi accesso legacy' : '+ Accesso legacy (X-Admin-Key)'}
-        </button>
-
-        {advanced && (
-          <form onSubmit={submitLegacy} className="space-y-4" style={{ marginTop: '1rem' }}>
-            <Field label="Tenant slug" value={tenant} onChange={setTenant} testid="admin-tenant" />
-            <Field label="Admin key" value={key} onChange={setKey} testid="admin-key" type="password" />
-            <button type="submit" disabled={busy} style={{
-              width: '100%', padding: '0.7rem 1rem',
-              background: 'transparent', border: '1px solid rgba(255,255,255,0.12)',
-              color: '#FFF', borderRadius: 999, cursor: 'pointer',
-              fontFamily: 'Inter, sans-serif', fontSize: '0.75rem',
-              letterSpacing: '0.18em', textTransform: 'uppercase',
-              opacity: busy ? 0.6 : 1,
-            }} data-testid="admin-submit-legacy">
-              {busy ? '…' : 'Entra con chiave'}
-            </button>
-            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', fontFamily: 'Inter, sans-serif', lineHeight: 1.5 }}>
-              In produzione <code>ADMIN_API_KEY</code> non è configurata. Usa email + password.
-            </p>
-          </form>
-        )}
+        {/* P0-B Secondary CTAs — 4 self-service flows, anti-enumeration */}
+        <div style={{
+          marginTop: '1.6rem', display: 'flex', flexDirection: 'column',
+          gap: 12, paddingTop: '1.4rem',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          <button type="button" data-testid="cta-forgot-password"
+            onClick={() => setModal('forgot')} style={linkStyle}>
+            Password dimenticata?
+          </button>
+          <button type="button" data-testid="cta-magic-link"
+            onClick={() => setModal('magic_link')} style={linkStyle}>
+            Ricevi un Magic Link
+          </button>
+          <button type="button" data-testid="cta-resend-invite"
+            onClick={() => setModal('resend')} style={linkStyle}>
+            Reinvia invito (per Founder appena attivati)
+          </button>
+          <button type="button" data-testid="cta-workspace-recovery"
+            onClick={() => setModal('recovery')} style={linkStyle}>
+            Non trovi il tuo workspace?
+          </button>
+        </div>
       </div>
+      {modal && (
+        <AccessRecoveryModal kind={modal} onClose={() => setModal(null)} />
+      )}
     </div>
   );
 };
@@ -148,17 +139,49 @@ const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
 /**
  * AuthGate — wraps any workspace surface with the login modal when the
  * caller has no valid admin session.
+ *
+ * After a successful login, AuthGate enforces the role-correct landing:
+ *   • admin/editor → /command-center/overview
+ *   • advisor      → /command-center/advisor-console
+ *   • owner        → /command-center/welcome (cinematic) then /blueprint
+ * If the user is ALREADY logged in but landed on the wrong workspace
+ * (e.g. a Founder loading /command-center/overview), AuthGate redirects
+ * them to their `redirect_url` from /auth/me.
  */
-const AuthGate = ({ workspaceLabel, children }) => {
+const AuthGate = ({ workspaceLabel, allowedRoles, children }) => {
   const [authed, setAuthed]     = useState(false);
   const [checking, setChecking] = useState(true);
+  const [me, setMe]             = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     adminApi.whoami()
-      .then(() => setAuthed(true))
+      .then((r) => { setMe(r.data); setAuthed(true); })
       .catch(() => setAuthed(false))
       .finally(() => setChecking(false));
   }, []);
+
+  // P0-G enforcement: redirect to role-correct surface if user landed
+  // on a workspace they shouldn't see.
+  useEffect(() => {
+    if (!authed || !me || !allowedRoles) return;
+    const role = (me.role || '').toLowerCase();
+    if (!allowedRoles.includes(role)) {
+      const target = role === 'owner'   ? '/command-center/welcome'
+                    : role === 'advisor' ? '/command-center/advisor-console'
+                    : '/command-center/overview';
+      if (location.pathname !== target) navigate(target, { replace: true });
+    }
+  }, [authed, me, allowedRoles, location.pathname, navigate]);
+
+  const onLoginSuccess = (data) => {
+    setAuthed(true);
+    setMe(data?.user || null);
+    if (data?.redirect_url && data.redirect_url !== location.pathname) {
+      navigate(data.redirect_url, { replace: true });
+    }
+  };
 
   if (checking) {
     return (
@@ -167,7 +190,7 @@ const AuthGate = ({ workspaceLabel, children }) => {
       </div>
     );
   }
-  if (!authed) return <AdminLogin workspaceLabel={workspaceLabel} onSuccess={() => setAuthed(true)} />;
+  if (!authed) return <AdminLogin workspaceLabel={workspaceLabel} onSuccess={onLoginSuccess} />;
   return children;
 };
 
@@ -220,13 +243,24 @@ export default AdminApp;
 // Named exports used directly from App.js to mount the two real shells.
 export const CommandCenterRoot = () => (
   <Routes>
-    <Route path="welcome" element={<AuthGate workspaceLabel="MOOD · Founder"><FounderWelcome /></AuthGate>} />
-    <Route path="*"       element={<AuthGate workspaceLabel="MOOD · Command Center"><CommandCenterApp /></AuthGate>} />
+    <Route path="welcome" element={
+      <AuthGate workspaceLabel="MOOD · Founder"
+                allowedRoles={['owner']}>
+        <FounderWelcome />
+      </AuthGate>
+    } />
+    <Route path="*" element={
+      <AuthGate workspaceLabel="MOOD · Command Center"
+                allowedRoles={['admin', 'editor', 'advisor']}>
+        <CommandCenterApp />
+      </AuthGate>
+    } />
   </Routes>
 );
 
 export const BlueprintRoot = () => (
-  <AuthGate workspaceLabel="Blueprint · Tenant">
+  <AuthGate workspaceLabel="Blueprint · Tenant"
+            allowedRoles={['admin', 'editor', 'owner']}>
     <BlueprintApp />
   </AuthGate>
 );

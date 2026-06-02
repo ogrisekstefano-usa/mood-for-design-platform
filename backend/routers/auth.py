@@ -384,6 +384,9 @@ async def magic_link_request(body: MagicLinkRequest, request: Request):
     """
     Issue a magic link to the given email (if it belongs to an active
     account). Always returns a neutral success unless rate-limited.
+
+    SECURITY: the response NEVER contains the raw token or the magic URL.
+    Only the access channel (email delivery) carries the credential.
     """
     try:
         ip  = request.client.host if request.client else None
@@ -393,6 +396,7 @@ async def magic_link_request(body: MagicLinkRequest, request: Request):
             ip=ip,
             user_agent=ua,
             locale=(body.locale or "it"),
+            expose_token=False,  # public endpoint — never leak the token
         )
         return res
     except Exception:
@@ -417,3 +421,165 @@ async def magic_link_consume(body: MagicLinkConsumeRequest):
         return await access_continuity.consume_magic_link(body.token)
     except Exception:
         return {"ok": False, "reason": "invalid"}
+
+
+# ── Password reset (P0-C) ─────────────────────────────────────────────
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+    locale: str | None = "it"
+
+
+class PasswordResetConsume(BaseModel):
+    token: str
+    new_password: str
+
+
+@router.post("/password-reset/request")
+async def password_reset_request(body: PasswordResetRequest, request: Request):
+    """
+    Trigger a password reset email.
+
+    Implementation note: under the hood we re-use the magic-link
+    infrastructure (same TTL=15min, same anti-enumeration neutrality).
+    The user clicks the link → lands on `/reset-password?token=...` →
+    the page calls /password-reset/consume with new_password.
+
+    Public endpoint — response is ALWAYS neutral. No token in response.
+    """
+    try:
+        ip  = request.client.host if request.client else None
+        ua  = request.headers.get("user-agent")
+        await access_continuity.issue_magic_link(
+            email=body.email,
+            ip=ip,
+            user_agent=ua,
+            locale=(body.locale or "it"),
+            expose_token=False,
+            link_path="/reset-password",
+        )
+    except Exception:
+        pass
+    return {"delivered": True,
+            "expires_in_minutes": access_continuity.MAGIC_LINK_TTL_MIN}
+
+
+@router.post("/password-reset/consume")
+async def password_reset_consume(body: PasswordResetConsume):
+    """
+    Consume a reset token + set a new password.
+
+    Returns:
+      • { ok: True }                                — success
+      • { ok: False, reason: "invalid"|"expired"|"already_used" }
+      • { ok: False, reason: "weak_password" }
+    """
+    if not _password_is_strong(body.new_password):
+        return {"ok": False, "reason": "weak_password"}
+    try:
+        res = await access_continuity.consume_magic_link(body.token)
+    except Exception:
+        return {"ok": False, "reason": "invalid"}
+    if not res.get("ok"):
+        return {"ok": False, "reason": res.get("reason") or "invalid"}
+    # Token valid — set the new password.
+    user_email = (res.get("user") or {}).get("email")
+    if not user_email:
+        return {"ok": False, "reason": "invalid"}
+    pw_hash = hash_password(body.new_password)
+    async with AsyncSessionLocal() as s:
+        await s.execute(
+            text("UPDATE users SET password_hash = :h, updated_at = NOW() "
+                  "WHERE email = :em"),
+            {"h": pw_hash, "em": user_email},
+        )
+        await s.commit()
+    return {"ok": True}
+
+
+# ── Resend invitation (P0-E) ──────────────────────────────────────────
+class ResendInvitationBody(BaseModel):
+    email: EmailStr
+
+
+@router.post("/resend-invitation")
+async def resend_invitation(body: ResendInvitationBody, request: Request):
+    """
+    Re-emit the founder activation magic link.
+
+    Anti-enumeration: response is always neutral. If the email matches
+    an active Founder user whose tenant exists AND whose magic-link has
+    expired or been consumed, a fresh 30-day link is issued.
+
+    For any other case (unknown email, non-owner role, no tenant) the
+    response is the same neutral shape — no signal leaked to the client.
+    """
+    try:
+        ip  = request.client.host if request.client else None
+        ua  = request.headers.get("user-agent")
+        # Only re-issue if the email belongs to an owner with a tenant.
+        # The issue_magic_link service silently no-ops for everything else.
+        async with AsyncSessionLocal() as s:
+            row = (await s.execute(
+                text("""SELECT u.id, u.role FROM users u
+                         WHERE u.email = :em AND u.is_active = TRUE
+                           AND u.role = 'owner' AND u.tenant_id IS NOT NULL"""),
+                {"em": body.email.lower().strip()},
+            )).first()
+        if row:
+            await access_continuity.issue_magic_link(
+                email=body.email,
+                ip=ip, user_agent=ua,
+                locale="it",
+                ttl_minutes=30 * 24 * 60,  # 30 days, founder invitation
+                expose_token=False,
+            )
+    except Exception:
+        pass
+    return {"delivered": True}
+
+
+# ── Workspace recovery (P0-F) ─────────────────────────────────────────
+class WorkspaceRecoveryBody(BaseModel):
+    email: EmailStr
+
+
+@router.post("/workspace-recovery")
+async def workspace_recovery(body: WorkspaceRecoveryBody, request: Request):
+    """
+    "Non trovi il tuo workspace?" CTA.
+
+    Anti-enumeration: response is always neutral. Backend dispatches an
+    internal concierge alert to admin@moodfordesign.com with the email
+    so the Advisor team can manually reach out. The client never learns
+    whether the email belongs to an account.
+    """
+    try:
+        from services import email_dispatcher
+        await email_dispatcher.dispatch_email(
+            template_key='workspace_recovery_concierge',
+            to_email=os.environ.get(
+                'MOOD_ADMIN_NOTIFY_EMAIL',
+                os.environ.get('ADMIN_EMAIL', 'admin@moodfordesign.com'),
+            ),
+            to_name='MOOD Concierge',
+            locale='it-IT',
+            variables={
+                'visitor_email': body.email.lower().strip(),
+                'ip':            request.client.host if request.client else 'unknown',
+            },
+        )
+    except Exception:
+        pass
+    return {"delivered": True}
+
+
+def _password_is_strong(pw: str) -> bool:
+    """Same rules as /auth/set-password: ≥8 chars, 1 upper, 1 digit, 1 special."""
+    import re as _re
+    return (
+        isinstance(pw, str)
+        and len(pw) >= 8
+        and bool(_re.search(r'[A-Z]', pw))
+        and bool(_re.search(r'\d',    pw))
+        and bool(_re.search(r'[^A-Za-z0-9]', pw))
+    )

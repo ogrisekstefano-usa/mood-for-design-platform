@@ -25,6 +25,7 @@ import MovementEcosystem from './pages/studio/MovementEcosystem';
 import MovementIdentity from './pages/studio/MovementIdentity';
 import MovementRequest from './pages/studio/MovementRequest';
 import StudioFunnelV2 from './pages/studio_v2/StudioFunnelV2';
+import PasswordResetPage from './pages/PasswordResetPage';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -66,6 +67,7 @@ const CorporateApp = () => {
   const accessSlugs = getAllSlugs('login');
   const isAccessRoute =
     location.pathname === '/journey/continue' ||
+    location.pathname === '/reset-password' ||
     accessSlugs.includes(location.pathname);
   // /studio (V2 funnel) ora vive dentro il chrome classico (navbar+footer).
   // Solo /studio-legacy resta full-bleed per regression test.
@@ -91,6 +93,9 @@ const CorporateApp = () => {
 
         {/* ITER167 — Magic link landing (universal route, all locales). */}
         <Route path="/journey/continue" element={<AccessContinuityPage />} />
+
+        {/* P0-C — Password reset landing */}
+        <Route path="/reset-password" element={<PasswordResetPage />} />
 
         {/* Studio Activation Flow V2 — public funnel (5 step) */}
         <Route path="/studio"           element={<StudioFunnelV2 />} />

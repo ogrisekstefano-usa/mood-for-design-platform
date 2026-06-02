@@ -154,33 +154,41 @@ async def issue_magic_link(
     locale: str = "it",
     ttl_minutes: Optional[int] = None,
     send_email: bool = True,
+    expose_token: bool = False,
+    link_path: str = "/journey/continue",
 ) -> dict:
     """
     Generate a magic link, persist its hash, and email it via Resend.
 
     Args:
-      ttl_minutes: Override the default 15-min TTL (e.g. 43200 = 30 days
-                   for founder activation invitations).
-      send_email:  If False, the link is issued and persisted but the
-                   transactional email is NOT sent. Caller is responsible
-                   for delivery (e.g. piggybacking on a different template).
+      ttl_minutes:  Override the default 15-min TTL (e.g. 43200 = 30 days
+                    for founder activation invitations).
+      send_email:   If False, the link is issued and persisted but the
+                    transactional email is NOT sent. Caller is responsible
+                    for delivery (e.g. piggybacking on a different template).
+      expose_token: If False (DEFAULT), the response NEVER contains
+                    `raw_token` or `magic_link_url` regardless of outcome —
+                    safe to expose to public endpoints (anti-enumeration +
+                    anti-account-takeover). If True, the caller MUST be an
+                    internal trusted call site (e.g. activate_studio_
+                    ecosystem injecting the URL into the founder email).
 
     Always returns a neutral success-shape, even if the email is unknown,
-    to avoid account enumeration:
-      { "delivered": True, "expires_in_minutes": <ttl>,
-        "magic_link_url": <full URL or None>,
-        "raw_token": <token or None> }
+    to avoid account enumeration. Default public-safe response:
+      { "delivered": True, "expires_in_minutes": <ttl> }
 
     Internally:
-      • If user is unknown → silently no-op (still returns success, url=None).
+      • If user is unknown → silently no-op (still returns success).
       • If rate-limited → returns { "delivered": False, "reason": "rate_limited" }
         so the page can show "you've requested a link recently".
     """
     ttl = int(ttl_minutes or MAGIC_LINK_TTL_MIN)
     email = (email or "").lower().strip()
     if not email:
-        return {"delivered": True, "expires_in_minutes": ttl,
-                "magic_link_url": None, "raw_token": None}
+        out = {"delivered": True, "expires_in_minutes": ttl}
+        if expose_token:
+            out.update({"magic_link_url": None, "raw_token": None})
+        return out
 
     async with AsyncSessionLocal() as session:
         # Rate-limit FIRST (before any account lookup). This applies to
@@ -224,8 +232,10 @@ async def issue_magic_link(
             )
             await session.commit()
             # silent success to prevent enumeration
-            return {"delivered": True, "expires_in_minutes": ttl,
-                    "magic_link_url": None, "raw_token": None}
+            out = {"delivered": True, "expires_in_minutes": ttl}
+            if expose_token:
+                out.update({"magic_link_url": None, "raw_token": None})
+            return out
 
         raw = secrets.token_urlsafe(32)
         token_hash = _hash(raw)
@@ -251,15 +261,18 @@ async def issue_magic_link(
                 to_name=urow["full_name"],
                 raw_token=raw,
                 locale=locale,
+                link_path=link_path,
             )
         except Exception as e:
             # Don't leak the error — log internally, return neutral success.
             logger.warning("Resend send failed (email=%s): %s", email, e)
 
     base = os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
-    magic_url = f"{base}/journey/continue?token={raw}" if base else None
-    return {"delivered": True, "expires_in_minutes": ttl,
-            "magic_link_url": magic_url, "raw_token": raw}
+    magic_url = f"{base}{link_path}?token={raw}" if base else None
+    out = {"delivered": True, "expires_in_minutes": ttl}
+    if expose_token:
+        out.update({"magic_link_url": magic_url, "raw_token": raw})
+    return out
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -413,7 +426,8 @@ EMAIL_COPY = {
 }
 
 
-def _render_email(*, raw_token: str, locale: str) -> tuple[str, str, str]:
+def _render_email(*, raw_token: str, locale: str,
+                   link_path: str = "/journey/continue") -> tuple[str, str, str]:
     """
     Render (subject, html, text) for the magic-link email.
 
@@ -421,7 +435,7 @@ def _render_email(*, raw_token: str, locale: str) -> tuple[str, str, str]:
     """
     copy = EMAIL_COPY.get(locale) or EMAIL_COPY["en-us"]
     base = os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
-    link = f"{base}/journey/continue?token={raw_token}"
+    link = f"{base}{link_path}?token={raw_token}"
 
     html = f"""<!doctype html>
 <html lang="{locale.split('-')[0]}">
@@ -485,18 +499,21 @@ def _render_email(*, raw_token: str, locale: str) -> tuple[str, str, str]:
 async def _send_magic_link_email(
     *, to_email: str, to_name: Optional[str],
     raw_token: str, locale: str,
+    link_path: str = "/journey/continue",
 ) -> None:
     """Send the magic link via Resend. Synchronous SDK wrapped in to_thread."""
     api_key = os.environ.get("RESEND_API_KEY", "").strip()
     if not api_key or api_key.startswith("re_sandbox_placeholder"):
         # No real key configured. Log the link so devs can still test.
         base = os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
-        logger.info("MAGIC_LINK_DEV_PREVIEW email=%s url=%s/journey/continue?token=%s",
-                     to_email, base, raw_token)
+        logger.info("MAGIC_LINK_DEV_PREVIEW email=%s url=%s%s?token=%s",
+                     to_email, base, link_path, raw_token)
         return
 
     resend.api_key = api_key
-    subject, html, text_body = _render_email(raw_token=raw_token, locale=locale)
+    subject, html, text_body = _render_email(raw_token=raw_token,
+                                              locale=locale,
+                                              link_path=link_path)
     sender_email = os.environ.get("ACCESS_SENDER_EMAIL", "onboarding@resend.dev")
     sender_name  = os.environ.get("ACCESS_SENDER_NAME", "MOOD for DESIGN")
     from_field = f"{sender_name} <{sender_email}>"

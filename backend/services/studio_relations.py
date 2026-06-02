@@ -723,6 +723,7 @@ async def activate_studio_ecosystem(*, relation_id: str,
                 email=rel['contact_email'],
                 ttl_minutes=founder_link_ttl_minutes,
                 send_email=False,
+                expose_token=True,  # internal trusted call site
             )
             magic_link_url = link_res.get('magic_link_url')
         except Exception:

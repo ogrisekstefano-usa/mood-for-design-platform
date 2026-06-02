@@ -188,6 +188,29 @@ TEMPLATES = {
             'signature':     'The MOOD for DESIGN™ ecosystem',
         },
     },
+    # ── 8) Concierge: workspace recovery from public login ──
+    'workspace_recovery_concierge': {
+        'it-IT': {
+            'subject':       'Workspace recovery · {{visitor_email}}',
+            'eyebrow':       'Concierge alert',
+            'headline':      'Un utente non trova il suo workspace.',
+            'body':          'Email indicata: {{visitor_email}}\nIP origine: {{ip}}\n\nL\'utente ha cliccato su "Non trovi il tuo workspace?" dalla pagina di accesso. Verifica chi è (advisor lead? founder con vecchia email? cliente privato?) e contattalo entro 24h.',
+            'cta_label':     'Apri il Command Center',
+            'cta_url_path':  '/command-center/overview',
+            'note':          'La risposta data all\'utente è una mail neutra di conferma. Non rivelare se l\'account esiste.',
+            'signature':     'Sistema MOOD',
+        },
+        'en-US': {
+            'subject':       'Workspace recovery · {{visitor_email}}',
+            'eyebrow':       'Concierge alert',
+            'headline':      'A user cannot locate their workspace.',
+            'body':          'Email supplied: {{visitor_email}}\nOrigin IP: {{ip}}\n\nThe user clicked "Cannot find your workspace?" from the login page. Determine who they are (advisor lead? founder with stale email? private client?) and reach out within 24h.',
+            'cta_label':     'Open Command Center',
+            'cta_url_path':  '/command-center/overview',
+            'note':          'The response shown to the user is a neutral acknowledgement. Do not reveal whether the account exists.',
+            'signature':     'MOOD system',
+        },
+    },
 }
 
 
