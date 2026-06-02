@@ -153,6 +153,9 @@ api_router.include_router(knowledge_factory.router, prefix="/inspirations", tags
 api_router.include_router(brand_import_sessions.router, prefix="/inspirations/knowledge-factory", tags=["brand-import-sessions"])
 api_router.include_router(knowledge_graph.router,        prefix="/knowledge-graph", tags=["design-knowledge-graph"])
 api_router.include_router(brand_catalog_sets.router,     prefix="/knowledge", tags=["brand-catalog-sets"])
+# ITER197 · Persistent Extraction Jobs™
+from routers import extraction_jobs as _extr_jobs_router  # noqa: E402
+api_router.include_router(_extr_jobs_router.router, prefix="/knowledge", tags=["extraction-jobs"])
 api_router.include_router(journey_mail.router,           prefix="/journey-mail", tags=["journey-mail-intelligence"])
 api_router.include_router(brands_registry.router,   prefix="/inspirations", tags=["brand-registry"])
 api_router.include_router(curated_references.router, prefix="/inspirations", tags=["curated-references"])
@@ -334,3 +337,22 @@ def root():
 
 
 app.include_router(api_router)
+
+
+# ─── ITER197 · Startup recovery hook ──────────────────────────────────
+@app.on_event("startup")
+async def _iter197_recover_orphan_extraction_jobs():
+    """On backend startup, scan for `extraction_jobs.status='running'` rows
+    whose heartbeat is older than 2 minutes (= orphaned by a process death)
+    and automatically re-queue them. Resumes ARBI-class workloads
+    transparently across deployments, hotfixes and crashes."""
+    try:
+        from services import extraction_job_runner
+        n = extraction_job_runner.recover_orphan_jobs()
+        if n:
+            logger.warning(f"[ITER197] recovered {n} orphan extraction job(s) on startup")
+        else:
+            logger.info("[ITER197] no orphan extraction jobs on startup")
+    except Exception as e:
+        logger.exception(f"[ITER197] orphan recovery failed: {e}")
+
