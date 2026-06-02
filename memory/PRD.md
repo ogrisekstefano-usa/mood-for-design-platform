@@ -1,5 +1,79 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER194 · MULTI-PDF BRAND CATALOG INGESTION WORKSPACE · PHASES 1-3 BACKEND · DELIVERED · 02 Feb 2026
+
+**🎯 Vincolo Founder:** Backend completo (DB + API + Unified Brand Index) prima della UI. Coesiste con il flusso single-PDF e con `brand_import_sessions` (ITER192). STOP prima della UI completa per validazione su ARBI Bathroom.
+
+### ✅ Phase 1 · Foundation DB + Backend core
+**Migration `119_iter194_brand_catalog_ingestion.sql`** (idempotente · 5 nuove tabelle):
+- 🆕 `brand_catalog_sets` (root workspace per brand · status lifecycle draft→uploading→extracting→needs_review→validated→published→archived)
+- 🆕 `brand_catalog_documents` (per-PDF in un set · FK→`source_documents` per riusare l'extraction pipeline)
+- 🆕 `brand_catalog_pages` (page-level extraction · `visual_role` enum: cover/index/section_opener/product_spread/lifestyle/technical_drawing/finishes_table/composition/brand_story/unknown · review_status per pagina)
+- 🆕 `brand_detected_entities` (Unified Brand Index · `entity_type`: collection/composition/product/finish/material/designer/accessory/mirror/washbasin/tap · status: detected/auto_merged/needs_review/separate/merged_into/rejected/validated)
+- 🆕 `brand_entity_relations` (graph edges: contains/has_finish/has_material/designed_by/includes_component/belongs_to_composition/available_in/paired_with)
+- ✅ FK robusti, indici, GRANT service_role, schema_migrations bookkeeping
+- 🔒 Tenant-scoped su tutte le tabelle
+
+### ✅ Phase 2 · Batch Extraction Pipeline
+**Modulo nuovo:** `cultural_engine/brand_index_builder.py` (~430 righe)
+- `build_unified_index(set_id)`: aggrega prodotti / sezioni cross-PDF, fuzzy alias matching (Code / Code Wave / Home Plus), boost di confidence per multi-doc, persistenza idempotente.
+- **Policy soglia Founder:** confidence ≥ 0.85 → `auto_merged`, 0.60-0.85 → `needs_review`, <0.60 → `separate`.
+- `write_page_snapshots()`: materializza `brand_catalog_pages` con `visual_role` inferito.
+- Pipeline batch background-task riusa `product_composer.compose_products_from_pdf` (single-PDF intatto). Vision Layer 2 always-on (con cache hybrid ereditata da ITER192). Retry storage download 4x.
+
+### ✅ Phase 3 · Validation API + Unified Brand Index
+**Router nuovo:** `routers/brand_catalog_sets.py` montato su `/api/knowledge` (~700 righe · **19 endpoint**)
+- **Brands**: `GET/POST /brands`, `GET /brands/{id}`
+- **Catalog Sets**: `POST/GET /brands/{bid}/catalog-sets`, `GET/PATCH/DELETE /catalog-sets/{sid}`
+- **Documents**: `POST /catalog-sets/{sid}/documents/upload` (batch ≤ **50 PDF**), `GET /catalog-sets/{sid}/documents`, `DELETE /catalog-sets/{sid}/documents/{did}`
+- **Extraction**: `POST /catalog-sets/{sid}/extract` (background), `GET /catalog-sets/{sid}/extraction-status` (polling 2s)
+- **Validation**: `GET /catalog-sets/{sid}/validation-summary` (brand summary + entity counts + page review stats), `GET /catalog-sets/{sid}/pages` (filtri: doc/role/review_status), `PATCH /catalog-sets/{sid}/pages/{pid}`
+- **Entity Resolver**: `GET /catalog-sets/{sid}/entities` (filtri type/status/q), `PATCH /catalog-sets/{sid}/entities/{eid}`, `POST /catalog-sets/{sid}/entities/{eid}/merge`
+- **Publish gate**: `POST /catalog-sets/{sid}/publish` → 409 se restano `needs_review` entities
+
+### 🧪 Backend tests
+- ✅ ITER194 `test_iter194_brand_catalog_ingestion.py`: **17/17 PASS · 100%** (40.9s)
+  - Brand lifecycle + Catalog Set CRUD
+  - Multi-PDF upload (2 PDF synthetic ARBI-style)
+  - Extraction E2E con polling background (180s timeout)
+  - Cross-doc dedup: prodotto `AURORA` presente in entrambi i PDF → 1 sola entity con `mention_count≥2`, 2 `source_document_ids`
+  - Designer `Marco Rossi` cross-doc → mention_count cumulativo
+  - Page snapshots con `visual_role` corretto
+  - Page review patch
+  - Entity Resolver patch + merge
+  - Publish gate (409 con needs_review aperti, 200 dopo validazione)
+- ✅ Regression ITER192: **10/10 PASS** (in isolamento)
+- ✅ Regression ITER193: **15/15 PASS**
+- ✅ Regression ITER187: **15/15 PASS**
+
+### 📁 File creati / modificati
+- ✨ `/app/supabase/migrations/119_iter194_brand_catalog_ingestion.sql` (~280 righe)
+- ✨ `/app/scripts/apply_migration_119.py`
+- ✨ `/app/backend/cultural_engine/brand_index_builder.py` (~430 righe)
+- ✨ `/app/backend/routers/brand_catalog_sets.py` (~700 righe)
+- ✨ `/app/backend/tests/test_iter194_brand_catalog_ingestion.py` (~350 righe, 17 test)
+- 📝 `/app/backend/server.py` (router mount `/api/knowledge`)
+
+### 🚦 STATUS — Aspetta validazione Founder su ARBI Bathroom prima di Phase 4 UI
+**Next:** Founder testa via API/curl o frontend stub:
+1. `POST /api/knowledge/brands` → crea brand "ARBI Bathroom" reale
+2. `POST /api/knowledge/brands/{id}/catalog-sets` → crea "ARBI Master Set 2026"
+3. `POST /api/knowledge/catalog-sets/{sid}/documents/upload` → carica i veri PDF ARBI
+4. `POST /api/knowledge/catalog-sets/{sid}/extract` → estrazione batch
+5. Polling `GET /api/knowledge/catalog-sets/{sid}/extraction-status`
+6. Verifica `GET /api/knowledge/catalog-sets/{sid}/validation-summary` + entities
+
+### 🔵 Next Action Items
+- 🟢 **Founder validation** ARBI Bathroom: upload PDF reali, verifica Unified Brand Index (Code/Code Wave dedup, Home Plus, Essentials, specchiere, finiture, lavabi, accessori)
+- 🔥 **Phase 4 P0** Frontend Admin Workspace: `KnowledgeBrandsPage` · `BrandDetailPage` · `CatalogSetWorkspace` (tab Upload/Extraction/Validation) · `MultiPdfUploadPanel` (drag&drop ≤50 PDF) · `ExtractionProgressPanel` (polling 2s) · `ValidationDashboard` · `DocumentReviewPanel` · `EntityResolverPanel` — UX premium/calm: "Needs review" mai "AI failed"
+- 🟡 **P1** Vision Cache hit telemetry sull'extraction-status endpoint
+- 🟡 **P1** Re-extract single document (idempotency) e re-build index on-demand
+- 🟡 **P2** Curated_public promotion endpoint (admin promote ARBI entities → global canonical)
+- 🔵 **Future** Academy Builder · Magazine Builder · Marketboard Generator (backlog)
+
+---
+
+
 ## 🟢 ITER193 · MOOD DESIGN KNOWLEDGE GRAPH™ ENGINE · PHASE 1 · DELIVERED · 02 Feb 2026
 
 **🎯 Vincolo Founder:** Semantic Layer Foundation. NO UI, NO AI chat, NO recommendations. Solo struttura dati riutilizzabile da futuri Brand Atlas / Academy / Magazine / Marketboard / Moodboard / Specification / Design Advisor AI.
