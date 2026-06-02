@@ -42,6 +42,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
         // Target countries with priority + status (new structure)
         target_countries:              form.target_countries || [],
         // Contact + help
+        studio_name:        form.studio_name,
         first_name:         form.first_name,
         last_name:          form.last_name,
         contact_email:      form.contact_email,

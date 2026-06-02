@@ -51,6 +51,7 @@ async def submit(request: Request, body: dict = Body(...)):
             target_countries              = body.get("target_countries") or [],
             target_country_isos           = body.get("target_country_isos") or [],
             # Contact + help
+            studio_name       = body.get("studio_name") or "",
             first_name        = body.get("first_name") or "",
             last_name         = body.get("last_name")  or "",
             contact_email     = body.get("contact_email") or "",

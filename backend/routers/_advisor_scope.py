@@ -40,7 +40,12 @@ ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY")
 SUPER_ADMIN_ROLES = {"admin", "editor"}
 ADVISOR_ROLE = "advisor"
 # Roles allowed to reach /command-center surfaces.
-ALLOWED_ROLES = SUPER_ADMIN_ROLES | {ADVISOR_ROLE, "owner"}
+# P0-A Tenant Isolation: 'owner' is INTENTIONALLY excluded — Founders
+# must never reach pipeline, studio_requests, or cross-tenant relations.
+# Endpoints that legitimately serve a Founder (e.g. tenant manifest,
+# editorial copy for their own surface) use require_admin_tenant, which
+# is tenant-bound for owners.
+ALLOWED_ROLES = SUPER_ADMIN_ROLES | {ADVISOR_ROLE}
 
 
 async def _has_advisor_profile(user_id: str) -> bool:

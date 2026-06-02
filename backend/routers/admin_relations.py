@@ -17,7 +17,7 @@ from database import AsyncSessionLocal
 from services import studio_relations
 from services.site_resolver import _fetch_block_values, LOCALE_FALLBACK, DEFAULT_LOCALE
 from tenant_resolver import get_corporate_tenant
-from routers._auth import require_admin_tenant
+from routers._auth import require_admin_tenant, enforce_tenant_match
 from routers._advisor_scope import require_advisor_scope
 
 logger = logging.getLogger(__name__)
@@ -331,7 +331,10 @@ async def tenant_manifest(
     Returns the complete Tenant Manifest™ — the canonical, B2B-only
     record of a studio inside MOOD's ecosystem. Used by the Founder
     First Access screen and the Advisor Console's tenant detail.
+
+    Tenant boundary: owners can only fetch their own tenant manifest.
     """
+    enforce_tenant_match(slug, _tenant)
     async with AsyncSessionLocal() as s:
         t = (await s.execute(
             text("""
@@ -472,7 +475,7 @@ async def founder_first_access_state(
 async def copy_manifest(
     namespace: str = Query(...),
     locale: str = Query(default=DEFAULT_LOCALE),
-    _scope: dict = Depends(require_advisor_scope),
+    _tenant: dict = Depends(require_admin_tenant),
 ):
     """
     Resolve every editorial_block under a namespace into a flat map.

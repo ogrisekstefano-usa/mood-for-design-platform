@@ -53,7 +53,9 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
           ? t('email_invalid')
           : '';
 
-  const canContinue = !!form.first_name?.trim()
+  const canContinue = !!form.studio_name?.trim()
+                   && form.studio_name.trim().length >= 2
+                   && !!form.first_name?.trim()
                    && !!form.last_name?.trim()
                    && emailOK
                    && !checking;
@@ -77,6 +79,23 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
         fontSize: 'clamp(2rem, 4.5vw, 3rem)', lineHeight: 1.1,
         margin: '0 0 36px', fontWeight: 500, letterSpacing: '-0.02em',
       }} data-testid="step3-title">{t('step3_title')}</h1>
+
+      {/* P0-B: Studio name (required, ≥2 chars). Drives tenant
+          display name + suggested slug in the activation modal. */}
+      <div style={{ marginBottom: 22 }}>
+        <label style={labelStyle}>{t('step3_studio_name', 'Nome dello studio')}</label>
+        <input type="text" value={form.studio_name || ''}
+          onChange={(e) => update({ studio_name: e.target.value })}
+          data-testid="studio-name-input"
+          placeholder={t('step3_studio_name_placeholder', 'Es. Martinel Interior Design')}
+          maxLength={120}
+          style={inputStyle} />
+        <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)',
+                    marginTop: 6, lineHeight: 1.5 }}>
+          {t('step3_studio_name_hint',
+             'Sarà il nome ufficiale del tuo workspace MOOD.')}
+        </p>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 22 }}>
         <div>

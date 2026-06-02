@@ -136,6 +136,9 @@ async def manifest(locale: str = 'it-IT') -> dict:
             "step2_targets_helper":     _c("studio_v2.ui.step2.targets.helper",     "Puoi indicare mercati attuali o futuri."),
             "step2_targets_placeholder":_c("studio_v2.ui.step2.targets.placeholder","Cerca un Paese…"),
             "step3_title":       _c("studio_v2.ui.step3.title",        "Chi sarà il referente principale?"),
+            "step3_studio_name":            _c("studio_v2.ui.step3.studio_name",            "Nome dello studio"),
+            "step3_studio_name_placeholder":_c("studio_v2.ui.step3.studio_name.placeholder","Es. Martinel Interior Design"),
+            "step3_studio_name_hint":       _c("studio_v2.ui.step3.studio_name.hint",       "Sarà il nome ufficiale del tuo workspace MOOD."),
             "step3_first_name":  _c("studio_v2.ui.step3.first_name",   "Nome"),
             "step3_last_name":   _c("studio_v2.ui.step3.last_name",    "Cognome"),
             "step3_email":       _c("studio_v2.ui.step3.email",        "Email professionale"),
@@ -246,6 +249,7 @@ async def submit_v2(*,
     target_countries: list = None,
     target_country_isos: list[str] = None,
     # Contact + help
+    studio_name: str = '',
     first_name: str = '',
     last_name: str = '',
     contact_email: str = '',
@@ -282,6 +286,11 @@ async def submit_v2(*,
             if len(cl) == 2:
                 targets.append({'iso2': cl, 'priority': i + 1, 'status': 'planned'})
 
+    # Server-side validation: studio name is required (P0-B).
+    studio_name_clean = (studio_name or '').strip()
+    if not studio_name_clean or len(studio_name_clean) < 2:
+        return {"ok": False, "reason": "missing_studio_name"}
+
     # Server-side email uniqueness gate
     uniq = await check_email_uniqueness(contact_email)
     if not uniq["available"]:
@@ -313,7 +322,10 @@ async def submit_v2(*,
     final_city    = headquarter_city or city or None
     full_name_parts = [p for p in [first_name, last_name] if p]
     contact_name = ' '.join(full_name_parts) or None
-    studio_label = contact_name
+    # P0-B fix: studio name is now a first-class V2 input. Falls back to
+    # contact_name only when explicitly omitted (legacy clients) — new
+    # clients MUST supply it.
+    studio_label = (studio_name or '').strip() or contact_name
 
     await studio_activation.patch_draft(
         draft_token=draft_token,

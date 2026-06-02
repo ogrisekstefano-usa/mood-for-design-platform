@@ -27,6 +27,11 @@ KEYS = [
     ('step2.targets.remove_aria',     'Rimuovi {country}', 'Remove {country}'),
     ('step3.email.checking',          'Verifica in corso…', 'Checking…'),
     ('step3.email.ok',                'Email disponibile.', 'Email available.'),
+    # P0-B: Studio Name (required first-class V2 field) + activation modal binding.
+    ('step3.studio_name',             'Nome dello studio', 'Studio name'),
+    ('step3.studio_name.placeholder', 'Es. Martinel Interior Design', 'e.g. Martinel Interior Design'),
+    ('step3.studio_name.hint',        'Sarà il nome ufficiale del tuo workspace MOOD.',
+                                       'This will be the official name of your MOOD workspace.'),
     ('step4.help_other.placeholder',  'Specifica…', 'Specify…'),
     ('step4.error.prefix',            'Si è verificato un errore', 'Something went wrong'),
     ('loading.brand',                 'MOOD', 'MOOD'),

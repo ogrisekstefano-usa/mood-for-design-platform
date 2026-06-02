@@ -1,15 +1,28 @@
 """
 Admin auth dependencies.
 
-Strict mode (default): require a Bearer JWT with role ∈ {admin, owner}.
-Legacy fallback: X-Admin-Key matching ADMIN_API_KEY env var.
-Either path resolves the tenant from the header or from the JWT claim.
+Tenant boundary policy (P0-A Tenant Isolation):
+
+  • role=admin / editor → super admin. Can target any tenant via
+    X-Tenant-Slug header or JWT claim. No path-slug validation.
+  • role=owner          → Founder. Tenant is FORCED to the JWT claim;
+    the X-Tenant-Slug header is IGNORED. Endpoints that accept a URL
+    {slug} must call `enforce_tenant_match()` to confirm the URL slug
+    equals the resolved tenant slug.
+  • Any other role / unauthenticated → 401/403.
+
+Legacy: X-Admin-Key matching ADMIN_API_KEY env var is still accepted
+in development as a super-admin equivalent.
 """
 import os
 from fastapi import Header, HTTPException
-from tenant_resolver import resolve_tenant_by_host, get_corporate_tenant
+from tenant_resolver import get_corporate_tenant
 
 ADMIN_API_KEY = os.environ.get('ADMIN_API_KEY')
+
+SUPER_ADMIN_ROLES = {"admin", "editor"}
+TENANT_BOUND_ROLES = {"owner"}
+ALLOWED_ROLES = SUPER_ADMIN_ROLES | TENANT_BOUND_ROLES
 
 
 async def require_admin_tenant(
@@ -18,10 +31,11 @@ async def require_admin_tenant(
     authorization: str | None = Header(default=None),
 ) -> dict:
     """
-    Tenant-scoped admin guard. Accepts either:
-      • `Authorization: Bearer <jwt>`  with role admin/owner/editor, OR
-      • `X-Admin-Key: <key>`           matching ADMIN_API_KEY env.
-    Anonymous requests are rejected with 401 — no implicit access.
+    Tenant-scoped admin guard. Returns the resolved tenant dict.
+
+    The returned dict has an extra `_role` key carrying the JWT role
+    so downstream endpoints can apply additional scoping (e.g. read-
+    only manifest for owners).
     """
     role: str | None = None
     tenant_slug_from_jwt: str | None = None
@@ -36,7 +50,7 @@ async def require_admin_tenant(
             raise HTTPException(status_code=401, detail="Invalid session")
         role = (claims.get("role") or "").lower()
         tenant_slug_from_jwt = claims.get("tenant_slug")
-        if role not in {"admin", "owner", "editor"}:
+        if role not in ALLOWED_ROLES:
             raise HTTPException(status_code=403, detail="Insufficient role")
 
     # 2) Admin API key fallback (must be explicitly configured)
@@ -46,12 +60,40 @@ async def require_admin_tenant(
     else:
         raise HTTPException(status_code=401, detail="Authentication required")
 
-    # Resolve tenant. Priority: explicit header > JWT claim > corporate fallback.
-    slug = x_tenant_slug or tenant_slug_from_jwt
+    # Resolve tenant per role policy.
+    if role in TENANT_BOUND_ROLES:
+        # Owner: tenant is FORCED to JWT claim. X-Tenant-Slug is ignored.
+        # No claim → 403 (founder must have a tenant_slug on its JWT).
+        if not tenant_slug_from_jwt:
+            raise HTTPException(status_code=403, detail="Tenant claim missing")
+        slug = tenant_slug_from_jwt
+    else:
+        # Super admin: header > JWT > corporate fallback.
+        slug = x_tenant_slug or tenant_slug_from_jwt
+
     if slug:
         from tenant_resolver import _load_by_slug
         t = await _load_by_slug(slug)
         if not t:
             raise HTTPException(status_code=404, detail=f"Tenant '{slug}' not found")
-        return t
-    return await get_corporate_tenant()
+        tenant = dict(t)
+    else:
+        tenant = dict(await get_corporate_tenant())
+    tenant['_role'] = role
+    return tenant
+
+
+def enforce_tenant_match(url_slug: str, tenant: dict) -> None:
+    """
+    Compare a URL `{slug}` path-parameter against the tenant resolved by
+    `require_admin_tenant`. Super-admins are bypassed; owners are
+    strictly enforced.
+
+    Raises 404 (NOT 403) on mismatch, to avoid leaking the existence of
+    other tenants via timing/error differentiation.
+    """
+    role = (tenant or {}).get('_role')
+    if role in SUPER_ADMIN_ROLES:
+        return
+    if (tenant or {}).get('slug') != url_slug:
+        raise HTTPException(status_code=404, detail="Tenant not found")
