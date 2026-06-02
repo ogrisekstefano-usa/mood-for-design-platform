@@ -65,6 +65,22 @@ i founder accedono al loro Blueprint workspace via magic-link.
 - `/app/memory/TENANT_ACTIVATION_COMPLETION_REPORT.md`
 - `/app/memory/EMAIL_DELIVERY_HARDENING_REPORT.md`
 - `/app/memory/TENANT_ISOLATION_FIX_REPORT.md`
+- `/app/memory/RELATIONSHIP_OS_M0_EXECUTION_REPORT.md` — M0 DB foundation (02/06/2026)
+- `/app/memory/M1_CONTACT_CRM_IMPLEMENTATION_REPORT.md` — M1 Contact CRM (02/06/2026)
+- `/app/memory/M1_REAL_USAGE_VALIDATION_REPORT.md` — M1 real usage validation (02/06/2026)
+- `/app/memory/M1_0_1_HOTFIX_REPORT.md` — M1.0.1 hotfix ARCH-1+ARCH-2 (02/06/2026) 🟢
+- `/app/memory/M2_RELATIONSHIP_TIMELINE_FINAL_EXECUTION_PLAN.md` — piano M2 con 4 decisioni utente recepite
+- `/app/memory/M2_IMPLEMENTATION_KICKOFF_REPORT.md` — readiness M2 (02/06/2026) — `M2_READY_TO_KICK_OFF`
+
+## Stato Relationship OS™ (02/06/2026)
+- ✅ **M0** DB foundation (view `v_relationship_timeline`, indici, catalog) — VALIDATED
+- ✅ **M1** Contact CRM (CRUD + Org Owner + Founder mirror + RBAC) — VALIDATED
+- ✅ **M1.0.1** Hotfix (`catalogs/languages` 200 · `preferred_language` normalize) — VALIDATED
+- 🟢 **M2** Relationship Timeline — READY_TO_KICK_OFF (in attesa "VAI" utente)
+- ⏸️ **M3** Activity Log avanzato — pianificato
+- ⏸️ **M4** Notification Center — pianificato (predisposizione `notifiable` in M2)
+- ⏸️ **M5** Advisor Workspace + KPI — pianificato
+- ⏸️ **M1.1** Performance Hardening (connection pool) — task separato
 
 ## Test
 - `/app/backend/scripts/first_real_tenant_audit.py` — audit E2E (47 checks)

@@ -51,9 +51,9 @@ _DEF = {
     ),
     "languages": (
         "platform_languages",
-        ["code", "name_native", "name_en", "rtl"],
+        ["code", "native_name AS name_native", "name AS name_en", "rtl"],
         "TRUE",
-        "name_native, code",
+        "native_name, code",
     ),
     "markets": (
         "markets",

@@ -16,6 +16,51 @@ from database import AsyncSessionLocal
 
 # ─── helpers ───────────────────────────────────────────────────────────
 
+# Base-code → canonical BCP-47 mapping for `preferred_language`.
+# Allows API consumers to pass either short codes (it, en) or full
+# locale codes (it-IT, en-US). Anything else raises 422.
+_LANG_BASE_MAP = {
+    "it": "it-IT", "en": "en-US", "fr": "fr-FR",
+    "de": "de-DE", "es": "es-ES", "pt": "pt-BR",
+    "ar": "ar-AE", "zh": "zh-CN", "ja": "ja-JP",
+}
+
+
+async def _normalize_language(s, raw: str | None) -> str | None:
+    """Validate/normalize a preferred_language value.
+
+    Accepts:
+      - None / "" → returns None (column is nullable)
+      - BCP-47 locale already present in platform_languages (e.g. 'it-IT') → kept as-is
+      - ISO-639 base code mapped via _LANG_BASE_MAP (e.g. 'it' → 'it-IT')
+    Rejects anything else with HTTP 422.
+    """
+    if not raw:
+        return None
+    val = str(raw).strip()
+    if not val:
+        return None
+    # Direct hit on platform_languages.code
+    exists = (await s.execute(text(
+        "SELECT 1 FROM platform_languages WHERE code = :c"
+    ), {"c": val})).scalar()
+    if exists:
+        return val
+    # Base-code fallback
+    mapped = _LANG_BASE_MAP.get(val.lower())
+    if mapped:
+        exists = (await s.execute(text(
+            "SELECT 1 FROM platform_languages WHERE code = :c"
+        ), {"c": mapped})).scalar()
+        if exists:
+            return mapped
+    raise HTTPException(status_code=422, detail={
+        "code": "invalid_preferred_language",
+        "message": f"preferred_language '{raw}' non riconosciuto",
+        "accepted_examples": list(_LANG_BASE_MAP.keys()) + list(_LANG_BASE_MAP.values()),
+    })
+
+
 async def _emit_event(s, tenant_id: str, relation_id: str | None,
                      event_type_code: str, actor_id: str | None,
                      payload: dict | None = None) -> None:
@@ -144,6 +189,10 @@ async def create_contact(tenant_id: str, payload: dict[str, Any],
                     "existing_contact_id": str(dup),
                 })
 
+        # Normalize/validate preferred_language ('it' → 'it-IT', or 422)
+        normalized_lang = await _normalize_language(
+            s, payload.get("preferred_language"))
+
         # is_primary management — unset others if requested
         is_primary = bool(payload.get("is_primary"))
         if is_primary:
@@ -180,7 +229,7 @@ async def create_contact(tenant_id: str, payload: dict[str, Any],
             "phone_prefix": (payload.get("phone_prefix") or "").strip() or None,
             "phone_number": (payload.get("phone_number") or "").strip() or None,
             "linkedin_url": (payload.get("linkedin_url") or "").strip() or None,
-            "preferred_language": payload.get("preferred_language") or None,
+            "preferred_language": normalized_lang,
             "is_primary": is_primary,
             "notes": payload.get("notes"),
             "source_code": payload.get("source_code") or source_default,
@@ -246,6 +295,12 @@ async def update_contact(tenant_id: str, contact_id: str,
             else:
                 fields.append(f"{k} = :{k}")
             params[k] = v
+
+    # Normalize preferred_language if present in update (422 on invalid)
+    if "preferred_language" in params:
+        async with AsyncSessionLocal() as _s:
+            params["preferred_language"] = await _normalize_language(
+                _s, params["preferred_language"])
 
     if not fields:
         return existing
