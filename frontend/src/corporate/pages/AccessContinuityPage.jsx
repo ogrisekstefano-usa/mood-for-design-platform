@@ -39,6 +39,30 @@ const _writeConsumed = (set) => {
 };
 const PENDING_CONSUMES = new Map();  // token -> Promise<response>
 
+/**
+ * Persist a successful auth response into localStorage under ALL the
+ * key shapes the rest of the app reads from:
+ *  - `mood_jwt`           — legacy (this file's older code paths)
+ *  - `mood_auth_token`    — production key (AdminApp / Blueprint / Command Center)
+ *  - `mood_user` / `mood_auth_user`
+ *  - `mood_tenant` / `mood_auth_tenant`
+ *  - `mood-admin-tenant`  — tenant slug expected by adminApi headers()
+ *
+ * Accepts the shape returned by either /api/auth/login (`token`) or
+ * /api/auth/magic-link/consume (`jwt`).
+ */
+const _persistSession = (data) => {
+  const jwt = data?.token || data?.jwt;
+  if (!jwt) return;
+  localStorage.setItem('mood_jwt',          jwt);
+  localStorage.setItem('mood_auth_token',   jwt);
+  localStorage.setItem('mood_user',         JSON.stringify(data.user || {}));
+  localStorage.setItem('mood_auth_user',    JSON.stringify(data.user || {}));
+  localStorage.setItem('mood_tenant',       JSON.stringify(data.tenant || {}));
+  localStorage.setItem('mood_auth_tenant',  JSON.stringify(data.tenant || {}));
+  localStorage.setItem('mood-admin-tenant', data.tenant?.slug || 'studio');
+};
+
 const ACCESS_KEYS = [
   'site.access.eyebrow',
   'site.access.headline',
@@ -164,16 +188,9 @@ const AccessContinuityPage = () => {
         _writeConsumed(consumed);
         PENDING_CONSUMES.delete(incomingToken);
         if (res.data?.ok) {
-          // Persist session — write to BOTH key shapes so that any
-          // downstream page (Admin/Studio shell with `mood_auth_token`,
-          // legacy code with `mood_jwt`) sees the founder as logged in.
-          localStorage.setItem('mood_jwt',        res.data.jwt);
-          localStorage.setItem('mood_auth_token', res.data.jwt);
-          localStorage.setItem('mood_user',         JSON.stringify(res.data.user));
-          localStorage.setItem('mood_auth_user',    JSON.stringify(res.data.user));
-          localStorage.setItem('mood_tenant',       JSON.stringify(res.data.tenant));
-          localStorage.setItem('mood_auth_tenant',  JSON.stringify(res.data.tenant));
-          localStorage.setItem('mood-admin-tenant', res.data.tenant?.slug || 'studio');
+          // Persist session — write to BOTH key shapes via the shared
+          // helper so all downstream pages see the founder as logged in.
+          _persistSession(res.data);
           setStage('welcome_back');
           setTimeout(() => {
             window.location.assign(res.data.redirect_url || '/command-center');
@@ -240,9 +257,7 @@ const AccessContinuityPage = () => {
         password,
       });
       if (res.data?.token) {
-        localStorage.setItem('mood_jwt',    res.data.token);
-        localStorage.setItem('mood_user',   JSON.stringify(res.data.user));
-        localStorage.setItem('mood_tenant', JSON.stringify(res.data.tenant));
+        _persistSession(res.data);
         window.location.assign(res.data.redirect_url || '/command-center');
       } else if (res.data?.requires_tenant_selection) {
         // Edge case: same email across tenants. Pick first for now.
@@ -253,9 +268,7 @@ const AccessContinuityPage = () => {
           tenant_slug: slug,
         });
         if (r2.data?.token) {
-          localStorage.setItem('mood_jwt',    r2.data.token);
-          localStorage.setItem('mood_user',   JSON.stringify(r2.data.user));
-          localStorage.setItem('mood_tenant', JSON.stringify(r2.data.tenant));
+          _persistSession(r2.data);
           window.location.assign(r2.data.redirect_url || '/command-center');
         }
       }

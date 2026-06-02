@@ -22,6 +22,11 @@ export const adminAuth = {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem('mood_auth_user');
     localStorage.removeItem('mood_auth_tenant');
+    // P0 — also drop the legacy keys written by AccessContinuityPage
+    // so a Logout leaves NO zombie auth state in localStorage.
+    localStorage.removeItem('mood_jwt');
+    localStorage.removeItem('mood_user');
+    localStorage.removeItem('mood_tenant');
   },
 
   // Auth headers — JWT bearer wins, X-Admin-Key is sent as fallback for

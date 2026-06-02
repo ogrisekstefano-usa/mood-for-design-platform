@@ -1,0 +1,401 @@
+{
+  "visitor_email": "mario.rossi.1780378634@martinel.example",
+  "request_id": "4a7d2622-4e7f-4dcc-8c77-e5432dc7ecb8",
+  "reference": "MOOD-4A7D-2622",
+  "tenant_id": "d346b762-6d97-411b-98c1-c87f6ffdb3de",
+  "tenant_slug": "martinel-interior-design",
+  "magic_link": "https://editorial-platform-4.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
+  "findings": [
+    {
+      "area": "markets.italy_exists",
+      "ok": true,
+      "severity": "P0",
+      "note": "market italy id=1476d3f7-4cad-48c9-a8c6-b76affb80606",
+      "extra": {}
+    },
+    {
+      "area": "countries.iso_present",
+      "ok": true,
+      "severity": "P0",
+      "note": "got ['AE', 'GB', 'IT', 'US']",
+      "extra": {}
+    },
+    {
+      "area": "v2.draft_created",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "o5eU18cufmcFfU\u2026",
+      "extra": {}
+    },
+    {
+      "area": "v2.submit_ok",
+      "ok": true,
+      "severity": "P0",
+      "note": "ref=MOOD-4A7D-2622 id=4a7d2622 http=200",
+      "extra": {}
+    },
+    {
+      "area": "v2.geo_persisted",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "V2 endpoint wrote operating_market + HQ geo + target_country_isos",
+      "extra": {}
+    },
+    {
+      "area": "cc.admin_login",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "super_admin",
+      "extra": {}
+    },
+    {
+      "area": "cc.request_in_pipeline",
+      "ok": true,
+      "severity": "P0",
+      "note": "buckets=['new', 'under_review', 'qualified', 'rejected', 'awaiting_founder']",
+      "extra": {}
+    },
+    {
+      "area": "cc.drawer_geo_market",
+      "ok": true,
+      "severity": "P1",
+      "note": "market_code=italy",
+      "extra": {}
+    },
+    {
+      "area": "cc.drawer_geo_hq",
+      "ok": true,
+      "severity": "P1",
+      "note": "hq=Pordenone, Friuli-Venezia Giulia, IT",
+      "extra": {}
+    },
+    {
+      "area": "cc.drawer_geo_targets",
+      "ok": true,
+      "severity": "P1",
+      "note": "targets=['US', 'GB', 'AE']",
+      "extra": {}
+    },
+    {
+      "area": "cc.status_reviewing",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "http=200",
+      "extra": {}
+    },
+    {
+      "area": "cc.status_contacted",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "http=200",
+      "extra": {}
+    },
+    {
+      "area": "cc.status_qualified",
+      "ok": true,
+      "severity": "\u2014",
+      "note": "http=200",
+      "extra": {}
+    },
+    {
+      "area": "cc.preview_complete",
+      "ok": true,
+      "severity": "P0",
+      "note": "slug=martinel-interior-design-5 email=mario.rossi.1780378634@martinel.example ttl=30d",
+      "extra": {
+        "preview": {
+          "request_id": "4a7d2622-4e7f-4dcc-8c77-e5432dc7ecb8",
+          "tenant_name": "Martinel Interior Design",
+          "suggested_slug": "martinel-interior-design-5",
+          "founder_email": "mario.rossi.1780378634@martinel.example",
+          "founder_name": "Mario Rossi",
+          "locale": "it-IT",
+          "current_status": "qualified",
+          "relation_id": null,
+          "already_activated": false,
+          "magic_link_validity_days": 30
+        }
+      }
+    },
+    {
+      "area": "cc.activation_ok",
+      "ok": true,
+      "severity": "P0",
+      "note": "slug=martinel-interior-design-5 tenant_id=d346b762",
+      "extra": {
+        "activation": {
+          "ok": true,
+          "tenant_id": "d346b762-6d97-411b-98c1-c87f6ffdb3de",
+          "slug": "martinel-interior-design-5",
+          "tenant_name": "Martinel Interior Design",
+          "founder_user_id": "ff656a65-d0ae-4905-8ed3-71345946e69c",
+          "founder_email": "mario.rossi.1780378634@martinel.example",
+          "magic_link_url": "https://editorial-platform-4.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
+          "magic_link_sent": true,
+          "relation_id": "7882a71b-4c8f-4c6f-b257-5caacfe7d14b",
+          "request_id": "4a7d2622-4e7f-4dcc-8c77-e5432dc7ecb8"
+        }
+      }
+    },
+    {
+      "area": "data.operating_market_id",
+      "ok": true,
+      "severity": "P0",
+      "note": "market_id=1476d3f7-4cad-48c9-a8c6-b76affb80606",
+      "extra": {}
+    },
+    {
+      "area": "data.headquarter_country",
+      "ok": true,
+      "severity": "P0",
+      "note": "hq=IT",
+      "extra": {}
+    },
+    {
+      "area": "data.headquarter_city",
+      "ok": true,
+      "severity": "P0",
+      "note": "city=Pordenone",
+      "extra": {}
+    },
+    {
+      "area": "data.latitude",
+      "ok": true,
+      "severity": "P0",
+      "note": "lat=45.9626",
+      "extra": {}
+    },
+    {
+      "area": "data.longitude",
+      "ok": true,
+      "severity": "P0",
+      "note": "lng=12.6536",
+      "extra": {}
+    },
+    {
+      "area": "data.target_countries",
+      "ok": true,
+      "severity": "P0",
+      "note": "targets=[{'iso2': 'US', 'priority': 1, 'status': 'planned'}, {'iso2': 'GB', 'priority': 2, 'status': 'planned'}, {'iso2': 'AE', 'priority': 3, 'status': 'planned'}]",
+      "extra": {}
+    },
+    {
+      "area": "data.locale",
+      "ok": true,
+      "severity": "P0",
+      "note": "locale=it-IT",
+      "extra": {}
+    },
+    {
+      "area": "data.languages",
+      "ok": false,
+      "severity": "P1",
+      "note": "languages=[]",
+      "extra": {}
+    },
+    {
+      "area": "data.studio_name_real",
+      "ok": true,
+      "severity": "P0",
+      "note": "studio_name='Martinel Interior Design' (expected 'Martinel Interior Design')",
+      "extra": {}
+    },
+    {
+      "area": "data.advisor_attribution",
+      "ok": true,
+      "severity": "P1",
+      "note": "super_admin actor (no advisor profile) \u2014 assigned_advisor_id NULL is by design",
+      "extra": {
+        "advisor_id": null
+      }
+    },
+    {
+      "area": "data.tenant_activation_date",
+      "ok": true,
+      "severity": "P0",
+      "note": "plan_assigned_at=2026-06-02 05:37:44.579733+00:00",
+      "extra": {}
+    },
+    {
+      "area": "data.tenant_slug_chosen",
+      "ok": true,
+      "severity": "P0",
+      "note": "slug=martinel-interior-design-5 (base 'martinel-interior-design' with -N dedup is OK)",
+      "extra": {}
+    },
+    {
+      "area": "data.tenant_name_chosen",
+      "ok": true,
+      "severity": "P1",
+      "note": "name=Martinel Interior Design",
+      "extra": {}
+    },
+    {
+      "area": "email.visitor.received",
+      "ok": true,
+      "severity": "P0",
+      "note": "to=mario.rossi.1780378634@martinel.example status=sent subject=Abbiamo ricevuto la tua candidatura \u00b7 MOOD-4A7D-2622",
+      "extra": {}
+    },
+    {
+      "area": "email.visitor.locale_it",
+      "ok": true,
+      "severity": "P1",
+      "note": "locale=it-IT",
+      "extra": {}
+    },
+    {
+      "area": "email.visitor.review_sent",
+      "ok": true,
+      "severity": "P2",
+      "note": "status=sent",
+      "extra": {}
+    },
+    {
+      "area": "email.visitor.qualified_sent",
+      "ok": true,
+      "severity": "P2",
+      "note": "status=sent",
+      "extra": {}
+    },
+    {
+      "area": "email.founder.approved_sent",
+      "ok": true,
+      "severity": "P0",
+      "note": "status=sent subject=Il tuo Blueprint \u00e8 pronto \u00b7 Martinel Interior Design",
+      "extra": {}
+    },
+    {
+      "area": "email.founder.has_magic_link",
+      "ok": true,
+      "severity": "P0",
+      "note": "link=https://editorial-platform-4.preview.emergentagent.com/journ\u2026",
+      "extra": {}
+    },
+    {
+      "area": "email.founder.validity_30d",
+      "ok": true,
+      "severity": "P0",
+      "note": "validity_days=30",
+      "extra": {}
+    },
+    {
+      "area": "email.super_admin.notified",
+      "ok": true,
+      "severity": "P0",
+      "note": "got 1 admin email(s)",
+      "extra": {
+        "admin_emails": [
+          {
+            "template_key": "admin_new_studio_request",
+            "to_email": "admin@moodfordesign.com",
+            "status": "sent"
+          }
+        ]
+      }
+    },
+    {
+      "area": "email.advisor.notified",
+      "ok": false,
+      "severity": "P1",
+      "note": "got 0 advisor email(s) \u2014 organic submission has no attribution_advisor_id, expected 0",
+      "extra": {
+        "detail": "No advisor_new_lead for organic leads is the documented design. Pool digest is in P1 backlog."
+      }
+    },
+    {
+      "area": "founder.magic_link_consume",
+      "ok": true,
+      "severity": "P0",
+      "note": "http=200 ok=True",
+      "extra": {}
+    },
+    {
+      "area": "founder.redirect_target",
+      "ok": true,
+      "severity": "P1",
+      "note": "redirect=/command-center/welcome",
+      "extra": {}
+    },
+    {
+      "area": "founder.auth_me_role_owner",
+      "ok": true,
+      "severity": "P0",
+      "note": "role=owner email=mario.rossi.1780378634@martinel.example",
+      "extra": {}
+    },
+    {
+      "area": "founder.auth_me_tenant_slug",
+      "ok": true,
+      "severity": "P0",
+      "note": "tenant.slug=martinel-interior-design-5",
+      "extra": {}
+    },
+    {
+      "area": "founder.tenant_isolation",
+      "ok": true,
+      "severity": "P0",
+      "note": "cross-tenant manifest http=404 (expect 401/403)",
+      "extra": {}
+    },
+    {
+      "area": "founder.command_center_pipeline_blocked",
+      "ok": true,
+      "severity": "P0",
+      "note": "pipeline http=403 (expect 401/403/404)",
+      "extra": {}
+    },
+    {
+      "area": "founder.studio_requests_blocked",
+      "ok": true,
+      "severity": "P0",
+      "note": "studio_requests http=403 (expect 401/403/404)",
+      "extra": {}
+    },
+    {
+      "area": "founder.editorial_copy_own_tenant_only",
+      "ok": true,
+      "severity": "P1",
+      "note": "copy manifest http=200 (own tenant copy is OK)",
+      "extra": {}
+    },
+    {
+      "area": "founder.own_manifest_access",
+      "ok": true,
+      "severity": "P0",
+      "note": "own manifest http=200 (slug=martinel-interior-design-5)",
+      "extra": {}
+    },
+    {
+      "area": "founder.first_access_state",
+      "ok": true,
+      "severity": "P1",
+      "note": "is_founder=True first_access=True",
+      "extra": {}
+    }
+  ],
+  "summary": {
+    "P0_failures": [],
+    "P1_failures": [
+      {
+        "area": "data.languages",
+        "ok": false,
+        "severity": "P1",
+        "note": "languages=[]",
+        "extra": {}
+      },
+      {
+        "area": "email.advisor.notified",
+        "ok": false,
+        "severity": "P1",
+        "note": "got 0 advisor email(s) \u2014 organic submission has no attribution_advisor_id, expected 0",
+        "extra": {
+          "detail": "No advisor_new_lead for organic leads is the documented design. Pool digest is in P1 backlog."
+        }
+      }
+    ],
+    "P2_failures": [],
+    "total": 47,
+    "pass": 45
+  }
+}

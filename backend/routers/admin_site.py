@@ -5,7 +5,7 @@ content — editorial_blocks, cms_sections, media references — with publish
 workflow and locale completeness.
 """
 from typing import Any, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, Body, File, UploadFile, Form
+from fastapi import APIRouter, Depends, HTTPException, Query, Body, File, UploadFile, Form, Header
 from sqlalchemy import text
 from datetime import datetime, timezone
 
@@ -1032,17 +1032,65 @@ async def admin_invalidate(tenant: dict = Depends(require_admin_tenant)):
 # ─────────────────────────────────────────────────────────────────────────
 
 @router.get("/whoami")
-async def admin_whoami(scope: dict = Depends(require_advisor_scope)):
+async def admin_whoami(
+    x_tenant_slug: str | None = Header(default=None),
+    x_admin_key:   str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+):
     """Session-check endpoint used by the workspace shells.
 
     Permissive on role (admin / editor / advisor / owner) so each shell
     (Blueprint, Command Center, Founder Welcome) can verify a valid
     session without requiring CMS-level privileges.
+
+    NOTE: This endpoint intentionally does NOT delegate to
+    `require_advisor_scope`, which excludes `owner` for tenant-isolation
+    reasons on the sensitive /admin/* surfaces (pipeline, studio
+    requests, cross-tenant relations). The session-check endpoint must
+    instead recognise founders so that the Founder Welcome shell can
+    confirm the magic-link session.
     """
-    tenant = scope["tenant"]
+    from os import environ
+    ADMIN_API_KEY = environ.get("ADMIN_API_KEY") or None
+    ALLOWED = {"admin", "editor", "advisor", "owner"}
+
+    role: str | None = None
+    user_id: str | None = None
+    email: str | None = None
+    tenant_slug_from_jwt: str | None = None
+
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization.split(None, 1)[1].strip()
+        try:
+            from routers.auth import decode_token
+            claims = decode_token(token)
+        except Exception as e:
+            raise HTTPException(status_code=401, detail="Invalid session") from e
+        role = (claims.get("role") or "").lower()
+        user_id = claims.get("sub")
+        email = claims.get("email")
+        tenant_slug_from_jwt = claims.get("tenant_slug")
+        if role not in ALLOWED:
+            raise HTTPException(status_code=403, detail="Insufficient role")
+    elif ADMIN_API_KEY and x_admin_key == ADMIN_API_KEY:
+        role = "admin"
+    else:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    slug = x_tenant_slug or tenant_slug_from_jwt
+    from tenant_resolver import _load_by_slug, get_corporate_tenant  # type: ignore
+    if slug:
+        tenant = await _load_by_slug(slug)
+        if not tenant:
+            raise HTTPException(status_code=404, detail=f"Tenant '{slug}' not found")
+    else:
+        tenant = await get_corporate_tenant()
+
     return {
-        "tenant": {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')},
-        "role":   scope["role"],
+        "tenant":  {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')},
+        "role":    role,
+        "user_id": user_id,
+        "email":   email,
     }
 
 
