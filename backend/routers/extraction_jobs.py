@@ -206,6 +206,30 @@ def retry_document(set_id: str, doc_id: str, ctx=Depends(get_tenant_context)):
     return {"ok": True, "retried_document": doc.get("display_name"), **out}
 
 
+# ─── ITER199 · Entity Resolution + Knowledge Audit ────────────────────
+from services import entity_resolution_service as resolver  # noqa: E402
+
+
+@router.post("/catalog-sets/{set_id}/resolve-entities")
+def resolve_entities(set_id: str, ctx=Depends(get_tenant_context)):
+    """Run the full Entity Resolution™ pipeline on a catalog set.
+    Demotes false collections, normalises finishes, assigns canonical
+    categories, links products to collections, hardens designer entities,
+    then rebuilds the knowledge_graph_edges."""
+    c = db(); tid = ctx["tenant_id"]
+    cset = _require_set_ownership(c, tid, set_id)
+    return {"ok": True, "result": resolver.run_resolution(tid, set_id, cset.get("brand_id"))}
+
+
+@router.get("/catalog-sets/{set_id}/knowledge-audit")
+def knowledge_audit(set_id: str, ctx=Depends(get_tenant_context)):
+    """Reusable audit endpoint returning the 7-component Knowledge Score™
+    + builder readiness for any brand catalog set."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    return resolver.compute_knowledge_audit(set_id)
+
+
 # ─── Operational smoke test ───────────────────────────────────────────
 @router.get("/system/smoke-test")
 def smoke_test(ctx=Depends(get_tenant_context)):
