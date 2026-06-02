@@ -1,0 +1,261 @@
+{
+  "summary": {
+    "total": 56,
+    "pass": 56,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "table.tenant_contacts",
+      "ok": true
+    },
+    {
+      "name": "table.relationship_activities",
+      "ok": true
+    },
+    {
+      "name": "table.platform_relationship_event_types",
+      "ok": true
+    },
+    {
+      "name": "table.platform_contact_roles",
+      "ok": true
+    },
+    {
+      "name": "table.platform_activity_types",
+      "ok": true
+    },
+    {
+      "name": "table.platform_contact_sources",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.relationship_owner_user_id",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.owner_assigned_at",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.owner_assigned_by",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.source_code",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.source_reference",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.relationship_score",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.last_touch_at",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.is_primary",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.status",
+      "ok": true
+    },
+    {
+      "name": "col.tenant_contacts.metadata",
+      "ok": true
+    },
+    {
+      "name": "col.studio_relationship_events.tenant_id",
+      "ok": true
+    },
+    {
+      "name": "col.studio_relationship_events.event_type_code",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_tenant_status",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_email_lower",
+      "ok": true
+    },
+    {
+      "name": "index.uq_tenant_contacts_primary_active",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_role",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_owner",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_score",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_source",
+      "ok": true
+    },
+    {
+      "name": "index.idx_tenant_contacts_search",
+      "ok": true
+    },
+    {
+      "name": "index.idx_studio_relations_search",
+      "ok": true
+    },
+    {
+      "name": "index.idx_relationship_activities_tenant_when",
+      "ok": true
+    },
+    {
+      "name": "index.idx_relationship_activities_owner_due",
+      "ok": true
+    },
+    {
+      "name": "index.idx_relationship_events_tenant_when",
+      "ok": true
+    },
+    {
+      "name": "index.idx_relationship_notifications_recipient_unread",
+      "ok": true
+    },
+    {
+      "name": "index.idx_relationship_notifications_tenant_unread",
+      "ok": true
+    },
+    {
+      "name": "seed.platform_relationship_event_types",
+      "ok": true,
+      "count": 20,
+      "expected": 20
+    },
+    {
+      "name": "seed.platform_contact_roles",
+      "ok": true,
+      "count": 11,
+      "expected": 11
+    },
+    {
+      "name": "seed.platform_activity_types",
+      "ok": true,
+      "count": 8,
+      "expected": 8
+    },
+    {
+      "name": "seed.platform_contact_sources",
+      "ok": true,
+      "count": 8,
+      "expected": 8
+    },
+    {
+      "name": "seed.timeline_excluded_codes",
+      "ok": true,
+      "codes": "contact_archived,password_reset_requested,password_set,temperature_changed"
+    },
+    {
+      "name": "seed.quick_action_m1",
+      "ok": true,
+      "codes": "call,email,whatsapp,linkedin,internal_note"
+    },
+    {
+      "name": "backfill.event_type_code",
+      "ok": true,
+      "backfilled": 38,
+      "total": 38
+    },
+    {
+      "name": "backfill.tenant_id",
+      "ok": true,
+      "filled": 38,
+      "total": 38
+    },
+    {
+      "name": "fk.fk_sre_event_type_code",
+      "ok": true
+    },
+    {
+      "name": "view.exists",
+      "ok": true
+    },
+    {
+      "name": "view.queryable",
+      "ok": true,
+      "rows": 130
+    },
+    {
+      "name": "legacy.contacts.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by tenant_contacts (Relationsh"
+    },
+    {
+      "name": "legacy.accounts.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by tenants (Relationship OS D2"
+    },
+    {
+      "name": "legacy.studio_team_members.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by tenant_contacts (Relationsh"
+    },
+    {
+      "name": "legacy.notifications.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by relationship_notifications "
+    },
+    {
+      "name": "legacy.tenant_activity_events.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by relationship_activities (Re"
+    },
+    {
+      "name": "legacy.advisor_lead_activities.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by relationship_activities (Re"
+    },
+    {
+      "name": "legacy.advisor_notes.comment",
+      "ok": true,
+      "comment": "LEGACY \u00b7 READ-ONLY \u00b7 Replaced by tenant_contacts.notes + rel"
+    },
+    {
+      "name": "regression.studio_relations.count",
+      "ok": true,
+      "count": 19
+    },
+    {
+      "name": "regression.studio_relationship_events.count",
+      "ok": true,
+      "count": 38
+    },
+    {
+      "name": "explain.idx.tenant_contacts.search",
+      "ok": true,
+      "ms": 0.0
+    },
+    {
+      "name": "explain.idx.studio_relations.search",
+      "ok": true,
+      "ms": 0.7
+    },
+    {
+      "name": "idempotent.event_types_count_stable",
+      "ok": true,
+      "count": 20
+    },
+    {
+      "name": "idempotent.contact_roles_count_stable",
+      "ok": true,
+      "count": 11
+    }
+  ]
+}

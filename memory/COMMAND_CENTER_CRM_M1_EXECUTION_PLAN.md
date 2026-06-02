@@ -89,23 +89,37 @@ Lista tenant (`/command-center/tenants`):
 > M0 (migration 031) deve **incorporare** queste due aggiunte rispetto
 > a quanto specificato nel `RELATIONSHIP_OS_FOUNDATION_PLAN.md` v2:
 
-### 2.1 `tenant_contacts` — campi relationship owner (OBBLIGATORI in M1)
+### 2.1 `tenant_contacts` — campi relationship owner + provenance + readiness (OBBLIGATORI in M1)
 
 ```sql
 -- Aggiunte alla CREATE TABLE tenant_contacts (parte di 031):
+  -- Relationship owner (chi segue commercialmente questo contatto)
   relationship_owner_user_id  UUID NULL REFERENCES users(id) ON DELETE SET NULL,
   owner_assigned_at           TIMESTAMPTZ,
   owner_assigned_by           UUID NULL REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Contact Provenance (origine del contatto, catalog-driven)
+  source_code                 TEXT NULL REFERENCES platform_contact_sources(code),
+  source_reference            TEXT,    -- es. studio_request UUID, advisor email, import batch id
+
+  -- Relationship Readiness (data signals, no logica applicativa in M1)
+  relationship_score          INTEGER NOT NULL DEFAULT 0,
+  last_touch_at               TIMESTAMPTZ,
 ```
 
-E indice:
+E indici:
 ```sql
 CREATE INDEX idx_tenant_contacts_owner
   ON tenant_contacts(relationship_owner_user_id, status)
   WHERE relationship_owner_user_id IS NOT NULL;
+CREATE INDEX idx_tenant_contacts_score
+  ON tenant_contacts(tenant_id, relationship_score DESC)
+  WHERE status = 'active';
+CREATE INDEX idx_tenant_contacts_source
+  ON tenant_contacts(source_code) WHERE source_code IS NOT NULL;
 ```
 
-**Regola business**:
+**Regola business (relationship owner)**:
 - `relationship_owner_user_id` può essere un MOOD user con
   role ∈ {admin, editor, advisor}.
 - All'attivazione tenant, il `relationship_owner_user_id` di default
@@ -113,6 +127,23 @@ CREATE INDEX idx_tenant_contacts_owner
   presente, altrimenti NULL.
 - Founder PUÒ vedere chi è l'owner ma NON può cambiarlo (D4).
 - Admin/Advisor PUÒ ri-assegnare.
+
+**Regola business (provenance)** — catalog `platform_contact_sources`:
+| code | label_it | label_en |
+|---|---|---|
+| `studio_request` | Candidatura V2 | Studio request V2 |
+| `manual` | Inserito manualmente | Manual entry |
+| `advisor` | Da advisor | Added by advisor |
+| `import` | Importato (CSV/batch) | Imported (CSV/batch) |
+| `api` | Tramite API | Via API |
+| `erp_sync` | Sync da ERP | ERP sync |
+| `website` | Form sito | Website form |
+| `linkedin` | LinkedIn outreach | LinkedIn outreach |
+
+**Regola business (readiness)**:
+- `relationship_score` INTEGER DEFAULT 0 — placeholder per Health Score futuro. M1 non scrive ML/logic.
+- `last_touch_at` — placeholder denorm. Sarà aggiornato in M3 dai writer di `relationship_activities`. M1 non scrive automaticamente.
+- Solo predisposizione schema, **nessuna logica applicativa in M1**.
 
 ### 2.2 `platform_contact_roles` — seed M1 finale (11 codici)
 
