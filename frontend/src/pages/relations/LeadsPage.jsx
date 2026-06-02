@@ -6,8 +6,8 @@
  *   - rimossi i filtri tag fake (atmospheres)
  *   - aggiunta CTA primary "+ Nuovo Lead" che apre il modal CRM
  */
-import React, { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, X, Plus, BookOpen } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
@@ -134,6 +134,7 @@ const LeadCard = ({ lead, designer, onOpen }) => {
 
 const LeadsPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [q, setQ] = useState('');
   const filters = useMemo(() => ({ q }), [q]);
   const { items, total, counts, loading } = useRelations('/api/relations/leads', filters);
@@ -143,6 +144,17 @@ const LeadsPage = () => {
   // Drawer state — Welcome + Continuation Interview.
   const [welcomeId, setWelcomeId] = useState(null);
   const [interviewLead, setInterviewLead] = useState(null);
+
+  // ITER186.A · P0.7 — auto-open NewRelationshipModal when arriving with
+  // ?new=1 (Activation Foundation step "Crea il primo Lead" CTA route).
+  useEffect(() => {
+    if (searchParams.get('new') === '1' && newRel && typeof newRel.open === 'function') {
+      newRel.open({ choice: 'lead' });
+      const next = new URLSearchParams(searchParams);
+      next.delete('new');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, newRel, setSearchParams]);
 
   // ITER186.A · P0.2 — clicking a Lead card navigates to LeadDetailPage
   // so the user can immediately resume Discovery. (Welcome drawer remains

@@ -1,5 +1,65 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER186.A · P0 HARDENING EXECUTION · DELIVERED · 02 Feb 2026 · GO
+
+**🎯 Founder Option C eseguita:** 8 fix P0 dall'audit ITER186 implementati. Blueprint passa da `🟡 GO WITH FIXES` a `🟢 GO`.
+
+**📄 Deliverable report:** `/app/memory/ITER186_P0_HARDENING_REPORT.md`
+
+**Metriche finali:**
+- ✅ Backend pytest: **41/41 PASS · 100%** (11 nuovi test P0 + 30 regression)
+- ✅ Frontend acceptance: **100%** (post-fix dei 2 gap minori del testing agent)
+- ✅ Lint zero issues (backend + frontend)
+- ✅ Vincolo Founder rispettato: zero nuove feature, zero modifiche schema DB
+
+**P0 Fix Shipped (8/8):**
+1. ✅ **P0.1** Email System Real Validation — `POST /api/email/admin/email-smoke-test` (root admin)
+2. ✅ **P0.2** Lead Resumption UX — post Fast Capture naviga a `/relations/leads/{id}`
+3. ✅ **P0.3** Route detail Lead — `/relations/leads/:leadId` + `LeadDetailPage.jsx` con Discovery embedded
+4. ✅ **P0.4** Empty States pedagogici — Leads · Prospects · Accounts con CTA primary
+5. ✅ **P0.5** KPI Consistency — `/api/relations/stats` canon (lead/prospect/customer/account)
+6. ✅ **P0.6** Customer CTA "Nuovo Design Journey" inline — `AccountsPage` customer cards
+7. ✅ **P0.7** Activation Foundation 6° step `first_lead` — CRM canon entry-point
+8. ✅ **P0.8** First Tenant Experience — composito di P0.2+P0.3+P0.4+P0.6+P0.7 + `?new=1` auto-open modal
+
+**Bug bonus risolto:**
+- Auth-localStorage-key drift su `DiscoveryInterviewPanel` (usava `'token'` legacy invece di `mfd_session` JSON) → migrato a `getAuthHeader()` da `lib/authHeader.js`
+
+**File principali modificati:**
+- `backend/routers/client_relations.py` · `tenant_onboarding.py` · `email_orchestration.py`
+- `backend/tests/test_iter181a_dashboard_refocus.py` (aggiornato a 6 step)
+- `frontend/src/pages/relations/LeadDetailPage.jsx` (NEW)
+- `frontend/src/App.js` (nuovo route)
+- `frontend/src/hooks/useNewRelationship.jsx`
+- `frontend/src/pages/relations/LeadsPage.jsx` · `ProspectsPage.jsx` · `AccountsPage.jsx`
+- `frontend/src/components/relations/DiscoveryInterviewPanel.jsx` (auth fix + testid)
+
+**Endpoint nuovi (1):**
+- `POST /api/email/admin/email-smoke-test` — Founder/admin smoke-test email delivery (Resend)
+
+**Endpoint modificati (2):**
+- `GET /api/relations/stats` — ora canon-aligned (lead/prospect/customer/account)
+- `GET /api/tenant-onboarding/activation-foundation` — 6 step include `first_lead`
+
+**Verdetto finale Founder:** 🟢 **GO**
+
+**Condizioni pre-launch (azioni Founder, non bloccanti su codice):**
+1. Eseguire `/api/email/admin/email-smoke-test` con email reale + verifica inbox/spam/DKIM
+2. Verificare branding sender domain `mail.moodfordesign.com` su MXToolbox
+3. Smoke test happy-path con 1 tenant pilot
+
+**Unblocked iterations (post-GO):**
+1. Journey Assignments Phase 2 (UI drawer + "Le mie journey" + client filtering)
+2. Notification Bus
+3. Error Registry (i18n top-10 + DOMAIN-NNN codes)
+4. Editorial Onboarding (demo content)
+5. Client Chameleon
+
+---
+
+
+# MOOD for DESIGN™ — Design Journey OS™
+
 ## 🛡️ ITER186 · PRODUCT HARDENING · AUDIT DELIVERED · 01 Feb 2026
 
 **🎯 Goal:** Audit completo pre-attivazione 10 showroom reali. Zero nuove feature, zero codice. Solo report di stabilizzazione.

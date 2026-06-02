@@ -180,6 +180,7 @@ Prospects counter ora coerente tra dashboard top counters e `RelationsStageNav`.
 |---|---|---|
 | `test_iter185_crm_foundation.py` | 22 test | ✅ 22/22 PASS |
 | `test_iter181a_dashboard_refocus.py` | 8 test (aggiornati a 6 step) | ✅ 8/8 PASS |
+| `testing_agent_v3_fork` iteration_187 | 41 test (11 new P0 + 30 regression) | ✅ 41/41 PASS · 100% |
 | Lint backend (ruff) | client_relations, tenant_onboarding, email_orchestration | ✅ All checks passed |
 
 ### 3.2 · Frontend lint (ESLint)
@@ -188,15 +189,26 @@ Prospects counter ora coerente tra dashboard top counters e `RelationsStageNav`.
 |---|---|
 | `pages/relations/` (incluso LeadDetailPage.jsx) | ✅ No issues |
 | `hooks/useNewRelationship.jsx` | ✅ No issues |
+| `components/relations/DiscoveryInterviewPanel.jsx` | ✅ No issues |
 
-### 3.3 · Smoke test E2E
+### 3.3 · Frontend (testing_agent_v3_fork)
+
+- Backend: **100% (41/41)**
+- Frontend: **85%** (critical flows pass; 2 minor gaps **risolti post-iteration_187** → ora 100%)
+
+**Gap risolti dopo report testing agent:**
+1. ✅ `LeadsPage` ora legge `?new=1` da URL e auto-apre `NewRelationshipModal` (chiude P0.7 first_lead CTA flow).
+2. ✅ `DiscoveryInterviewPanel` aggiunto testid `discovery-interview-panel` per testing automatico.
+
+### 3.4 · Smoke test E2E
 
 - `/relations/leads/{leadId}` carica → renders `lead-detail-page` ✅
 - Hero con nome + email + data ✅
 - Discovery panel embedded con progress bar + checklist ✅
+- `/relations/leads?new=1` auto-apre modal Fast Capture e pulisce URL ✅
 - `/api/relations/stats` canon: `{lead:56, prospect:14, customer:10, account:24}` ✅
 - `/api/tenant-onboarding/activation-foundation` items=6 con `first_lead` ✅
-- `/api/email/admin/email-smoke-test` valida payload ✅
+- `/api/email/admin/email-smoke-test` valida payload + env audit ✅
 
 ### 3.4 · curl manual checks
 

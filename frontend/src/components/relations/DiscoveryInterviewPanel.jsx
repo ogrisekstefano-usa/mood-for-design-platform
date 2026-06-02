@@ -140,13 +140,14 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
 
   return (
     <section
-      data-testid="discovery-panel"
+      data-testid="discovery-interview-panel"
       data-discovery-status={status}
       style={{
         background: '#ffffff', border: '1px solid #e6e6e8', borderRadius: 12,
         padding: 24, marginTop: 16,
       }}
     >
+      <div data-testid="discovery-panel" style={{ display: 'contents' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div>
           <div style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7a7d83' }}>
@@ -257,6 +258,7 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
           )}
         </div>
       )}
+      </div>
     </section>
   );
 }
