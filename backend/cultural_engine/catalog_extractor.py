@@ -226,6 +226,9 @@ def _detect_section_header(page_text: str) -> Optional[str]:
 def _extract_images_from_page(page: "fitz.Page", doc: "fitz.Document") -> List[Tuple[bytes, str, int, int]]:
     """Phase F1: return ALL compositionally useful images on the page,
     ordered largest-first. NOT only the top-1.
+
+    Phase 1.5 (ITER189): supports JPX/JPEG2000 via PIL conversion (Cattelan
+    and other premium catalogs encode lifestyle assets in JPX).
     """
     out: List[Tuple[bytes, str, int, int]] = []
     seen_xrefs: set[int] = set()
@@ -246,9 +249,28 @@ def _extract_images_from_page(page: "fitz.Page", doc: "fitz.Document") -> List[T
         if w * h < MIN_AREA_PX:
             continue
         ext = (base.get("ext") or "png").lower()
+        img_bytes = base.get("image")
+        if not img_bytes:
+            continue
+        # ── Phase 1.5 JPX/JP2 transcoding ──
+        if ext in ("jpx", "jp2", "j2k"):
+            try:
+                import io
+                from PIL import Image
+                pil = Image.open(io.BytesIO(img_bytes))
+                buf = io.BytesIO()
+                # Convert to RGB (drop alpha) then save as JPEG for downstream
+                if pil.mode not in ("RGB", "L"):
+                    pil = pil.convert("RGB")
+                pil.save(buf, format="JPEG", quality=90)
+                img_bytes = buf.getvalue()
+                ext = "jpg"
+            except Exception as e:
+                logger.warning(f"JPX transcode failed for xref={xref}: {e}")
+                continue
         if ext not in ("jpg", "jpeg", "png"):
             continue
-        out.append((base["image"], "jpg" if ext == "jpeg" else ext, w, h))
+        out.append((img_bytes, "jpg" if ext == "jpeg" else ext, w, h))
     # Sort largest first — index 0 is the candidate hero/lifestyle
     out.sort(key=lambda x: x[2] * x[3], reverse=True)
     # Cap at MAX_IMAGES_PER_PAGE

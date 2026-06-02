@@ -71,6 +71,40 @@ MATERIAL_HEADERS = (
     "materiali", "materials", "matériaux",
 )
 
+# ── Phase 1.5 · Known finish vocabulary (Cattelan / industry baseline) ──
+# Capitalized finish/color names commonly used in premium catalogues.
+# Detection: case-sensitive search on normalized text, plus the more
+# generic capitalized-phrase rule below.
+KNOWN_FINISHES = (
+    # Metal coatings
+    "Oxybrass", "Oxygrey", "Oxychrome",
+    "Titanium", "Titanio", "Embossed Titanium",
+    "Bronze", "Bronzo", "Embossed Bronze",
+    "Black", "Nero", "Matt Black",
+    "Brass", "Ottone", "Burnished Brass",
+    "Chrome", "Cromo",
+    # Stone / ceramic finishes (Cattelan + industry-standard)
+    "Carrara", "Calacatta", "Borghini Calacatta",
+    "Lepanto", "Sahara Noir", "Sahara",
+    "Travertine", "Travertino",
+    "Statuario", "Statuary",
+    "Marquinia", "Nero Marquina",
+    "Eramosa", "Patagonia",
+    "Biscuit", "Cement", "Cemento",
+    "Taj Mahal", "Darwin",
+    # Wood finishes
+    "Burned Oak", "Rovere Bruciato",
+    "Walnut", "Noce",
+    "Oak", "Rovere",
+    "Ash", "Frassino",
+    "Smoked Oak", "Rovere Affumicato",
+    # Color / fabric callouts (Cattelan Tortora etc.)
+    "Tortora", "Sand", "Sabbia", "Ivory", "Avorio",
+    "Olive", "Oliva",
+    "Cognac", "Tobacco",
+)
+KNOWN_FINISHES_LOWER = {f.lower() for f in KNOWN_FINISHES}
+
 # ── Dimensions regex ────────────────────────────────────────────────
 # Examples: 240×100×75, 240x100x75, 240 x 100 cm, Ø 120, ⌀120
 DIM_3D_RE = re.compile(
@@ -132,11 +166,18 @@ def _extract_materials(text: str) -> Tuple[List[str], float]:
 
 
 def _extract_finishes(text: str) -> Tuple[List[str], float]:
-    """Detect lines following a finish-header. Each line up to 4 words is a
-    finish name. Stop on blank line or non-finish-like content.
+    """Detect lines following a finish-header AND inline finish callouts.
+
+    Phase 1.5 (ITER189) inline detection:
+      • Match known finish names case-insensitively anywhere in the text
+      • Match capitalized 1-3 word phrases following "in <Finish>" / "with <Finish>"
+        / "frame in <Finish>" / "top in <Finish>" patterns
     """
     finishes: List[str] = []
-    lines = text.splitlines()
+    norm = text or ""
+
+    # ── (1) Block-style detection (legacy) ──
+    lines = norm.splitlines()
     in_block = False
     block_lines = 0
     for raw in lines:
@@ -152,7 +193,6 @@ def _extract_finishes(text: str) -> Tuple[List[str], float]:
                 if block_lines > 1:
                     in_block = False
                 continue
-            # Stop block on too long line or on next header
             if len(ln) > 50 or block_lines > 30:
                 in_block = False
                 continue
@@ -161,20 +201,56 @@ def _extract_finishes(text: str) -> Tuple[List[str], float]:
                 continue
             words = ln.split()
             if 1 <= len(words) <= 5 and ln[0].isalpha():
-                # Strip trailing punctuation, codes
                 clean = re.sub(r"[\s\-\.,;:]+$", "", ln)
-                clean = re.sub(r"\s+\d{2,}$", "", clean)  # strip trailing numeric code
+                clean = re.sub(r"\s+\d{2,}$", "", clean)
                 if 2 <= len(clean) <= 50:
                     finishes.append(clean)
-    finishes = list(dict.fromkeys(finishes))  # dedup preserve order
-    if not finishes:
+
+    # ── (2) Phase 1.5 · Inline detection of known finish names ──
+    low_norm = norm.lower()
+    for f in KNOWN_FINISHES:
+        # Case-insensitive whole-word match
+        if re.search(rf"\b{re.escape(f.lower())}\b", low_norm):
+            finishes.append(f)
+
+    # ── (3) Phase 1.5 · Capitalized phrases after "in/with/and/frame/top/base in" ──
+    pattern = re.compile(
+        r"\b(?:in|with|and|frame in|top in|base in|inserto in|finitura)\s+"
+        r"([A-Z][A-Za-zÀ-ÿ]+(?:\s+[A-Z][A-Za-zÀ-ÿ]+){0,2})",
+    )
+    for m in pattern.finditer(norm):
+        phrase = m.group(1).strip()
+        # Skip generic words
+        if phrase.lower() in ("the", "this", "italy", "italia", "design", "and"):
+            continue
+        if 4 <= len(phrase) <= 50:
+            finishes.append(phrase)
+
+    # Dedup (case-insensitive)
+    seen: set = set()
+    unique: List[str] = []
+    for f in finishes:
+        k = f.lower().strip()
+        if k in seen:
+            continue
+        seen.add(k)
+        unique.append(f)
+
+    if not unique:
         return [], 0.0
-    conf = min(0.90, 0.45 + 0.05 * len(finishes))
-    return finishes, conf
+    conf = min(0.92, 0.45 + 0.05 * len(unique))
+    return unique, conf
 
 
 def _extract_dimensions(text: str) -> Tuple[List[str], Dict[str, Any], float]:
-    """Return (dimensions_raw, dimensions_structured, confidence)."""
+    """Return (dimensions_raw, dimensions_structured, confidence).
+
+    Phase 1.5 (ITER189) hardening for Cattelan-style tabular schemas:
+      • detect SAG. prefix as dimensional marker
+      • detect runs of isolated numbers on consecutive lines
+        (e.g., "200 / 120 / 240 / 120 / 130 / 300" = width/depth/etc.)
+      • detect comma-decimal Italian notation (53,5)
+    """
     raw_hits: List[str] = []
     structured: Dict[str, Any] = {}
     norm = _normalize_text(text)
@@ -218,11 +294,50 @@ def _extract_dimensions(text: str) -> Tuple[List[str], Dict[str, Any], float]:
         raw_hits.append(f"h {h} {unit}")
         structured.setdefault("height_cm", int(h) if unit == "cm" else None)
 
+    # ── Phase 1.5 · Tabular detection ──
+    # Cattelan technical schemas list dimensions as runs of isolated numbers
+    # on consecutive lines: "200\n120\n240\n120\n130\n300\nSAG.\n..."
+    # We detect runs of ≥3 numeric-only lines (with optional comma decimals)
+    # and emit them as tabular dimensions.
+    tabular_run: List[str] = []
+    sag_seen = False
+    for raw in (text or "").splitlines():
+        ln = raw.strip()
+        if not ln:
+            if tabular_run and len(tabular_run) >= 3:
+                raw_hits.append("tabular: " + " · ".join(tabular_run))
+            tabular_run = []
+            continue
+        if re.fullmatch(r"SAG\.?", ln, re.IGNORECASE):
+            sag_seen = True
+            continue
+        # Match isolated number (with optional Ø prefix, comma decimal, A/B prefix)
+        m = re.fullmatch(r"[ØA-D]?\s*\d{2,4}(?:[.,]\d{1,2})?", ln)
+        if m:
+            tabular_run.append(ln)
+            continue
+        # End of run on non-numeric line
+        if tabular_run and len(tabular_run) >= 3:
+            raw_hits.append("tabular: " + " · ".join(tabular_run))
+        tabular_run = []
+    if tabular_run and len(tabular_run) >= 3:
+        raw_hits.append("tabular: " + " · ".join(tabular_run))
+
+    if sag_seen and tabular_run:
+        # boost confidence for SAG-pattern
+        pass
+
     raw_hits = list(dict.fromkeys(raw_hits))
     if not raw_hits:
         return [], {}, 0.0
-    conf = min(0.95, 0.55 + 0.08 * len(raw_hits))
-    # Drop None entries
+    # Boost confidence when both structured + tabular signals present
+    base = 0.55
+    base += min(0.30, 0.08 * len(raw_hits))
+    if structured.get("length_cm") or structured.get("diameter_cm"):
+        base += 0.05
+    if sag_seen:
+        base += 0.05
+    conf = min(0.95, base)
     structured = {k: v for k, v in structured.items() if v is not None}
     return raw_hits, structured, conf
 

@@ -118,6 +118,54 @@ async def _call_llm(image: Dict[str, str], session_id: str) -> Optional[str]:
         return None
 
 
+# ── Phase 1.5 (ITER189) · bytes-based enrichment for offline / batch use ──
+async def enrich_asset_bytes(
+    image_bytes: bytes,
+    *,
+    media_id: Optional[str] = None,
+    max_retries: int = 1,
+    mime: str = "image/jpeg",
+) -> Dict[str, Any]:
+    """Run Vision LLM classification directly on image bytes (no HTTP fetch).
+
+    Used by the Knowledge Factory product_composer when classifying every
+    asset extracted from a PDF. Same contract as `enrich_asset` (never
+    raises, returns dict with ok/enrichment/error).
+    """
+    import base64
+    out: Dict[str, Any] = {
+        "ok": False, "enrichment": None, "error": None,
+        "latency_ms": 0, "model": MODEL, "provider": PROVIDER,
+    }
+    started = time.time()
+    try:
+        if not image_bytes or len(image_bytes) < 1024:
+            out["error"] = "image_too_small"
+            return out
+        b = image_bytes[:MAX_BYTES]
+        image = {"b64": base64.b64encode(b).decode("ascii"), "mime": mime}
+        last_err: Optional[str] = None
+        for attempt in range(max_retries + 1):
+            raw = await _call_llm(image, session_id=media_id or f"asset-{int(started*1000)}")
+            parsed = _parse(raw or "")
+            if parsed:
+                out["ok"] = True
+                out["enrichment"] = parsed
+                break
+            last_err = "parse_failed" if raw else "no_response"
+            if attempt < max_retries:
+                await asyncio.sleep(0.5)
+        if not out["ok"] and not out["error"]:
+            out["error"] = last_err or "unknown"
+    except Exception as e:
+        logger.warning(f"vision_asset: enrich_bytes exception: {e}")
+        out["error"] = "exception"
+    finally:
+        out["latency_ms"] = int((time.time() - started) * 1000)
+    return out
+
+
+
 def _parse(raw: str) -> Optional[Dict[str, Any]]:
     if not raw:
         return None

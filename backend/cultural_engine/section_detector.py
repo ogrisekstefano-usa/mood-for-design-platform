@@ -144,6 +144,12 @@ def _page_title(page: "fitz.Page") -> Tuple[Optional[str], Optional[str], float]
     """Detect (title, designer, font_size_max). Title heuristic:
     largest font line in upper half of the page that is NOT blacklisted
     AND has 1-5 words.
+
+    Phase 1.5 (ITER189) hardening:
+      • reject titles that are pure punctuation / quote glyphs (Cattelan
+        uses U+201C "“" and similar as decorative elements at font 28+)
+      • require ≥2 alphabetic characters
+      • require non-numeric content
     """
     page_dict = page.get_text("dict") or {}
     blocks = page_dict.get("blocks") or []
@@ -160,6 +166,14 @@ def _page_title(page: "fitz.Page") -> Tuple[Optional[str], Optional[str], float]
                 if not txt or sz < 14:
                     continue
                 if len(txt) > 60 or TITLE_BLACKLIST.match(txt):
+                    continue
+                # ── Phase 1.5 · reject decorative glyph / punctuation only ──
+                alpha_chars = sum(1 for ch in txt if ch.isalpha())
+                if alpha_chars < 2:
+                    continue
+                # Reject titles that are mostly digits (e.g., page numbers, years)
+                digit_chars = sum(1 for ch in txt if ch.isdigit())
+                if digit_chars > alpha_chars:
                     continue
                 bbox = span.get("bbox") or [0, 0, 0, 0]
                 y_pos = bbox[1] / page_height
@@ -270,6 +284,26 @@ def detect_sections(pdf_bytes: bytes) -> Dict[str, Any]:
         page_designers[pno] = designer
         page_categories[pno] = cat or last_category
         page_font_max[pno] = font_sz
+
+    # ── Phase 1.5 · TOC cross-validation ──
+    # If we have a non-trivial TOC (≥5 entries), demote any "title" candidate
+    # that does NOT match a TOC entry (case-insensitive, fuzzy prefix). This
+    # avoids treating section headers / decorative text as new product titles.
+    if len(toc_titles) >= 5:
+        norm_toc = {t.strip().lower(): t for t in toc_titles}
+        toc_lower_set = set(norm_toc.keys())
+        for pno in range(page_count):
+            t = page_titles[pno]
+            if not t:
+                continue
+            t_low = t.strip().lower()
+            if t_low in toc_lower_set:
+                continue
+            # Substring match (TOC entry contains this OR vice versa)
+            match = any(t_low in tk or tk in t_low for tk in toc_lower_set if len(tk) >= 4)
+            if not match:
+                # Demote to continuation page (drop the title detection)
+                page_titles[pno] = None
 
     # Assemble sections: each NEW title starts a new section; pages with
     # no title continue the previous section (until next title).

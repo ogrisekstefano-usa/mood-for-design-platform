@@ -27,7 +27,9 @@ Outputs:
 """
 from __future__ import annotations
 
+import asyncio
 import logging
+import os
 import re
 import uuid
 import unicodedata
@@ -39,6 +41,7 @@ from cultural_engine import asset_classifier
 from cultural_engine import section_detector
 from cultural_engine import section_text_parser
 from cultural_engine import image_dedup
+from cultural_engine import vision_asset_classifier  # Phase 1.5 · always-on
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +60,23 @@ def _slugify(text: str) -> str:
 
 
 def _classification_to_role(classification: Dict[str, Any]) -> str:
-    """Map asset_classifier output → product_assets.role enum."""
-    atype = classification.get("asset_type", "still_life")
-    comp = classification.get("compositional_role", "supporting")
+    """Map asset_classifier output → product_assets.role enum.
+
+    Phase 1.5 (ITER189): when Vision Layer 2 enrichment is present
+    (vision_asset_type / vision_compositional_role), it overrides the
+    rule-based mapping. Vision is calibrated for edge-to-edge editorial
+    lifestyle layouts where Layer 1 fails.
+    """
+    # Vision override (Phase 1.5 always-on)
+    vision_atype = classification.get("vision_asset_type")
+    vision_role = classification.get("vision_compositional_role")
+    if vision_atype:
+        atype = vision_atype
+        comp = vision_role or classification.get("compositional_role", "supporting")
+    else:
+        atype = classification.get("asset_type", "still_life")
+        comp = classification.get("compositional_role", "supporting")
+
     if atype == "cutout":
         return "packshot"
     if atype == "texture":
@@ -93,6 +110,91 @@ def _knowledge_object_flags(
                          and (role_counts.get("ambient", 0) + role_counts.get("hero", 0)) >= 1)
     content_ready = bool(has_description and role_counts.get("hero", 0) >= 1)
     return spec_ready, academy_ready, content_ready
+
+
+# ─── Phase 1.5 · Vision Layer 2 batch helper ──────────────────────────
+VISION_CONCURRENCY = 5
+
+
+def _run_vision_batch(candidate_records: List[Dict[str, Any]]) -> Tuple[int, int]:
+    """Synchronously dispatch Vision Layer 2 calls on every candidate in
+    parallel batches. Mutates each record's `classification` dict in-place
+    with vision_* keys.
+
+    Returns (ok_count, failed_count).
+    """
+    sem = asyncio.Semaphore(VISION_CONCURRENCY)
+
+    async def _one(rec: Dict[str, Any]) -> bool:
+        async with sem:
+            try:
+                ext = rec.get("image_ext") or "jpg"
+                mime = "image/png" if ext == "png" else "image/jpeg"
+                r = await vision_asset_classifier.enrich_asset_bytes(
+                    rec["image_bytes"], media_id=rec["key"], mime=mime,
+                )
+            except Exception as e:
+                logger.warning(f"vision batch error on {rec['key']}: {e}")
+                return False
+            if not r or not r.get("ok") or not r.get("enrichment"):
+                return False
+            base = rec["classification"] or {}
+            merged = vision_asset_classifier.merge_enrichment_into_meta(
+                base, r["enrichment"],
+                rule_confidence=float(base.get("classification_confidence") or 0.5),
+            )
+            # ALWAYS adopt Vision verdict for asset_type/comp_role/view_angle
+            # when Vision was conclusive (Phase 1.5 always-on policy).
+            if r["enrichment"].get("vision_asset_type"):
+                merged["asset_type"] = r["enrichment"]["vision_asset_type"]
+                merged["compositional_role"] = (
+                    r["enrichment"].get("vision_compositional_role")
+                    or merged.get("compositional_role")
+                )
+                merged["view_angle"] = (
+                    r["enrichment"].get("vision_view_angle")
+                    or merged.get("view_angle")
+                )
+                merged["classified_by"] = "vision"
+                merged["classification_confidence"] = round(
+                    max(float(base.get("classification_confidence") or 0.5), 0.70), 3
+                )
+            rec["classification"] = merged
+            return True
+
+    async def _all():
+        results = await asyncio.gather(*[_one(r) for r in candidate_records],
+                                       return_exceptions=False)
+        return sum(1 for r in results if r), sum(1 for r in results if not r)
+
+    try:
+        # Prefer running in a fresh event loop; this function is called from
+        # a sync context (FastAPI BackgroundTask or validation script).
+        try:
+            loop = asyncio.new_event_loop()
+            try:
+                asyncio.set_event_loop(loop)
+                return loop.run_until_complete(_all())
+            finally:
+                loop.close()
+        except RuntimeError:
+            # Already inside an event loop (rare here) — best-effort fallback
+            return asyncio.run(_all())
+    except Exception as e:
+        logger.warning(f"vision batch fatal: {e}")
+        return 0, len(candidate_records)
+
+
+def _knowledge_object_flags_unused(
+    has_designer: bool,
+    has_materials: bool,
+    has_dimensions: bool,
+    has_description: bool,
+    role_counts: Dict[str, int],
+) -> Tuple[bool, bool, bool]:
+    """Deprecated stub kept for backwards-import safety."""
+    return _knowledge_object_flags(has_designer, has_materials,
+                                    has_dimensions, has_description, role_counts)
 
 
 # ─── Public API ───────────────────────────────────────────────────────
@@ -169,8 +271,7 @@ def compose_products_from_pdf(
     _log("image_classification_start")
     candidate_records: List[Dict[str, Any]] = []
     for idx, cand in enumerate(raw_candidates):
-        # Layer 1 classification only (Vision Layer 2 is best-effort and
-        # we want a deterministic Phase 1 baseline)
+        # Layer 1 rule classification (deterministic)
         classification = asset_classifier.classify_asset(
             cand.image_bytes,
             width=cand.width,
@@ -191,6 +292,22 @@ def compose_products_from_pdf(
             "phash": phash,
         })
     _log("image_classification_done", {"classified": len(candidate_records)})
+
+    # ── Step 4.5 · Phase 1.5 · Vision Layer 2 always-on ──
+    # Run vision classification on every asset in parallel batches.
+    # Each call costs ~2-3s; we cap concurrency at 5 to avoid LLM rate
+    # limits. Disabled when EMERGENT_LLM_KEY is missing or
+    # vision_enabled flag is False (set by `compose_products_from_pdf`
+    # caller via env var ITER189_DISABLE_VISION=1 for offline tests).
+    vision_disabled = (os.environ.get("ITER189_DISABLE_VISION") or "0").strip() not in ("0", "", "false", "False")
+    has_key = bool(os.environ.get("EMERGENT_LLM_KEY"))
+    if candidate_records and has_key and not vision_disabled:
+        _log("vision_layer2_start", {"assets": len(candidate_records)})
+        vision_ok, vision_failed = _run_vision_batch(candidate_records)
+        _log("vision_layer2_done", {"enriched": vision_ok, "failed": vision_failed})
+    else:
+        _log("vision_layer2_skipped",
+             {"has_key": has_key, "disabled": vision_disabled})
 
     # ── Step 5 · dedup grouping ─────────────────────────────────────
     sim_groups = image_dedup.group_by_similarity(candidate_records)

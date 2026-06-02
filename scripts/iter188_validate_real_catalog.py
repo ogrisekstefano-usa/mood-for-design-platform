@@ -35,6 +35,7 @@ from cultural_engine import section_detector        # type: ignore
 from cultural_engine import section_text_parser     # type: ignore
 from cultural_engine import image_dedup             # type: ignore
 from cultural_engine import product_composer        # type: ignore
+from cultural_engine import vision_asset_classifier  # type: ignore
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -61,7 +62,8 @@ def _classification_to_role(classification: Dict[str, Any]) -> str:
 # ──────────────────────────────────────────────────────────────────────
 # Pipeline DRY-RUN
 # ──────────────────────────────────────────────────────────────────────
-def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600) -> Dict[str, Any]:
+def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600,
+                        enable_vision: bool = True) -> Dict[str, Any]:
     """Execute every pipeline stage WITHOUT writing to DB / storage.
 
     Returns a deep dict ready to be fed into the report generator.
@@ -99,6 +101,7 @@ def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600) -> Dict[str, A
             "page_number": c.page_number,
             "image_size_kb": len(c.image_bytes) // 1024,
             "image_bytes_len": len(c.image_bytes),
+            "image_bytes": c.image_bytes,           # needed for vision
             "image_ext": c.image_ext,
             "width": c.width,
             "height": c.height,
@@ -107,6 +110,13 @@ def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600) -> Dict[str, A
             "phash": phash,
         })
     cls_dt = time.time() - cls_t0
+
+    # --- Step 3.5 · Phase 1.5 Vision Layer 2 always-on (optional) ---
+    vision_t0 = time.time()
+    vision_ok = vision_failed = 0
+    if enable_vision and cand_records:
+        vision_ok, vision_failed = product_composer._run_vision_batch(cand_records)
+    vision_dt = time.time() - vision_t0
 
     # --- Step 4 · Dedup grouping ---
     dedup_t0 = time.time()
@@ -226,10 +236,14 @@ def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600) -> Dict[str, A
             "section_detection": round(section_dt, 2),
             "image_extraction":  round(extract_dt, 2),
             "classification":    round(cls_dt, 2),
+            "vision_layer2":     round(vision_dt, 2),
             "dedup_grouping":    round(dedup_dt, 2),
             "product_composition": round(compose_dt, 2),
             "total":             round(total_dt, 2),
         },
+        "vision_enabled": enable_vision,
+        "vision_ok": vision_ok,
+        "vision_failed": vision_failed,
     }
 
 
@@ -437,8 +451,11 @@ def write_report(catalog_name: str, brand: str, year: Optional[int],
       f"(section={p['timings_s']['section_detection']}s, "
       f"images={p['timings_s']['image_extraction']}s, "
       f"classify={p['timings_s']['classification']}s, "
+      f"vision={p['timings_s'].get('vision_layer2', 0)}s, "
       f"dedup={p['timings_s']['dedup_grouping']}s, "
       f"compose={p['timings_s']['product_composition']}s)")
+    P(f"**Vision Layer 2:** enabled={p.get('vision_enabled')} · "
+      f"enriched={p.get('vision_ok', 0)} · failed={p.get('vision_failed', 0)}")
     if p["extract_warnings"]:
         P(f"**⚠️ Warnings:** {', '.join(p['extract_warnings'])}")
     P("")
@@ -714,10 +731,13 @@ def main():
                     help="Expected number of products (from TOC visual count)")
     ap.add_argument("--report", required=True)
     ap.add_argument("--max-candidates", type=int, default=600)
+    ap.add_argument("--no-vision", action="store_true",
+                    help="Skip Vision Layer 2 calls (for fast offline runs)")
     args = ap.parse_args()
 
     catalog_name = pathlib.Path(args.pdf).name
-    result = run_pipeline_dryrun(args.pdf, max_candidates=args.max_candidates)
+    result = run_pipeline_dryrun(args.pdf, max_candidates=args.max_candidates,
+                                  enable_vision=not args.no_vision)
     write_report(catalog_name, args.brand, args.catalog_year,
                  args.expected, result, args.report)
 
