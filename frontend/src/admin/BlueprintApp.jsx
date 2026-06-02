@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { BookOpen, FileText, Layout, Image, AlignEndHorizontal, Search, Settings as SettingsIcon } from 'lucide-react';
+import { BookOpen, FileText, Layout, Image, AlignEndHorizontal, Search, Settings as SettingsIcon, Building2 } from 'lucide-react';
 
 import WorkspaceShell from './shared/WorkspaceShell';
 import BlocksEditor from './pages/BlocksEditor';
@@ -10,6 +10,7 @@ import PublishConsole from './pages/PublishConsole';
 import PagesEditor from './pages/PagesEditor';
 import FooterEditor from './pages/FooterEditor';
 import SearchConsoleHelper from './pages/SearchConsoleHelper';
+import BlueprintOverview from './pages/BlueprintOverview';
 
 /**
  * BlueprintShell™ — Tenant runtime workspace.
@@ -27,6 +28,7 @@ import SearchConsoleHelper from './pages/SearchConsoleHelper';
  * shell at /command-center/*.
  */
 const BLUEPRINT_NAV = [
+  { to: '/blueprint/overview', icon: Building2,          label: 'Studio',           testid: 'blueprint-nav-overview' },
   { to: '/blueprint/pages',    icon: BookOpen,           label: 'Pagine',           testid: 'blueprint-nav-pages' },
   { to: '/blueprint/blocks',   icon: FileText,           label: 'Editorial Blocks', testid: 'blueprint-nav-blocks' },
   { to: '/blueprint/sections', icon: Layout,             label: 'Sections',         testid: 'blueprint-nav-sections' },
@@ -45,7 +47,8 @@ const BlueprintApp = () => (
     edgeToEdgeWhen={(p) => p === '/blueprint/pages' || p.startsWith('/blueprint/pages/')}
   >
     <Routes>
-      <Route index            element={<Navigate to="/blueprint/pages" replace />} />
+      <Route index            element={<Navigate to="/blueprint/overview" replace />} />
+      <Route path="overview"  element={<BlueprintOverview />} />
       <Route path="pages"     element={<PagesEditor />} />
       <Route path="blocks"    element={<BlocksEditor />} />
       <Route path="sections"  element={<SectionsManager />} />
@@ -53,7 +56,7 @@ const BlueprintApp = () => (
       <Route path="footer"    element={<FooterEditor />} />
       <Route path="seo"       element={<SearchConsoleHelper />} />
       <Route path="publish"   element={<PublishConsole />} />
-      <Route path="*"         element={<Navigate to="/blueprint/pages" replace />} />
+      <Route path="*"         element={<Navigate to="/blueprint/overview" replace />} />
     </Routes>
   </WorkspaceShell>
 );

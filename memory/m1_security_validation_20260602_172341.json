@@ -1,0 +1,90 @@
+{
+  "summary": {
+    "total": 16,
+    "pass": 16,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "admin.tenants_forbidden_for_founder",
+      "ok": true,
+      "status": 403
+    },
+    {
+      "name": "admin.cross_tenant_overview_forbidden",
+      "ok": true,
+      "status": 403
+    },
+    {
+      "name": "blueprint.overview_own_tenant_200",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.contact_create",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.anti_duplicate_email_409",
+      "ok": true,
+      "status": 409
+    },
+    {
+      "name": "blueprint.owner_change_stripped",
+      "ok": true,
+      "status": 200,
+      "owner": null
+    },
+    {
+      "name": "admin.assign_relationship_owner",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "admin.assign_tenant_owner",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.set_primary_own",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.primary_replaced",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.single_primary_active",
+      "ok": true,
+      "primary_count": 1
+    },
+    {
+      "name": "blueprint.quick_activity_call",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "blueprint.list_activities",
+      "ok": true,
+      "count": 1
+    },
+    {
+      "name": "blueprint.archive_contact",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "admin.search_forbidden_for_founder",
+      "ok": true,
+      "status": 403
+    },
+    {
+      "name": "admin.anon_401",
+      "ok": true,
+      "status": 401
+    }
+  ]
+}

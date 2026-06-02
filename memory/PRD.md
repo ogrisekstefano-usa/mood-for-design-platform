@@ -27,8 +27,8 @@ i founder accedono al loro Blueprint workspace via magic-link.
 3. `adminApi.js` — `adminAuth.clear()` non puliva le chiavi legacy → token zombie. Fix esteso `clear()`.
 
 ## P1 backlog (FROZEN by user)
-- **Relationship OS™ M0** — 🟢 **M0_COMPLETED_READY_FOR_M1** (2 Giu 2026). Migration 031 applicata (23s), 56/56 validation check PASS, 0 regressione su `first_real_tenant_audit.py`. Schema canonico in place: 6 tabelle nuove (4 catalog + `tenant_contacts` + `relationship_activities`), 14 indici critici (8 partial + 2 GIN tsvector), `v_relationship_timeline` operativa con 135 righe storiche, 47 righe seed catalog, 7 tabelle LEGACY marcate READ-ONLY. Rollback plan testato. Report: `/app/memory/RELATIONSHIP_OS_M0_EXECUTION_REPORT.md`.
-- **M1 Contact CRM** — 🟢 **READY_FOR_M1_IMPLEMENTATION**. Piano in `/app/memory/COMMAND_CENTER_CRM_M1_EXECUTION_PLAN.md`. Effort rivisto ~10.1g (post-M0).
+- **Relationship OS™ M1 Contact CRM** — 🟢 **M1_COMPLETED_READY_FOR_M2** (2 Giu 2026). Migration 032 (`tenant_relationship_owner_*`), 24 endpoint API (admin + founder mirror D4), 4 pagine UI (TenantsList, TenantDetail 5-tab, BlueprintOverview, ContactDrawer con 5 Quick Actions), 16/16 security checks PASS, 0 regression. Catalog DB-driven (11 ruoli + 8 sources + 8 activity types). Report: `/app/memory/M1_CONTACT_CRM_IMPLEMENTATION_REPORT.md`. Performance gap noto (~1.7s/query) per latenza Supabase, da risolvere in M2 con connection pooling.
+- **Relationship OS™ M0** — 🟢 **M0_COMPLETED_READY_FOR_M1**. Migration 031 + 4 catalog seeds. Report: `/app/memory/RELATIONSHIP_OS_M0_EXECUTION_REPORT.md`.
 - Tenant Launch Pack M1 (Schema 031 + CMS seed)
 - Advisor Digest (`advisor_new_lead` digest pool)
 - Studio Requests UI: chip markets/languages/experiences

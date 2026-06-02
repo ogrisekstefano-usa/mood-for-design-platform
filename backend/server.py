@@ -109,6 +109,14 @@ app.include_router(tenant_activation_router)  # /api/admin/tenant-activation/*
 app.include_router(studio_v2_router, prefix="/api")  # /api/studio/v2/*
 app.include_router(geo_router, prefix="/api")        # /api/geo/*
 
+# M1 — Contact CRM (Command Center)
+from routers.catalogs       import router as catalogs_router         # /api/catalogs/*
+from routers.admin_crm      import router as admin_crm_router        # /api/admin/* (CRM)
+from routers.blueprint_crm  import router as blueprint_crm_router    # /api/blueprint/*
+app.include_router(catalogs_router)        # already prefixed
+app.include_router(admin_crm_router)       # already prefixed
+app.include_router(blueprint_crm_router)   # already prefixed
+
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets
 @app.on_event("startup")

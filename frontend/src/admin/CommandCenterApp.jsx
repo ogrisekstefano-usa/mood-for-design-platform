@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import {
-  Building2, Compass, LayoutDashboard, Users,
+  Building2, Compass, LayoutDashboard, Users, Briefcase,
   BookOpen, FileText, Layout, Image, AlignEndHorizontal, Search, Settings as SettingsIcon,
 } from 'lucide-react';
 
@@ -16,6 +16,8 @@ import AdvisorConsole from './pages/AdvisorConsole';
 import RelationDetail from './pages/RelationDetail';
 import CommandOverview from './pages/CommandOverview';
 import AdvisorsAdmin from './pages/AdvisorsAdmin';
+import TenantsList from './pages/TenantsList';
+import TenantDetail from './pages/TenantDetail';
 
 // Blueprint CMS surfaces (mounted inside the Command Center shell so the
 // super admin sees one unified workspace instead of two).
@@ -43,6 +45,7 @@ import FounderWelcome from './pages/FounderWelcome';
 const ADMIN_NAV = [
   // Governance
   { to: '/command-center/overview',         icon: LayoutDashboard,    label: 'Overview',         testid: 'cc-nav-overview',     group: 'core' },
+  { to: '/command-center/tenants',          icon: Briefcase,          label: 'Tenants',          testid: 'cc-nav-tenants',      group: 'core' },
   { to: '/command-center/advisors',         icon: Users,              label: 'Advisors',         testid: 'cc-nav-advisors',     group: 'core' },
   { to: '/command-center/advisor-console',  icon: Compass,            label: 'Advisor Console',  testid: 'cc-nav-advisor-console', group: 'core' },
   { to: '/command-center/studio-requests',  icon: Building2,          label: 'Studio Requests',  testid: 'cc-nav-studio-requests', group: 'core' },
@@ -133,6 +136,7 @@ const CommandCenterApp = () => {
     '/command-center/advisor-console',
     '/command-center/overview',
     '/command-center/advisors',
+    '/command-center/tenants',
     '/command-center/pages',
     '/command-center/blocks',
   ];
@@ -154,6 +158,8 @@ const CommandCenterApp = () => {
 
         {/* MOOD Core (governance) */}
         <Route path="overview"                        element={<SuperAdminOnly><CommandOverview /></SuperAdminOnly>} />
+        <Route path="tenants"                         element={<NotFounder><TenantsList /></NotFounder>} />
+        <Route path="tenants/:tid"                    element={<NotFounder><TenantDetail /></NotFounder>} />
         <Route path="advisors"                        element={<SuperAdminOnly><AdvisorsAdmin /></SuperAdminOnly>} />
         <Route path="advisor-console"                 element={<NotFounder><AdvisorConsole /></NotFounder>} />
         <Route path="advisor-console/relations/:id"   element={<NotFounder><RelationDetail /></NotFounder>} />
