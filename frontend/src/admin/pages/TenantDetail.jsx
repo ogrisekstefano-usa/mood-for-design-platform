@@ -11,6 +11,7 @@ import {
   Phone, Mail, MessageCircle, Linkedin, StickyNote, Clock, Bell, Activity as ActivityIcon,
 } from 'lucide-react';
 import ContactDrawer from '../components/ContactDrawer';
+import TimelineFeed from '../components/TimelineFeed';
 import useCatalog from '../../lib/useCatalog';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
@@ -329,15 +330,10 @@ const TenantDetail = () => {
         )}
 
         {tab === 'timeline' && (
-          <div data-testid="timeline-placeholder"
-               className="border border-dashed border-stone-300 px-10 py-20 text-center">
-            <Clock size={32} className="text-stone-300 mx-auto mb-3" />
-            <h3 className="text-lg mb-2">Timeline relazionale</h3>
-            <p className="text-sm text-stone-500 max-w-md mx-auto">
-              Disponibile nella prossima milestone (M2). La timeline unirà eventi lifecycle,
-              email ad alto valore e attività manuali in un unico flusso cronologico.
-            </p>
-          </div>
+          <TimelineFeed
+            apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
+            scope="admin"
+          />
         )}
 
         {tab === 'notifications' && (

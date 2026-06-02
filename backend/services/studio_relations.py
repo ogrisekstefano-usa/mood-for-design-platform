@@ -854,10 +854,32 @@ def _num(n):
 
 async def _log_event(session, relation_id: str, actor_id: Optional[str],
                        kind: str, payload: dict):
+    # Resolve tenant_id from the relation, so the event is visible in
+    # v_relationship_timeline and so the M2 health signal can land.
+    tid_row = await session.execute(
+        text("SELECT tenant_id FROM studio_relations WHERE id = CAST(:rid AS uuid)"),
+        {"rid": str(relation_id)},
+    )
+    tenant_id = tid_row.scalar()
     await session.execute(
         text("""INSERT INTO studio_relationship_events
-                  (relation_id, actor_id, kind, payload)
-                VALUES (:rid, :aid, :kind, CAST(:pl AS jsonb))"""),
+                  (relation_id, actor_id, kind, payload,
+                   tenant_id, event_type_code)
+                VALUES (:rid, :aid, :kind, CAST(:pl AS jsonb),
+                        :tid, :code)"""),
         {"rid": relation_id, "aid": actor_id, "kind": kind,
-         "pl": json.dumps(payload, default=str)},
+         "pl": json.dumps(payload, default=str),
+         "tid": tenant_id, "code": kind},
     )
+    # M2 health hook (data-only, no API exposure)
+    if tenant_id:
+        try:
+            from services import relationship_health as rh
+            await rh.apply_signal(
+                session, tenant_id=str(tenant_id), contact_id=None,
+                source="event", type_code=kind,
+            )
+        except Exception:  # noqa: BLE001 — health hook is best-effort
+            import logging
+            logging.getLogger(__name__).exception(
+                "relationship_health.apply_signal failed for event=%s", kind)

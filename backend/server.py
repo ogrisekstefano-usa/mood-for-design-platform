@@ -117,6 +117,12 @@ app.include_router(catalogs_router)        # already prefixed
 app.include_router(admin_crm_router)       # already prefixed
 app.include_router(blueprint_crm_router)   # already prefixed
 
+# M2 — Relationship Timeline
+from routers.admin_timeline     import router as admin_timeline_router      # /api/admin/* (timeline)
+from routers.blueprint_timeline import router as blueprint_timeline_router  # /api/blueprint/* (timeline)
+app.include_router(admin_timeline_router)
+app.include_router(blueprint_timeline_router)
+
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets
 @app.on_event("startup")

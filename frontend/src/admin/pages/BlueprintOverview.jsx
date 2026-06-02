@@ -11,6 +11,7 @@ import {
   Phone, Mail, MessageCircle, Linkedin, StickyNote,
 } from 'lucide-react';
 import ContactDrawer from '../components/ContactDrawer';
+import TimelineFeed from '../components/TimelineFeed';
 import useCatalog from '../../lib/useCatalog';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
@@ -245,12 +246,10 @@ const BlueprintOverview = () => {
         )}
 
         {tab === 'timeline' && (
-          <div data-testid="b-timeline-placeholder"
-               className="border border-dashed border-stone-300 px-10 py-20 text-center">
-            <Clock size={32} className="text-stone-300 mx-auto mb-3" />
-            <h3 className="text-lg mb-2">Timeline relazionale</h3>
-            <p className="text-sm text-stone-500 max-w-md mx-auto">Disponibile in M2.</p>
-          </div>
+          <TimelineFeed
+            apiBase={`${BACKEND}/api/blueprint`}
+            scope="founder"
+          />
         )}
         {tab === 'notifications' && (
           <div data-testid="b-notifications-placeholder"

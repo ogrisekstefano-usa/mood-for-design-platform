@@ -123,6 +123,18 @@ async def create_quick_activity(tenant_id: str, payload: dict[str, Any], *,
                 "tid": tenant_id,
             })
 
+        # M2 health hook (data-only, catalog-driven)
+        try:
+            from services import relationship_health as rh
+            await rh.apply_signal(
+                s, tenant_id=tenant_id, contact_id=contact_id,
+                source="activity", type_code=code,
+            )
+        except Exception:  # noqa: BLE001
+            import logging
+            logging.getLogger(__name__).exception(
+                "relationship_health.apply_signal failed for activity=%s", code)
+
         await s.commit()
 
     rows = await list_activities(tenant_id, contact_id=None, limit=1)

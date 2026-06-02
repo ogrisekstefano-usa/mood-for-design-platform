@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import Any, Optional
 from uuid import UUID
 import json
+import logging
 
 from fastapi import HTTPException
 from sqlalchemy import text
@@ -69,6 +70,10 @@ async def _emit_event(s, tenant_id: str, relation_id: str | None,
     If relation_id is None, skip silently (relation_id has NOT NULL constraint
     on the legacy column). The contact event is preserved via tenant_id below
     once that column is migrated; today we emit only when a relation exists.
+
+    M2 health hook: after appending the event, apply the catalog-driven
+    signal to `tenants.relationship_score` / `last_touch_at` (and to
+    `tenant_contacts.*` if payload carries `contact_id`).
     """
     if not relation_id:
         return
@@ -88,6 +93,19 @@ async def _emit_event(s, tenant_id: str, relation_id: str | None,
         "tid": str(tenant_id),
         "code": event_type_code,
     })
+
+    # M2 health hook (data-only, no scoring UI / no API)
+    try:
+        from services import relationship_health as rh
+        cid = (payload or {}).get("contact_id")
+        await rh.apply_signal(
+            s, tenant_id=str(tenant_id), contact_id=cid,
+            source="event", type_code=event_type_code,
+        )
+    except Exception:  # noqa: BLE001 — health hook is best-effort
+        logger = logging.getLogger(__name__)
+        logger.exception("relationship_health.apply_signal failed for event=%s",
+                         event_type_code)
 
 
 # ─── service ───────────────────────────────────────────────────────────

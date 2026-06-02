@@ -89,7 +89,7 @@ async def main() -> int:
         # --- 5. Catalog seeds
         print("\n[5] Catalog seeds")
         for tbl, expected in [
-            ("platform_relationship_event_types", 20),
+            ("platform_relationship_event_types", 27),  # M0 seed (20) + M2 email-template codes (7)
             ("platform_contact_roles", 11),
             ("platform_activity_types", 8),
             ("platform_contact_sources", 8),
@@ -195,7 +195,7 @@ async def main() -> int:
             await seed_main_b()
             cnt1 = (await s.execute(text("SELECT COUNT(*) FROM platform_relationship_event_types"))).scalar()
             cnt2 = (await s.execute(text("SELECT COUNT(*) FROM platform_contact_roles"))).scalar()
-            add("idempotent.event_types_count_stable",   cnt1 == 20, count=cnt1)
+            add("idempotent.event_types_count_stable",   cnt1 == 27, count=cnt1)
             add("idempotent.contact_roles_count_stable", cnt2 == 11, count=cnt2)
         except Exception as e:
             add("idempotent.seed_rerun", False, error=str(e)[:120])

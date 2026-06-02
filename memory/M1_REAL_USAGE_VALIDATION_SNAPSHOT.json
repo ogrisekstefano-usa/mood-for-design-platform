@@ -1,5 +1,5 @@
 {
-  "ts": "2026-06-02T21:47:39.370610+00:00",
+  "ts": "2026-06-02T22:50:47.468483+00:00",
   "classification": "M1_VALIDATED_READY_FOR_M2",
   "steps": [
     {
@@ -59,49 +59,49 @@
     {
       "name": "create contact Mario (founder)",
       "ok": true,
-      "detail": "id=275263d9-26b8-4f4d-8b64-0c9e2fe810e5",
+      "detail": "id=77e1d828-a4ab-438b-b347-f07f3306702a",
       "payload": null
     },
     {
       "name": "create contact Giulia (architect)",
       "ok": true,
-      "detail": "id=f4b10e61-f754-4d23-ae71-6e7980d66d38",
+      "detail": "id=eb16882e-7403-401d-937d-5687c8828a82",
       "payload": null
     },
     {
       "name": "create contact Luca (purchasing)",
       "ok": true,
-      "detail": "id=2f8e935b-d4bc-4a56-9cd7-763f611a06d1",
+      "detail": "id=dc90fe39-8811-4d3c-b3fd-a3b30f190fdb",
       "payload": null
     },
     {
       "name": "create activity call",
       "ok": true,
-      "detail": "id=09ac437c-cfb4-4774-83b8-e18ecf9e6acf",
+      "detail": "id=7672e0a7-aedd-49c1-9f53-911c238c2448",
       "payload": null
     },
     {
       "name": "create activity email",
       "ok": true,
-      "detail": "id=8584067d-6606-4711-8815-eceb57252394",
+      "detail": "id=3c63eacc-dc1d-4c7f-930f-49f9b83f5160",
       "payload": null
     },
     {
       "name": "create activity whatsapp",
       "ok": true,
-      "detail": "id=ab7baa00-f749-4f9f-97c1-9e3bdbfd1fdb",
+      "detail": "id=3f661bc4-9b77-4107-8000-137315d3bd3b",
       "payload": null
     },
     {
       "name": "create activity linkedin",
       "ok": true,
-      "detail": "id=e83846bc-f561-43cb-85b1-49cfaa5da651",
+      "detail": "id=592616cb-9f65-43ec-9f4c-51c8c3a681e2",
       "payload": null
     },
     {
       "name": "create activity internal_note",
       "ok": true,
-      "detail": "id=237defa4-da89-426b-8ab3-ad466ede4518",
+      "detail": "id=651ae818-8743-4666-8540-7412f7fbda56",
       "payload": null
     },
     {
@@ -125,7 +125,7 @@
     {
       "name": "PATCH update contact",
       "ok": true,
-      "detail": "HTTP 200 body={\"id\":\"f4b10e61-f754-4d23-ae71-6e7980d66d38\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
+      "detail": "HTTP 200 body={\"id\":\"eb16882e-7403-401d-937d-5687c8828a82\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
       "payload": null
     },
     {
@@ -137,13 +137,13 @@
     {
       "name": "assign contact owner",
       "ok": true,
-      "detail": "HTTP 200 body={\"id\":\"f4b10e61-f754-4d23-ae71-6e7980d66d38\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
+      "detail": "HTTP 200 body={\"id\":\"eb16882e-7403-401d-937d-5687c8828a82\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
       "payload": null
     },
     {
       "name": "overview KPIs",
       "ok": true,
-      "detail": "contacts=3 activities_30d=16 owner=MOOD Admin",
+      "detail": "contacts=3 activities_30d=24 owner=MOOD Admin",
       "payload": null
     },
     {
@@ -167,7 +167,7 @@
     {
       "name": "list archived contacts",
       "ok": true,
-      "detail": "HTTP 200 count=12",
+      "detail": "HTTP 200 count=18",
       "payload": null
     },
     {
@@ -197,7 +197,7 @@
     {
       "name": "validate_m1_security.py (cross-tenant isolation suite)",
       "ok": true,
-      "detail": "exit=0 \u00b7 last: under  status=403\n  \u2705 admin.anon_401  status=401\n\n============================================================\nM1 SECURITY: 16/16 PASS \u00b7 0 FAIL  in 87.80s\n\nJSON dump \u2192 /tmp/m1_security_validation.json",
+      "detail": "exit=0 \u00b7 last: under  status=403\n  \u2705 admin.anon_401  status=401\n\n============================================================\nM1 SECURITY: 16/16 PASS \u00b7 0 FAIL  in 91.16s\n\nJSON dump \u2192 /tmp/m1_security_validation.json",
       "payload": null
     }
   ],
@@ -215,7 +215,7 @@
       "owner_advisor_id": null,
       "advisor_display": null,
       "contacts_count": 2,
-      "last_activity_at": "2026-06-02T18:34:37.156339+00:00",
+      "last_activity_at": "2026-06-02T22:46:45.225364+00:00",
       "tenant_relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
       "tenant_owner_display": "MOOD Admin"
     },
@@ -244,7 +244,7 @@
     ],
     "contacts": [
       {
-        "id": "275263d9-26b8-4f4d-8b64-0c9e2fe810e5",
+        "id": "77e1d828-a4ab-438b-b347-f07f3306702a",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "user_id": null,
@@ -265,18 +265,18 @@
         "owner_assigned_by": null,
         "source_code": "manual",
         "source_reference": null,
-        "relationship_score": 0,
+        "relationship_score": 2,
         "last_touch_at": null,
         "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "created_at": "2026-06-02T21:44:53.740159+00:00",
-        "updated_at": "2026-06-02T21:44:53.740159+00:00",
+        "created_at": "2026-06-02T22:47:52.947558+00:00",
+        "updated_at": "2026-06-02T22:47:52.947558+00:00",
         "last_activity_at": null,
         "archived_at": null,
         "owner_display": null,
         "owner_email": null
       },
       {
-        "id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+        "id": "eb16882e-7403-401d-937d-5687c8828a82",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "user_id": null,
@@ -297,18 +297,18 @@
         "owner_assigned_by": null,
         "source_code": "manual",
         "source_reference": null,
-        "relationship_score": 0,
+        "relationship_score": 2,
         "last_touch_at": null,
         "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "created_at": "2026-06-02T21:44:58.882497+00:00",
-        "updated_at": "2026-06-02T21:44:58.882497+00:00",
+        "created_at": "2026-06-02T22:47:58.735159+00:00",
+        "updated_at": "2026-06-02T22:47:58.735159+00:00",
         "last_activity_at": null,
         "archived_at": null,
         "owner_display": null,
         "owner_email": null
       },
       {
-        "id": "2f8e935b-d4bc-4a56-9cd7-763f611a06d1",
+        "id": "dc90fe39-8811-4d3c-b3fd-a3b30f190fdb",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "user_id": null,
@@ -329,11 +329,11 @@
         "owner_assigned_by": null,
         "source_code": "manual",
         "source_reference": null,
-        "relationship_score": 0,
+        "relationship_score": 2,
         "last_touch_at": null,
         "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "created_at": "2026-06-02T21:45:03.823517+00:00",
-        "updated_at": "2026-06-02T21:45:03.823517+00:00",
+        "created_at": "2026-06-02T22:48:04.325498+00:00",
+        "updated_at": "2026-06-02T22:48:04.325498+00:00",
         "last_activity_at": null,
         "archived_at": null,
         "owner_display": null,
@@ -342,13 +342,13 @@
     ],
     "activities": [
       {
-        "id": "09ac437c-cfb4-4774-83b8-e18ecf9e6acf",
+        "id": "7672e0a7-aedd-49c1-9f53-911c238c2448",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-        "contact_id": "275263d9-26b8-4f4d-8b64-0c9e2fe810e5",
+        "contact_id": "77e1d828-a4ab-438b-b347-f07f3306702a",
         "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
         "activity_type_code": "call",
-        "occurred_at": "2026-06-02T21:45:07.907260+00:00",
+        "occurred_at": "2026-06-02T22:48:09.060959+00:00",
         "subject": "Qualifica iniziale",
         "outcome": "Studio interessato, riprendere",
         "next_step": null,
@@ -361,13 +361,13 @@
         "contact_display": "Mario Rossi"
       },
       {
-        "id": "8584067d-6606-4711-8815-eceb57252394",
+        "id": "3c63eacc-dc1d-4c7f-930f-49f9b83f5160",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-        "contact_id": "275263d9-26b8-4f4d-8b64-0c9e2fe810e5",
+        "contact_id": "77e1d828-a4ab-438b-b347-f07f3306702a",
         "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
         "activity_type_code": "email",
-        "occurred_at": "2026-06-02T21:45:11.174679+00:00",
+        "occurred_at": "2026-06-02T22:48:12.950725+00:00",
         "subject": "Follow-up email",
         "outcome": "Inviato Master Deck",
         "next_step": null,
@@ -380,13 +380,13 @@
         "contact_display": "Mario Rossi"
       },
       {
-        "id": "ab7baa00-f749-4f9f-97c1-9e3bdbfd1fdb",
+        "id": "3f661bc4-9b77-4107-8000-137315d3bd3b",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-        "contact_id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+        "contact_id": "eb16882e-7403-401d-937d-5687c8828a82",
         "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
         "activity_type_code": "whatsapp",
-        "occurred_at": "2026-06-02T21:45:14.421456+00:00",
+        "occurred_at": "2026-06-02T22:48:16.839333+00:00",
         "subject": "WhatsApp coordinamento",
         "outcome": "Conferma demo 16/06",
         "next_step": null,
@@ -399,13 +399,13 @@
         "contact_display": "Giulia Bianchi"
       },
       {
-        "id": "e83846bc-f561-43cb-85b1-49cfaa5da651",
+        "id": "592616cb-9f65-43ec-9f4c-51c8c3a681e2",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-        "contact_id": "2f8e935b-d4bc-4a56-9cd7-763f611a06d1",
+        "contact_id": "dc90fe39-8811-4d3c-b3fd-a3b30f190fdb",
         "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
         "activity_type_code": "linkedin",
-        "occurred_at": "2026-06-02T21:45:17.680875+00:00",
+        "occurred_at": "2026-06-02T22:48:20.732661+00:00",
         "subject": "Connect LinkedIn",
         "outcome": "Aggiunto in rete",
         "next_step": null,
@@ -418,13 +418,13 @@
         "contact_display": "Luca Verdi"
       },
       {
-        "id": "237defa4-da89-426b-8ab3-ad466ede4518",
+        "id": "651ae818-8743-4666-8540-7412f7fbda56",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "contact_id": null,
         "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
         "activity_type_code": "internal_note",
-        "occurred_at": "2026-06-02T21:45:20.932320+00:00",
+        "occurred_at": "2026-06-02T22:48:24.620610+00:00",
         "subject": "Nota interna onboarding",
         "outcome": "Tutto in linea",
         "next_step": null,
@@ -445,7 +445,7 @@
         "status": "active",
         "created_at": "2026-06-02T02:00:09.623944+00:00",
         "tenant_relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "tenant_relationship_owner_assigned_at": "2026-06-02T21:44:26.229560+00:00",
+        "tenant_relationship_owner_assigned_at": "2026-06-02T22:47:22.076324+00:00",
         "tenant_owner_display": "MOOD Admin"
       },
       "relation": {
@@ -458,12 +458,12 @@
         "phone_prefix": "+39",
         "phone_number": "345 1234567",
         "owner_advisor_id": null,
-        "last_activity_at": "2026-06-02T21:45:20.932320+00:00",
+        "last_activity_at": "2026-06-02T22:48:24.620610+00:00",
         "advisor_display": null,
         "advisor_email": null
       },
       "primary_contact": {
-        "id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+        "id": "eb16882e-7403-401d-937d-5687c8828a82",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "user_id": null,
@@ -479,31 +479,31 @@
         "status": "active",
         "notes": "Aggiornato via UX test",
         "relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "owner_assigned_at": "2026-06-02T21:45:40.008800+00:00",
+        "owner_assigned_at": "2026-06-02T22:48:44.098001+00:00",
         "source_code": "manual",
         "source_reference": null,
-        "relationship_score": 0,
-        "last_touch_at": "2026-06-02T21:45:14.421456+00:00",
-        "created_at": "2026-06-02T21:44:58.882497+00:00",
-        "updated_at": "2026-06-02T21:45:40.008800+00:00",
-        "last_activity_at": "2026-06-02T21:45:14.421456+00:00",
+        "relationship_score": 4,
+        "last_touch_at": "2026-06-02T22:48:16.839333+00:00",
+        "created_at": "2026-06-02T22:47:58.735159+00:00",
+        "updated_at": "2026-06-02T22:48:44.098001+00:00",
+        "last_activity_at": "2026-06-02T22:48:16.839333+00:00",
         "owner_email": "admin@moodfordesign.com",
         "owner_display": "MOOD Admin"
       },
       "kpis": {
         "contacts_total": 3,
-        "activities_30d": 16,
-        "last_activity_at": "2026-06-02T21:45:20.932320+00:00"
+        "activities_30d": 24,
+        "last_activity_at": "2026-06-02T22:48:24.620610+00:00"
       },
       "recent_activities": [
         {
-          "id": "237defa4-da89-426b-8ab3-ad466ede4518",
+          "id": "651ae818-8743-4666-8540-7412f7fbda56",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
           "contact_id": null,
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "internal_note",
-          "occurred_at": "2026-06-02T21:45:20.932320+00:00",
+          "occurred_at": "2026-06-02T22:48:24.620610+00:00",
           "subject": "Nota interna onboarding",
           "outcome": "Tutto in linea",
           "next_step": null,
@@ -516,13 +516,13 @@
           "contact_display": null
         },
         {
-          "id": "e83846bc-f561-43cb-85b1-49cfaa5da651",
+          "id": "592616cb-9f65-43ec-9f4c-51c8c3a681e2",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-          "contact_id": "2f8e935b-d4bc-4a56-9cd7-763f611a06d1",
+          "contact_id": "dc90fe39-8811-4d3c-b3fd-a3b30f190fdb",
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "linkedin",
-          "occurred_at": "2026-06-02T21:45:17.680875+00:00",
+          "occurred_at": "2026-06-02T22:48:20.732661+00:00",
           "subject": "Connect LinkedIn",
           "outcome": "Aggiunto in rete",
           "next_step": null,
@@ -535,13 +535,13 @@
           "contact_display": "Luca Verdi"
         },
         {
-          "id": "ab7baa00-f749-4f9f-97c1-9e3bdbfd1fdb",
+          "id": "3f661bc4-9b77-4107-8000-137315d3bd3b",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-          "contact_id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+          "contact_id": "eb16882e-7403-401d-937d-5687c8828a82",
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "whatsapp",
-          "occurred_at": "2026-06-02T21:45:14.421456+00:00",
+          "occurred_at": "2026-06-02T22:48:16.839333+00:00",
           "subject": "WhatsApp coordinamento",
           "outcome": "Conferma demo 16/06",
           "next_step": null,
@@ -572,11 +572,11 @@
         "country": null,
         "website": null,
         "contact_email": "mario.rossi.1780365582@martinel.example",
-        "last_activity_at": "2026-06-02T21:45:20.932320+00:00",
+        "last_activity_at": "2026-06-02T22:48:24.620610+00:00",
         "advisor_display": null
       },
       "primary_contact": {
-        "id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+        "id": "eb16882e-7403-401d-937d-5687c8828a82",
         "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
         "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
         "user_id": null,
@@ -592,31 +592,31 @@
         "status": "active",
         "notes": "Aggiornato via UX test",
         "relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
-        "owner_assigned_at": "2026-06-02T21:45:40.008800+00:00",
+        "owner_assigned_at": "2026-06-02T22:48:44.098001+00:00",
         "source_code": "manual",
         "source_reference": null,
-        "relationship_score": 0,
-        "last_touch_at": "2026-06-02T21:45:14.421456+00:00",
-        "created_at": "2026-06-02T21:44:58.882497+00:00",
-        "updated_at": "2026-06-02T21:45:40.008800+00:00",
-        "last_activity_at": "2026-06-02T21:45:14.421456+00:00",
+        "relationship_score": 4,
+        "last_touch_at": "2026-06-02T22:48:16.839333+00:00",
+        "created_at": "2026-06-02T22:47:58.735159+00:00",
+        "updated_at": "2026-06-02T22:48:44.098001+00:00",
+        "last_activity_at": "2026-06-02T22:48:16.839333+00:00",
         "owner_email": "admin@moodfordesign.com",
         "owner_display": "MOOD Admin"
       },
       "kpis": {
         "contacts_total": 2,
-        "activities_30d": 16,
-        "last_activity_at": "2026-06-02T21:45:20.932320+00:00"
+        "activities_30d": 24,
+        "last_activity_at": "2026-06-02T22:48:24.620610+00:00"
       },
       "recent_activities": [
         {
-          "id": "237defa4-da89-426b-8ab3-ad466ede4518",
+          "id": "651ae818-8743-4666-8540-7412f7fbda56",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
           "contact_id": null,
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "internal_note",
-          "occurred_at": "2026-06-02T21:45:20.932320+00:00",
+          "occurred_at": "2026-06-02T22:48:24.620610+00:00",
           "subject": "Nota interna onboarding",
           "outcome": "Tutto in linea",
           "next_step": null,
@@ -629,13 +629,13 @@
           "contact_display": null
         },
         {
-          "id": "e83846bc-f561-43cb-85b1-49cfaa5da651",
+          "id": "592616cb-9f65-43ec-9f4c-51c8c3a681e2",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-          "contact_id": "2f8e935b-d4bc-4a56-9cd7-763f611a06d1",
+          "contact_id": "dc90fe39-8811-4d3c-b3fd-a3b30f190fdb",
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "linkedin",
-          "occurred_at": "2026-06-02T21:45:17.680875+00:00",
+          "occurred_at": "2026-06-02T22:48:20.732661+00:00",
           "subject": "Connect LinkedIn",
           "outcome": "Aggiunto in rete",
           "next_step": null,
@@ -648,13 +648,13 @@
           "contact_display": "Luca Verdi"
         },
         {
-          "id": "ab7baa00-f749-4f9f-97c1-9e3bdbfd1fdb",
+          "id": "3f661bc4-9b77-4107-8000-137315d3bd3b",
           "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
           "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
-          "contact_id": "f4b10e61-f754-4d23-ae71-6e7980d66d38",
+          "contact_id": "eb16882e-7403-401d-937d-5687c8828a82",
           "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
           "activity_type_code": "whatsapp",
-          "occurred_at": "2026-06-02T21:45:14.421456+00:00",
+          "occurred_at": "2026-06-02T22:48:16.839333+00:00",
           "subject": "WhatsApp coordinamento",
           "outcome": "Conferma demo 16/06",
           "next_step": null,

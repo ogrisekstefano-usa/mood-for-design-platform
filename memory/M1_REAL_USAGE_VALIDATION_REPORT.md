@@ -1,6 +1,6 @@
 # M1 REAL USAGE VALIDATION™ — REPORT
 
-> Eseguito 2026-06-02T21:47:39.372019+00:00 su Martinel Interior Design
+> Eseguito 2026-06-02T22:50:47.469153+00:00 su Martinel Interior Design
 > via endpoint HTTP pubblici M1. Zero SQL, zero seed.
 
 ## CLASSIFICAZIONE: **`M1_VALIDATED_READY_FOR_M2`**
@@ -20,25 +20,25 @@
 | 7 | `catalog contact-sources` | ✅ | 8 entries |
 | 8 | `catalog languages` | ✅ | 12 entries |
 | 9 | `contract probe preferred_language='it'` | ✅ | accepted (mapped) — clean up created probe contact |
-| 10 | `create contact Mario (founder)` | ✅ | id=275263d9-26b8-4f4d-8b64-0c9e2fe810e5 |
-| 11 | `create contact Giulia (architect)` | ✅ | id=f4b10e61-f754-4d23-ae71-6e7980d66d38 |
-| 12 | `create contact Luca (purchasing)` | ✅ | id=2f8e935b-d4bc-4a56-9cd7-763f611a06d1 |
-| 13 | `create activity call` | ✅ | id=09ac437c-cfb4-4774-83b8-e18ecf9e6acf |
-| 14 | `create activity email` | ✅ | id=8584067d-6606-4711-8815-eceb57252394 |
-| 15 | `create activity whatsapp` | ✅ | id=ab7baa00-f749-4f9f-97c1-9e3bdbfd1fdb |
-| 16 | `create activity linkedin` | ✅ | id=e83846bc-f561-43cb-85b1-49cfaa5da651 |
-| 17 | `create activity internal_note` | ✅ | id=237defa4-da89-426b-8ab3-ad466ede4518 |
+| 10 | `create contact Mario (founder)` | ✅ | id=77e1d828-a4ab-438b-b347-f07f3306702a |
+| 11 | `create contact Giulia (architect)` | ✅ | id=eb16882e-7403-401d-937d-5687c8828a82 |
+| 12 | `create contact Luca (purchasing)` | ✅ | id=dc90fe39-8811-4d3c-b3fd-a3b30f190fdb |
+| 13 | `create activity call` | ✅ | id=7672e0a7-aedd-49c1-9f53-911c238c2448 |
+| 14 | `create activity email` | ✅ | id=3c63eacc-dc1d-4c7f-930f-49f9b83f5160 |
+| 15 | `create activity whatsapp` | ✅ | id=3f661bc4-9b77-4107-8000-137315d3bd3b |
+| 16 | `create activity linkedin` | ✅ | id=592616cb-9f65-43ec-9f4c-51c8c3a681e2 |
+| 17 | `create activity internal_note` | ✅ | id=651ae818-8743-4666-8540-7412f7fbda56 |
 | 18 | `list contacts` | ✅ | 3 active |
 | 19 | `filter by role=architect` | ✅ | HTTP 200 got 1 |
 | 20 | `contact search q=Giulia` | ✅ | got 1 |
-| 21 | `PATCH update contact` | ✅ | HTTP 200 body={"id":"f4b10e61-f754-4d23-ae71-6e7980d66d38","tenant_id":"c64659f6-5a76-41dd-8d8d-b901d29862af","studio_relation_id":"df |
+| 21 | `PATCH update contact` | ✅ | HTTP 200 body={"id":"eb16882e-7403-401d-937d-5687c8828a82","tenant_id":"c64659f6-5a76-41dd-8d8d-b901d29862af","studio_relation_id":"df |
 | 22 | `set-primary` | ✅ | HTTP 200 |
-| 23 | `assign contact owner` | ✅ | HTTP 200 body={"id":"f4b10e61-f754-4d23-ae71-6e7980d66d38","tenant_id":"c64659f6-5a76-41dd-8d8d-b901d29862af","studio_relation_id":"df |
-| 24 | `overview KPIs` | ✅ | contacts=3 activities_30d=16 owner=MOOD Admin |
+| 23 | `assign contact owner` | ✅ | HTTP 200 body={"id":"eb16882e-7403-401d-937d-5687c8828a82","tenant_id":"c64659f6-5a76-41dd-8d8d-b901d29862af","studio_relation_id":"df |
+| 24 | `overview KPIs` | ✅ | contacts=3 activities_30d=24 owner=MOOD Admin |
 | 25 | `global search 'martinel'` | ✅ | HTTP 200 20 results |
 | 26 | `global search 'Giulia'` | ✅ | HTTP 200 2 results |
 | 27 | `archive contact` | ✅ | HTTP 200 |
-| 28 | `list archived contacts` | ✅ | HTTP 200 count=12 |
+| 28 | `list archived contacts` | ✅ | HTTP 200 count=18 |
 | 29 | `blueprint/overview (admin override → Martinel)` | ✅ | HTTP 200 |
 | 30 | `blueprint/contacts (admin override → Martinel)` | ✅ | HTTP 200 count=2 |
 | 31 | `blueprint/activities (admin override → Martinel)` | ✅ | HTTP 200 count=10 |
@@ -70,8 +70,8 @@
 ### Overview KPI (snapshot post-creazione)
 
 - `contacts_total`: **3**
-- `activities_30d`: **16**
-- `last_activity_at`: 2026-06-02T21:45:20.932320+00:00
+- `activities_30d`: **24**
+- `last_activity_at`: 2026-06-02T22:48:24.620610+00:00
 - `tenant_relationship_owner`: **MOOD Admin**
 
 ## 3 · PROBLEMI RILEVATI
