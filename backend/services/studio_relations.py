@@ -543,11 +543,23 @@ async def list_followups_for_advisor(*, advisor_id: str) -> dict:
 
 # ── Activation ────────────────────────────────────────────────────────
 async def activate_studio_ecosystem(*, relation_id: str,
-                                       actor_id: Optional[str]) -> dict:
+                                       actor_id: Optional[str],
+                                       slug_override: Optional[str] = None,
+                                       tenant_name_override: Optional[str] = None,
+                                       founder_link_ttl_minutes: int = 43200) -> dict:
     """
     Promote a qualified relation into an active tenant. Creates the
     tenants row + tenant_modules + founder user + emits the first
-    Access Continuity magic-link.
+    Access Continuity magic-link (default TTL = 30 days for founder
+    invitations).
+
+    Args:
+      slug_override:        Optional advisor-confirmed tenant slug. If
+                            absent or already taken, falls back to the
+                            auto-derived slug with -2/-3 disambiguation.
+      tenant_name_override: Optional advisor-confirmed tenant display name.
+      founder_link_ttl_minutes: TTL of the founder activation magic link.
+                                Default 43200 = 30 days.
 
     This is the ONLY path to tenant creation in MOOD — there is no
     self-serve signup.
@@ -580,8 +592,18 @@ async def activate_studio_ecosystem(*, relation_id: str,
             return {"ok": False, "reason": "already_activated",
                     "tenant_id": str(rel['tenant_id'])}
 
-        slug_base = re.sub(r'[^a-z0-9]+', '-',
-                            (rel['studio_name'] or 'studio').lower()).strip('-') or 'studio'
+        # Resolve the tenant display name. Advisor-confirmed override wins.
+        tenant_display_name = (tenant_name_override or '').strip() \
+                               or rel['studio_name'] or 'Studio'
+
+        # Build the slug. Honour the advisor-confirmed override when
+        # provided AND available; otherwise derive from the studio name
+        # with -2/-3 disambiguation.
+        def _slugify(s: str) -> str:
+            return re.sub(r'[^a-z0-9]+', '-', (s or '').lower()).strip('-')
+
+        slug_base = _slugify(slug_override) if slug_override else _slugify(tenant_display_name)
+        slug_base = slug_base or 'studio'
         slug = slug_base
         i = 2
         while True:
@@ -622,12 +644,12 @@ async def activate_studio_ecosystem(*, relation_id: str,
             """),
             {
                 "slug":    slug,
-                "name":    rel['studio_name'],
+                "name":    tenant_display_name,
                 "lang":    language_iso,
                 "loc":     language_iso,
                 "mods":    json.dumps(enabled_modules),
                 "brand":   json.dumps({
-                    "monogram":   req_monogram or rel.get('monogram') or rel['studio_name'][:2].upper(),
+                    "monogram":   req_monogram or rel.get('monogram') or tenant_display_name[:2].upper(),
                     "archetype":  archetype_iso,
                     "country":    country_iso,
                     "website":    rel.get('website'),
@@ -689,30 +711,46 @@ async def activate_studio_ecosystem(*, relation_id: str,
                           {"tenant_id": tenant_id, "slug": slug})
         await s.commit()
 
-    # Issue magic link (sandbox-safe via existing access_continuity)
-    magic_url = None
+    # Issue magic link (sandbox-safe via existing access_continuity).
+    # Use the configured TTL (default 30 days for founder invitations)
+    # and SKIP the generic access-continuity email — the activation
+    # email below carries the same link inside the CMS-driven template.
+    magic_link_url = None
     if rel['contact_email']:
         try:
             from services.access_continuity import issue_magic_link
-            await issue_magic_link(email=rel['contact_email'])
+            link_res = await issue_magic_link(
+                email=rel['contact_email'],
+                ttl_minutes=founder_link_ttl_minutes,
+                send_email=False,
+            )
+            magic_link_url = link_res.get('magic_link_url')
         except Exception:
             pass
 
     # Fire studio_request_approved transactional email. We update the
     # studio_requests row via raw SQL above, which bypasses
     # update_request_status' built-in status-email trigger. Calling the
-    # explicit helper here keeps the audit trail complete.
+    # explicit helper here keeps the audit trail complete and lets us
+    # inject the magic_link_url as the CTA target.
     if rel.get('studio_request_id'):
         try:
             from services.studio_activation import send_activation_email_for_request
             import asyncio as _aio
             _aio.create_task(send_activation_email_for_request(
-                str(rel['studio_request_id'])))
+                str(rel['studio_request_id']),
+                magic_link_url=magic_link_url,
+                magic_link_validity_days=int(founder_link_ttl_minutes // 1440),
+            ))
         except Exception:
             pass
 
     return {"ok": True, "tenant_id": tenant_id, "slug": slug,
-             "founder_user_id": user_id, "magic_link_sent": bool(rel['contact_email'])}
+             "tenant_name": tenant_display_name,
+             "founder_user_id": user_id,
+             "founder_email": rel['contact_email'],
+             "magic_link_url": magic_link_url,
+             "magic_link_sent": bool(rel['contact_email'] and magic_link_url)}
 
 
 # ── Serializers ──────────────────────────────────────────────────────

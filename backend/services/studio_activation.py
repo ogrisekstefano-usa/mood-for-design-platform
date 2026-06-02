@@ -728,16 +728,23 @@ async def update_request_status(
 
 
 # Maps internal status to email template key (None = no email for that status)
+# Note: 'activated' is intentionally NOT in this map. Activation is a
+# distinct, two-step flow that runs through the dedicated `/activate`
+# endpoint (services/studio_relations.activate_studio_ecosystem). That
+# function is responsible for issuing the founder magic link AND firing
+# the `studio_request_approved` email with the link injected as CTA.
 _STATUS_EMAIL_MAP = {
     'reviewing':    'studio_request_review',
     'qualified':    'studio_request_qualified',
     'not_aligned':  'studio_request_rejected',
-    'activated':    'studio_request_approved',
-    # 'received' and 'contacted' do not trigger automated email
+    # 'received', 'contacted', 'activated' do not trigger automated email
+    # from update_request_status.
 }
 
 
-async def _send_status_email(session, request_id: str, status: str) -> None:
+async def _send_status_email(session, request_id: str, status: str,
+                              extra_variables: dict | None = None,
+                              cta_url_override: str | None = None) -> None:
     template_key = _STATUS_EMAIL_MAP.get(status)
     if not template_key:
         return
@@ -749,8 +756,50 @@ async def _send_status_email(session, request_id: str, status: str) -> None:
         return
     from services import email_dispatcher
     import asyncio as _aio
+    variables = {
+        'request_id':   str(row['id']),
+        'reference':    _format_reference(str(row['id'])),
+        'studio_name':  row['studio_name'] or '—',
+        'contact_name': row['contact_name'] or '—',
+    }
+    if extra_variables:
+        variables.update(extra_variables)
     _aio.create_task(email_dispatcher.dispatch_email(
         template_key=template_key,
+        to_email=row['contact_email'],
+        to_name=row['contact_name'],
+        locale=row['locale'] or 'it-IT',
+        variables=variables,
+        cta_url_override=cta_url_override,
+    ))
+
+
+async def send_activation_email_for_request(
+    request_id: str,
+    *, magic_link_url: str | None = None,
+    magic_link_validity_days: int = 30,
+) -> None:
+    """
+    Fire the studio_request_approved email after activate_studio_ecosystem
+    has completed (the relation activator updates studio_requests via raw
+    SQL, which bypasses update_request_status and its trigger).
+
+    The advisor-issued founder magic link is passed through as
+    `cta_url_override` so the email's CTA opens the actual `/journey/
+    continue?token=...` URL, plus exposed in the template variables for
+    text interpolation ({{magic_link_url}}, {{magic_link_validity_days}}).
+    Idempotent: caller is responsible for not double-firing.
+    """
+    async with AsyncSessionLocal() as s:
+        row = (await s.execute(text("""
+            SELECT id, studio_name, contact_name, contact_email, locale
+              FROM studio_requests WHERE id = :id
+        """), {"id": request_id})).mappings().first()
+    if not row or not row['contact_email']:
+        return
+    from services import email_dispatcher
+    await email_dispatcher.dispatch_email(
+        template_key='studio_request_approved',
         to_email=row['contact_email'],
         to_name=row['contact_name'],
         locale=row['locale'] or 'it-IT',
@@ -759,16 +808,145 @@ async def _send_status_email(session, request_id: str, status: str) -> None:
             'reference':    _format_reference(str(row['id'])),
             'studio_name':  row['studio_name'] or '—',
             'contact_name': row['contact_name'] or '—',
+            'magic_link_url': magic_link_url or '',
+            'magic_link_validity_days': magic_link_validity_days,
         },
-    ))
+        cta_url_override=magic_link_url,
+    )
 
 
-async def send_activation_email_for_request(request_id: str) -> None:
+# ── Full-auto activation orchestrator ────────────────────────────────
+async def activate_request_full_auto(
+    *, request_id: str,
+    actor_user_id: str | None = None,
+    actor_advisor_id: str | None = None,
+    tenant_slug_override: str | None = None,
+    tenant_name_override: str | None = None,
+    founder_link_ttl_days: int = 30,
+) -> dict:
     """
-    Fire the studio_request_approved email after activate_studio_ecosystem
-    has completed (the relation activator updates studio_requests via raw
-    SQL, which bypasses update_request_status and its trigger).
-    Idempotent: caller is responsible for not double-firing.
+    Single entry-point used by the Command Center activation modal.
+
+    Wraps the two historically separated steps (open studio_relation +
+    activate ecosystem) into one atomic, advisor-facing call:
+
+      1. Loads the studio_request.
+      2. Ensures a studio_relation exists, opening one from the request
+         if needed. Auto-claims ownership to the calling advisor (super
+         admins skip the claim).
+      3. Calls services.studio_relations.activate_studio_ecosystem with
+         the optional advisor-confirmed slug / tenant name overrides.
+         That function:
+           - creates the tenant row (with the chosen slug),
+           - creates the founder users row (role='owner'),
+           - issues a 30-day magic link,
+           - fires the studio_request_approved email with the link as CTA,
+           - flips studio_requests.status to 'activated'.
+
+    Returns:
+      Success:
+        { ok: True, tenant_id, slug, tenant_name, founder_email,
+          founder_user_id, magic_link_url, magic_link_sent,
+          relation_id, request_id }
+      Failure:
+        { ok: False, reason: "not_found" | "already_activated" |
+                              "relation_open_failed" | "activation_failed" }
     """
+    from services import studio_relations
+
+    # 1. Load request.
+    req = await get_request(request_id)
+    if not req:
+        return {"ok": False, "reason": "not_found"}
+
+    # 2. Find or create studio_relation linked to this request.
+    relation_id = None
     async with AsyncSessionLocal() as s:
-        await _send_status_email(s, request_id, 'activated')
+        existing = (await s.execute(text("""
+            SELECT id, tenant_id FROM studio_relations
+             WHERE studio_request_id = CAST(:rid AS uuid)
+             ORDER BY created_at DESC LIMIT 1
+        """), {"rid": request_id})).mappings().first()
+        if existing:
+            relation_id = str(existing['id'])
+            if existing['tenant_id']:
+                return {"ok": False, "reason": "already_activated",
+                        "tenant_id": str(existing['tenant_id'])}
+
+    if not relation_id:
+        owner = actor_advisor_id  # super admin → None → unowned
+        opened = await studio_relations.open_relation_from_request(
+            studio_request_id=request_id,
+            owner_advisor_id=owner,
+        )
+        if not opened.get('ok'):
+            return {"ok": False, "reason": "relation_open_failed",
+                    "detail": opened.get('reason')}
+        relation_id = opened['relation_id']
+
+    # 3. Run ecosystem activation with overrides.
+    result = await studio_relations.activate_studio_ecosystem(
+        relation_id=relation_id,
+        actor_id=actor_user_id,
+        slug_override=tenant_slug_override,
+        tenant_name_override=tenant_name_override,
+        founder_link_ttl_minutes=int(founder_link_ttl_days * 24 * 60),
+    )
+    if not result.get('ok'):
+        return {"ok": False, "reason": result.get('reason') or "activation_failed",
+                "detail": result}
+
+    result['relation_id'] = relation_id
+    result['request_id']  = request_id
+    return result
+
+
+async def get_activation_preview(request_id: str) -> dict | None:
+    """
+    Return the data needed by the Command Center activation modal:
+    suggested tenant name, suggested slug, founder email, plus current
+    status / activation eligibility.
+
+    Suggested slug is computed exactly as activate_studio_ecosystem will
+    do, including -2/-3 disambiguation against existing tenants. The
+    advisor can edit it in the modal — the final slug applied at submit
+    is the value they confirm.
+    """
+    import re as _re
+    async with AsyncSessionLocal() as s:
+        row = (await s.execute(text("""
+            SELECT sr.id, sr.studio_name, sr.contact_email, sr.contact_name,
+                   sr.status, sr.locale,
+                   rel.id AS relation_id, rel.tenant_id
+              FROM studio_requests sr
+              LEFT JOIN studio_relations rel
+                ON rel.studio_request_id = sr.id
+             WHERE sr.id = CAST(:id AS uuid)
+             ORDER BY rel.created_at DESC NULLS LAST
+             LIMIT 1
+        """), {"id": request_id})).mappings().first()
+        if not row:
+            return None
+        tenant_name = row['studio_name'] or 'Studio'
+        slug_base = _re.sub(r'[^a-z0-9]+', '-', tenant_name.lower()).strip('-') or 'studio'
+        slug = slug_base
+        i = 2
+        while True:
+            taken = (await s.execute(
+                text("SELECT 1 FROM tenants WHERE slug = :s"), {"s": slug},
+            )).first()
+            if not taken:
+                break
+            slug = f"{slug_base}-{i}"; i += 1
+    return {
+        'request_id':       request_id,
+        'tenant_name':      tenant_name,
+        'suggested_slug':   slug,
+        'founder_email':    row['contact_email'],
+        'founder_name':     row['contact_name'],
+        'locale':           row['locale'],
+        'current_status':   row['status'],
+        'relation_id':      str(row['relation_id']) if row['relation_id'] else None,
+        'already_activated': bool(row['tenant_id']),
+        'magic_link_validity_days': 30,
+    }

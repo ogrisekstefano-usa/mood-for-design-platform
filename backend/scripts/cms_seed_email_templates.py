@@ -165,26 +165,26 @@ TEMPLATES = {
             'signature':     'The MOOD for DESIGN™ ecosystem',
         },
     },
-    # ── 7) Visitor — approved (post-activation, separate from magic link) ──
+    # ── 7) Visitor — approved (post-activation: single email with magic link) ──
     'studio_request_approved': {
         'it-IT': {
             'subject':       'Il tuo Blueprint è pronto · {{studio_name}}',
             'eyebrow':       'Blueprint attivato',
             'headline':      'Benvenuto in MOOD, {{contact_name}}.',
-            'body':          'Il Blueprint di {{studio_name}} è stato configurato e attivato.\n\nA momenti riceverai una seconda email con il tuo Magic Link di accesso personale. Quel link è valido una sola volta e ti porterà direttamente nel tuo workspace.\n\nDa lì potrai impostare la tua password e iniziare a usare l\'ecosistema MOOD.',
-            'cta_label':     '',
+            'body':          'Il Blueprint di {{studio_name}} è stato configurato e attivato.\n\nUsa il pulsante qui sotto per accedere subito al tuo workspace. Da lì potrai impostare la tua password personale e iniziare a usare l\'ecosistema MOOD.',
+            'cta_label':     'Apri il tuo Blueprint',
             'cta_url_path':  '',
-            'note':          'Il Magic Link arriva entro pochi minuti. Se non lo vedi, controlla la cartella spam.',
+            'note':          'Il link è personale, può essere usato una sola volta ed è valido per i prossimi {{magic_link_validity_days}} giorni. Se non lo vedi, controlla la cartella spam.',
             'signature':     'L\'ecosistema MOOD for DESIGN™',
         },
         'en-US': {
             'subject':       'Your Blueprint is ready · {{studio_name}}',
             'eyebrow':       'Blueprint activated',
             'headline':      'Welcome to MOOD, {{contact_name}}.',
-            'body':          'The Blueprint for {{studio_name}} has been configured and activated.\n\nIn a moment you will receive a second email with your personal Magic Link. That link is valid only once and will take you directly to your workspace.\n\nFrom there you can set your password and start using the MOOD ecosystem.',
-            'cta_label':     '',
+            'body':          'The Blueprint for {{studio_name}} has been configured and activated.\n\nUse the button below to enter your workspace right away. From there you can set your personal password and start using the MOOD ecosystem.',
+            'cta_label':     'Open your Blueprint',
             'cta_url_path':  '',
-            'note':          'The Magic Link arrives within a few minutes. If you don\'t see it, please check your spam folder.',
+            'note':          'The link is personal, single-use and valid for the next {{magic_link_validity_days}} days. If you don\'t see it, please check your spam folder.',
             'signature':     'The MOOD for DESIGN™ ecosystem',
         },
     },

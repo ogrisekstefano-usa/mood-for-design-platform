@@ -18,7 +18,9 @@ const STATUS_OPTIONS = [
   { key: 'contacted',    label: 'Contacted',    tone: '#8FB7FF' },
   { key: 'qualified',    label: 'Qualified',    tone: '#A6FFB0' },
   { key: 'not_aligned',  label: 'Not aligned',  tone: '#FFB4A2' },
-  { key: 'activated',    label: 'Activated',    tone: '#FFFFFF' },
+  // 'activated' is unreachable via direct status change — use the
+  // dedicated Tenant Activation Console activation modal instead.
+  { key: 'activated',    label: 'Activated',    tone: '#FFFFFF', readOnly: true },
 ];
 
 const StudioRequestsAdmin = () => {
@@ -161,8 +163,9 @@ const StudioRequestsAdmin = () => {
                   }}
                 >
                   {STATUS_OPTIONS.map((s) => (
-                    <option key={s.key} value={s.key} style={{ background: '#0A0A0B' }}>
-                      {s.label}
+                    <option key={s.key} value={s.key} style={{ background: '#0A0A0B' }}
+                            disabled={s.readOnly && r.status !== s.key}>
+                      {s.label}{s.readOnly && r.status !== s.key ? ' (via modal)' : ''}
                     </option>
                   ))}
                 </select>

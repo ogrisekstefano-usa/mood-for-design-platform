@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements & Progress
 
-> **Versione**: 2026-06-01 · Aggiornato dopo Market Selection Refactor (Priority/Status + Region + SQL bugfix)
-> **Stato globale**: Studio V2 + Geografia commerciale READY_FOR_USER_ACCEPTANCE. Hold P0 Supabase ancora attivo (DB wipe 2026-05-30 in attesa log).
+> **Versione**: 2026-06-02 · Aggiornato dopo TENANT ACTIVATION COMPLETION (P0-1/2/3 chiusi)
+> **Stato globale**: ✅ READY_FOR_REAL_TENANTS. Studio V2 + Activation pipeline E2E autonomo (1 click advisor → tenant + founder + magic link 30gg).
 
 ---
 
@@ -23,12 +23,14 @@ Founder ≠ Command Center user. Studio Request ≠ Tenant. Provisioning asincro
 4. **Provisioning idempotente** — ogni job ha idempotency_key
 5. **Audit log su ogni transizione di stato**
 6. **NO HARDCODED LOCALES** (2026-05-31) — BCP-47 obbligatorio, `platform_languages` = single source of truth, fallback chain dinamica, LTR/RTL
+7. **Activation atomica** (2026-06-02) — un solo intervento advisor (modal di conferma) chiude la lifecycle fino al Founder loggato; PATCH legacy `status='activated'` bloccato con HTTP 409.
 
 ---
 
 ## Implementation Status
 
 ### ✅ COMPLETATO
+- **TENANT ACTIVATION COMPLETION (P0-1/2/3)** (2026-06-02) — Chiusura dei 3 gap del Readiness Report. Nuovo endpoint `POST /api/admin/studio/requests/{id}/activate` (full-auto: tenant + founder user + magic link 30gg + email approved con CTA). Modal `TenantActivationModal` nel Command Center (slug editabile, name editabile, founder email read-only). Magic link TTL elevato a 30 giorni (43200 min) tramite parametro `ttl_minutes`. Template `studio_request_approved` riscritto con CTA "Apri il tuo Blueprint" e nota "30 giorni". PATCH legacy verso `activated` rigettato con HTTP 409 `use_activate_endpoint`. Regression script `tenant_activation_completion_test.py`: **19/19 PASS**. Report `TENANT_ACTIVATION_COMPLETION_REPORT.md`. Classificazione finale **READY_FOR_REAL_TENANTS**.
 - **STUDIO V2 P0 AUDIT & REMEDIATION** (2026-06-01) — 6 P0 risolti: Loading overlay MOOD a doppia O animata (LoadingContext + MoodLoadingOverlay), Market card grid visuale (MarketCardGrid), Phone prefix con bandiera (PhonePrefixField), Email validation esplicita CMS, 20 nuove chiavi CMS bilingue (53 totali), zero hardcoded confermato via grep audit. Mapbox in fallback elegante con hint CMS. Report `STUDIO_V2_P0_AUDIT_REPORT.md`. Test E2E: 12/12 + 29/30 (1 falso positivo). Lint clean. Classificazione READY_FOR_DEPLOY.
 - **TENANT ACQUISITION FINAL VALIDATION** (2026-06-01) — End-to-end validation 6 fasi (Real Tenant Simulation · Email Pipeline · Command Center · Lifecycle · Data Integrity · UX Audit). 30/30 boolean checks passati. Report `TENANT_ACQUISITION_FINAL_VALIDATION_REPORT.md`. Classificazione READY_FOR_REAL_TENANT_ACQUISITION.
 - **STUDIO MARKET SELECTION REFACTOR — PRIORITY/STATUS + REGION** (2026-06-01, iterazione finale) — Step 02 con max 3 Target Countries, ognuno con `priority` (1-3 auto) e `status` (active|planned toggle). HQ con `headquarter_region` salvato (es. "Lombardia"). Drawer Command Center mostra chip target con priority+status. Migration 030 applicata. Bug-fix SQL `#`-comment in `tenant_activation.py`. E2E backend 12/12 passati (`scripts/e2e_studio_v2_full.py`). Report `STUDIO_MARKET_SELECTION_REFACTOR_REPORT.md`. Classificazione READY_FOR_USER_ACCEPTANCE.

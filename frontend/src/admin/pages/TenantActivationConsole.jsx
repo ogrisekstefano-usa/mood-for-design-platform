@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { adminAuth } from '../adminApi';
+import TenantActivationModal from '../components/TenantActivationModal';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -19,7 +20,9 @@ const STATUS_OPTIONS = [
   { value: 'contacted',   label: 'Contattato'    },
   { value: 'qualified',   label: 'Qualificato'   },
   { value: 'not_aligned', label: 'Non allineato' },
-  { value: 'activated',   label: 'Attivato'      },
+  // 'activated' is intentionally NOT a select option: it is reached only
+  // through the dedicated activation modal (confirms tenant slug + sends
+  // the founder magic-link invitation in one curatorial step).
 ];
 
 const TenantActivationConsole = () => {
@@ -30,6 +33,7 @@ const TenantActivationConsole = () => {
   const [loading, setLoading] = useState(true);
   const [selectedReq, setSelectedReq] = useState(null);
   const [savingId, setSavingId] = useState(null);
+  const [activationFor, setActivationFor] = useState(null); // request id when modal open
 
   const fetchPipeline = async () => {
     setLoading(true);
@@ -304,6 +308,40 @@ const TenantActivationConsole = () => {
             )}
           </div>
 
+          {/* ── Activation CTA (visible until status='activated') ───── */}
+          {selectedReq.status !== 'activated' && (
+            <div style={{ marginBottom: 24 }}>
+              <button
+                data-testid="open-activation-modal"
+                onClick={() => setActivationFor(selectedReq.id)}
+                style={{
+                  width: '100%', background: '#00C9B3', color: '#000',
+                  border: 'none', padding: '0.85rem 1.2rem', borderRadius: 8,
+                  fontFamily: 'Inter, sans-serif', fontSize: '0.92rem',
+                  fontWeight: 600, cursor: 'pointer',
+                  letterSpacing: '0.04em',
+                }}>
+                Attiva Studio & invia invito Founder
+              </button>
+              <p style={{
+                fontSize: '0.72rem', color: '#666', marginTop: 6, lineHeight: 1.5,
+              }}>
+                Crea il tenant, l'utente Founder e invia il magic link (30 giorni).
+              </p>
+            </div>
+          )}
+
+          {selectedReq.status === 'activated' && (
+            <div data-testid="status-activated-banner" style={{
+              marginBottom: 24, padding: '0.85rem 1rem',
+              background: 'rgba(160,224,182,0.08)',
+              border: '1px solid rgba(160,224,182,0.28)',
+              borderRadius: 8, fontSize: '0.85rem', color: '#A0E0B6',
+            }}>
+              Studio attivato. Il magic link è stato inviato al Founder.
+            </div>
+          )}
+
           {/* Email log */}
           <div>
             <p style={{ fontSize: '0.74rem', letterSpacing: '0.16em', textTransform: 'uppercase',
@@ -329,6 +367,22 @@ const TenantActivationConsole = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {activationFor && (
+        <TenantActivationModal
+          requestId={activationFor}
+          onClose={() => setActivationFor(null)}
+          onActivated={async (res) => {
+            // Refresh pipeline + selected drawer state.
+            await fetchPipeline();
+            if (selectedReq?.id === activationFor) {
+              setSelectedReq((prev) => ({ ...prev, status: 'activated' }));
+              fetchEmails(activationFor);
+            }
+            // Don't auto-close — user clicks "Chiudi" in the success state.
+          }}
+        />
       )}
     </div>
   );

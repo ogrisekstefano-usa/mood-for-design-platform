@@ -152,22 +152,35 @@ async def issue_magic_link(
     ip: Optional[str] = None,
     user_agent: Optional[str] = None,
     locale: str = "it",
+    ttl_minutes: Optional[int] = None,
+    send_email: bool = True,
 ) -> dict:
     """
     Generate a magic link, persist its hash, and email it via Resend.
 
+    Args:
+      ttl_minutes: Override the default 15-min TTL (e.g. 43200 = 30 days
+                   for founder activation invitations).
+      send_email:  If False, the link is issued and persisted but the
+                   transactional email is NOT sent. Caller is responsible
+                   for delivery (e.g. piggybacking on a different template).
+
     Always returns a neutral success-shape, even if the email is unknown,
     to avoid account enumeration:
-      { "delivered": True, "expires_in_minutes": 15 }
+      { "delivered": True, "expires_in_minutes": <ttl>,
+        "magic_link_url": <full URL or None>,
+        "raw_token": <token or None> }
 
     Internally:
-      • If user is unknown → silently no-op (still returns success).
+      • If user is unknown → silently no-op (still returns success, url=None).
       • If rate-limited → returns { "delivered": False, "reason": "rate_limited" }
         so the page can show "you've requested a link recently".
     """
+    ttl = int(ttl_minutes or MAGIC_LINK_TTL_MIN)
     email = (email or "").lower().strip()
     if not email:
-        return {"delivered": True, "expires_in_minutes": MAGIC_LINK_TTL_MIN}
+        return {"delivered": True, "expires_in_minutes": ttl,
+                "magic_link_url": None, "raw_token": None}
 
     async with AsyncSessionLocal() as session:
         # Rate-limit FIRST (before any account lookup). This applies to
@@ -211,11 +224,12 @@ async def issue_magic_link(
             )
             await session.commit()
             # silent success to prevent enumeration
-            return {"delivered": True, "expires_in_minutes": MAGIC_LINK_TTL_MIN}
+            return {"delivered": True, "expires_in_minutes": ttl,
+                    "magic_link_url": None, "raw_token": None}
 
         raw = secrets.token_urlsafe(32)
         token_hash = _hash(raw)
-        expires_at = datetime.now(timezone.utc) + timedelta(minutes=MAGIC_LINK_TTL_MIN)
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=ttl)
 
         await session.execute(
             text("""
@@ -230,18 +244,22 @@ async def issue_magic_link(
         await session.commit()
 
     # Send the email (sandbox-safe: returns silently if API key invalid)
-    try:
-        await _send_magic_link_email(
-            to_email=email,
-            to_name=urow["full_name"],
-            raw_token=raw,
-            locale=locale,
-        )
-    except Exception as e:
-        # Don't leak the error — log internally, return neutral success.
-        logger.warning("Resend send failed (email=%s): %s", email, e)
+    if send_email:
+        try:
+            await _send_magic_link_email(
+                to_email=email,
+                to_name=urow["full_name"],
+                raw_token=raw,
+                locale=locale,
+            )
+        except Exception as e:
+            # Don't leak the error — log internally, return neutral success.
+            logger.warning("Resend send failed (email=%s): %s", email, e)
 
-    return {"delivered": True, "expires_in_minutes": MAGIC_LINK_TTL_MIN}
+    base = os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
+    magic_url = f"{base}/journey/continue?token={raw}" if base else None
+    return {"delivered": True, "expires_in_minutes": ttl,
+            "magic_link_url": magic_url, "raw_token": raw}
 
 
 # ──────────────────────────────────────────────────────────────────────
