@@ -1,5 +1,55 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER187.A · JOURNEY MAIL INTELLIGENCE™ · PHASE 1 BACKEND · DELIVERED · 02 Feb 2026
+
+**🎯 Founder Lock approvato con 6 gate ✅ + 7 non-shippable conditions.** Blueprint resta un **Email Intelligence Layer™**, non un client. Multi-mailbox per tenant + Read-Only IMAP guarantee + permessi indipendenti dal CRM.
+
+### ✅ Delivered (8 step coding order completati 1–7, step 8 = live smoke gated)
+1. **Migration 120** (`120_iter187a_email_mailboxes.sql`): 7 tabelle (`email_mailboxes`, `email_mailbox_cursors`, `email_messages`, `email_attachments`, `email_links`, `email_outbound_sent`, `mailbox_member_grants`). CHECK constraint `sync_mode='READ_ONLY'` enforced a schema level. ✅ Applicata.
+2. **Vault** (`cultural_engine/mail/vault.py`): AES-GCM-256 + HKDF-SHA256 sub-key per `(tenant, mailbox)`. Rotation slot (`MAILBOX_VAULT_KEY` + `MAILBOX_VAULT_KEY_PREVIOUS`). Storage in BYTEA via `\xHEX`. `VaultSecret` context manager azzera in-memory.
+3. **ImapSafe wrapper** (`imap_safe.py`): whitelist tassativa (LOGIN/CAPABILITY/LIST/EXAMINE/UID SEARCH/UID FETCH BODY.PEEK[]/NOOP/IDLE/LOGOUT/APPEND). `_FORBIDDEN_VERBS` block STORE/COPY/MOVE/EXPUNGE/SUBSCRIBE/DELETE/RENAME/SETACL via reflection guard. `BODY.PEEK[]` enforced. `append_to_sent()` con `allow_append=True` esplicito.
+4. **MailboxConnector** (`connectors.py`): provider defaults (Gmail/Outlook/SiteGround/Exchange), `open_imap`/`send_smtp`/`health_probe`, parsing RFC822 → `parse_rfc822_for_index()`.
+5. **Sync worker** (`sync_worker.py`): READ_ONLY pipeline, cursor `email_mailbox_cursors` per UIDVALIDITY+UID, pre-flag/post-flag verification con `READ_ONLY_VIOLATION_ABORT` auto-disable, attachment upload in private bucket.
+6. **Router** (`routers/journey_mail.py`): **13 endpoint** sotto `/api/journey-mail` (mailboxes CRUD, credentials rotate, health, sync trigger, messages list/detail, links create/delete, send). Visibility scope evaluator (`tenant`/`roles`/`members`/`owner_only`). Audit log su tutte le mutazioni. Password mai eco in API (boolean `*_password_set`).
+7. **Tests** (`test_iter187a_journey_mail.py`): **25/25 PASS in 13.14s**. Copre tutti i 7 non-shippable conditions.
+
+### 🔒 7 Non-shippable conditions verificati
+| # | Condition | Test class · case | Result |
+|---|---|---|---|
+| 1 | Sync marca anche una sola email come `\Seen` | `TestReadOnlySyncSimulation::test_sync_does_not_mark_seen` — mock IMAP server con tracking flags + 3 unread msg, sync, assert no STORE/COPY/MOVE/EXPUNGE + BODY.PEEK presente + flags invariati | ✅ |
+| 2 | Tenant supporta solo 1 mailbox | `TestMultiMailbox` — crea 3 mailbox stesso tenant, dedup by `(tenant, lower(from_email))` | ✅ |
+| 3 | Password in chiaro | `test_db_has_no_plaintext_password_column` + `test_password_not_echoed_in_get` + Vault round-trip | ✅ |
+| 4 | Mailbox visibile a non autorizzati | `TestVisibilityScope` + `_can_access()` (tenant/roles/members/owner_only) | ✅ |
+| 5 | Email associata automaticamente | `test_no_auto_link_endpoints` — static scan router source | ✅ |
+| 6 | Email inviata senza click | No scheduler; `/send` richiede `mailbox_send` + chiamata esplicita | ✅ |
+| 7 | Errore SMTP/IMAP mostra credenziali | `test_error_messages_do_not_leak` + normalizzazione errori | ✅ |
+
+### 📁 File creati / modificati
+- ✨ `/app/supabase/migrations/120_iter187a_email_mailboxes.sql` (~225 righe)
+- ✨ `/app/scripts/apply_migration_120.py`
+- ✨ `/app/backend/cultural_engine/mail/{__init__,vault,imap_safe,connectors,sync_worker}.py` (~915 righe)
+- ✨ `/app/backend/routers/journey_mail.py` (~530 righe)
+- ✨ `/app/backend/tests/test_iter187a_journey_mail.py` (~440 righe, 25 test)
+- ✨ `/app/memory/JOURNEY_MAIL_INTELLIGENCE_PHASE1_PLAN.md` (~600 righe, decision gate)
+- ✨ `/app/memory/JOURNEY_MAIL_INTELLIGENCE_PHASE1_IMPLEMENTATION_REPORT.md` (final report)
+- 📝 `/app/backend/server.py` (router mount `/api/journey-mail`)
+- 📝 `/app/backend/.env` (`MAILBOX_VAULT_KEY` + `MAILBOX_VAULT_KEY_KID=v1`)
+
+### 🚦 STATUS — Step 8 Live Smoke PENDING (Founder caution gate)
+Prima dello smoke su `admin@moodfordesign.com`, eseguire la procedura "Founder caution":
+1. Locale sandbox mailbox (throw-away)
+2. Sync su messaggio unread → verifica unread→unread nel webmail
+3. Log audit pulito (nessun `read_only_violation`)
+4. Solo allora aggiungere `admin@moodfordesign.com` con app password
+
+### 🔵 Next Action Items
+- 🟢 **Live smoke su SiteGround** (procedura §9 del report) — Founder action
+- 🔥 **P1 Phase 1.5 UI minimale**: mailbox config form, health badge, "Sync ora", lista messaggi, "Associa a Journey", send composer
+- 🟡 **P2 backlog**: OAuth (Gmail/M365), MIRROR mode, AI suggestions feature-flagged, full UI
+
+---
+
+
 ## 🟢 ITER195 · PHASE 4A · MULTI-PDF INGESTION WORKSPACE UI (MINIMAL) · DELIVERED · 02 Feb 2026
 
 **🎯 Vincolo Founder:** UI minimale solo per upload + monitor + validazione. NO graph viewer, NO dashboard avanzata, NO Academy/Magazine/Marketboard. Tutto in Italiano. Founder deve poter caricare ARBI/Arrital/Margraf/Nemo/Samoa direttamente da interfaccia.
