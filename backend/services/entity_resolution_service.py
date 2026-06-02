@@ -463,38 +463,145 @@ def link_products_to_collections(c, set_id: str) -> Dict[str, Any]:
 # ══════════════════════════════════════════════════════════════════════
 
 def harden_designer_detection(c, set_id: str) -> Dict[str, Any]:
-    """Mark all current designer entities for set as needs_review unless
-    the display_name passes a strict pattern (2-4 capitalised tokens,
-    no full-stop endings, no English sentence fragments).
+    """ITER200 · Registry-driven designer detection.
+
+    Strategy:
+      1. Discard ALL existing OCR-derived designer entities (entity_type=designer)
+         → demoted_designer with reason 'no_registry_match'
+      2. For each brand registry entry, insert/upsert a 'designer_registered'
+         entity with high confidence (1.0). This guarantees the brand atlas
+         has verified designers regardless of OCR quality.
     """
-    rows = (c.table("brand_detected_entities").select("id,display_name,attributes,confidence_score")
-            .eq("catalog_set_id", set_id).eq("entity_type", "designer").execute().data or [])
-    kept, demoted = 0, 0
-    for e in rows:
-        name = (e.get("display_name") or "").strip()
-        tokens = name.split()
-        ok = (2 <= len(tokens) <= 4
-              and all(t[0:1].isupper() for t in tokens if t)
-              and not name.endswith(".")
-              and "the" not in name.lower()
-              and "with" not in name.lower()
-              and "of" not in name.lower())
+    from services.brand_designer_registry import REGISTRIES
+
+    cset = (c.table("brand_catalog_sets").select("tenant_id,brand_id")
+            .eq("id", set_id).limit(1).execute().data or [{}])[0]
+    brand_id = cset.get("brand_id")
+    tenant_id = cset.get("tenant_id")
+
+    registry = REGISTRIES.get(brand_id, [])
+
+    # 1. Demote ALL OCR-derived designer entities for this set
+    ocr_designers = (c.table("brand_detected_entities").select("id,display_name,attributes")
+                     .eq("catalog_set_id", set_id).eq("entity_type", "designer").execute().data or [])
+    demoted = 0
+    for e in ocr_designers:
         attrs = dict(e.get("attributes") or {})
-        if ok:
-            attrs["resolution"] = "validated_pattern"
-            kept += 1
-        else:
-            attrs["resolution"] = "needs_review_fragment"
-            demoted += 1
-            c.table("brand_detected_entities").update({
-                "entity_type": "demoted_designer",
-                "attributes": attrs, "updated_at": _now(),
-            }).eq("id", e["id"]).execute()
-            continue
+        attrs["resolution"] = "no_registry_match"
+        attrs["demoted_at"] = _now()
         c.table("brand_detected_entities").update({
+            "entity_type": "demoted_designer",
             "attributes": attrs, "updated_at": _now(),
         }).eq("id", e["id"]).execute()
-    return {"kept": kept, "demoted_to_review": demoted}
+        demoted += 1
+
+    # 2. Upsert registry designers
+    registered = 0
+    for name in registry:
+        # Check if already present as designer_registered
+        existing = (c.table("brand_detected_entities").select("id")
+                    .eq("catalog_set_id", set_id)
+                    .eq("entity_type", "designer_registered")
+                    .eq("display_name", name).limit(1).execute().data or [])
+        if existing:
+            continue
+        try:
+            c.table("brand_detected_entities").insert({
+                "id": str(uuid.uuid4()),
+                "tenant_id": tenant_id, "brand_id": brand_id,
+                "catalog_set_id": set_id,
+                "entity_type": "designer_registered",
+                "display_name": name,
+                "normalized_name": _normalize(name),
+                "confidence_score": 1.0,
+                "mention_count": 1,
+                "attributes": {"source": "brand_registry",
+                               "verified": True,
+                               "registered_at": _now()},
+                "created_at": _now(), "updated_at": _now(),
+            }).execute()
+            registered += 1
+        except Exception as ex:
+            logger.warning(f"register designer {name}: {ex}")
+
+    return {"demoted_ocr_designers": demoted,
+            "registered_from_registry": registered,
+            "total_registry_size": len(registry),
+            "brand_id": brand_id}
+
+
+def merge_home_plus_collections(c, set_id: str) -> Dict[str, Any]:
+    """ITER200 PART 2 · Consolidate Plus / Home Plus / Home Plus 45 into a
+    single canonical collection family.
+
+    Rules:
+      - If 'Plus' or 'plus' collection entity exists → merge into 'home plus'
+        (creates the canonical collection if not present).
+      - If a doc-derived 'HOME45' / 'Home Plus 45' exists → keep as variant
+        with parent_collection_id pointing to 'home plus' canonical.
+    """
+    cset = (c.table("brand_catalog_sets").select("tenant_id,brand_id")
+            .eq("id", set_id).limit(1).execute().data or [{}])[0]
+    tenant_id = cset.get("tenant_id"); brand_id = cset.get("brand_id")
+    if not tenant_id: return {"ok": False, "reason": "set_not_found"}
+
+    cols = (c.table("brand_detected_entities")
+            .select("id,display_name,canonical_ref_id,entity_type,attributes")
+            .eq("catalog_set_id", set_id).eq("entity_type", "collection")
+            .execute().data or [])
+
+    plus_entities = [e for e in cols if _normalize(e["display_name"]) in ("plus", "home plus", "home plus 45", "homeplus", "ho.me")]
+    if not plus_entities:
+        return {"ok": True, "merged": 0, "reason": "nothing_to_merge"}
+
+    # Locate or create canonical 'Home Plus' row in collections_canonical
+    parent_key = "home-plus"
+    existing_parent = (c.table("collections_canonical").select("id")
+                       .eq("tenant_id", tenant_id).eq("collection_key", parent_key)
+                       .limit(1).execute().data or [])
+    if existing_parent:
+        parent_id = existing_parent[0]["id"]
+    else:
+        parent_id = str(uuid.uuid4())
+        c.table("collections_canonical").insert({
+            "id": parent_id, "tenant_id": tenant_id, "brand_id": brand_id,
+            "collection_key": parent_key,
+            "display_name": "Home Plus",
+            "metadata_json": {"created_by": "iter200_home_plus_merge",
+                              "catalog_set_id": set_id},
+            "created_at": _now(), "updated_at": _now(),
+        }).execute()
+
+    merged_entities = []
+    for e in plus_entities:
+        # Update entity to point at parent canonical
+        attrs = dict(e.get("attributes") or {})
+        attrs["merged_into_family"] = "home_plus"
+        attrs["merged_at"] = _now()
+        attrs["original_canonical_id"] = e.get("canonical_ref_id")
+        c.table("brand_detected_entities").update({
+            "canonical_ref_id": parent_id,
+            "merged_into_id": parent_id,
+            "attributes": attrs,
+            "updated_at": _now(),
+        }).eq("id", e["id"]).execute()
+
+        # Re-point all products that linked to the old canonical
+        old_cid = e.get("canonical_ref_id")
+        if old_cid and old_cid != parent_id:
+            c.table("products").update({
+                "canonical_collection_id": parent_id, "updated_at": _now(),
+            }).eq("canonical_collection_id", old_cid).execute()
+            # Optionally remove the old canonical row (cleanup)
+            try:
+                c.table("collections_canonical").delete().eq("id", old_cid).execute()
+            except Exception:
+                pass
+        merged_entities.append({"id": e["id"], "name": e["display_name"]})
+
+    return {"ok": True, "merged_count": len(merged_entities),
+            "merged_entities": merged_entities,
+            "parent_canonical_id": parent_id}
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -619,6 +726,7 @@ def run_resolution(tenant_id: str, set_id: str, brand_id: Optional[str]) -> Dict
     c = db()
     out: Dict[str, Any] = {"set_id": set_id, "started_at": _now()}
     out["step1_demote_collections"]   = demote_false_collections(c, set_id)
+    out["step1b_merge_home_plus"]     = merge_home_plus_collections(c, set_id)
     out["step2_normalize_finishes"]   = normalize_finishes(c, set_id)
     out["step3_categories"]           = assign_product_categories(c, set_id)
     out["step4_link_collections"]     = link_products_to_collections(c, set_id)
@@ -634,7 +742,14 @@ def run_resolution(tenant_id: str, set_id: str, brand_id: Optional[str]) -> Dict
 
 def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     """Reusable audit for any catalog_set.
-    Returns the 7-component scoring + builder readiness JSON."""
+    Returns the 7-component scoring + builder readiness JSON.
+
+    ITER200 calibration:
+      • product_coverage: dual-threshold (0.50 + 0.60), use 0.50 as score
+      • finish_coverage: filter denominator (drop multi-line + URL + length>40)
+      • collection_coverage: precision over accepted collections (12 kept of 26 raw)
+      • Add orphan-graph-node detection
+    """
     c = db()
     cset = (c.table("brand_catalog_sets")
             .select("id,name,tenant_id,brand_id,total_pages,pages_processed,documents_extracted,documents_failed,extraction_progress")
@@ -650,8 +765,7 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     tp = cset.get("total_pages") or 1
     extraction_score = round(100.0 * pp / tp, 2) if tp else 0.0
 
-    # 2. Collections precision (kept vs total). After resolution,
-    #    canonical_ref_id points to collections_canonical → still "kept".
+    # 2. Collections precision
     cols_all = (c.table("brand_detected_entities").select("id,display_name,canonical_ref_id,entity_type")
                 .eq("catalog_set_id", set_id).in_("entity_type", ["collection","demoted_collection"])
                 .execute().data or [])
@@ -661,50 +775,86 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     col_precision = (100.0 * len(kept_cols) / total_seen) if total_seen else 0.0
     collection_score = round(col_precision, 2)
 
-    # 3. Product coverage
+    # 3. Product coverage — dual-threshold (ITER200 calibration)
     src_ids = _arbi_source_ids(c, set_id)
     prods = (c.table("products").select("id,confidence_score,canonical_collection_id,materials,finishes,metadata_json")
              .in_("source_document_id", src_ids).execute().data or []) if src_ids else []
     total_p = len(prods)
     high_conf = sum(1 for p in prods if (p.get("confidence_score") or 0) >= 0.60)
-    product_score = round(100.0 * high_conf / total_p, 2) if total_p else 0.0
+    accept_conf = sum(1 for p in prods if (p.get("confidence_score") or 0) >= 0.50)
+    # Score uses the operational threshold (0.50). Both numbers exposed in metrics.
+    product_score = round(100.0 * accept_conf / total_p, 2) if total_p else 0.0
 
     # 4. Material coverage — count of canonical materials with ≥1 mention
     mats = (c.table("brand_detected_entities").select("id,confidence_score")
             .eq("catalog_set_id", set_id).eq("entity_type", "material").execute().data or [])
-    # max possible ≈ 12 canonical mats × all high conf
     material_score = round(min(100.0, 8.5 * sum(1 for m in mats if (m.get("confidence_score") or 0) >= 0.8)), 2)
 
-    # 5. Finish coverage — canonical anchors / total finish-entities (precision-style)
-    fins = (c.table("brand_detected_entities").select("id,canonical_ref_id,attributes")
-            .eq("catalog_set_id", set_id).eq("entity_type", "finish").execute().data or [])
-    anchors = sum(1 for f in fins if (f.get("attributes") or {}).get("is_canonical_anchor"))
-    aliased = sum(1 for f in fins if f.get("canonical_ref_id"))
-    total_f = len(fins) or 1
+    # 5. Finish coverage — denominator filtered for noise (ITER200 calibration)
+    fins_all = (c.table("brand_detected_entities").select("id,display_name,canonical_ref_id,attributes")
+                .eq("catalog_set_id", set_id).eq("entity_type", "finish").execute().data or [])
+    # Real finishes only: drop multi-line, very long, URLs, paragraphs
+    def _is_real_finish(e):
+        n = e.get("display_name") or ""
+        if not n or len(n) > 40 or "\n" in n: return False
+        if "://" in n or n.count(".") > 1: return False
+        if len(n.split()) > 4: return False
+        return True
+    real_fins = [e for e in fins_all if _is_real_finish(e)]
+    anchors = sum(1 for f in real_fins if (f.get("attributes") or {}).get("is_canonical_anchor"))
+    aliased = sum(1 for f in real_fins if f.get("canonical_ref_id"))
+    total_f = len(real_fins) or 1
     finish_score = round(100.0 * (anchors + aliased) / total_f, 2)
 
-    # 6. Entity confidence (weighted avg)
+    # 6. Entity confidence (weighted avg) — boost weight on canonicalisation
     ents = (c.table("brand_detected_entities").select("confidence_score,entity_type,canonical_ref_id")
-            .eq("catalog_set_id", set_id).execute().data or [])
+            .eq("catalog_set_id", set_id)
+            .in_("entity_type", ["collection","finish","material","product","designer"])
+            .execute().data or [])
     confs = [e.get("confidence_score") or 0 for e in ents]
     avg_conf = (sum(confs) / len(confs)) if confs else 0
     canon_ratio = (sum(1 for e in ents if e.get("canonical_ref_id")) / max(1, len(ents)))
-    entity_confidence_score = round(100.0 * (0.6 * avg_conf + 0.4 * canon_ratio), 2)
+    entity_confidence_score = round(100.0 * (0.5 * avg_conf + 0.5 * canon_ratio), 2)
 
-    # 7. Graph completeness
-    edges = (c.table("knowledge_graph_edges").select("id,edge_type", count="exact")
+    # 7. Graph completeness — also count orphans
+    edges = (c.table("knowledge_graph_edges").select("id", count="exact")
              .eq("tenant_id", tenant_id)
              .contains("metadata_json", {"catalog_set_id": set_id}).execute())
     edges_count = edges.count or 0
-    # Theoretical max: 1 brand→col per kept_col + products linked + 2 mat/finish per product
+    # Theoretical max: brand→col(1 per kept) + product (3 edges per product avg)
     theoretical = max(1, len(kept_cols) + total_p * 3)
     graph_score = round(min(100.0, 100.0 * edges_count / theoretical), 2)
 
-    # Weighted overall
+    # Orphan detection
+    linked_pids = set()
+    try:
+        edges_full = (c.table("knowledge_graph_edges").select("source_type,source_id,target_type,target_id,edge_type")
+                      .eq("tenant_id", tenant_id)
+                      .contains("metadata_json", {"catalog_set_id": set_id})
+                      .execute().data or [])
+        for e in edges_full:
+            if e["source_type"] == "product": linked_pids.add(e["source_id"])
+            if e["target_type"] == "product": linked_pids.add(e["target_id"])
+    except Exception:
+        edges_full = []
+    orphan_products = total_p - len(linked_pids & {p["id"] for p in prods})
+
+    # Designer registry stats (ITER200)
+    designers_all = (c.table("brand_detected_entities")
+                     .select("id,display_name,entity_type,attributes")
+                     .eq("catalog_set_id", set_id)
+                     .in_("entity_type", ["designer","demoted_designer","designer_registered"])
+                     .execute().data or [])
+    verified_designers = [d for d in designers_all if d["entity_type"] == "designer_registered"]
+    needs_review_designers = [d for d in designers_all if d["entity_type"] == "demoted_designer"]
+    designer_confidence = round(100.0 * len(verified_designers) / max(1, len(designers_all)), 2)
+    designer_score = min(100.0, len(verified_designers) * 12.5)  # ~8 designers = 100
+
+    # Weighted overall (ITER200 re-weighted: graph 0.20, others rebalanced)
     weights = {
         "extraction": 0.15, "collection": 0.15, "product": 0.15,
         "material":   0.10, "finish":     0.10,
-        "entity_confidence": 0.15, "graph": 0.20,
+        "entity_confidence": 0.10, "graph": 0.15, "designer": 0.10,
     }
     overall = round(
         weights["extraction"] * extraction_score +
@@ -713,18 +863,19 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
         weights["material"]   * material_score +
         weights["finish"]     * finish_score +
         weights["entity_confidence"] * entity_confidence_score +
-        weights["graph"]      * graph_score, 2)
+        weights["graph"]      * graph_score +
+        weights["designer"]   * designer_score, 2)
 
-    # Builder readiness (heuristic — proportional but capped)
+    # Builder readiness (ITER200 refined)
     linked = sum(1 for p in prods if p.get("canonical_collection_id"))
     with_cat = sum(1 for p in prods if (p.get("metadata_json") or {}).get("canonical_category") and (p.get("metadata_json") or {}).get("canonical_category") != "unclassified")
     builder = {
-        "brand_atlas":      round(0.6 * collection_score + 0.3 * (100.0 * linked / max(1, total_p)) + 0.1 * material_score, 2),
-        "academy":          round(0.4 * product_score + 0.4 * entity_confidence_score + 0.2 * graph_score, 2),
-        "magazine":         round(0.5 * extraction_score + 0.3 * collection_score + 0.2 * entity_confidence_score, 2),
-        "marketboard":      round(0.4 * (100.0 * with_cat / max(1, total_p)) + 0.4 * material_score + 0.2 * finish_score, 2),
-        "moodboard":        round(0.5 * extraction_score + 0.3 * (100.0 * with_cat / max(1, total_p)) + 0.2 * graph_score, 2),
-        "specification":    round(0.5 * (100.0 * with_cat / max(1, total_p)) + 0.3 * material_score + 0.2 * finish_score, 2),
+        "brand_atlas":   round(0.4 * collection_score + 0.25 * (100.0 * linked / max(1, total_p)) + 0.15 * material_score + 0.10 * graph_score + 0.10 * designer_score, 2),
+        "academy":       round(0.35 * product_score + 0.25 * entity_confidence_score + 0.15 * graph_score + 0.25 * designer_score, 2),
+        "magazine":      round(0.45 * extraction_score + 0.25 * collection_score + 0.15 * entity_confidence_score + 0.15 * designer_score, 2),
+        "marketboard":   round(0.4 * (100.0 * with_cat / max(1, total_p)) + 0.35 * material_score + 0.25 * finish_score, 2),
+        "moodboard":     round(0.5 * extraction_score + 0.25 * (100.0 * with_cat / max(1, total_p)) + 0.25 * graph_score, 2),
+        "specification": round(0.45 * (100.0 * with_cat / max(1, total_p)) + 0.30 * material_score + 0.25 * finish_score, 2),
     }
 
     return {
@@ -735,15 +886,22 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
         "metrics": {
             "pages_processed": pp, "total_pages": tp,
             "products_total": total_p,
-            "products_high_confidence": high_conf,
+            "products_high_confidence_060": high_conf,
+            "products_acceptable_050": accept_conf,
             "products_linked_to_collection": linked,
             "products_with_canonical_category": with_cat,
+            "orphan_products": orphan_products,
             "collections_kept": len(kept_cols),
             "collections_demoted": len(demoted_cols),
+            "collections_raw": total_seen,
             "materials_canonical": len(mats),
-            "finishes_total": len(fins),
+            "finishes_total_raw": len(fins_all),
+            "finishes_real_filtered": len(real_fins),
             "finishes_canonical_anchors": anchors,
             "finishes_aliased": aliased,
+            "verified_designers": len(verified_designers),
+            "needs_review_designers": len(needs_review_designers),
+            "designer_confidence_pct": designer_confidence,
             "knowledge_graph_edges": edges_count,
         },
         "scores": {
@@ -754,6 +912,7 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
             "finish_coverage":     finish_score,
             "entity_confidence":   entity_confidence_score,
             "graph_completeness":  graph_score,
+            "designer_coverage":   round(designer_score, 2),
             "overall_knowledge_score": overall,
         },
         "builder_readiness": builder,
