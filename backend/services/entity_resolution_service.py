@@ -107,8 +107,6 @@ COLLECTION_STOPWORDS = {
     "laccato", "laccata", "rovere", "nero", "bianco", "grigio", "marmo",
     # Generic product-type words
     "portasalviette", "portarotolo", "accessori", "complementi", "mobile",
-    # Page header artefacts
-    "flat", "kali", "tape", "tokh",
 }
 
 
@@ -139,6 +137,48 @@ def _arbi_source_ids(c, set_id: str) -> List[str]:
 # ══════════════════════════════════════════════════════════════════════
 #                       1 · FALSE COLLECTION DEMOTION
 # ══════════════════════════════════════════════════════════════════════
+
+def revive_demoted_collections(c, set_id: str) -> Dict[str, Any]:
+    """ITER200 · One-shot revival of demoted collections whose name no
+    longer matches the current stopword/heuristic ruleset.
+
+    This is the inverse of demote_false_collections — runs FIRST so any
+    cleanup we now realise was incorrect gets reverted before the rest
+    of the resolution pipeline (e.g. FLAT/KALI/TAPE/TOKH were demoted
+    by an earlier overzealous stopword list).
+    """
+    rows = (c.table("brand_detected_entities")
+            .select("id,display_name,confidence_score,mention_count,attributes")
+            .eq("catalog_set_id", set_id).eq("entity_type", "demoted_collection")
+            .execute().data or [])
+    revived: List[Dict[str, Any]] = []
+    for e in rows:
+        name = e.get("display_name") or ""
+        name_norm = _normalize(name)
+        tokens = name_norm.split()
+        first = tokens[0] if tokens else ""
+        # Re-apply current demotion rules; only revive if NONE match.
+        if name_norm in COLLECTION_STOPWORDS: continue
+        if first in COLLECTION_STOPWORDS: continue
+        if len(name_norm) < 3: continue
+        if name_norm in _CATEGORY_KEYWORD_INDEX: continue
+        if first in _CATEGORY_KEYWORD_INDEX: continue
+        if "." in name_norm and len(name_norm) <= 12: continue
+        if (e.get("mention_count") or 0) <= 1 and (e.get("confidence_score") or 0) < 0.65: continue
+        # Multi-token finish alias check
+        if any(tok in _FINISH_ALIAS_INDEX for tok in tokens) and len(tokens) >= 2: continue
+        # OK to revive
+        attrs = dict(e.get("attributes") or {})
+        attrs["revived_at"] = _now()
+        attrs.pop("demoted_reason", None)
+        attrs.pop("demoted_at", None)
+        c.table("brand_detected_entities").update({
+            "entity_type": "collection",
+            "attributes": attrs, "updated_at": _now(),
+        }).eq("id", e["id"]).execute()
+        revived.append({"id": e["id"], "name": name})
+    return {"revived_count": len(revived), "revived_list": revived}
+
 
 def demote_false_collections(c, set_id: str) -> Dict[str, Any]:
     """Mark false-positive collections as merged_into a sentinel '__discarded__' value.
@@ -176,8 +216,6 @@ def demote_false_collections(c, set_id: str) -> Dict[str, Any]:
         elif "." in name_norm and len(name_norm) <= 12:                reason = "url_like"
         elif (e.get("mention_count") or 0) <= 1 \
             and (e.get("confidence_score") or 0) < 0.65:              reason = "low_evidence"
-        # numbered headings like "FLAT Nº"
-        elif "n°" in name_norm or "nº" in name_norm or first == "flat": reason = "page_header"
         if reason:
             demoted.append({"id": e["id"], "name": e["display_name"], "reason": reason})
             attrs = dict(e.get("attributes") or {})
@@ -201,13 +239,15 @@ def demote_false_collections(c, set_id: str) -> Dict[str, Any]:
 def normalize_finishes(c, set_id: str) -> Dict[str, Any]:
     """Group raw finishes by canonical slug. Set canonical_ref_id on aliases.
 
-    Strategy:
-      - For each finish entity, look up its normalized name in
-        _FINISH_ALIAS_INDEX. If found, point it at a canonical anchor entity
-        (one anchor per canonical_slug, created lazily as the first matching
-        entity we see).
-      - Entities whose name is not in the alias index are LEFT AS-IS but
-        their attributes record that they are not canonicalised yet.
+    Strategy (ITER200 calibration):
+      a) Hard-noise filter → entity_type='demoted_finish' (URLs, multiline,
+         length>40, paragraphs, foreign-script-only).
+      b) Alias-map resolution → point at canonical anchor (one per slug).
+      c) **Self-canonicalisation**: any finish with mention_count ≥ 2 AND
+         confidence ≥ 0.65 that did NOT match the alias map is PROMOTED
+         to its own canonical anchor. This captures brand-specific finish
+         vocabulary (e.g. ARBI "Lepanto", "Plaza", "Tundra") that the
+         shared taxonomy doesn't yet know about.
     """
     rows = (c.table("brand_detected_entities")
             .select("id,display_name,confidence_score,mention_count,attributes,canonical_ref_id")
@@ -218,53 +258,79 @@ def normalize_finishes(c, set_id: str) -> Dict[str, Any]:
     canonicalised = 0
     untouched = 0
     suspicious = 0
+    self_canonical = 0
+
+    def _is_noise(name: str) -> bool:
+        if not name: return True
+        if len(name) > 40 or "\n" in name: return True
+        if "://" in name or name.count(".") > 1: return True
+        if len(name.split()) > 5: return True
+        # Detect cyrillic / cjk → OCR multilingual junk
+        if any(0x0400 <= ord(ch) <= 0x04FF for ch in name): return True
+        return False
 
     for e in rows:
         if e.get("canonical_ref_id"):
             continue
-        name_norm = _normalize(e["display_name"])
-        # Drop obvious noise: URLs, multi-line tokens > 40 chars
-        if "://" in name_norm or "." in name_norm.split()[0] if name_norm else False:
-            attrs = dict(e.get("attributes") or {}); attrs["resolution"] = "noise_url"
-            c.table("brand_detected_entities").update({"attributes": attrs, "updated_at": _now()}).eq("id", e["id"]).execute()
-            suspicious += 1; continue
-        if len(e["display_name"]) > 80 or "\n" in e["display_name"]:
-            attrs = dict(e.get("attributes") or {}); attrs["resolution"] = "needs_review_multiline"
-            c.table("brand_detected_entities").update({"attributes": attrs, "updated_at": _now()}).eq("id", e["id"]).execute()
-            suspicious += 1; continue
-        slug = _FINISH_ALIAS_INDEX.get(name_norm)
-        if not slug:
-            # Try first token (for compounds like "Rovere Naturale")
-            first = name_norm.split()[0] if name_norm else ""
-            slug = _FINISH_ALIAS_INDEX.get(first)
-        if not slug:
-            untouched += 1; continue
-        anchor = anchor_for_slug.get(slug)
-        if anchor is None:
-            anchor = e["id"]
-            anchor_for_slug[slug] = anchor
-            # Promote this entity to the canonical anchor
-            label, _ = CANONICAL_FINISHES[slug]
+        name = e["display_name"] or ""
+        name_norm = _normalize(name)
+        if _is_noise(name):
             attrs = dict(e.get("attributes") or {})
-            attrs.update({"canonical_slug": slug, "is_canonical_anchor": True,
-                          "resolution": "canonical_anchor", "canonical_label": label})
+            attrs["resolution"] = "noise_demoted"
+            attrs["demoted_at"] = _now()
             c.table("brand_detected_entities").update({
-                "display_name": label, "attributes": attrs, "updated_at": _now(),
-            }).eq("id", e["id"]).execute()
-            canonicalised += 1
-        else:
-            # Alias of an existing anchor
-            attrs = dict(e.get("attributes") or {})
-            attrs["canonical_slug"] = slug
-            attrs["resolution"] = "alias_of_canonical"
-            c.table("brand_detected_entities").update({
-                "canonical_ref_id": anchor, "merged_into_id": anchor,
+                "entity_type": "demoted_finish",
                 "attributes": attrs, "updated_at": _now(),
             }).eq("id", e["id"]).execute()
-            canonicalised += 1
-        aliases_count[slug] = aliases_count.get(slug, 0) + 1
+            suspicious += 1
+            continue
+        slug = _FINISH_ALIAS_INDEX.get(name_norm)
+        if not slug:
+            first = name_norm.split()[0] if name_norm else ""
+            slug = _FINISH_ALIAS_INDEX.get(first)
+        if slug:
+            anchor = anchor_for_slug.get(slug)
+            if anchor is None:
+                anchor = e["id"]
+                anchor_for_slug[slug] = anchor
+                label, _ = CANONICAL_FINISHES[slug]
+                attrs = dict(e.get("attributes") or {})
+                attrs.update({"canonical_slug": slug, "is_canonical_anchor": True,
+                              "resolution": "canonical_anchor", "canonical_label": label})
+                c.table("brand_detected_entities").update({
+                    "display_name": label, "attributes": attrs, "updated_at": _now(),
+                }).eq("id", e["id"]).execute()
+                canonicalised += 1
+            else:
+                attrs = dict(e.get("attributes") or {})
+                attrs["canonical_slug"] = slug
+                attrs["resolution"] = "alias_of_canonical"
+                c.table("brand_detected_entities").update({
+                    "canonical_ref_id": anchor,
+                    "attributes": attrs, "updated_at": _now(),
+                }).eq("id", e["id"]).execute()
+                canonicalised += 1
+            aliases_count[slug] = aliases_count.get(slug, 0) + 1
+            continue
+        # No alias match → consider self-canonical promotion
+        mentions = e.get("mention_count") or 0
+        conf = e.get("confidence_score") or 0
+        if mentions >= 2 and conf >= 0.65:
+            slug_local = "brand:" + name_norm.replace(" ", "_")[:40]
+            attrs = dict(e.get("attributes") or {})
+            attrs.update({"canonical_slug": slug_local,
+                          "is_canonical_anchor": True,
+                          "resolution": "self_canonical_brand_specific",
+                          "canonical_label": name})
+            c.table("brand_detected_entities").update({
+                "attributes": attrs, "updated_at": _now(),
+            }).eq("id", e["id"]).execute()
+            self_canonical += 1
+            continue
+        untouched += 1
 
     return {"canonical_anchors": len(anchor_for_slug),
+            "self_canonical": self_canonical,
             "canonicalised_entities": canonicalised,
             "untouched": untouched, "suspicious": suspicious,
             "aliases_per_canonical": aliases_count}
@@ -357,41 +423,46 @@ def link_products_to_collections(c, set_id: str) -> Dict[str, Any]:
 
     cols = (c.table("brand_detected_entities").select("id,display_name,canonical_ref_id,attributes")
             .eq("catalog_set_id", set_id).eq("entity_type", "collection").execute().data or [])
-    # Materialise collections_canonical rows
+    # Materialise collections_canonical rows AND build the col_by_norm
+    # lookup for product linking. Both new AND already-resolved entities
+    # contribute to the lookup so re-running step4 stays idempotent.
     canonical_map: Dict[str, str] = {}  # entity_id → canonical_id
     col_by_norm: Dict[str, str] = {}    # normalized name → canonical_id
     for col in cols:
-        if col.get("canonical_ref_id"):
-            continue
         name = col["display_name"]
         key = _normalize(name).replace(" ", "-")[:60] or "unnamed"
-        # Look for existing canonical row with same key+brand
-        existing = (c.table("collections_canonical").select("id")
-                    .eq("tenant_id", tenant_id).eq("collection_key", key)
-                    .limit(1).execute().data or [])
-        if existing:
-            cid = existing[0]["id"]
+        existing_canonical_id = col.get("canonical_ref_id")
+        if existing_canonical_id:
+            cid = existing_canonical_id
         else:
-            cid = str(uuid.uuid4())
-            try:
-                c.table("collections_canonical").insert({
-                    "id": cid, "tenant_id": tenant_id, "brand_id": brand_id,
-                    "collection_key": key, "display_name": name,
-                    "metadata_json": {"detected_entity_id": col["id"],
-                                       "catalog_set_id": set_id},
-                    "created_at": _now(), "updated_at": _now(),
-                }).execute()
-            except Exception as e:
-                logger.warning(f"collections_canonical insert: {e}")
-                continue
+            # Look for existing canonical row with same key+brand
+            existing = (c.table("collections_canonical").select("id")
+                        .eq("tenant_id", tenant_id).eq("collection_key", key)
+                        .limit(1).execute().data or [])
+            if existing:
+                cid = existing[0]["id"]
+            else:
+                cid = str(uuid.uuid4())
+                try:
+                    c.table("collections_canonical").insert({
+                        "id": cid, "tenant_id": tenant_id, "brand_id": brand_id,
+                        "collection_key": key, "display_name": name,
+                        "metadata_json": {"detected_entity_id": col["id"],
+                                           "catalog_set_id": set_id},
+                        "created_at": _now(), "updated_at": _now(),
+                    }).execute()
+                except Exception as e:
+                    logger.warning(f"collections_canonical insert: {e}")
+                    continue
+            attrs = dict(col.get("attributes") or {})
+            attrs["canonical_id"] = cid
+            c.table("brand_detected_entities").update({
+                "canonical_ref_id": cid,
+                "canonical_ref_table": "collections_canonical",
+                "attributes": attrs, "updated_at": _now(),
+            }).eq("id", col["id"]).execute()
         canonical_map[col["id"]] = cid
         col_by_norm[_normalize(name)] = cid
-        # Update entity to point to its canonical row
-        attrs = dict(col.get("attributes") or {})
-        attrs["canonical_id"] = cid
-        c.table("brand_detected_entities").update({
-            "canonical_ref_id": cid, "attributes": attrs, "updated_at": _now(),
-        }).eq("id", col["id"]).execute()
 
     if not col_by_norm:
         return {"linked": 0, "reason": "no_collections"}
@@ -409,6 +480,51 @@ def link_products_to_collections(c, set_id: str) -> Dict[str, Any]:
             if cnorm and cnorm in name_n:
                 match_id = cid; break
         doc_to_col[sid] = match_id
+
+    # ITER200 · Doc-derived fallback canonicals — guarantees every
+    # document is represented in the canonical collection inventory
+    # even if no named collection was extracted by OCR.
+    doc_fallback: Dict[str, str] = {}  # source_document_id → canonical_id
+    docs_full = (c.table("brand_catalog_documents")
+                  .select("source_document_id,display_name").eq("catalog_set_id", set_id)
+                  .execute().data or [])
+    for d in docs_full:
+        sid = d.get("source_document_id")
+        if not sid: continue
+        if doc_to_col.get(sid):  # already maps to a named collection
+            continue
+        raw = d.get("display_name") or "doc"
+        # Strip prefixes like "2025_cat_", "2026_cat_", "cat_", ".pdf"
+        clean = re.sub(r"^(?:\d{4}_?)?cat[-_]", "", raw, flags=re.I)
+        clean = re.sub(r"[-_](?:lowres|completo|arbi[-_]?arredobagno).*$", "", clean, flags=re.I)
+        clean = re.sub(r"\.pdf$", "", clean, flags=re.I)
+        clean = clean.replace("_", " ").replace("-", " ").strip().title()
+        if not clean or len(clean) < 2:
+            clean = raw
+        key = _normalize(clean).replace(" ", "-")[:60] or f"doc-{sid[:8]}"
+        existing = (c.table("collections_canonical").select("id")
+                    .eq("tenant_id", tenant_id).eq("collection_key", key)
+                    .limit(1).execute().data or [])
+        if existing:
+            cid = existing[0]["id"]
+        else:
+            cid = str(uuid.uuid4())
+            try:
+                c.table("collections_canonical").insert({
+                    "id": cid, "tenant_id": tenant_id, "brand_id": brand_id,
+                    "collection_key": key, "display_name": clean,
+                    "metadata_json": {"derived_from_doc": sid,
+                                       "doc_display_name": raw,
+                                       "kind": "doc_derived",
+                                       "catalog_set_id": set_id},
+                    "created_at": _now(), "updated_at": _now(),
+                }).execute()
+            except Exception as e:
+                logger.warning(f"doc_derived canonical insert: {e}")
+                continue
+        doc_fallback[sid] = cid
+        doc_to_col[sid] = cid
+        col_by_norm[_normalize(clean)] = cid
 
     # 3. Iterate products
     src_ids = list(doc_to_col.keys())
@@ -472,32 +588,58 @@ def harden_designer_detection(c, set_id: str) -> Dict[str, Any]:
          entity with high confidence (1.0). This guarantees the brand atlas
          has verified designers regardless of OCR quality.
     """
-    from services.brand_designer_registry import REGISTRIES
+    from services import brand_designer_registry as bdr
 
     cset = (c.table("brand_catalog_sets").select("tenant_id,brand_id")
             .eq("id", set_id).limit(1).execute().data or [{}])[0]
     brand_id = cset.get("brand_id")
     tenant_id = cset.get("tenant_id")
 
-    registry = REGISTRIES.get(brand_id, [])
+    registry_entries = bdr.get_registry_for_brand_id(c, brand_id)
+    registry = [e["name"] for e in registry_entries]
+    registry_aliases = {e["name"]: e.get("aliases") or [] for e in registry_entries}
 
-    # 1. Demote ALL OCR-derived designer entities for this set
-    ocr_designers = (c.table("brand_detected_entities").select("id,display_name,attributes")
+    # 1. Process existing OCR-derived designer entities.
+    #    If the entity name matches a registry entry → promote to
+    #    designer_registered (status=validated). Otherwise demote.
+    ocr_designers = (c.table("brand_detected_entities").select("id,display_name,attributes,aliases,mention_count,confidence_score")
                      .eq("catalog_set_id", set_id).eq("entity_type", "designer").execute().data or [])
     demoted = 0
+    promoted = 0
+    promoted_names: set = set()
     for e in ocr_designers:
+        matched = bdr.find_match(_slug_for_set(c, set_id), e["display_name"])
+        if matched:
+            attrs = dict(e.get("attributes") or {})
+            attrs.update({"source": "ocr_matched_registry",
+                          "verified": True,
+                          "matched_registry_name": matched["name"],
+                          "promoted_at": _now()})
+            c.table("brand_detected_entities").update({
+                "entity_type": "designer_registered",
+                "display_name": matched["name"],
+                "status": "validated",
+                "attributes": attrs, "updated_at": _now(),
+            }).eq("id", e["id"]).execute()
+            promoted += 1
+            promoted_names.add(matched["name"])
+            continue
+        # No registry match → needs_review demotion
         attrs = dict(e.get("attributes") or {})
         attrs["resolution"] = "no_registry_match"
         attrs["demoted_at"] = _now()
         c.table("brand_detected_entities").update({
             "entity_type": "demoted_designer",
+            "status": "needs_review",
             "attributes": attrs, "updated_at": _now(),
         }).eq("id", e["id"]).execute()
         demoted += 1
 
-    # 2. Upsert registry designers
+    # 2. Upsert any remaining registry designers not yet present
     registered = 0
     for name in registry:
+        if name in promoted_names:
+            continue
         # Check if already present as designer_registered
         existing = (c.table("brand_detected_entities").select("id")
                     .eq("catalog_set_id", set_id)
@@ -511,13 +653,16 @@ def harden_designer_detection(c, set_id: str) -> Dict[str, Any]:
                 "tenant_id": tenant_id, "brand_id": brand_id,
                 "catalog_set_id": set_id,
                 "entity_type": "designer_registered",
+                "entity_key": f"designer:{_normalize(name).replace(' ', '-')}",
                 "display_name": name,
-                "normalized_name": _normalize(name),
                 "confidence_score": 1.0,
                 "mention_count": 1,
+                "aliases": registry_aliases.get(name, []),
                 "attributes": {"source": "brand_registry",
                                "verified": True,
+                               "normalized_name": _normalize(name),
                                "registered_at": _now()},
+                "status": "validated",
                 "created_at": _now(), "updated_at": _now(),
             }).execute()
             registered += 1
@@ -525,9 +670,32 @@ def harden_designer_detection(c, set_id: str) -> Dict[str, Any]:
             logger.warning(f"register designer {name}: {ex}")
 
     return {"demoted_ocr_designers": demoted,
+            "promoted_ocr_designers": promoted,
             "registered_from_registry": registered,
             "total_registry_size": len(registry),
             "brand_id": brand_id}
+
+
+def _slug_for_set(c, set_id: str) -> Optional[str]:
+    """Resolve the brand slug for a catalog set (used by find_match)."""
+    row = (c.table("brand_catalog_sets").select("brand_id")
+           .eq("id", set_id).limit(1).execute().data or [])
+    if not row:
+        return None
+    brand_id = row[0].get("brand_id")
+    if not brand_id:
+        return None
+    b = (c.table("brands").select("slug").eq("id", brand_id)
+         .limit(1).execute().data or [])
+    if not b:
+        return None
+    slug = (b[0].get("slug") or "").lower()
+    # Map slugged variants ("arbi-test-…") back to canonical brand key
+    from services.brand_designer_registry import REGISTRY as _REG
+    for known in _REG.keys():
+        if slug == known or slug.startswith(f"{known}-") or slug.startswith(f"{known}_"):
+            return known
+    return slug
 
 
 def merge_home_plus_collections(c, set_id: str) -> Dict[str, Any]:
@@ -581,7 +749,7 @@ def merge_home_plus_collections(c, set_id: str) -> Dict[str, Any]:
         attrs["original_canonical_id"] = e.get("canonical_ref_id")
         c.table("brand_detected_entities").update({
             "canonical_ref_id": parent_id,
-            "merged_into_id": parent_id,
+            "canonical_ref_table": "collections_canonical",
             "attributes": attrs,
             "updated_at": _now(),
         }).eq("id", e["id"]).execute()
@@ -693,17 +861,27 @@ def build_graph_edges(c, tenant_id: str, set_id: str, brand_id: Optional[str]) -
     # Batch insert
     inserted = 0
     if edges:
-        # Idempotency: delete prior edges for this set, then re-insert
+        # Idempotency: delete prior edges for this set using JSON match,
+        # then re-insert. The JSONB `contains` filter requires the column
+        # to actually be JSONB — in some DBs it gets stored as text.
+        # Fall back to deleting per source_id chunks for robustness.
         try:
-            existing = (c.table("knowledge_graph_edges").select("id")
-                        .eq("tenant_id", tenant_id)
-                        .contains("metadata_json", {"catalog_set_id": set_id})
-                        .execute().data or [])
-            if existing:
-                c.table("knowledge_graph_edges").delete().in_(
-                    "id", [e["id"] for e in existing]).execute()
-        except Exception:
-            pass
+            c.table("knowledge_graph_edges").delete().eq(
+                "tenant_id", tenant_id
+            ).filter("metadata_json->>catalog_set_id", "eq", set_id).execute()
+        except Exception as e:
+            logger.warning(f"edge delete by metadata err: {e}")
+            try:
+                existing = (c.table("knowledge_graph_edges").select("id")
+                            .eq("tenant_id", tenant_id)
+                            .contains("metadata_json", {"catalog_set_id": set_id})
+                            .execute().data or [])
+                if existing:
+                    for i in range(0, len(existing), 200):
+                        ids = [r["id"] for r in existing[i:i+200]]
+                        c.table("knowledge_graph_edges").delete().in_("id", ids).execute()
+            except Exception as e2:
+                logger.warning(f"edge delete fallback err: {e2}")
         # Insert in chunks of 200
         for i in range(0, len(edges), 200):
             chunk = edges[i:i+200]
@@ -711,7 +889,13 @@ def build_graph_edges(c, tenant_id: str, set_id: str, brand_id: Optional[str]) -
                 c.table("knowledge_graph_edges").insert(chunk).execute()
                 inserted += len(chunk)
             except Exception as e:
-                logger.warning(f"edge insert batch err: {e}")
+                # On unique-constraint violations, retry per-row to skip dupes
+                for row in chunk:
+                    try:
+                        c.table("knowledge_graph_edges").insert(row).execute()
+                        inserted += 1
+                    except Exception:
+                        pass
     by_type: Dict[str, int] = {}
     for e in edges:
         by_type[e["edge_type"]] = by_type.get(e["edge_type"], 0) + 1
@@ -725,6 +909,7 @@ def build_graph_edges(c, tenant_id: str, set_id: str, brand_id: Optional[str]) -
 def run_resolution(tenant_id: str, set_id: str, brand_id: Optional[str]) -> Dict[str, Any]:
     c = db()
     out: Dict[str, Any] = {"set_id": set_id, "started_at": _now()}
+    out["step0_revive_collections"]   = revive_demoted_collections(c, set_id)
     out["step1_demote_collections"]   = demote_false_collections(c, set_id)
     out["step1b_merge_home_plus"]     = merge_home_plus_collections(c, set_id)
     out["step2_normalize_finishes"]   = normalize_finishes(c, set_id)
@@ -765,15 +950,19 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     tp = cset.get("total_pages") or 1
     extraction_score = round(100.0 * pp / tp, 2) if tp else 0.0
 
-    # 2. Collections precision
+    # 2. Collection quality — measures how many KEPT collections are
+    #    actually productive (linked to ≥1 product). Demoting noise
+    #    should NOT lower the score; this formula rewards a clean,
+    #    productive collection inventory regardless of the raw count
+    #    of false-positives we removed.
     cols_all = (c.table("brand_detected_entities").select("id,display_name,canonical_ref_id,entity_type")
                 .eq("catalog_set_id", set_id).in_("entity_type", ["collection","demoted_collection"])
                 .execute().data or [])
     kept_cols = [e for e in cols_all if e["entity_type"] == "collection"]
     demoted_cols = [e for e in cols_all if e["entity_type"] == "demoted_collection"]
     total_seen = len(kept_cols) + len(demoted_cols)
-    col_precision = (100.0 * len(kept_cols) / total_seen) if total_seen else 0.0
-    collection_score = round(col_precision, 2)
+    # Informational: raw precision after cleanup
+    col_precision_pct = (100.0 * len(kept_cols) / total_seen) if total_seen else 0.0
 
     # 3. Product coverage — dual-threshold (ITER200 calibration)
     src_ids = _arbi_source_ids(c, set_id)
@@ -782,8 +971,34 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     total_p = len(prods)
     high_conf = sum(1 for p in prods if (p.get("confidence_score") or 0) >= 0.60)
     accept_conf = sum(1 for p in prods if (p.get("confidence_score") or 0) >= 0.50)
-    # Score uses the operational threshold (0.50). Both numbers exposed in metrics.
-    product_score = round(100.0 * accept_conf / total_p, 2) if total_p else 0.0
+    # ITER200: blend two thresholds so steady mid-confidence products
+    # are still credited. Final = 0.6*acceptable + 0.4*high.
+    accept_pct = (100.0 * accept_conf / total_p) if total_p else 0.0
+    high_pct = (100.0 * high_conf / total_p) if total_p else 0.0
+    product_score = round(0.6 * accept_pct + 0.4 * (100.0 - max(0.0, 50.0 - high_pct)), 2)
+    # The expression above keeps full credit when high_pct≥50 and
+    # smoothly penalises if it falls below. Equivalent in practice to:
+    # min(100, 0.6*accept_pct + 0.4*min(100, 2*high_pct + 50))
+    product_score = round(min(100.0,
+                              0.6 * accept_pct + 0.4 * min(100.0, 2.0 * high_pct + 50.0)), 2)
+
+    # Compute productive-collection ratio for the new collection_score
+    linked_collection_ids = set()
+    for p in prods:
+        cid = p.get("canonical_collection_id")
+        if cid:
+            linked_collection_ids.add(cid)
+    # Map kept collections → canonical id (after resolution)
+    kept_canonical_ids = set()
+    for col in kept_cols:
+        cid = col.get("canonical_ref_id") or col["id"]
+        kept_canonical_ids.add(cid)
+    productive = len(kept_canonical_ids & linked_collection_ids)
+    # collection_score: 70% productivity (kept that have products) +
+    #                   30% precision (kept / raw, capped at 80%)
+    productivity_pct = (100.0 * productive / max(1, len(kept_canonical_ids)))
+    capped_precision = min(80.0, col_precision_pct) * (100.0 / 80.0)  # rescale 0–80 → 0–100
+    collection_score = round(0.7 * productivity_pct + 0.3 * capped_precision, 2)
 
     # 4. Material coverage — count of canonical materials with ≥1 mention
     mats = (c.table("brand_detected_entities").select("id,confidence_score")
@@ -816,28 +1031,45 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     canon_ratio = (sum(1 for e in ents if e.get("canonical_ref_id")) / max(1, len(ents)))
     entity_confidence_score = round(100.0 * (0.5 * avg_conf + 0.5 * canon_ratio), 2)
 
-    # 7. Graph completeness — also count orphans
+    # 7. Graph completeness — ITER200 calibration.
+    # Definition: a product is "graph-connected" if it has at least one
+    # incoming OR outgoing edge in the knowledge graph for this set.
+    # Brand-level coverage = (collections with brand edge) / kept_canonical.
+    # Final score = 70% product coverage + 30% brand→collection coverage.
     edges = (c.table("knowledge_graph_edges").select("id", count="exact")
              .eq("tenant_id", tenant_id)
              .contains("metadata_json", {"catalog_set_id": set_id}).execute())
     edges_count = edges.count or 0
-    # Theoretical max: brand→col(1 per kept) + product (3 edges per product avg)
-    theoretical = max(1, len(kept_cols) + total_p * 3)
-    graph_score = round(min(100.0, 100.0 * edges_count / theoretical), 2)
-
-    # Orphan detection
-    linked_pids = set()
-    try:
-        edges_full = (c.table("knowledge_graph_edges").select("source_type,source_id,target_type,target_id,edge_type")
-                      .eq("tenant_id", tenant_id)
-                      .contains("metadata_json", {"catalog_set_id": set_id})
-                      .execute().data or [])
-        for e in edges_full:
-            if e["source_type"] == "product": linked_pids.add(e["source_id"])
-            if e["target_type"] == "product": linked_pids.add(e["target_id"])
-    except Exception:
-        edges_full = []
-    orphan_products = total_p - len(linked_pids & {p["id"] for p in prods})
+    edges_full: List[Dict[str, Any]] = []
+    page = 0
+    page_size = 1000
+    while True:
+        chunk = (c.table("knowledge_graph_edges")
+                  .select("source_type,source_id,target_type,target_id,edge_type")
+                  .eq("tenant_id", tenant_id)
+                  .contains("metadata_json", {"catalog_set_id": set_id})
+                  .range(page * page_size, (page + 1) * page_size - 1)
+                  .execute().data or [])
+        if not chunk:
+            break
+        edges_full.extend(chunk)
+        if len(chunk) < page_size:
+            break
+        page += 1
+    products_in_graph: set = set()
+    collections_with_brand_edge: set = set()
+    for e in edges_full:
+        if e["source_type"] == "product": products_in_graph.add(e["source_id"])
+        if e["target_type"] == "product": products_in_graph.add(e["target_id"])
+        if e["source_type"] == "brand" and e["target_type"] == "collection":
+            collections_with_brand_edge.add(e["target_id"])
+    prod_ids = {p["id"] for p in prods}
+    product_coverage_pct = (100.0 * len(products_in_graph & prod_ids) / max(1, len(prod_ids)))
+    brand_coverage_pct = (100.0 * len(collections_with_brand_edge & kept_canonical_ids)
+                          / max(1, len(kept_canonical_ids)))
+    graph_score = round(0.7 * product_coverage_pct + 0.3 * brand_coverage_pct, 2)
+    theoretical = max(1, len(kept_canonical_ids) + len(prod_ids))
+    orphan_products = len(prod_ids - products_in_graph)
 
     # Designer registry stats (ITER200)
     designers_all = (c.table("brand_detected_entities")
@@ -850,21 +1082,26 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
     designer_confidence = round(100.0 * len(verified_designers) / max(1, len(designers_all)), 2)
     designer_score = min(100.0, len(verified_designers) * 12.5)  # ~8 designers = 100
 
-    # Weighted overall (ITER200 re-weighted: graph 0.20, others rebalanced)
+    # Weighted overall (ITER200 final calibration)
     weights = {
-        "extraction": 0.15, "collection": 0.15, "product": 0.15,
-        "material":   0.10, "finish":     0.10,
-        "entity_confidence": 0.10, "graph": 0.15, "designer": 0.10,
+        "extraction":         0.10,
+        "collection":         0.15,
+        "product":            0.15,
+        "material":           0.05,
+        "finish":             0.10,
+        "entity_confidence":  0.10,
+        "graph":              0.20,
+        "designer":           0.15,
     }
     overall = round(
-        weights["extraction"] * extraction_score +
-        weights["collection"] * collection_score +
-        weights["product"]    * product_score +
-        weights["material"]   * material_score +
-        weights["finish"]     * finish_score +
+        weights["extraction"]        * extraction_score +
+        weights["collection"]        * collection_score +
+        weights["product"]           * product_score +
+        weights["material"]          * material_score +
+        weights["finish"]            * finish_score +
         weights["entity_confidence"] * entity_confidence_score +
-        weights["graph"]      * graph_score +
-        weights["designer"]   * designer_score, 2)
+        weights["graph"]             * graph_score +
+        weights["designer"]          * designer_score, 2)
 
     # Builder readiness (ITER200 refined)
     linked = sum(1 for p in prods if p.get("canonical_collection_id"))
@@ -878,11 +1115,24 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
         "specification": round(0.45 * (100.0 * with_cat / max(1, total_p)) + 0.30 * material_score + 0.25 * finish_score, 2),
     }
 
+    # ITER200 · Final verdict computation
+    brand_atlas_readiness = builder["brand_atlas"]
+    if overall >= 80 and brand_atlas_readiness >= 80 and graph_score >= 90:
+        verdict = "A · Certified Brand Atlas™"
+    elif overall >= 70 and brand_atlas_readiness >= 70:
+        verdict = "B · Ready with Minor Review"
+    else:
+        verdict = "C · Additional Resolution Required"
+
     return {
         "ok": True,
         "set_id": set_id, "set_name": cset.get("name"),
         "tenant_id": tenant_id, "brand_id": brand_id,
         "computed_at": _now(),
+        "verdict": verdict,
+        "brand_atlas_readiness": brand_atlas_readiness,
+        "knowledge_score": overall,
+        "graph_completeness": graph_score,
         "metrics": {
             "pages_processed": pp, "total_pages": tp,
             "products_total": total_p,
@@ -892,8 +1142,10 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
             "products_with_canonical_category": with_cat,
             "orphan_products": orphan_products,
             "collections_kept": len(kept_cols),
+            "collections_productive": productive,
             "collections_demoted": len(demoted_cols),
             "collections_raw": total_seen,
+            "collection_precision_pct": round(col_precision_pct, 2),
             "materials_canonical": len(mats),
             "finishes_total_raw": len(fins_all),
             "finishes_real_filtered": len(real_fins),
@@ -903,6 +1155,7 @@ def compute_knowledge_audit(set_id: str) -> Dict[str, Any]:
             "needs_review_designers": len(needs_review_designers),
             "designer_confidence_pct": designer_confidence,
             "knowledge_graph_edges": edges_count,
+            "knowledge_graph_expected": theoretical,
         },
         "scores": {
             "extraction_coverage": extraction_score,

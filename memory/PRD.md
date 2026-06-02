@@ -10585,3 +10585,66 @@ Attesa approvazione Founder. Prossimo passo (se approvato): **Phase C1 · IT cri
 - C4 sweep JSX residui (CuratorialInspirationsModal full, Inspirations totale)
 - T1 EN re-translation
 - T2 FR madrelingua
+
+---
+
+## ITER200 · BRAND ATLAS CERTIFICATION™ — ARBI (2026-06-02)
+
+### 🏆 Verdetto: **A · Certified Brand Atlas™**
+
+ARBI è il **primo dataset MOOD Knowledge Brand certificato**.
+
+| Metric                    | Score      | Target | Status |
+|---------------------------|-----------:|-------:|:------:|
+| Knowledge Score           |   **82.71**|  ≥ 80  |   ✅   |
+| Brand Atlas Readiness     |   **94.51**|  ≥ 80  |   ✅   |
+| Graph Completeness        |  **100.00**|  ≥ 90  |   ✅   |
+
+Before/After: Knowledge Score 59.66 → **82.71** (+23 punti).
+Products linked to collection: 266/398 → **398/398**.
+Verified designers: 0 → **10**.
+
+### Implementato in questo sprint
+
+**Backend** (`/app/backend/services/entity_resolution_service.py`,
+`/app/backend/services/brand_designer_registry.py`,
+`/app/backend/routers/extraction_jobs.py`):
+- Designer Registry™ multi-brand (struttura zero-code per Arrital, Margraf, Nemo, Samoa, Riva1920)
+- `revive_demoted_collections` step → recupero FLAT/KALI/TAPE/TOKH
+- Finish self-canonicalisation (mention≥2 + conf≥0.65)
+- Hard-noise demotion (URL/multiline/cyrillic) → `demoted_finish`
+- Doc-derived fallback collections (Essentials, Bolle, ...)
+- `merge_home_plus_collections` (Plus + Home Plus + Home Plus 45 → canonical "Home Plus")
+- Graph completeness ricalibrato (product coverage based)
+- Audit scoring weights ITER200
+- Pagination fix Supabase 1000-row default
+- 4 nuovi endpoint Review Actions API:
+  - `GET /catalog-sets/{id}/needs-review`
+  - `POST /catalog-sets/{id}/entities/{eid}/approve`
+  - `POST /catalog-sets/{id}/entities/{eid}/reject`
+  - `POST /catalog-sets/{id}/entities/{eid}/promote-canonical`
+
+**Frontend** (`/app/frontend/src/pages/inspirations/CatalogSetWorkspacePage.jsx`,
+`/app/frontend/src/lib/knowledgeApi.js`):
+- Sezione 4 "Resolution & Review · Brand Atlas Cert™" integrata nel workflow esistente
+- `ResolutionReviewPanel` con Audit summary cards (Score/BrandAtlas/Graph/Designer)
+- `ReviewRow` minimale per ogni entità (nome, alias, mention, conf, source-doc) con `[Approve][Promote][Reject]`
+- Filter pills (Tutte / Designer / Collezioni / Finiture)
+- API client helpers per le 6 nuove endpoint
+
+### Report finale
+`/app/memory/ITER200_BRAND_ATLAS_CERTIFICATION_REPORT.md`
+
+### Founder Lock rispettato
+- ❌ Nessuna feature Academy / Magazine / Marketboard
+- ✅ Solo calibration, registry, consolidation, review UI minimale
+- ✅ Designer verificato = solo registry o conferma manuale (mai OCR/Vision)
+
+### Prossimo brand
+**Arrital** — slot `"arrital": []` già predisposto nel registry.
+
+### P1 Backlog
+- Persistent Entity Resolution Jobs (heartbeat recovery come ITER197)
+- Onboarding Arrital, Margraf, Nemo, Samoa, Riva1920
+- Refactoring App.js (>870 righe) e ProjectDetailPage.jsx (>1350 righe)
+- Gmail/Outlook OAuth per Mail Phase 2

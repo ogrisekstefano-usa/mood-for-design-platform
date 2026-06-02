@@ -58,6 +58,20 @@ export const mergeEntity = (setId, entityId, targetId) =>
 export const publishSet = (setId) =>
   api.post(`${BASE}/catalog-sets/${setId}/publish`);
 
+// ─── ITER199 / ITER200 · Resolution + Audit + Review Actions ────────
+export const resolveEntities = (setId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/resolve-entities`);
+export const knowledgeAudit = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/knowledge-audit`);
+export const listNeedsReview = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/needs-review`);
+export const approveEntity = (setId, entityId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/approve`);
+export const rejectEntity = (setId, entityId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/reject`);
+export const promoteEntityToCanonical = (setId, entityId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/promote-canonical`);
+
 export default {
   listBrands, getBrand, createBrand,
   listCatalogSets, createCatalogSet, getCatalogSet, updateCatalogSet,
@@ -66,4 +80,7 @@ export default {
   triggerExtraction, extractionStatus,
   validationSummary, listPages, patchPage,
   listEntities, patchEntity, mergeEntity, publishSet,
+  resolveEntities, knowledgeAudit,
+  listNeedsReview, approveEntity, rejectEntity,
+  promoteEntityToCanonical,
 };

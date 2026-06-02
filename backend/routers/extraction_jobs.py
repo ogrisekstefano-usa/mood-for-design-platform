@@ -230,6 +230,190 @@ def knowledge_audit(set_id: str, ctx=Depends(get_tenant_context)):
     return resolver.compute_knowledge_audit(set_id)
 
 
+# ─── ITER200 · Review Actions API ─────────────────────────────────────
+@router.get("/catalog-sets/{set_id}/needs-review")
+def list_needs_review(set_id: str, ctx=Depends(get_tenant_context)):
+    """Return entities flagged as `needs_review` plus the post-resolution
+    `demoted_*` types so the operator can audit cleanup decisions."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    REVIEW_TYPES = ["collection", "demoted_collection", "designer",
+                    "demoted_designer", "finish", "demoted_finish"]
+    rows = (c.table("brand_detected_entities")
+            .select("id,entity_type,display_name,aliases,mention_count,"
+                    "confidence_score,status,canonical_ref_id,"
+                    "source_document_ids,attributes")
+            .eq("catalog_set_id", set_id)
+            .in_("entity_type", REVIEW_TYPES)
+            .or_("status.eq.needs_review,entity_type.like.demoted_%")
+            .order("entity_type")
+            .order("mention_count", desc=True)
+            .limit(500)
+            .execute().data or [])
+    return {"entities": rows, "count": len(rows)}
+
+
+@router.post("/catalog-sets/{set_id}/entities/{entity_id}/approve")
+def approve_entity(set_id: str, entity_id: str,
+                    ctx=Depends(get_tenant_context)):
+    """Promote a `needs_review` or demoted entity to `validated`.
+    Demoted entity types are restored to their canonical type."""
+    from datetime import datetime as _dt
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    rows = (c.table("brand_detected_entities").select("*")
+            .eq("id", entity_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Entità non trovata")
+    e = rows[0]
+    target_type = e["entity_type"]
+    if target_type.startswith("demoted_"):
+        target_type = target_type.replace("demoted_", "", 1)
+    if target_type == "designer":  # promoted via approval → registered
+        target_type = "designer_registered"
+    attrs = dict(e.get("attributes") or {})
+    attrs["approved_at"] = _dt.now(timezone.utc).isoformat()
+    attrs["approved_by"] = ctx.get("profile_id")
+    c.table("brand_detected_entities").update({
+        "entity_type": target_type,
+        "status": "validated",
+        "attributes": attrs,
+        "reviewed_by": ctx.get("profile_id"),
+        "reviewed_at": runner._now(),
+        "updated_at": runner._now(),
+    }).eq("id", entity_id).execute()
+    return {"ok": True, "entity_id": entity_id,
+            "new_entity_type": target_type, "new_status": "validated"}
+
+
+@router.post("/catalog-sets/{set_id}/entities/{entity_id}/reject")
+def reject_entity(set_id: str, entity_id: str,
+                   ctx=Depends(get_tenant_context)):
+    """Permanently demote an entity (status=rejected, entity_type=demoted_*)."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    rows = (c.table("brand_detected_entities").select("*")
+            .eq("id", entity_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Entità non trovata")
+    e = rows[0]
+    et = e["entity_type"]
+    # Normalise so 'designer_registered' rejected becomes 'demoted_designer'
+    # and 'demoted_X' stays as 'demoted_X'.
+    if et.startswith("demoted_"):
+        target_type = et
+    else:
+        base = et.replace("_registered", "")
+        target_type = f"demoted_{base}"
+    attrs = dict(e.get("attributes") or {})
+    attrs["rejected_at"] = runner._now()
+    attrs["rejected_by"] = ctx.get("profile_id")
+    c.table("brand_detected_entities").update({
+        "entity_type": target_type,
+        "status": "rejected",
+        "attributes": attrs,
+        "reviewed_by": ctx.get("profile_id"),
+        "reviewed_at": runner._now(),
+        "updated_at": runner._now(),
+    }).eq("id", entity_id).execute()
+    return {"ok": True, "entity_id": entity_id,
+            "new_entity_type": target_type, "new_status": "rejected"}
+
+
+@router.post("/catalog-sets/{set_id}/entities/{entity_id}/promote-canonical")
+def promote_to_canonical(set_id: str, entity_id: str,
+                          ctx=Depends(get_tenant_context)):
+    """Promote a collection / finish entity to canonical anchor status.
+    For collection entities: materialises a `collections_canonical` row
+    and links the entity to it. For finishes: marks `is_canonical_anchor`
+    and `self_canonical` in attributes."""
+    import uuid as _uuid
+    c = db(); tid = ctx["tenant_id"]
+    cset = _require_set_ownership(c, tid, set_id)
+    rows = (c.table("brand_detected_entities").select("*")
+            .eq("id", entity_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Entità non trovata")
+    e = rows[0]
+    et = e["entity_type"]
+    base = et.replace("demoted_", "", 1) if et.startswith("demoted_") else et
+    attrs = dict(e.get("attributes") or {})
+
+    if base == "collection":
+        name = e["display_name"]
+        key = (resolver._normalize(name).replace(" ", "-")[:60]) or f"col-{entity_id[:8]}"
+        existing = (c.table("collections_canonical").select("id")
+                    .eq("tenant_id", tid).eq("collection_key", key)
+                    .limit(1).execute().data or [])
+        if existing:
+            cid = existing[0]["id"]
+        else:
+            cid = str(_uuid.uuid4())
+            c.table("collections_canonical").insert({
+                "id": cid, "tenant_id": tid,
+                "brand_id": cset.get("brand_id"),
+                "collection_key": key, "display_name": name,
+                "metadata_json": {"promoted_from": entity_id,
+                                   "catalog_set_id": set_id,
+                                   "kind": "manual_promotion"},
+                "created_at": runner._now(),
+                "updated_at": runner._now(),
+            }).execute()
+        attrs["promoted_at"] = runner._now()
+        attrs["canonical_id"] = cid
+        c.table("brand_detected_entities").update({
+            "entity_type": "collection",
+            "status": "validated",
+            "canonical_ref_id": cid,
+            "canonical_ref_table": "collections_canonical",
+            "attributes": attrs,
+            "reviewed_by": ctx.get("profile_id"),
+            "reviewed_at": runner._now(),
+            "updated_at": runner._now(),
+        }).eq("id", entity_id).execute()
+        return {"ok": True, "entity_id": entity_id, "canonical_id": cid,
+                "entity_type": "collection"}
+
+    if base == "finish":
+        attrs.update({
+            "is_canonical_anchor": True,
+            "self_canonical": True,
+            "canonical_label": e["display_name"],
+            "promoted_at": runner._now(),
+        })
+        c.table("brand_detected_entities").update({
+            "entity_type": "finish",
+            "status": "validated",
+            "attributes": attrs,
+            "reviewed_by": ctx.get("profile_id"),
+            "reviewed_at": runner._now(),
+            "updated_at": runner._now(),
+        }).eq("id", entity_id).execute()
+        return {"ok": True, "entity_id": entity_id,
+                "entity_type": "finish", "promoted": True}
+
+    if base == "designer":
+        # Promote to designer_registered with full verification
+        attrs.update({"source": "manual_promotion",
+                      "verified": True,
+                      "promoted_at": runner._now()})
+        c.table("brand_detected_entities").update({
+            "entity_type": "designer_registered",
+            "status": "validated",
+            "attributes": attrs,
+            "reviewed_by": ctx.get("profile_id"),
+            "reviewed_at": runner._now(),
+            "updated_at": runner._now(),
+        }).eq("id", entity_id).execute()
+        return {"ok": True, "entity_id": entity_id,
+                "entity_type": "designer_registered", "promoted": True}
+
+    raise HTTPException(400, f"Tipo di entità non promovibile: {et}")
+
+
 # ─── Operational smoke test ───────────────────────────────────────────
 @router.get("/system/smoke-test")
 def smoke_test(ctx=Depends(get_tenant_context)):

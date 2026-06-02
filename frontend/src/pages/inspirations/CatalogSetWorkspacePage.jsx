@@ -285,6 +285,256 @@ function ExtractionPanel({ setId, status, statusData, onTrigger, busy }) {
   );
 }
 
+// ─── ITER200 · Resolution + Review Panel ────────────────────────────
+function ResolutionReviewPanel({ setId, status }) {
+  const [audit, setAudit] = useState(null);
+  const [needsReview, setNeedsReview] = useState([]);
+  const [resolving, setResolving] = useState(false);
+  const [filter, setFilter] = useState('all');
+  const [busyId, setBusyId] = useState(null);
+
+  const loadAudit = useCallback(async () => {
+    try {
+      const { data } = await KE.knowledgeAudit(setId);
+      setAudit(data);
+    } catch (_) { /* tolerate */ }
+  }, [setId]);
+
+  const loadReview = useCallback(async () => {
+    try {
+      const { data } = await KE.listNeedsReview(setId);
+      setNeedsReview(data?.entities || []);
+    } catch (_) { setNeedsReview([]); }
+  }, [setId]);
+
+  useEffect(() => { loadAudit(); loadReview(); }, [loadAudit, loadReview]);
+
+  const onResolve = async () => {
+    setResolving(true);
+    try {
+      await KE.resolveEntities(setId);
+      toast.success('Entity Resolution™ completata');
+      await loadAudit(); await loadReview();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Resolution fallita');
+    } finally {
+      setResolving(false);
+    }
+  };
+
+  const handleAction = async (entityId, action) => {
+    setBusyId(entityId);
+    try {
+      if (action === 'approve') await KE.approveEntity(setId, entityId);
+      else if (action === 'reject') await KE.rejectEntity(setId, entityId);
+      else if (action === 'promote') await KE.promoteEntityToCanonical(setId, entityId);
+      toast.success(action === 'approve' ? 'Approvato'
+                   : action === 'reject' ? 'Rifiutato' : 'Promosso a Canonical');
+      await loadReview(); await loadAudit();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Azione fallita');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  // Filter
+  const filtered = needsReview.filter((e) => {
+    if (filter === 'all') return true;
+    if (filter === 'designer') return e.entity_type.includes('designer');
+    if (filter === 'collection') return e.entity_type.includes('collection');
+    if (filter === 'finish') return e.entity_type.includes('finish');
+    return true;
+  });
+
+  const verdictTone = (v) => {
+    if (!v) return 'tone-neutral';
+    if (v.startsWith('A')) return 'tone-positive';
+    if (v.startsWith('B')) return 'tone-warning';
+    return 'tone-negative';
+  };
+
+  const scores = audit?.scores || {};
+
+  return (
+    <div className="ke-review-panel" data-testid="ke-review-panel">
+      {/* Audit summary header */}
+      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start',
+                     padding: 16, background: 'rgba(15,23,42,.04)',
+                     border: '1px solid rgba(15,23,42,.08)', borderRadius: 8,
+                     marginBottom: 16, flexWrap: 'wrap' }}
+            data-testid="ke-audit-summary">
+        <div style={{ flex: '1 1 240px' }}>
+          <div className="ke-eyebrow">VERDETTO BRAND ATLAS™</div>
+          <div style={{ fontSize: 18, fontWeight: 600, marginTop: 4 }}
+                data-testid="ke-audit-verdict">
+            {audit?.verdict || '—'}
+          </div>
+          <span className={`ke-badge ${verdictTone(audit?.verdict)}`}
+                 style={{ marginTop: 8, display: 'inline-block' }}>
+            Score {audit?.knowledge_score ?? '—'} / 100
+          </span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(150px,1fr))',
+                       gap: 8, flex: '2 1 320px' }}>
+          <ScoreCell label="Knowledge Score" value={audit?.knowledge_score} target={80}
+                     testid="ke-score-knowledge" />
+          <ScoreCell label="Brand Atlas" value={audit?.brand_atlas_readiness} target={80}
+                     testid="ke-score-brand-atlas" />
+          <ScoreCell label="Graph" value={audit?.graph_completeness} target={90}
+                     testid="ke-score-graph" />
+          <ScoreCell label="Designer" value={scores.designer_coverage} target={80}
+                     testid="ke-score-designer" />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <button type="button" className="ke-btn ke-btn-primary"
+                   onClick={onResolve} disabled={resolving}
+                   data-testid="ke-resolve-btn">
+            <Icons.Sparkles size={14} aria-hidden="true" />
+            <span>{resolving ? 'In corso…' : 'Esegui Resolution'}</span>
+          </button>
+          <button type="button" className="ke-btn"
+                   onClick={() => { loadAudit(); loadReview(); }}
+                   data-testid="ke-refresh-audit">
+            <Icons.RefreshCw size={14} aria-hidden="true" />
+            <span>Aggiorna</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Filter pills */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        {[
+          ['all', `Tutte (${needsReview.length})`],
+          ['designer', 'Designer'],
+          ['collection', 'Collezioni'],
+          ['finish', 'Finiture'],
+        ].map(([k, label]) => (
+          <button key={k} type="button"
+                   className={`ke-btn ${filter === k ? 'ke-btn-primary' : ''}`}
+                   onClick={() => setFilter(k)}
+                   data-testid={`ke-review-filter-${k}`}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Review list */}
+      {filtered.length === 0 ? (
+        <div className="ke-empty" data-testid="ke-review-empty">
+          Nessuna entità da revisionare in questa categoria.
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8,
+                       maxHeight: 600, overflowY: 'auto' }}
+              data-testid="ke-review-list">
+          {filtered.slice(0, 200).map((e) => (
+            <ReviewRow key={e.id} entity={e}
+                        busy={busyId === e.id}
+                        onAction={handleAction} />
+          ))}
+          {filtered.length > 200 && (
+            <div className="ke-empty-sm">
+              +{filtered.length - 200} altre entità non mostrate
+              (esegui Resolution per consolidare il backlog).
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ScoreCell({ label, value, target, testid }) {
+  const v = (value === undefined || value === null) ? null : Number(value);
+  const ok = v !== null && target !== undefined && v >= target;
+  return (
+    <div data-testid={testid}
+          style={{ padding: 10, background: '#fff', borderRadius: 6,
+                    border: '1px solid rgba(15,23,42,.08)' }}>
+      <div style={{ fontSize: 10, textTransform: 'uppercase',
+                     color: 'rgba(15,23,42,.55)', letterSpacing: '.04em' }}>
+        {label}
+      </div>
+      <div style={{ fontSize: 18, fontWeight: 600, marginTop: 4,
+                     color: ok ? '#059669' : v !== null && v > 0 ? '#b45309' : '#6b7280' }}>
+        {v === null ? '—' : v.toFixed(2)}
+        {target !== undefined && (
+          <span style={{ fontSize: 10, color: 'rgba(15,23,42,.4)',
+                          marginLeft: 6 }}>
+            / {target}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ReviewRow({ entity, busy, onAction }) {
+  const conf = entity.confidence_score ?? null;
+  const mentions = entity.mention_count ?? 0;
+  const docs = (entity.source_document_ids || []).length;
+  const typeLabel = entity.entity_type
+    .replace('demoted_', '⤓ ')
+    .replace('_', ' ');
+  const isDemoted = entity.entity_type.startsWith('demoted_');
+  const aliases = (entity.aliases || []).slice(0, 3);
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between',
+                   alignItems: 'center', padding: '10px 12px',
+                   background: '#fff', border: '1px solid rgba(15,23,42,.08)',
+                   borderRadius: 6, gap: 12, flexWrap: 'wrap' }}
+          data-testid={`ke-review-row-${entity.id}`}>
+      <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span className={`ke-mini-pill ${isDemoted ? 'tone-neutral' : 'tone-warning'}`}>
+            {typeLabel}
+          </span>
+          <span style={{ fontWeight: 600, fontSize: 14,
+                          color: 'rgba(15,23,42,.92)',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap' }}>
+            {entity.display_name}
+          </span>
+        </div>
+        <div style={{ fontSize: 11, color: 'rgba(15,23,42,.55)', marginTop: 4 }}>
+          {conf !== null && <span>conf. {(conf * 100).toFixed(0)}% · </span>}
+          <span>{mentions} mention</span>
+          {docs > 0 && <span> · {docs} doc</span>}
+          {aliases.length > 0 && (
+            <span style={{ display: 'block', marginTop: 2 }}>
+              alias: {aliases.join(' · ')}
+            </span>
+          )}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+        <button type="button" className="ke-btn"
+                 disabled={busy}
+                 onClick={() => onAction(entity.id, 'approve')}
+                 data-testid={`ke-review-approve-${entity.id}`}>
+          Approve
+        </button>
+        <button type="button" className="ke-btn"
+                 disabled={busy}
+                 onClick={() => onAction(entity.id, 'promote')}
+                 data-testid={`ke-review-promote-${entity.id}`}>
+          Promote
+        </button>
+        <button type="button" className="ke-btn"
+                 disabled={busy}
+                 onClick={() => onAction(entity.id, 'reject')}
+                 data-testid={`ke-review-reject-${entity.id}`}>
+          Reject
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 // ─── Validation Summary Panel ───────────────────────────────────────
 function ValidationPanel({ setId, summary, entities, onRefresh, onPublish }) {
   const ec = summary?.entity_counts || {};
@@ -670,6 +920,21 @@ export default function CatalogSetWorkspacePage() {
         ) : (
           <div className="ke-empty" data-testid="ke-validation-not-ready">
             La Validation Dashboard sarà disponibile al termine dell'estrazione.
+          </div>
+        )}
+      </section>
+
+      {/* ── Section 4 · Resolution + Review (ITER200) ──────────────── */}
+      <section className="ke-section-block" data-testid="ke-section-review">
+        <h2 className="ke-section-block__title">
+          <span className="ke-step-num">4</span>
+          Resolution &amp; Review · Brand Atlas Certification™
+        </h2>
+        {(status === 'needs_review' || status === 'validated' || status === 'published') ? (
+          <ResolutionReviewPanel setId={setId} status={status} />
+        ) : (
+          <div className="ke-empty" data-testid="ke-review-not-ready">
+            La Review Dashboard sarà disponibile al termine dell'estrazione.
           </div>
         )}
       </section>
