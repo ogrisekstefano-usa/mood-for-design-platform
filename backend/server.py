@@ -120,6 +120,7 @@ from routers import cultural_editions
 from routers import supplier_catalogs
 from routers import knowledge_factory
 from routers import brand_import_sessions
+from routers import knowledge_graph
 from routers import brands_registry
 from routers import curated_references
 from routers import usage_memory
@@ -148,6 +149,7 @@ api_router.include_router(inspirations_archive.router, prefix="/inspirations", t
 api_router.include_router(supplier_catalogs.router, prefix="/inspirations", tags=["supplier-catalogs"])
 api_router.include_router(knowledge_factory.router, prefix="/inspirations", tags=["knowledge-factory"])
 api_router.include_router(brand_import_sessions.router, prefix="/inspirations/knowledge-factory", tags=["brand-import-sessions"])
+api_router.include_router(knowledge_graph.router,        prefix="/knowledge-graph", tags=["design-knowledge-graph"])
 api_router.include_router(brands_registry.router,   prefix="/inspirations", tags=["brand-registry"])
 api_router.include_router(curated_references.router, prefix="/inspirations", tags=["curated-references"])
 api_router.include_router(usage_memory.router,      prefix="/inspirations", tags=["usage-memory"])

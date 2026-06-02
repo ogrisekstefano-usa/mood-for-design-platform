@@ -518,7 +518,15 @@ def approve_product(product_id: str, ctx=Depends(get_tenant_context)):
         "updated_at": _now(),
     }).eq("id", product_id).eq("tenant_id", tid).execute()
     _recompute_knowledge_flags(c, product_id)
-    return {"product_id": product_id, "review_status": "approved"}
+    # ── ITER193 · auto-tagger on approve (sync, ≤200ms) ──
+    try:
+        from cultural_engine import auto_tagger
+        tag_result = auto_tagger.tag_product(c, tenant_id=tid, product_id=product_id)
+    except Exception as e:
+        logger.warning(f"auto-tagger failed for {product_id}: {e}")
+        tag_result = {"error": str(e)}
+    return {"product_id": product_id, "review_status": "approved",
+            "auto_tagger": tag_result}
 
 
 @router.post("/knowledge-factory/products/{product_id}/reject")

@@ -1,5 +1,92 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER193 · MOOD DESIGN KNOWLEDGE GRAPH™ ENGINE · PHASE 1 · DELIVERED · 02 Feb 2026
+
+**🎯 Vincolo Founder:** Semantic Layer Foundation. NO UI, NO AI chat, NO recommendations. Solo struttura dati riutilizzabile da futuri Brand Atlas / Academy / Magazine / Marketboard / Moodboard / Specification / Design Advisor AI.
+
+**📄 Proposta architetturale:** `/app/memory/ITER193_KNOWLEDGE_GRAPH_PROPOSAL.md` (9 sezioni)
+
+### ✅ Phase 1 Semantic Layer Foundation completata
+
+**1 · 4 nuove canonical entity tables** + seed vocab (Migration `118_iter193_design_knowledge_graph.sql`)
+- 🆕 `spaces_canonical` (20 entry: living_room, kitchen, hospitality, lobby, lounge, spa, retail, workplace, terrace…)
+- 🆕 `features_canonical` (30 entry: modular, acoustic, sustainable, outdoor_rated, dimmable, ergonomic, biophilic, artisanal…)
+- 🆕 `styles_canonical` (15 entry: contemporary, minimal, organic, scandinavian, industrial, luxury, japandi, italian_modern, brutalist, mid_century, art_deco…)
+- 🆕 `markets_canonical` (25 entry) **hierarchical** con `geo_level` (global/region/country/city/segment) + `parent_market_id`:
+  - 11 country (USA, Italy, Germany, UK, France, Spain, UAE, Saudi, Japan, China, Canada)
+  - 8 **city** (NYC, Miami, Chicago, LA, Milano, London, Paris, Dubai) — admin-extensible su qualsiasi città
+  - 6 segment combos (hospitality_usa, luxury_residential_usa, contract_europe, hospitality_apac, retail_europe, hospitality_me)
+
+**2 · 9 specific relationship tables** (hot paths) + **1 generic edges table** (cold paths)
+- `product_spaces`, `product_features`, `product_styles`, `product_markets` (M:N con confidence_score + evidence + source)
+- `material_styles`, `material_spaces`, `story_markets`, `brand_styles`, `brand_markets`
+- `knowledge_graph_edges` (source_type/target_type/edge_type/weight) per estensibilità
+
+**3 · Auto-Tagger™ deterministico** (`cultural_engine/auto_tagger.py`)
+- Trigger sync su `POST /products/{id}/approve` (≤200ms)
+- Keyword density matching su (name + description + materials + finishes + raw_text section)
+- Material-derived rules: wood→organic/scandinavian, marble→luxury/italian_modern, brass→art_deco, rattan→outdoor
+- Confidence threshold 0.40 default, single specific-keyword match passa soglia (0.42 base score)
+- Evidence trail: ogni edge storage `{keyword, snippet, score_contribution}` o `{derived_from: "material:..."}`
+
+**4 · Market Intelligence Layer™** (7 axes su `products.market_relevance` JSONB)
+- `us`, `eu`, `apac`, `me`, `hospitality`, `residential`, `retail`
+- Computed da: detected_styles + spaces + features + materials + designer_origin
+- Es. test SIRIUS: us=0.95 · me=0.95 · hospitality=0.98 · residential=0.65 · retail=0.78
+
+**5 · Brand aggregates auto-computed**
+- `brand_styles.affinity_score` = avg confidence dei product_styles per brand
+- `brand_markets.relevance_score` = avg relevance dei product_markets per brand
+- Ricomputato automaticamente in `retag_session`
+
+**6 · 6 API endpoint** (`/api/knowledge-graph/*`)
+- `GET    /canonical/{spaces|features|styles|markets}` — list seeded vocab
+- `POST   /canonical/{type}` — admin add custom entity (es. nuova città)
+- `GET    /explore?type=&brand_id=&space=&style=&market=&feature=&include_edges=true` — single mega-discovery
+- `POST   /products/{id}/retag` — re-run auto-tagger
+- `GET    /products/{id}/edges` — all edges for a product
+- `POST   /sessions/{id}/retag` — re-run auto-tagger su intera Brand Import Session
+
+### 🧪 Backend tests
+- ✅ ITER193 `test_iter193_knowledge_graph.py`: **14/14 PASS · 100%**
+  - Vocab seed (spaces/features/styles/markets incl. città Milano/NYC/Dubai/Miami)
+  - Admin add custom city con parent_market resolution
+  - E2E full pipeline: PDF → product → approve → auto-tagger → edges salvati
+  - Edges detection: styles ≥2, spaces ≥2, features ≥1 da rich-text catalogue
+  - Market relevance 7-axis populated correttamente
+  - `/explore` con filter style=contemporary trova il prodotto tagged
+  - `/products/{id}/edges` ritorna 4 categorie
+  - `/retag` con threshold personalizzato
+  - Unit tests su `_score_keyword_match` e `_compute_market_relevance`
+- ✅ ITER192 regression: **10/10 PASS**
+- ✅ ITER187 regression: **16/16 PASS**
+- 🟦 **Totale suite: 40/40 PASS · 100%**
+
+### 📁 File creati / modificati
+- ✨ `/app/supabase/migrations/118_iter193_design_knowledge_graph.sql` (~430 righe, 14 tabelle + 90 seed entry)
+- ✨ `/app/scripts/apply_migration_118.py`
+- ✨ `/app/backend/cultural_engine/auto_tagger.py` (375 righe)
+- ✨ `/app/backend/routers/knowledge_graph.py` (290 righe, 6 endpoint)
+- ✨ `/app/backend/tests/test_iter193_knowledge_graph.py` (350 righe, 14 test)
+- 📝 `/app/backend/routers/knowledge_factory.py` (hook auto-tagger nell'`/approve`)
+- 📝 `/app/backend/server.py` (router mount `/api/knowledge-graph`)
+
+### 🔵 Next Action Items
+- 🔥 **P0** Founder upload Riva1920 / Bonaldo / Margraf / Arrital / Nemo / Samoa PDF → eseguo cross-brand stress test su Knowledge Graph reale
+- 🔥 **P0** Frontend Phase 2: Founding Brands Dashboard + Knowledge Graph viewer (D3/force-directed) + Brand Atlas page
+- 🟡 **P1** LLM-assisted auto-tagger (Vision Layer 2 + GPT-5.2 per categorize ambigui sotto threshold 0.50)
+- 🟡 **P1** pgvector embedding similarity per entity resolution semantica (Phase 2)
+- 🟡 **P1** Materials seed table con baseline Riva (Kauri/Cedro/Briccole/Barrique con origin + sustainability)
+- 🟡 **P2** Celery/RQ background queue per scalare ≥30 doc/min
+- 🔵 **Future** Brand Atlas™ · Academy Builder™ · Magazine Builder™ · Marketboard Generator™ · Moodboard Generator™ · Specification Engine™ · Design Advisor AI™
+
+### Future/Backlog
+Journey Assignments Phase 2 · Notification Bus · Error Registry · Editorial Onboarding · S3+CloudFront · Materialized views dashboard · Cross-tenant marketplace via curated_public.
+
+---
+
+
+
 ## 🟢 ITER192 · MOOD FOUNDING BRANDS PROGRAM™ · PHASE 1 · DELIVERED · 02 Feb 2026
 
 **🎯 Vincolo Founder:** Multi-Brand Knowledge Graph Foundation. NO Academy/Magazine/Marketboard builders. NO frontend (deferred Phase 2). Solo backend + API + test.
