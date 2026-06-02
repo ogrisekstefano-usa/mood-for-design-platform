@@ -42,6 +42,7 @@ from cultural_engine import section_detector
 from cultural_engine import section_text_parser
 from cultural_engine import image_dedup
 from cultural_engine import vision_asset_classifier  # Phase 1.5 · always-on
+from cultural_engine import vision_cache as _vcache   # ITER192 · hybrid cache
 
 logger = logging.getLogger(__name__)
 
@@ -116,17 +117,34 @@ def _knowledge_object_flags(
 VISION_CONCURRENCY = 5
 
 
-def _run_vision_batch(candidate_records: List[Dict[str, Any]]) -> Tuple[int, int]:
-    """Synchronously dispatch Vision Layer 2 calls on every candidate in
-    parallel batches. Mutates each record's `classification` dict in-place
-    with vision_* keys.
+def _run_vision_batch(
+    candidate_records: List[Dict[str, Any]],
+    *,
+    db_client: Any = None,
+    tenant_id: Optional[str] = None,
+) -> Tuple[int, int, int, int]:
+    """Synchronously dispatch Vision Layer 2 calls with hybrid cache.
 
-    Returns (ok_count, failed_count).
+    Returns (ok_count, failed_count, cache_hits, cache_misses).
+    Mutates each record's `classification` dict in-place with vision_* keys.
     """
     sem = asyncio.Semaphore(VISION_CONCURRENCY)
+    model = os.environ.get("CULTURAL_VISION_MODEL", "gpt-5.1")
+    cache_hits = [0]
+    cache_misses = [0]
 
     async def _one(rec: Dict[str, Any]) -> bool:
         async with sem:
+            phash = rec.get("phash")
+            # ── ITER192 · Cache hit check first ──
+            if db_client and phash:
+                cached = _vcache.lookup_cached(db_client, phash, tenant_id, model)
+                if cached:
+                    cache_hits[0] += 1
+                    _merge_vision_into_classification(rec, cached, from_cache=True)
+                    return True
+                cache_misses[0] += 1
+            # ── Vision LLM call ──
             try:
                 ext = rec.get("image_ext") or "jpg"
                 mime = "image/png" if ext == "png" else "image/jpeg"
@@ -138,28 +156,12 @@ def _run_vision_batch(candidate_records: List[Dict[str, Any]]) -> Tuple[int, int
                 return False
             if not r or not r.get("ok") or not r.get("enrichment"):
                 return False
-            base = rec["classification"] or {}
-            merged = vision_asset_classifier.merge_enrichment_into_meta(
-                base, r["enrichment"],
-                rule_confidence=float(base.get("classification_confidence") or 0.5),
-            )
-            # ALWAYS adopt Vision verdict for asset_type/comp_role/view_angle
-            # when Vision was conclusive (Phase 1.5 always-on policy).
-            if r["enrichment"].get("vision_asset_type"):
-                merged["asset_type"] = r["enrichment"]["vision_asset_type"]
-                merged["compositional_role"] = (
-                    r["enrichment"].get("vision_compositional_role")
-                    or merged.get("compositional_role")
-                )
-                merged["view_angle"] = (
-                    r["enrichment"].get("vision_view_angle")
-                    or merged.get("view_angle")
-                )
-                merged["classified_by"] = "vision"
-                merged["classification_confidence"] = round(
-                    max(float(base.get("classification_confidence") or 0.5), 0.70), 3
-                )
-            rec["classification"] = merged
+            enrichment = r["enrichment"]
+            _merge_vision_into_classification(rec, enrichment, from_cache=False)
+            # Store in cache
+            if db_client and phash:
+                _vcache.store_cache(db_client, phash, tenant_id, model,
+                                     enrichment, scope="tenant")
             return True
 
     async def _all():
@@ -168,21 +170,45 @@ def _run_vision_batch(candidate_records: List[Dict[str, Any]]) -> Tuple[int, int
         return sum(1 for r in results if r), sum(1 for r in results if not r)
 
     try:
-        # Prefer running in a fresh event loop; this function is called from
-        # a sync context (FastAPI BackgroundTask or validation script).
         try:
             loop = asyncio.new_event_loop()
             try:
                 asyncio.set_event_loop(loop)
-                return loop.run_until_complete(_all())
+                ok, failed = loop.run_until_complete(_all())
             finally:
                 loop.close()
         except RuntimeError:
-            # Already inside an event loop (rare here) — best-effort fallback
-            return asyncio.run(_all())
+            ok, failed = asyncio.run(_all())
+        return ok, failed, cache_hits[0], cache_misses[0]
     except Exception as e:
         logger.warning(f"vision batch fatal: {e}")
-        return 0, len(candidate_records)
+        return 0, len(candidate_records), cache_hits[0], cache_misses[0]
+
+
+def _merge_vision_into_classification(rec: Dict[str, Any],
+                                       enrichment: Dict[str, Any],
+                                       *, from_cache: bool) -> None:
+    """Apply Vision verdict to record's classification dict."""
+    base = rec["classification"] or {}
+    merged = vision_asset_classifier.merge_enrichment_into_meta(
+        base, enrichment,
+        rule_confidence=float(base.get("classification_confidence") or 0.5),
+    )
+    if enrichment.get("vision_asset_type"):
+        merged["asset_type"] = enrichment["vision_asset_type"]
+        merged["compositional_role"] = (
+            enrichment.get("vision_compositional_role")
+            or merged.get("compositional_role")
+        )
+        merged["view_angle"] = (
+            enrichment.get("vision_view_angle")
+            or merged.get("view_angle")
+        )
+        merged["classified_by"] = "vision_cache" if from_cache else "vision"
+        merged["classification_confidence"] = round(
+            max(float(base.get("classification_confidence") or 0.5), 0.70), 3
+        )
+    rec["classification"] = merged
 
 
 def _knowledge_object_flags_unused(
@@ -303,8 +329,13 @@ def compose_products_from_pdf(
     has_key = bool(os.environ.get("EMERGENT_LLM_KEY"))
     if candidate_records and has_key and not vision_disabled:
         _log("vision_layer2_start", {"assets": len(candidate_records)})
-        vision_ok, vision_failed = _run_vision_batch(candidate_records)
-        _log("vision_layer2_done", {"enriched": vision_ok, "failed": vision_failed})
+        vision_ok, vision_failed, v_hits, v_miss = _run_vision_batch(
+            candidate_records, db_client=db_client, tenant_id=tenant_id,
+        )
+        _log("vision_layer2_done", {
+            "enriched": vision_ok, "failed": vision_failed,
+            "cache_hits": v_hits, "cache_misses": v_miss,
+        })
     else:
         _log("vision_layer2_skipped",
              {"has_key": has_key, "disabled": vision_disabled})

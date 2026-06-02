@@ -114,8 +114,14 @@ def run_pipeline_dryrun(pdf_path: str, max_candidates: int = 600,
     # --- Step 3.5 · Phase 1.5 Vision Layer 2 always-on (optional) ---
     vision_t0 = time.time()
     vision_ok = vision_failed = 0
+    vision_cache_hits = vision_cache_misses = 0
     if enable_vision and cand_records:
-        vision_ok, vision_failed = product_composer._run_vision_batch(cand_records)
+        result = product_composer._run_vision_batch(cand_records)
+        # Support both old (2-tuple) and new (4-tuple) signature
+        if len(result) == 4:
+            vision_ok, vision_failed, vision_cache_hits, vision_cache_misses = result
+        else:
+            vision_ok, vision_failed = result[0], result[1]
     vision_dt = time.time() - vision_t0
 
     # --- Step 4 · Dedup grouping ---

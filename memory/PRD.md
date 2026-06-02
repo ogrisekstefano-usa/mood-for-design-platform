@@ -1,5 +1,97 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER192 · MOOD FOUNDING BRANDS PROGRAM™ · PHASE 1 · DELIVERED · 02 Feb 2026
+
+**🎯 Vincolo Founder:** Multi-Brand Knowledge Graph Foundation. NO Academy/Magazine/Marketboard builders. NO frontend (deferred Phase 2). Solo backend + API + test.
+
+**📄 Proposta architetturale:** `/app/memory/ITER192_FOUNDING_BRANDS_PROPOSAL.md` (10 sezioni)
+
+### ✅ Phase 1 Spike Foundation completata
+
+**1 · Brand Import Session™** — Nuova root entity che aggrega 1 brand + N PDF → 1 Brand Knowledge Package™
+- Multi-PDF upload fino a 50 PDF/request
+- Background pipeline parallela per ogni source_document
+- Lifecycle: open → processing → completed/failed/archived
+
+**2 · 5 nuove tabelle canonical** + 2 alter idempotenti (Migration `117_iter192_brand_import_sessions.sql`)
+- `brand_import_sessions` (root)
+- `materials_canonical` (Kauri/Cedro/Oak con mention_count + evidence cross-doc)
+- `designers_canonical` (Patricia Urquiola cross-brand, Levenshtein ≤2 fuzzy match)
+- `collections_canonical` (Raw Edition / 2026 Preview)
+- `stories_canonical` (10 themes: sustainability, heritage, craftsmanship, innovation, material_culture, family_business, design_collaboration, **hospitality, outdoor_living, customization**)
+- `vision_cache` (hybrid scope: per-tenant default + global per curated_public)
+- ALTER `source_documents` + `products` con FK alle canonical
+
+**3 · Vision Cache™ hybrid** (`cultural_engine/vision_cache.py`)
+- Lookup precedence: global → tenant
+- E2E verifica: cache hit/miss tracking ad ogni run, hit count incrementa
+- pHash 16-char hex key → result JSON pre-computed
+
+**4 · Entity Resolver™** (`cultural_engine/entity_resolver.py`)
+- Materials: normalize + lookup canonical, dedupe cross-doc (same `ceramic` in 2 PDF → 1 row, mention=2)
+- Designers: cross-brand canonical, Levenshtein ≤2 per varianti
+- Collections: 1 per source_document seed
+- Stories: keyword density su raw_text con vocabolari IT/EN/FR per i 10 themes
+
+**5 · Package Scorer™** (`cultural_engine/package_scorer.py`)
+- 9-axis readiness score: product_completeness, material_completeness, story_completeness, academy/magazine/marketboard/moodboard/specification readiness, overall (weighted)
+- Su test 2-PDF synthetic: overall = 49.6/100 (basso atteso: synthetic data limitato)
+
+**6 · 8 API endpoint** (`routers/brand_import_sessions.py`) montati su `/api/inspirations/knowledge-factory`
+- POST   `/sessions`
+- GET    `/sessions[?brand_id=&status=]`
+- GET    `/sessions/{id}`
+- POST   `/sessions/{id}/documents` (multipart batch fino a 50 PDF)
+- POST   `/sessions/{id}/process` (background task)
+- GET    `/sessions/{id}/dashboard` (denormalized JSONB one-query)
+- GET    `/sessions/{id}/knowledge-graph` (tree: materials/designers/collections/products/stories)
+- DELETE `/sessions/{id}` (archive)
+
+**7 · Resilience** PDF download retry 4x con backoff (1.5s · 3s · 4.5s · 6s) per evitare race condition storage immediato dopo upload.
+
+### 🧪 Backend tests
+- ✅ ITER192 `test_iter192_brand_import_sessions.py`: **10/10 PASS · 100%**
+  - Session lifecycle E2E con 2 PDF synthetic
+  - Multi-PDF upload (catalog_a + catalog_b)
+  - Entity resolution: ceramic appare in entrambi → 1 canonical row, mention_count=2
+  - Designer Marco Rossi cross-PDF → 1 canonical designer, product_count≥2
+  - Vision Cache: tenant + global scope, hit detection cross-tenant
+  - Knowledge Graph endpoint con tree completo
+- ✅ ITER187 regression: **16/16 PASS** (Knowledge Factory base intact)
+- 🟦 **Suite totale: 26/26 PASS**
+
+### 🚦 Disponibilità PDF cross-brand
+- ✅ Cattelan 729.pdf (88.1/100 readiness ITER189)
+- ❌ Riva1920, Bonaldo, Margraf: **non caricati nel pod** — Founder upload bloccante per multi-brand stress test reale
+
+### 📁 File creati / modificati
+- ✨ `/app/supabase/migrations/117_iter192_brand_import_sessions.sql`
+- ✨ `/app/scripts/apply_migration_117.py`
+- ✨ `/app/backend/cultural_engine/vision_cache.py`
+- ✨ `/app/backend/cultural_engine/entity_resolver.py`
+- ✨ `/app/backend/cultural_engine/package_scorer.py`
+- ✨ `/app/backend/routers/brand_import_sessions.py`
+- ✨ `/app/backend/tests/test_iter192_brand_import_sessions.py`
+- 📝 `/app/backend/cultural_engine/product_composer.py` (Vision Cache integration, 4-tuple return)
+- 📝 `/app/backend/server.py` (router mount)
+- 📝 `/app/scripts/iter188_validate_real_catalog.py` (4-tuple support)
+
+### 🔵 Next Action Items
+- 🔥 **P0** Founder upload Riva1920 / Bonaldo / Margraf PDF → eseguo stress test multi-brand Knowledge Package
+- 🔥 **P0** Frontend admin review UI Phase 2: Founding Brands Dashboard + Brand Import Session detail + Knowledge Graph viewer
+- 🟡 **P1** Curated_public promotion endpoint (admin promote tenant materials/designers → global canonical)
+- 🟡 **P1** Materials seed table (Riva1920 base materials: Kauri/Cedro/Briccole/Barrique con origin/sustainability)
+- 🟡 **P2** Celery/RQ background queue (per scalare ≥30 doc/min parallel processing)
+- 🟡 **P2** pgvector embedding similarity per cross-brand entity resolution semantica
+- 🔵 **Future** Academy Builder · Magazine Builder · Marketboard Generator · Spec Sheet auto-gen
+
+### Future/Backlog
+Journey Assignments Phase 2 · Notification Bus · Error Registry · Editorial Onboarding · S3+CloudFront migration · Materialized views dashboard
+
+---
+
+
+
 ## 🟢 ITER189 · MOOD BRAND KNOWLEDGE FACTORY™ · PHASE 1.5 EXTRACTION HARDENING · DELIVERED · 02 Feb 2026 · GO
 
 **🎯 Vincolo Founder:** No frontend, no Academy/Magazine/Marketboard builders. Tutti i 5 P0 fix implementati + Vision Layer 2 always-on.
