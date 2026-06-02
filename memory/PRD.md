@@ -1,5 +1,85 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟡 ITER188 · MOOD BRAND KNOWLEDGE FACTORY™ · REAL CATALOG VALIDATION · DELIVERED · 02 Feb 2026
+
+**🎯 Vincolo Founder:** Zero nuove feature, zero frontend, zero Academy/Magazine/Marketboard. Validazione foundation only.
+
+**📄 Report completo:** `/app/memory/ITER188_CATTELAN_VALIDATION_REPORT.md` (331 righe, 10 sezioni + appendix)
+
+### ⚠️ Disponibilità PDF
+- ✅ **Cattelan 729.pdf** (22MB, 93 pp, "2026 Preview Collection") presente in storage Supabase
+- ❌ **Bonaldo_26.pdf** non presente nel pod — richiesto upload
+- ❌ **Margraf** non presente nel pod — richiesto upload
+- ❌ **Riva 1920** non presente nel pod — richiesto upload
+
+### 📊 Cattelan 729.pdf · Risultati validazione (DRY-RUN, no DB write)
+
+**Brand Knowledge Factory Readiness: 🏛️ 69.1 / 100** → **PARTIAL**
+
+| Metric | Result |
+|---|---|
+| Pages | 93 |
+| Sections detected | 62 |
+| Products created | **61** |
+| Expected products (TOC analysis) | 47 |
+| Detection accuracy | **129.8%** ❌ (over-detection: glyphs `"` decorativi creano sezioni fantasma) |
+| Images extracted | **30** ❌ (atteso ≥150 per catalogo 93pp) |
+| Distinct similarity groups | 30 (no real dedup needed — pochi asset) |
+| Hero assets classified | **0** ❌ (rule classifier mette tutto in `detail`/`still_life` per Cattelan layout edge-to-edge) |
+| Ambient assets | 0 ❌ |
+| Detail/packshot | 25 |
+| Pipeline timing | **3.98s** ✅ ottimo |
+
+**Metadata extraction:**
+| Field | Success % | Note |
+|---|---|---|
+| Product Name | 100% ✅ | |
+| Designer | 73.8% ✅ | Bug: glyph `"` continuation pages perdono designer |
+| Description | 95.1% ✅ | |
+| Materials | 95.1% ✅ | |
+| Categories | 100% ✅ | |
+| **Dimensions** | **39.3%** ❌ | Cattelan usa SAG. notation + numeri sparsi senza `×` |
+| **Finishes** | **1.6%** ❌ | "FINITURE" header detection inadeguato per Cattelan layout |
+
+**Confidence distribution:**
+- 0.80+: 1.6% · 0.70+: 8.2% · 0.60+: 24.6% · 0.50+: 27.9% · **<0.50: 37.7%** (avg = 0.534)
+
+### 🚨 P0 Bug rilevati da catalogo reale (NON visibili sul PDF sintetico)
+
+1. **🔥 P0 · Image extractor sotto-estrae** Solo 30 immagini su un catalogo da 93 pagine — `catalog_extractor` filtri (MIN_AREA_PX=90k, MIN_IMG_W/H=300) tarati per catalogi "wall-of-images". Cattelan ha 1-2 immagini grandi per pagina, ma molte sono **referenziate via Form XObjects o vettoriali** che PyMuPDF.get_images NON intercetta.
+2. **🔥 P0 · Asset classifier mis-calibrato** 0 hero / 0 ambient su 30 asset, tutti finiti in `detail` perché Cattelan usa lifestyle full-bleed edge-to-edge → low whitespace + high subject_focus → matcha rule `detail` invece di `lifestyle`. **Vision LLM Layer 2 fallback obbligatorio**.
+3. **🔥 P0 · Section detector over-segmenta** 129.8% accuracy = 14 sezioni fantasma. Causa: Cattelan usa `"` (left double quotation mark) glyph come elemento decorativo a font size 28+; il detector lo classifica come titolo. Patch: filtro caratteri puramente punteggiatura/glifi tipografici.
+4. **🔥 P0 · Dimensions parser cieco al schema Cattelan** "SAG." notation + numeri isolati ("75 / 171 / 61 / 120 / 300" su righe separate) → 0 match con regex 3D/2D attuale. Richiede parser tabellare per le pagine schema tecnico.
+5. **🔥 P0 · Finishes parser inutile su Cattelan** I nomi finitura sono inline nelle descrizioni ("Oxybrass", "Oxygrey", "Tortora", "Cement") non sotto header "FINITURE". Solo `Nuove Finiture` (pp.89-91) ha un blocco esplicito ma il section detector lo spezza.
+
+### 🎯 Capability scorecard
+| Capability | Score |
+|---|---|
+| Brand Atlas™ Readiness | 91.3 ✅ |
+| Specification™ Readiness | 69.4 🟡 |
+| Marketboard™ Readiness | 67.6 🟡 |
+| Moodboard™ Readiness | 65.6 🟡 |
+| Academy™ Readiness | 56.3 ❌ |
+
+### 🔵 Raccomandazione
+
+**B. Fix Extraction Layer First** (Phase 1.5, ~3-4 giorni) prima di costruire il frontend:
+1. Vision LLM Layer 2 always-on per classification (Emergent LLM key)
+2. Section detector: glyph/punctuation filter + TOC cross-check obbligatorio
+3. Image extractor: aggiungere `extract_xobject` fallback per Form XObjects
+4. Dimensions parser: aggiungere tabular extraction (numeri allineati senza separator)
+5. Finishes parser: estrazione inline da description + lookup vs `material_registry`
+
+Costruire UI ora su Cattelan = Brand Atlas funziona ma Moodboard / Marketboard /Academy mostrerebbero solo dati parziali. Better: Phase 1.5 sblocca tutto.
+
+### 📁 File creati
+- ✨ `/app/scripts/iter188_validate_real_catalog.py` (script standalone DRY-RUN, riutilizzabile per Bonaldo/Margraf/Riva)
+- 📄 `/app/memory/ITER188_CATTELAN_VALIDATION_REPORT.md`
+
+---
+
+
+
 ## 🟢 ITER187 · MOOD BRAND KNOWLEDGE FACTORY™ · PHASE 1 SPIKE BACKEND-FIRST · DELIVERED · 02 Feb 2026
 
 **🎯 Obiettivo Founder:** Trasformare le PDF dei produttori in **Product Knowledge Object™** canonici (nome, designer, materiali, finiture, dimensioni, descrizione IT/EN, immagini classificate per ruolo), riutilizzabili da Marketboard / Moodboard / Academy / Magazine / Specification.
