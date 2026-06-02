@@ -1,0 +1,69 @@
+/**
+ * Knowledge Engine API client — ITER195 Phase 4A.
+ * Minimal helpers for the Multi-PDF Brand Catalog Ingestion Workspace.
+ */
+import api from './api';
+
+const BASE = '/api/knowledge';
+
+// ─── Brands ─────────────────────────────────────────────────────────
+export const listBrands = () => api.get(`${BASE}/brands`);
+export const getBrand = (brandId) => api.get(`${BASE}/brands/${brandId}`);
+export const createBrand = (payload) => api.post(`${BASE}/brands`, payload);
+
+// ─── Catalog Sets ───────────────────────────────────────────────────
+export const listCatalogSets = (brandId) =>
+  api.get(`${BASE}/brands/${brandId}/catalog-sets`);
+export const createCatalogSet = (brandId, payload) =>
+  api.post(`${BASE}/brands/${brandId}/catalog-sets`, payload);
+export const getCatalogSet = (setId) => api.get(`${BASE}/catalog-sets/${setId}`);
+export const updateCatalogSet = (setId, payload) =>
+  api.patch(`${BASE}/catalog-sets/${setId}`, payload);
+export const archiveCatalogSet = (setId) =>
+  api.delete(`${BASE}/catalog-sets/${setId}`);
+
+// ─── Documents ──────────────────────────────────────────────────────
+export const uploadDocuments = (setId, formData, onProgress) =>
+  api.post(`${BASE}/catalog-sets/${setId}/documents/upload`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 600000, // 10 min for large batch
+    onUploadProgress: onProgress,
+  });
+export const listSetDocuments = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/documents`);
+export const deleteSetDocument = (setId, docId) =>
+  api.delete(`${BASE}/catalog-sets/${setId}/documents/${docId}`);
+
+// ─── Extraction ─────────────────────────────────────────────────────
+export const triggerExtraction = (setId, body = {}) =>
+  api.post(`${BASE}/catalog-sets/${setId}/extract`, body);
+export const extractionStatus = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/extraction-status`);
+
+// ─── Validation ─────────────────────────────────────────────────────
+export const validationSummary = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/validation-summary`);
+export const listPages = (setId, params = {}) =>
+  api.get(`${BASE}/catalog-sets/${setId}/pages`, { params });
+export const patchPage = (setId, pageId, payload) =>
+  api.patch(`${BASE}/catalog-sets/${setId}/pages/${pageId}`, payload);
+export const listEntities = (setId, params = {}) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities`, { params });
+export const patchEntity = (setId, entityId, payload) =>
+  api.patch(`${BASE}/catalog-sets/${setId}/entities/${entityId}`, payload);
+export const mergeEntity = (setId, entityId, targetId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/merge`, {
+    target_entity_id: targetId,
+  });
+export const publishSet = (setId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/publish`);
+
+export default {
+  listBrands, getBrand, createBrand,
+  listCatalogSets, createCatalogSet, getCatalogSet, updateCatalogSet,
+  archiveCatalogSet,
+  uploadDocuments, listSetDocuments, deleteSetDocument,
+  triggerExtraction, extractionStatus,
+  validationSummary, listPages, patchPage,
+  listEntities, patchEntity, mergeEntity, publishSet,
+};

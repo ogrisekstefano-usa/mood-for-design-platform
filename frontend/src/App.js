@@ -75,6 +75,8 @@ const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
 const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
 const MaterialViewPage = lazy(() => import('./pages/inspirations/MaterialViewPage'));
+const KnowledgeEnginePage = lazy(() => import('./pages/inspirations/KnowledgeEnginePage'));
+const CatalogSetWorkspacePage = lazy(() => import('./pages/inspirations/CatalogSetWorkspacePage'));
 const ClientPreviewPage = lazy(() => import('./pages/ClientPreviewPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
@@ -630,6 +632,9 @@ function App() {
                   <Route path="/brand-atlas/:brandId" element={<Navigate to="/inspirations/brands/:brandId" replace />} />
                   <Route path="/inspirations/products/:productId" element={G('inspirations', <ProductGalleryPage />)} />
                   <Route path="/inspirations/materials" element={G('material_view', <MaterialViewPage />)} />
+                  {/* ITER195 · Multi-PDF Brand Catalog Ingestion Workspace */}
+                  <Route path="/inspirations/knowledge-engine" element={G('inspirations', <KnowledgeEnginePage />)} />
+                  <Route path="/inspirations/knowledge-engine/catalog-sets/:setId" element={G('inspirations', <CatalogSetWorkspacePage />)} />
                   <Route path="/insights" element={G('insights', <InsightsPage />)} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/identity" element={<StudioAdminRoute><IdentityPage /></StudioAdminRoute>} />
