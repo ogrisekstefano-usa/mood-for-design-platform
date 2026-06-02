@@ -378,6 +378,96 @@ def soft_delete_mailbox(mailbox_id: str, ctx=Depends(get_tenant_context)):
 
 
 # ─── Health & Sync ───────────────────────────────────────────────────
+@router.get("/system/health")
+def system_health(ctx=Depends(get_tenant_context)):
+    """ITER189-pre Phase 7 · Journey Mail Health (monitoring, not a feature).
+
+    Returns four operational checks for the calling tenant:
+      - bucket_ok            : mailbox-bodies bucket exists
+      - mailboxes_fresh_ok   : every active mailbox has last_sync_completed_at < 24h
+      - audit_trail_clean_ok : no read-only violations in last 30 days
+      - no_failed_health_ok  : no mailbox with connection_status = "error"
+    """
+    from database import get_admin_client as _adm
+    c = db()
+    tid = ctx["tenant_id"]
+    checks = {}
+
+    # 1. mailbox-bodies bucket exists
+    bucket_ok = False
+    bucket_detail: Dict[str, Any] = {}
+    try:
+        admin = _adm()
+        if admin is not None:
+            names = [b.name for b in admin.storage.list_buckets()]
+            bucket_ok = "mailbox-bodies" in names
+            bucket_detail = {"buckets_seen": len(names), "mailbox_bodies_present": bucket_ok}
+        else:
+            bucket_detail = {"error": "admin_client_unavailable"}
+    except Exception as e:
+        bucket_detail = {"error": type(e).__name__}
+    checks["bucket_ok"] = {"ok": bucket_ok, **bucket_detail}
+
+    # 2. mailboxes fresh (last_sync_completed_at < 24h for each active mailbox)
+    mboxes = (c.table("email_mailboxes").select(
+        "id, mailbox_name, is_active, sync_enabled, "
+        "last_sync_completed_at, connection_status").eq("tenant_id", tid)
+        .eq("is_active", True).execute().data or [])
+    from datetime import datetime, timedelta, timezone
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    stale = []
+    for mb in mboxes:
+        ts = mb.get("last_sync_completed_at")
+        if not ts:
+            stale.append({"id": mb["id"], "name": mb["mailbox_name"], "reason": "never_synced"})
+            continue
+        try:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            if dt < cutoff:
+                stale.append({"id": mb["id"], "name": mb["mailbox_name"],
+                              "last_sync": ts, "reason": "stale"})
+        except Exception:
+            stale.append({"id": mb["id"], "name": mb["mailbox_name"], "reason": "parse_error"})
+    checks["mailboxes_fresh_ok"] = {
+        "ok": len(stale) == 0,
+        "total_active": len(mboxes),
+        "stale_count": len(stale),
+        "stale": stale[:10],
+    }
+
+    # 3. audit trail clean — no read-only violations in last 30 days
+    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    try:
+        v_rows = (c.table("email_audit_events")
+                  .select("id, created_at, mailbox_id, action")
+                  .eq("tenant_id", tid)
+                  .in_("action", ["mailbox.read_only_violation"])
+                  .gte("created_at", since).execute().data or [])
+    except Exception:
+        v_rows = []
+    checks["audit_trail_clean_ok"] = {
+        "ok": len(v_rows) == 0,
+        "violations_30d": len(v_rows),
+        "samples": v_rows[:5],
+    }
+
+    # 4. no failed health: no mailbox with status=error
+    failed = [mb for mb in mboxes if mb.get("connection_status") == "error"]
+    checks["no_failed_health_ok"] = {
+        "ok": len(failed) == 0,
+        "failed_mailbox_count": len(failed),
+        "failed": [{"id": m["id"], "name": m["mailbox_name"]} for m in failed[:10]],
+    }
+
+    overall_ok = all(c["ok"] for c in checks.values())
+    return {
+        "ok": overall_ok,
+        "tenant_id": tid,
+        "checked_at": _now(),
+        "checks": checks,
+    }
+
+
 @router.get("/mailboxes/{mailbox_id}/health")
 def mailbox_health(mailbox_id: str, ctx=Depends(get_tenant_context)):
     c = db()

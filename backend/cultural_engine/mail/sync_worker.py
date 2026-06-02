@@ -203,7 +203,8 @@ def sync_mailbox(db, admin_client, *, mailbox_id: str,
                                     {"content-type": "text/plain", "x-upsert": "true"})
                                 body_text_path = p
                             except Exception as e:
-                                logger.debug("body text upload skipped: %s", type(e).__name__)
+                                logger.warning("body text upload failed (bucket=%s): %s: %s",
+                                               BODY_BUCKET, type(e).__name__, e)
                         if admin_client is not None and parsed.get("body_html"):
                             p = f"{tenant_id}/{mailbox_id}/{msg_id}/body.html"
                             try:
@@ -212,9 +213,10 @@ def sync_mailbox(db, admin_client, *, mailbox_id: str,
                                     {"content-type": "text/html", "x-upsert": "true"})
                                 body_html_path = p
                             except Exception as e:
-                                logger.debug("body html upload skipped: %s", type(e).__name__)
+                                logger.warning("body html upload failed (bucket=%s): %s: %s",
+                                               BODY_BUCKET, type(e).__name__, e)
                     except Exception as e:
-                        logger.debug("body upload outer: %s", type(e).__name__)
+                        logger.warning("body upload outer error: %s: %s", type(e).__name__, e)
 
                     direction = "outbound" if folder.lower().endswith("sent") \
                         or "sent" in (folder.lower()) else "inbound"
