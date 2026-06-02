@@ -203,6 +203,13 @@ const RelationshipMemoryPage   = lazy(() => import('./pages/relations/Relationsh
 // ITER148 · Sprint B · Relationship Memory™ editorial timeline (detail view).
 const RelationshipMemoryTimeline = lazy(() => import('./pages/relations/RelationshipMemoryTimeline'));
 
+// ITER187.B · Journey Mail Workspace™ — Communications · Mail
+const MailWorkspaceLayout = lazy(() => import('./pages/communications/mail/MailWorkspaceLayout'));
+const MailboxesPage       = lazy(() => import('./pages/communications/mail/MailboxesPage'));
+const MailMessagesListPage = lazy(() => import('./pages/communications/mail/MessagesListPage'));
+const MailMessageDetailPage = lazy(() => import('./pages/communications/mail/MessageDetailPage'));
+const MailComposePage     = lazy(() => import('./pages/communications/mail/ComposePage'));
+
 /** Wrap a route element with a runtime module guard.
  *  When the module is disabled/locked/hidden, the route renders the
  *  Cinematic Blocked State™ instead of mounting the page.
@@ -725,6 +732,17 @@ function App() {
                   {/* ── Curatorial Atlas · Visual Archive · Product Gallery index ── */}
                   <Route path="/inspirations/visual-archive" element={<ComingSoonPage />} />
                   <Route path="/inspirations/products" element={<Navigate to="/inspirations?type=product" replace />} />
+
+                  {/* ── ITER187.B · Journey Mail Workspace™ ──
+                      Communications · Mail — Email Intelligence Layer, NOT
+                      an email client. Read-only IMAP + manual entity links. */}
+                  <Route path="/communications/mail" element={<MailWorkspaceLayout />}>
+                    <Route index element={<Navigate to="/communications/mail/mailboxes" replace />} />
+                    <Route path="mailboxes" element={<MailboxesPage />} />
+                    <Route path="messages" element={<MailMessagesListPage />} />
+                    <Route path="messages/:messageId" element={<MailMessageDetailPage />} />
+                    <Route path="compose" element={<MailComposePage />} />
+                  </Route>
                 </Route>
 
                 {/* CLIENT PORTAL — Sprint G.7 · Design Journey Companion Experience™.

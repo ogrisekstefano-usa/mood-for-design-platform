@@ -17,7 +17,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Layers, FileText, Activity, X, Bookmark, Boxes,
   MessageSquare, RefreshCw, ExternalLink, Quote, ChevronRight,
-  History, FileSignature, Share2,
+  History, FileSignature, Share2, Mail,
 } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
@@ -1054,6 +1054,96 @@ const StrategicDirectionCard = ({ projectId, project }) => {
   );
 };
 
+// ── ITER187.B · Communications · Emails tab ─────────────────────────────────
+// Shows only emails MANUALLY linked to this Design Journey.
+// No AI summary, no auto-association. Operational list only.
+const CommunicationsEmailsTab = ({ projectId }) => {
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.get('/api/journey-mail/messages', {
+      params: { linked_type: 'journey', linked_id: projectId, limit: 50 },
+    })
+      .then((r) => { if (!cancelled) setRows(r.data?.messages || []); })
+      .catch(() => { if (!cancelled) setRows([]); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [projectId]);
+
+  if (loading) {
+    return (
+      <div className="p-8 flex items-center gap-3 text-[var(--bp-text-muted)]" data-testid="dj-comm-loading">
+        <div className="w-4 h-4 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
+        Caricamento email collegate…
+      </div>
+    );
+  }
+
+  if (rows.length === 0) {
+    return (
+      <div className="p-10 border border-dashed border-[var(--bp-border)] rounded-[var(--bp-radius-md)] text-center"
+            data-testid="dj-comm-empty">
+        <Mail size={28} strokeWidth={1.4} className="mx-auto mb-3 text-[var(--bp-text-muted)]" />
+        <h3 className="bp-h3 text-[var(--bp-text-primary)] font-light mb-2">Nessuna email collegata.</h3>
+        <p className="bp-body text-[var(--bp-text-muted)] mb-4 max-w-md mx-auto">
+          Associa i messaggi dalla sezione Mail per mantenere ordinate le
+          comunicazioni del progetto.
+        </p>
+        <button onClick={() => navigate('/communications/mail/messages')}
+                 className="px-4 py-2 bg-[var(--bp-primary)] text-[#050608] text-sm font-body"
+                 data-testid="dj-comm-empty-cta">
+          Apri Mail
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <section data-testid="dj-comm-tab-emails" className="space-y-3">
+      <header className="flex items-baseline justify-between mb-2">
+        <div>
+          <p className="bp-eyebrow text-[var(--bp-text-muted)]">COMMUNICATIONS · EMAILS</p>
+          <h2 className="bp-h2 text-[var(--bp-text-primary)] font-light">
+            {rows.length} email collegate
+          </h2>
+        </div>
+        <button onClick={() => navigate('/communications/mail/messages')}
+                 className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]"
+                 data-testid="dj-comm-open-mail">
+          Apri Mail →
+        </button>
+      </header>
+      <div className="flex flex-col gap-1.5">
+        {rows.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => navigate(`/communications/mail/messages/${m.id}?return=journey/${projectId}`)}
+            data-testid={`dj-comm-row-${m.id}`}
+            className="grid grid-cols-[90px_1fr_auto] gap-3 items-center text-left px-3 py-2.5
+                       bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded
+                       hover:bg-[var(--bp-surface-2)] transition-colors"
+          >
+            <span className="text-xs text-[var(--bp-text-muted)] font-body">
+              {m.received_at ? new Date(m.received_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '—'}
+            </span>
+            <span className="min-w-0">
+              <div className="text-sm text-[var(--bp-text-primary)] truncate">{m.subject || '(nessun oggetto)'}</div>
+              <div className="text-xs text-[var(--bp-text-muted)] truncate">
+                {m.direction === 'outbound' ? 'A: ' : 'Da: '}{m.from_addr || (Array.isArray(m.to_addrs) ? m.to_addrs.join(', ') : '')}
+              </div>
+            </span>
+            <ChevronRight size={14} className="text-[var(--bp-text-muted)]" />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 // ── Main page ───────────────────────────────────────────────────────────────
 // Design Journey™ is the FIRST tab and the default landing view of a project.
 // Le altre tab sono "ambienti collegati" al Journey, non sezioni indipendenti.
@@ -1065,6 +1155,7 @@ const TABS = [
   { id: 'materials',     icon: Boxes,         label: 'Materiali' },
   { id: 'proposals',     icon: FileText,      label: 'Proposte' },
   { id: 'conversations', icon: MessageSquare, label: 'Conversazioni' },
+  { id: 'communications', icon: Mail,         label: 'Communications' },
   { id: 'timeline',      icon: Activity,      label: 'Timeline' },
 ];
 
@@ -1251,6 +1342,7 @@ const ProjectDetailPage = ({ projectIdOverride } = {}) => {
         {tab === 'materials'     && <MaterialsTab projectId={id} />}
         {tab === 'proposals'     && <ProposalsTab projectId={id} />}
         {tab === 'conversations' && <ConversationsTab projectId={id} project={project} />}
+        {tab === 'communications' && <CommunicationsEmailsTab projectId={id} />}
         {tab === 'timeline'      && <TimelineTab projectId={id} />}
       </div>
     </div>
