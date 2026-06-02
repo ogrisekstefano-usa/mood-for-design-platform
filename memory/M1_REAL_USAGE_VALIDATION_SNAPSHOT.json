@@ -1,0 +1,683 @@
+{
+  "ts": "2026-06-02T18:36:56.798579+00:00",
+  "classification": "M1_NEEDS_ITERATION",
+  "steps": [
+    {
+      "name": "admin login",
+      "ok": true,
+      "detail": "token len=373",
+      "payload": null
+    },
+    {
+      "name": "list tenants[search=martinel]",
+      "ok": true,
+      "detail": "contacts_count=2, owner=MOOD Admin",
+      "payload": null
+    },
+    {
+      "name": "eligible-owners",
+      "ok": true,
+      "detail": "admin uid=2efb86f8-6546-4bb0-a653-6eab772a0da3",
+      "payload": null
+    },
+    {
+      "name": "assign tenant owner",
+      "ok": true,
+      "detail": "owner=2efb86f8-6546-4bb0-a653-6eab772a0da3",
+      "payload": null
+    },
+    {
+      "name": "catalog contact-roles",
+      "ok": true,
+      "detail": "11 entries",
+      "payload": null
+    },
+    {
+      "name": "catalog activity-types",
+      "ok": true,
+      "detail": "8 entries",
+      "payload": null
+    },
+    {
+      "name": "catalog contact-sources",
+      "ok": true,
+      "detail": "8 entries",
+      "payload": null
+    },
+    {
+      "name": "catalog languages",
+      "ok": false,
+      "detail": "HTTP 500 \u2014 broken column mapping",
+      "payload": null
+    },
+    {
+      "name": "contract probe preferred_language='it'",
+      "ok": false,
+      "detail": "500 (recorded as ARCH issue)",
+      "payload": null
+    },
+    {
+      "name": "create contact Mario (founder)",
+      "ok": true,
+      "detail": "id=74ccb1b2-81ad-43d6-8721-cdd0eac60758",
+      "payload": null
+    },
+    {
+      "name": "create contact Giulia (architect)",
+      "ok": true,
+      "detail": "id=e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+      "payload": null
+    },
+    {
+      "name": "create contact Luca (purchasing)",
+      "ok": true,
+      "detail": "id=9939d00b-5b34-411d-a2e6-fe455426d5ad",
+      "payload": null
+    },
+    {
+      "name": "create activity call",
+      "ok": true,
+      "detail": "id=a7b65f5b-43e0-421d-a9ac-3ac78df73b0d",
+      "payload": null
+    },
+    {
+      "name": "create activity email",
+      "ok": true,
+      "detail": "id=29211563-2ddb-4d92-9131-1cd0e9839fad",
+      "payload": null
+    },
+    {
+      "name": "create activity whatsapp",
+      "ok": true,
+      "detail": "id=f936b7c3-5ee5-4feb-9f2f-b9793bc178c3",
+      "payload": null
+    },
+    {
+      "name": "create activity linkedin",
+      "ok": true,
+      "detail": "id=2c54e645-1bcf-42c8-987c-04d33aa4b610",
+      "payload": null
+    },
+    {
+      "name": "create activity internal_note",
+      "ok": true,
+      "detail": "id=96d22310-5af6-42d2-9ade-b936ac32011e",
+      "payload": null
+    },
+    {
+      "name": "list contacts",
+      "ok": true,
+      "detail": "3 active",
+      "payload": null
+    },
+    {
+      "name": "filter by role=architect",
+      "ok": true,
+      "detail": "HTTP 200 got 1",
+      "payload": null
+    },
+    {
+      "name": "contact search q=Giulia",
+      "ok": true,
+      "detail": "got 1",
+      "payload": null
+    },
+    {
+      "name": "PATCH update contact",
+      "ok": true,
+      "detail": "HTTP 200 body={\"id\":\"e2c078b0-24d7-453e-ade9-ebef2c6e1579\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
+      "payload": null
+    },
+    {
+      "name": "set-primary",
+      "ok": true,
+      "detail": "HTTP 200",
+      "payload": null
+    },
+    {
+      "name": "assign contact owner",
+      "ok": true,
+      "detail": "HTTP 200 body={\"id\":\"e2c078b0-24d7-453e-ade9-ebef2c6e1579\",\"tenant_id\":\"c64659f6-5a76-41dd-8d8d-b901d29862af\",\"studio_relation_id\":\"df",
+      "payload": null
+    },
+    {
+      "name": "overview KPIs",
+      "ok": true,
+      "detail": "contacts=3 activities_30d=11 owner=MOOD Admin",
+      "payload": null
+    },
+    {
+      "name": "global search 'martinel'",
+      "ok": true,
+      "detail": "HTTP 200 19 results",
+      "payload": null
+    },
+    {
+      "name": "global search 'Giulia'",
+      "ok": true,
+      "detail": "HTTP 200 2 results",
+      "payload": null
+    },
+    {
+      "name": "archive contact",
+      "ok": true,
+      "detail": "HTTP 200",
+      "payload": null
+    },
+    {
+      "name": "list archived contacts",
+      "ok": true,
+      "detail": "HTTP 200 count=7",
+      "payload": null
+    },
+    {
+      "name": "blueprint/overview (admin override \u2192 Martinel)",
+      "ok": true,
+      "detail": "HTTP 200",
+      "payload": null
+    },
+    {
+      "name": "blueprint/contacts (admin override \u2192 Martinel)",
+      "ok": true,
+      "detail": "HTTP 200 count=2",
+      "payload": null
+    },
+    {
+      "name": "blueprint/activities (admin override \u2192 Martinel)",
+      "ok": true,
+      "detail": "HTTP 200 count=10",
+      "payload": null
+    },
+    {
+      "name": "D4: blueprint PATCH strips relationship_owner_user_id",
+      "ok": true,
+      "detail": "new_owner=None prev=None",
+      "payload": null
+    },
+    {
+      "name": "validate_m1_security.py (cross-tenant isolation suite)",
+      "ok": true,
+      "detail": "exit=0 \u00b7 last: under  status=403\n  \u2705 admin.anon_401  status=401\n\n============================================================\nM1 SECURITY: 16/16 PASS \u00b7 0 FAIL  in 89.38s\n\nJSON dump \u2192 /tmp/m1_security_validation.json",
+      "payload": null
+    }
+  ],
+  "issues": [
+    {
+      "kind": "ARCH",
+      "title": "/api/catalogs/languages \u2192 500",
+      "detail": "services/catalogs.py queries `name_native`/`name_en` but DB has `native_name` and no `name_en`. Founder/admin UIs cannot enumerate languages \u2192 dropdown empty."
+    },
+    {
+      "kind": "ARCH",
+      "title": "preferred_language='it' raises 500 (FK violation)",
+      "detail": "tenant_contacts.preferred_language FK expects `it-IT` style codes. API should either accept base codes ('it') and map, or return a 422 with a clear message. Current behaviour: opaque 500 \u2192 bad DX for any non-UI consumer."
+    }
+  ],
+  "entities": {
+    "tenant_initial": {
+      "id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+      "name": "Martinel Interior Design",
+      "slug": "martinel-interior-design",
+      "status": "active",
+      "created_at": "2026-06-02T02:00:09.623944+00:00",
+      "studio_name": "Untitled studio",
+      "city": null,
+      "country": null,
+      "owner_advisor_id": null,
+      "advisor_display": null,
+      "contacts_count": 2,
+      "last_activity_at": "2026-06-02T18:30:05.106025+00:00",
+      "tenant_relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+      "tenant_owner_display": "MOOD Admin"
+    },
+    "role_codes": [
+      "founder",
+      "owner",
+      "administration",
+      "marketing",
+      "sales",
+      "project_manager",
+      "purchasing",
+      "architect",
+      "designer",
+      "supplier",
+      "consultant"
+    ],
+    "activity_codes": [
+      "call",
+      "email",
+      "whatsapp",
+      "linkedin",
+      "internal_note",
+      "meeting",
+      "visit",
+      "task"
+    ],
+    "contacts": [
+      {
+        "id": "74ccb1b2-81ad-43d6-8721-cdd0eac60758",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "user_id": null,
+        "first_name": "Mario",
+        "last_name": "Rossi",
+        "role_code": "founder",
+        "email": "mario.rossi@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "3331112233",
+        "linkedin_url": null,
+        "preferred_language": "it-IT",
+        "is_primary": true,
+        "status": "active",
+        "notes": null,
+        "metadata": {},
+        "relationship_owner_user_id": null,
+        "owner_assigned_at": null,
+        "owner_assigned_by": null,
+        "source_code": "manual",
+        "source_reference": null,
+        "relationship_score": 0,
+        "last_touch_at": null,
+        "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "created_at": "2026-06-02T18:34:10.794082+00:00",
+        "updated_at": "2026-06-02T18:34:10.794082+00:00",
+        "last_activity_at": null,
+        "archived_at": null,
+        "owner_display": null,
+        "owner_email": null
+      },
+      {
+        "id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "user_id": null,
+        "first_name": "Giulia",
+        "last_name": "Bianchi",
+        "role_code": "architect",
+        "email": "giulia.bianchi@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "3334445566",
+        "linkedin_url": null,
+        "preferred_language": "it-IT",
+        "is_primary": false,
+        "status": "active",
+        "notes": null,
+        "metadata": {},
+        "relationship_owner_user_id": null,
+        "owner_assigned_at": null,
+        "owner_assigned_by": null,
+        "source_code": "manual",
+        "source_reference": null,
+        "relationship_score": 0,
+        "last_touch_at": null,
+        "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "created_at": "2026-06-02T18:34:15.704456+00:00",
+        "updated_at": "2026-06-02T18:34:15.704456+00:00",
+        "last_activity_at": null,
+        "archived_at": null,
+        "owner_display": null,
+        "owner_email": null
+      },
+      {
+        "id": "9939d00b-5b34-411d-a2e6-fe455426d5ad",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "user_id": null,
+        "first_name": "Luca",
+        "last_name": "Verdi",
+        "role_code": "purchasing",
+        "email": "luca.verdi@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "3337778899",
+        "linkedin_url": null,
+        "preferred_language": "it-IT",
+        "is_primary": false,
+        "status": "active",
+        "notes": null,
+        "metadata": {},
+        "relationship_owner_user_id": null,
+        "owner_assigned_at": null,
+        "owner_assigned_by": null,
+        "source_code": "manual",
+        "source_reference": null,
+        "relationship_score": 0,
+        "last_touch_at": null,
+        "created_by": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "created_at": "2026-06-02T18:34:20.409920+00:00",
+        "updated_at": "2026-06-02T18:34:20.409920+00:00",
+        "last_activity_at": null,
+        "archived_at": null,
+        "owner_display": null,
+        "owner_email": null
+      }
+    ],
+    "activities": [
+      {
+        "id": "a7b65f5b-43e0-421d-a9ac-3ac78df73b0d",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "contact_id": "74ccb1b2-81ad-43d6-8721-cdd0eac60758",
+        "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "activity_type_code": "call",
+        "occurred_at": "2026-06-02T18:34:24.268190+00:00",
+        "subject": "Qualifica iniziale",
+        "outcome": "Studio interessato, riprendere",
+        "next_step": null,
+        "next_step_due_at": null,
+        "duration_min": null,
+        "type_label_it": "Chiamata",
+        "type_label_en": "Call",
+        "type_icon": "phone",
+        "owner_display": "MOOD Admin",
+        "contact_display": "Mario Rossi"
+      },
+      {
+        "id": "29211563-2ddb-4d92-9131-1cd0e9839fad",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "contact_id": "74ccb1b2-81ad-43d6-8721-cdd0eac60758",
+        "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "activity_type_code": "email",
+        "occurred_at": "2026-06-02T18:34:27.492928+00:00",
+        "subject": "Follow-up email",
+        "outcome": "Inviato Master Deck",
+        "next_step": null,
+        "next_step_due_at": null,
+        "duration_min": null,
+        "type_label_it": "Email",
+        "type_label_en": "Email",
+        "type_icon": "mail",
+        "owner_display": "MOOD Admin",
+        "contact_display": "Mario Rossi"
+      },
+      {
+        "id": "f936b7c3-5ee5-4feb-9f2f-b9793bc178c3",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "contact_id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+        "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "activity_type_code": "whatsapp",
+        "occurred_at": "2026-06-02T18:34:30.715044+00:00",
+        "subject": "WhatsApp coordinamento",
+        "outcome": "Conferma demo 16/06",
+        "next_step": null,
+        "next_step_due_at": null,
+        "duration_min": null,
+        "type_label_it": "WhatsApp",
+        "type_label_en": "WhatsApp",
+        "type_icon": "message-circle",
+        "owner_display": "MOOD Admin",
+        "contact_display": "Giulia Bianchi"
+      },
+      {
+        "id": "2c54e645-1bcf-42c8-987c-04d33aa4b610",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "contact_id": "9939d00b-5b34-411d-a2e6-fe455426d5ad",
+        "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "activity_type_code": "linkedin",
+        "occurred_at": "2026-06-02T18:34:33.933125+00:00",
+        "subject": "Connect LinkedIn",
+        "outcome": "Aggiunto in rete",
+        "next_step": null,
+        "next_step_due_at": null,
+        "duration_min": null,
+        "type_label_it": "LinkedIn",
+        "type_label_en": "LinkedIn",
+        "type_icon": "linkedin",
+        "owner_display": "MOOD Admin",
+        "contact_display": "Luca Verdi"
+      },
+      {
+        "id": "96d22310-5af6-42d2-9ade-b936ac32011e",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "contact_id": null,
+        "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "activity_type_code": "internal_note",
+        "occurred_at": "2026-06-02T18:34:37.156339+00:00",
+        "subject": "Nota interna onboarding",
+        "outcome": "Tutto in linea",
+        "next_step": null,
+        "next_step_due_at": null,
+        "duration_min": null,
+        "type_label_it": "Nota interna",
+        "type_label_en": "Internal note",
+        "type_icon": "sticky-note",
+        "owner_display": "MOOD Admin",
+        "contact_display": null
+      }
+    ],
+    "overview": {
+      "tenant": {
+        "id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "name": "Martinel Interior Design",
+        "slug": "martinel-interior-design",
+        "status": "active",
+        "created_at": "2026-06-02T02:00:09.623944+00:00",
+        "tenant_relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "tenant_relationship_owner_assigned_at": "2026-06-02T18:33:49.359454+00:00",
+        "tenant_owner_display": "MOOD Admin"
+      },
+      "relation": {
+        "id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "studio_name": "Untitled studio",
+        "city": null,
+        "country": null,
+        "website": null,
+        "contact_email": "mario.rossi.1780365582@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "345 1234567",
+        "owner_advisor_id": null,
+        "last_activity_at": "2026-06-02T18:34:37.156339+00:00",
+        "advisor_display": null,
+        "advisor_email": null
+      },
+      "primary_contact": {
+        "id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "user_id": null,
+        "first_name": "Giulia",
+        "last_name": "Bianchi",
+        "role_code": "architect",
+        "email": "giulia.bianchi@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "3339998877",
+        "linkedin_url": null,
+        "preferred_language": "it-IT",
+        "is_primary": true,
+        "status": "active",
+        "notes": "Aggiornato via UX test",
+        "relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "owner_assigned_at": "2026-06-02T18:34:56.152044+00:00",
+        "source_code": "manual",
+        "source_reference": null,
+        "relationship_score": 0,
+        "last_touch_at": "2026-06-02T18:34:30.715044+00:00",
+        "created_at": "2026-06-02T18:34:15.704456+00:00",
+        "updated_at": "2026-06-02T18:34:56.152044+00:00",
+        "last_activity_at": "2026-06-02T18:34:30.715044+00:00",
+        "owner_email": "admin@moodfordesign.com",
+        "owner_display": "MOOD Admin"
+      },
+      "kpis": {
+        "contacts_total": 3,
+        "activities_30d": 11,
+        "last_activity_at": "2026-06-02T18:34:37.156339+00:00"
+      },
+      "recent_activities": [
+        {
+          "id": "96d22310-5af6-42d2-9ade-b936ac32011e",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": null,
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "internal_note",
+          "occurred_at": "2026-06-02T18:34:37.156339+00:00",
+          "subject": "Nota interna onboarding",
+          "outcome": "Tutto in linea",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "Nota interna",
+          "type_label_en": "Internal note",
+          "type_icon": "sticky-note",
+          "owner_display": "MOOD Admin",
+          "contact_display": null
+        },
+        {
+          "id": "2c54e645-1bcf-42c8-987c-04d33aa4b610",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": "9939d00b-5b34-411d-a2e6-fe455426d5ad",
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "linkedin",
+          "occurred_at": "2026-06-02T18:34:33.933125+00:00",
+          "subject": "Connect LinkedIn",
+          "outcome": "Aggiunto in rete",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "LinkedIn",
+          "type_label_en": "LinkedIn",
+          "type_icon": "linkedin",
+          "owner_display": "MOOD Admin",
+          "contact_display": "Luca Verdi"
+        },
+        {
+          "id": "f936b7c3-5ee5-4feb-9f2f-b9793bc178c3",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "whatsapp",
+          "occurred_at": "2026-06-02T18:34:30.715044+00:00",
+          "subject": "WhatsApp coordinamento",
+          "outcome": "Conferma demo 16/06",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "WhatsApp",
+          "type_label_en": "WhatsApp",
+          "type_icon": "message-circle",
+          "owner_display": "MOOD Admin",
+          "contact_display": "Giulia Bianchi"
+        }
+      ]
+    },
+    "founder_overview": {
+      "tenant": {
+        "id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "name": "Martinel Interior Design",
+        "slug": "martinel-interior-design",
+        "status": "active",
+        "created_at": "2026-06-02T02:00:09.623944+00:00",
+        "tenant_relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "tenant_owner_display": "MOOD Admin"
+      },
+      "relation": {
+        "id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "studio_name": "Untitled studio",
+        "city": null,
+        "country": null,
+        "website": null,
+        "contact_email": "mario.rossi.1780365582@martinel.example",
+        "last_activity_at": "2026-06-02T18:34:37.156339+00:00",
+        "advisor_display": null
+      },
+      "primary_contact": {
+        "id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+        "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+        "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+        "user_id": null,
+        "first_name": "Giulia",
+        "last_name": "Bianchi",
+        "role_code": "architect",
+        "email": "giulia.bianchi@martinel.example",
+        "phone_prefix": "+39",
+        "phone_number": "3339998877",
+        "linkedin_url": null,
+        "preferred_language": "it-IT",
+        "is_primary": true,
+        "status": "active",
+        "notes": "Aggiornato via UX test",
+        "relationship_owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+        "owner_assigned_at": "2026-06-02T18:34:56.152044+00:00",
+        "source_code": "manual",
+        "source_reference": null,
+        "relationship_score": 0,
+        "last_touch_at": "2026-06-02T18:34:30.715044+00:00",
+        "created_at": "2026-06-02T18:34:15.704456+00:00",
+        "updated_at": "2026-06-02T18:34:56.152044+00:00",
+        "last_activity_at": "2026-06-02T18:34:30.715044+00:00",
+        "owner_email": "admin@moodfordesign.com",
+        "owner_display": "MOOD Admin"
+      },
+      "kpis": {
+        "contacts_total": 2,
+        "activities_30d": 11,
+        "last_activity_at": "2026-06-02T18:34:37.156339+00:00"
+      },
+      "recent_activities": [
+        {
+          "id": "96d22310-5af6-42d2-9ade-b936ac32011e",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": null,
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "internal_note",
+          "occurred_at": "2026-06-02T18:34:37.156339+00:00",
+          "subject": "Nota interna onboarding",
+          "outcome": "Tutto in linea",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "Nota interna",
+          "type_label_en": "Internal note",
+          "type_icon": "sticky-note",
+          "owner_display": "MOOD Admin",
+          "contact_display": null
+        },
+        {
+          "id": "2c54e645-1bcf-42c8-987c-04d33aa4b610",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": "9939d00b-5b34-411d-a2e6-fe455426d5ad",
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "linkedin",
+          "occurred_at": "2026-06-02T18:34:33.933125+00:00",
+          "subject": "Connect LinkedIn",
+          "outcome": "Aggiunto in rete",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "LinkedIn",
+          "type_label_en": "LinkedIn",
+          "type_icon": "linkedin",
+          "owner_display": "MOOD Admin",
+          "contact_display": "Luca Verdi"
+        },
+        {
+          "id": "f936b7c3-5ee5-4feb-9f2f-b9793bc178c3",
+          "tenant_id": "c64659f6-5a76-41dd-8d8d-b901d29862af",
+          "studio_relation_id": "dff4f5f8-4466-4097-a6c2-651ca4c5dcb8",
+          "contact_id": "e2c078b0-24d7-453e-ade9-ebef2c6e1579",
+          "owner_user_id": "2efb86f8-6546-4bb0-a653-6eab772a0da3",
+          "activity_type_code": "whatsapp",
+          "occurred_at": "2026-06-02T18:34:30.715044+00:00",
+          "subject": "WhatsApp coordinamento",
+          "outcome": "Conferma demo 16/06",
+          "next_step": null,
+          "next_step_due_at": null,
+          "duration_min": null,
+          "type_label_it": "WhatsApp",
+          "type_label_en": "WhatsApp",
+          "type_icon": "message-circle",
+          "owner_display": "MOOD Admin",
+          "contact_display": "Giulia Bianchi"
+        }
+      ]
+    }
+  }
+}
