@@ -18,7 +18,7 @@
  *   /dashboard/pulse                 → /studio/pulse
  */
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useLocation } from 'react-router-dom';
 import api from '../lib/api';
 import CinematicLoader from '../components/CinematicLoader';
 
@@ -125,10 +125,13 @@ export const CanonicalClientJourney = () => (
  * ════════════════════════════════════════════════════════════════════ */
 export const ProjectToJourneyRedirect = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const isLegacyFallback = location.search.includes('_legacy=1');
   const [target, setTarget] = useState(null);
   const [error, setError]   = useState(false);
 
   useEffect(() => {
+    if (isLegacyFallback) return;  // already in legacy mode — render directly
     let cancel = false;
     api.get(`/api/journeys/resolve?project_id=${id}`)
       .then((r) => {
@@ -142,8 +145,16 @@ export const ProjectToJourneyRedirect = () => {
       })
       .catch(() => { if (!cancel) setError(true); });
     return () => { cancel = true; };
-  }, [id]);
+  }, [id, isLegacyFallback]);
 
+  // Legacy fallback: render ProjectDetailPage in-place (no further redirect).
+  if (isLegacyFallback) {
+    return (
+      <Suspense fallback={<Loader />}>
+        <ProjectDetailPage projectIdOverride={id} />
+      </Suspense>
+    );
+  }
   if (error)  return <Navigate to="/dashboard" replace />;
   if (!target) return <Loader />;
   return <Navigate to={target} replace />;

@@ -1,5 +1,63 @@
 # Changelog
 
+## ITER187.B · Journey Mail Workspace™ — UI Phase 1 · 2026-06-02
+
+**Stato:** ✅ Completato · Frontend solo · backend ITER187.A invariato (25/25 test passano)
+
+### Consegnato
+- **Sidebar** · nuova sezione `Communications · Mail` (migration 121 in `feature_modules_registry`)
+- **Routes** registrate in `App.js` (lazy-loaded):
+  - `/communications/mail/mailboxes` · MailboxesPage (card grid + drawer)
+  - `/communications/mail/messages` · MessagesListPage (tabella operativa 6 colonne)
+  - `/communications/mail/messages/:id` · MessageDetailPage (iframe `sandbox=""` per body, association panel)
+  - `/communications/mail/compose` · ComposePage (composer minimale — textarea, NO Tiptap, per direttiva Founder A2)
+- **Mailbox card metrics** (su richiesta Founder): Health · Last Successful Sync · Total Messages · Linked Emails
+- **Sync polling** · intervallo 10s, max 3 poll (30s totali) — come da Founder Gate §6
+- **Entity Linking™** · `MessageAssociationsPanel` + `EntityPicker` per Lead / Prospect / Customer / Design Journey (manuale, no AI, no auto-association)
+- **Design Journey integration** · nuovo tab `Communications` in `ProjectDetailPage.jsx` con lista email collegate al journey (testid `tab-communications`, `dj-comm-tab-emails`, `dj-comm-empty`)
+- **Empty states** · copy operativa italiana, no marketing fluff
+- **XSS protection** · body email renderizzato in `<iframe sandbox="">` (strict, nessun allow-scripts)
+
+### File nuovi
+- `/app/frontend/src/lib/journeyMailApi.js` (13 endpoint wrapper)
+- `/app/frontend/src/pages/communications/mail/MailWorkspaceLayout.jsx`
+- `/app/frontend/src/pages/communications/mail/MailboxesPage.jsx`
+- `/app/frontend/src/pages/communications/mail/MailboxCard.jsx`
+- `/app/frontend/src/pages/communications/mail/MailboxStatusBadge.jsx`
+- `/app/frontend/src/pages/communications/mail/MailboxFormDrawer.jsx`
+- `/app/frontend/src/pages/communications/mail/MessagesListPage.jsx`
+- `/app/frontend/src/pages/communications/mail/MessageDetailPage.jsx`
+- `/app/frontend/src/pages/communications/mail/MessageAssociationsPanel.jsx`
+- `/app/frontend/src/pages/communications/mail/EntityPicker.jsx`
+- `/app/frontend/src/pages/communications/mail/ComposePage.jsx`
+- `/app/frontend/src/pages/communications/mail/communications-mail.css`
+- `/app/supabase/migrations/121_iter187b_journey_mail_module.sql` (applicata)
+- `/app/scripts/apply_migration_121.py`
+
+### File modificati
+- `/app/frontend/src/App.js` — registrate le 5 route `/communications/mail/*`
+- `/app/frontend/src/pages/workspace/ProjectDetailPage.jsx` — aggiunto tab Communications + componente `CommunicationsEmailsTab`
+- `/app/frontend/src/routes/JourneyCanonicalRoutes.jsx` — fix pre-esistente: `ProjectToJourneyRedirect` ora rende `ProjectDetailPage` direttamente quando `?_legacy=1` (prima: redirect loop)
+
+### Bug fixati
+- 🐛 **"Link Mail in sidebar non funziona"** · Causa: route non registrate in `App.js`. FIX: lazy import + 5 route registrate sotto `DashboardLayout`. Sidebar nav-mail già presente via migration 121.
+- 🐛 (pre-esistente) Redirect loop su `/workspace/projects/:id?_legacy=1` quando un progetto non ha journey collegato — risolto.
+
+### Testing
+- Frontend E2E via `testing_agent_v3_fork` (iteration_196) · 82% prima della seconda iterazione di fix → fix applicati: aggiunti data-testid mancanti su tutti i field IMAP/SMTP del drawer, esposto `dj-comm-tab-emails` anche nello stato empty.
+- Lint ESLint pulito su tutti i nuovi file e file modificati.
+- Backend non re-testato (nessuna modifica).
+
+### Founder Lock rispettati
+- ✅ NO AI summary / NO AI reply / NO AI auto-classification / NO AI auto-association
+- ✅ NO Gmail/Outlook aesthetic — operational tokens Blueprint
+- ✅ NO Tiptap/proposal-editor reuse nel Compose (textarea minimale)
+- ✅ NO OAuth in Phase 1
+- ✅ Italian operational copy in tutti gli empty states
+- ✅ `<iframe sandbox="">` strict (no allow-scripts) per protezione XSS
+
+
+
 ## ITER182 · MOOD Language Lock™ — 2026-06-01
 
 **Stato:** ✅ Completato (documentazione governance) · **0 modifiche codice/db/API** come richiesto dal Founder Directive

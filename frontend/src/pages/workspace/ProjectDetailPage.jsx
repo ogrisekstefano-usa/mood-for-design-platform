@@ -1086,9 +1086,9 @@ const CommunicationsEmailsTab = ({ projectId }) => {
   if (rows.length === 0) {
     return (
       <div className="p-10 border border-dashed border-[var(--bp-border)] rounded-[var(--bp-radius-md)] text-center"
-            data-testid="dj-comm-empty">
+            data-testid="dj-comm-tab-emails">
         <Mail size={28} strokeWidth={1.4} className="mx-auto mb-3 text-[var(--bp-text-muted)]" />
-        <h3 className="bp-h3 text-[var(--bp-text-primary)] font-light mb-2">Nessuna email collegata.</h3>
+        <h3 className="bp-h3 text-[var(--bp-text-primary)] font-light mb-2" data-testid="dj-comm-empty">Nessuna email collegata.</h3>
         <p className="bp-body text-[var(--bp-text-muted)] mb-4 max-w-md mx-auto">
           Associa i messaggi dalla sezione Mail per mantenere ordinate le
           comunicazioni del progetto.

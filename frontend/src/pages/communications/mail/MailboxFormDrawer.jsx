@@ -219,18 +219,21 @@ export default function MailboxFormDrawer({ open, mailbox, onClose, onSaved }) {
             <div className="cm-field">
               <label className="cm-label">Host</label>
               <input className="cm-input" value={form.imap_host}
-                      onChange={(e) => set('imap_host', e.target.value)} />
+                      onChange={(e) => set('imap_host', e.target.value)}
+                      data-testid="cm-field-imap-host" />
               {errors.imap_host && <small style={{ color: 'var(--cm-error)' }}>{errors.imap_host}</small>}
             </div>
             <div className="cm-field">
               <label className="cm-label">Porta</label>
               <input className="cm-input" type="number" value={form.imap_port}
-                      onChange={(e) => set('imap_port', parseInt(e.target.value, 10) || 993)} />
+                      onChange={(e) => set('imap_port', parseInt(e.target.value, 10) || 993)}
+                      data-testid="cm-field-imap-port" />
             </div>
             <div className="cm-field">
               <label className="cm-label">Sicurezza</label>
               <select className="cm-select" value={form.imap_security}
-                       onChange={(e) => set('imap_security', e.target.value)}>
+                       onChange={(e) => set('imap_security', e.target.value)}
+                       data-testid="cm-field-imap-security">
                 {SECURITY.map(s => <option key={s.v} value={s.v}>{s.l}</option>)}
               </select>
             </div>
@@ -239,7 +242,8 @@ export default function MailboxFormDrawer({ open, mailbox, onClose, onSaved }) {
             <div className="cm-field">
               <label className="cm-label">Username</label>
               <input className="cm-input" value={form.imap_username}
-                      onChange={(e) => set('imap_username', e.target.value)} />
+                      onChange={(e) => set('imap_username', e.target.value)}
+                      data-testid="cm-field-imap-username" />
             </div>
             <div className="cm-field">
               <label className="cm-label">Password {editing && <span style={{color:'var(--cm-ink-mute)'}}>(lascia vuoto per non cambiare)</span>}</label>
@@ -260,18 +264,21 @@ export default function MailboxFormDrawer({ open, mailbox, onClose, onSaved }) {
             <div className="cm-field">
               <label className="cm-label">Host</label>
               <input className="cm-input" value={form.smtp_host}
-                      onChange={(e) => set('smtp_host', e.target.value)} />
+                      onChange={(e) => set('smtp_host', e.target.value)}
+                      data-testid="cm-field-smtp-host" />
               {errors.smtp_host && <small style={{ color: 'var(--cm-error)' }}>{errors.smtp_host}</small>}
             </div>
             <div className="cm-field">
               <label className="cm-label">Porta</label>
               <input className="cm-input" type="number" value={form.smtp_port}
-                      onChange={(e) => set('smtp_port', parseInt(e.target.value, 10) || 587)} />
+                      onChange={(e) => set('smtp_port', parseInt(e.target.value, 10) || 587)}
+                      data-testid="cm-field-smtp-port" />
             </div>
             <div className="cm-field">
               <label className="cm-label">Sicurezza</label>
               <select className="cm-select" value={form.smtp_security}
-                       onChange={(e) => set('smtp_security', e.target.value)}>
+                       onChange={(e) => set('smtp_security', e.target.value)}
+                       data-testid="cm-field-smtp-security">
                 {SECURITY.map(s => <option key={s.v} value={s.v}>{s.l}</option>)}
               </select>
             </div>
@@ -280,14 +287,16 @@ export default function MailboxFormDrawer({ open, mailbox, onClose, onSaved }) {
             <div className="cm-field">
               <label className="cm-label">Username</label>
               <input className="cm-input" value={form.smtp_username}
-                      onChange={(e) => set('smtp_username', e.target.value)} />
+                      onChange={(e) => set('smtp_username', e.target.value)}
+                      data-testid="cm-field-smtp-username" />
             </div>
             <div className="cm-field">
               <label className="cm-label">Password</label>
               <input className="cm-input" type="password"
                       autoComplete="new-password"
                       value={form.smtp_password}
-                      onChange={(e) => set('smtp_password', e.target.value)} />
+                      onChange={(e) => set('smtp_password', e.target.value)}
+                      data-testid="cm-field-smtp-password" />
               {errors.smtp_password && <small style={{ color: 'var(--cm-error)' }}>{errors.smtp_password}</small>}
             </div>
           </div>
