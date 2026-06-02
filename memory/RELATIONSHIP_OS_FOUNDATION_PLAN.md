@@ -1,113 +1,97 @@
-# RELATIONSHIP OS™ — FOUNDATION PLAN
+# RELATIONSHIP OS™ — FOUNDATION PLAN (v2 · APPROVED)
 > Trasformare il Command Center da pipeline di candidature a **sistema
-> relazionale**. Versione MVP. NESSUNA implementazione in questo documento.
-> Solo audit, schema e roadmap.
+> relazionale**. Versione MVP. **DECISIONI ARCHITETTURALI APPROVATE**
+> il 2 Giu 2026. NESSUNA implementazione in questo documento.
 
-**Classificazione finale**: 🟡 **`NEEDS_ARCHITECTURE_WORK`** (1 settimana di
-consolidamento prima di iniziare M1).
+**Classificazione finale**: 🟢 **`FOUNDATION_READY`**
 
-Motivazione: l'infrastruttura DB esiste per il 70% ma è **frammentata in
-modelli paralleli** non collegati fra loro (`contacts`/`accounts` vs
-`studio_team_members`, `notifications` vs `relationship_notifications`,
-`tenant_activity_events` vs `studio_relationship_events`). Prima di
-scrivere una sola riga di feature CRM va presa una **decisione canonica
-sul modello dati**, altrimenti accumuleremo debito relazionale che
-nessuna iterazione futura potrà più riparare.
+Le 5 decisioni di modello dati sono state ratificate dall'utente. Il
+modello canonico è definito, le legacy table sono congelate come
+READ-ONLY, l'isolation founder è approvata. M0 può partire appena viene
+dato l'OK implementativo.
+
+**Scale target**: 150 tenant · 500+ contatti · advisor multipli ·
+mercati multipli. Tutto il design (indici, FK, viste, paginazione)
+deve sostenere questo obiettivo, non il primo tenant.
 
 ---
 
-## 1 · AUDIT — STATO ATTUALE
+## 0 · DECISIONI APPROVATE (RATIFICATE)
 
-### 1.1 Cosa il Command Center sa fare oggi
-| Surface | Path | Stato |
+| # | Decisione | Stato |
 |---|---|---|
-| Overview governance | `/command-center/overview` | KPI super-admin, conta lead/tenant |
-| Advisors registry | `/command-center/advisors` | CRUD super-admin sugli advisor |
-| Advisor Console | `/command-center/advisor-console` | Lista lead+studio_relations dell'advisor |
-| Relation Detail | `/command-center/advisor-console/relations/:id` | Timeline `studio_relationship_events` + followup + visit reports |
-| Studio Requests | `/command-center/studio-requests` | Kanban candidature V2 |
-| Tenant Activation | `/command-center/tenant-activation` | Kanban attivazione tenant |
-| Founder Welcome | `/command-center/welcome` | Schermata cinematica post-magic-link |
-| Blueprint CMS | `/command-center/{pages,blocks,sections,media,footer,seo,publish}` | CMS unificato per super-admin |
-
-### 1.2 Cosa **non** sa fare
-- ❌ Multi-contatto per tenant (solo `contact_name/email/phone` su `studio_requests`)
-- ❌ Timeline relazionale unificata (eventi automatici + email + manuali)
-- ❌ Activity log commerciale (call/meeting/whatsapp/linkedin)
-- ❌ Notifiche interne (badge 🔔)
-- ❌ Tenant Overview (founder vede solo `/welcome`, super-admin non ha pagina aggregata)
-- ❌ Advisor KPI dashboard
-- ❌ Catalog DB-driven di tipologie attività / ruoli contatto / kind eventi
-
-### 1.3 Censimento tabelle DB esistenti **già utili** o **già pronte**
-
-🟢 = già in uso · 🟡 = struttura presente ma vuota · 🔴 = parallelo/duplicato
-
-| Tabella | Cols | Rows | Stato | Note |
-|---|---|---|---|---|
-| `studio_relations` | 31 | 19 | 🟢 | Ancora relazionale advisor↔studio. Già con status/temperature/owner/last_activity. |
-| `studio_relationship_events` | 6 | 38 | 🟢 | Timeline append-only, `kind` text-enum (15 valori cablati nel commento SQL). |
-| `advisor_followups` | 11 | 0 | 🟡 | Reminder con tipo+due_at+status, FK relation_id. Service esiste ma UI non lo scrive. |
-| `studio_visit_reports` | — | 0 | 🟡 | Visit reports curatoriali. Service esiste. |
-| `advisor_notes` | 7 | 0 | 🟡 | Note interne advisor↔tenant. Mai chiamata. |
-| `advisor_lead_activities` | 12 | 0 | 🟡 | Activity log lead-centric (call/meeting/email/outcome/next_action). **Mai usata.** |
-| `studio_team_members` | 14 | 0 | 🟡 | Multi-team-member con role/specialties/languages. **Mai usata.** |
-| `contacts` | 17 | 0 | 🔴 | Generica, FK a `accounts` (non a `tenants`/`studio_relations`). Modello parallelo. |
-| `accounts` | — | — | 🔴 | Modello parallelo a `tenants`. Crea ambiguità. |
-| `tenant_activity_events` | 5 | 0 | 🔴 | Solo tenant_id/user_id/event_type/created_at. **Niente payload**, troppo povera. |
-| `notifications` | 9 | 0 | 🔴 | Title/message/read_at, generica. Mai scritta. |
-| `relationship_notifications` | 17 | 0 | 🟡 | Modello ricco con priority/payload/action_url. Mai scritta. |
-| `tasks` | — | — | 🔴 | Generica, slegata da relations. |
-| `studio_email_dispatch_log` | — | 165+ | 🟢 | Log email Resend. Utilizzabile per timeline. |
-| `platform_languages` | 18 | 12 | 🟢 | Catalogo lingue (per `preferred_language` contatti). |
-| `markets` | — | — | 🟢 | Catalogo mercati. |
-| `countries` | — | 4+ | 🟢 | Catalogo ISO. |
+| D1 | `tenant_contacts` è il modello **canonico** multi-contatto. Una persona = un record. Ruoli supportati: Founder, Owner, Administration, Marketing, Sales Manager, Project Manager, Purchasing, Architect, Designer, Supplier Contact, External Consultant, Advisor (+ estendibili via catalog DB). | ✅ |
+| D2 | Legacy `contacts` + `accounts` + `studio_team_members` restano **LEGACY · READ-ONLY**. Niente drop, niente migration ora. Documentato percorso di migrazione futuro (vedi §3.4). | ✅ |
+| D3 | `relationship_notifications` è lo storage **canonico** per tutte le notifiche interne. Destinatari supportati: Admin MOOD · Advisor · Founder · Team Member. La tabella generica `notifications` resta legacy. | ✅ |
+| D4 | Il Founder **può** gestire i contatti del proprio tenant: creare/modificare/disattivare. **NON può** accedere ad altri tenant, modificare utenti MOOD o riassegnare advisor. Tenant isolation obbligatoria su ogni endpoint. | ✅ |
+| D5 | Timeline mostra solo eventi **ad alto valore relazionale**. Eventi tecnici (open/click/retry/bounce/delivery) restano in `studio_email_dispatch_log` per diagnostica. Whitelist di template_key nella view. | ✅ |
 
 ---
 
-## 2 · GAP ANALYSIS
+## 1 · AUDIT — STATO ATTUALE (invariato dalla v1)
 
-| Gap | Severità | Causa | Decisione richiesta |
+> Sezione mantenuta dalla v1 per memoria storica. La tabella seguente è il
+> riassunto strutturato delle tabelle DB rilevanti, con classificazione
+> AGGIORNATA secondo le decisioni del §0.
+
+🟢 = canonico (sviluppo attivo) · 🟡 = pronta ma vuota, da popolare · 🟠 = LEGACY READ-ONLY (D2) · 🔴 = da deprecare/non-canonico
+
+| Tabella | Rows | Stato post-D | Note |
 |---|---|---|---|
-| Modello multi-contatto **frammentato** | 🔴 P0 | 3 candidati: `contacts`, `studio_team_members`, colonne su `studio_relations` | Eleggere un unico canonical model |
-| Notification system **doppio** | 🔴 P0 | `notifications` + `relationship_notifications` entrambe vuote | Eleggere uno, deprecare l'altro |
-| Activity log **doppio** | 🔴 P0 | `advisor_lead_activities` + `studio_relationship_events` (manual events) | Estendere uno, scartare altro |
-| `kind` / `event_type` / `activity_type` **hardcoded** | 🟠 P1 | Free-text con enum cablati in SQL comment | Tassonomia DB-driven (`relationship_event_types` catalog) |
-| Tenant Overview surface **assente** | 🟠 P1 | Solo `FounderWelcome` (cinematic, 1-shot) | Nuova route `/command-center/tenants/:id` + `/blueprint/overview` |
-| Advisor KPI **assenti** | 🟠 P1 | `AdvisorConsole` lista lead ma non KPI | Aggiungere card numeriche in cima |
-| Email events nel timeline **non integrati** | 🟢 P2 | `studio_email_dispatch_log` esiste ma non confluisce | View SQL `v_relationship_timeline` |
-| Internal notification badge UI **mancante** | 🟠 P1 | Nessun componente, nessun fetcher | Nuovo widget `<NotificationBell />` + `/api/notifications/unread-count` |
+| `studio_relations` | 19 | 🟢 canonico | Ancora relazionale advisor↔studio |
+| `studio_relationship_events` | 38 | 🟢 canonico (esteso) | Timeline narrativa. Aggiungeremo `tenant_id` + `event_type_code` |
+| `advisor_followups` | 0 | 🟢 canonico | Reminder/next action |
+| `studio_visit_reports` | 0 | 🟢 canonico | Visit reports curatoriali |
+| `studio_email_dispatch_log` | 165+ | 🟢 canonico | Log email — diagnostica |
+| `platform_languages` | 12 | 🟢 catalog | Lingue per `preferred_language` |
+| `markets` / `countries` | many | 🟢 catalog | Geo |
+| **`tenant_contacts`** (NEW) | — | 🟢 canonico | D1 — Single source of truth per contatti |
+| **`relationship_activities`** (NEW) | — | 🟢 canonico | Activity log commerciale |
+| **`platform_relationship_event_types`** (NEW) | — | 🟢 catalog | Tassonomia DB-driven |
+| **`platform_contact_roles`** (NEW) | — | 🟢 catalog | Tassonomia DB-driven |
+| **`platform_activity_types`** (NEW) | — | 🟢 catalog | Tassonomia DB-driven |
+| `relationship_notifications` | 0 | 🟢 canonico (D3) | Notifiche interne |
+| `contacts` | 0 | 🟠 LEGACY · READ-ONLY | D2 — congelata |
+| `accounts` | 0 | 🟠 LEGACY · READ-ONLY | D2 — congelata |
+| `studio_team_members` | 0 | 🟠 LEGACY · READ-ONLY | D2 — congelata |
+| `notifications` | 0 | 🟠 LEGACY · READ-ONLY | D3 — congelata |
+| `tenant_activity_events` | 0 | 🟠 LEGACY · READ-ONLY | Troppo povera, sostituita |
+| `advisor_lead_activities` | 0 | 🟠 LEGACY · READ-ONLY | Sostituita da `relationship_activities` |
+| `advisor_notes` | 0 | 🟠 LEGACY · READ-ONLY | Sostituita dal campo `notes` su `tenant_contacts` + `internal_note` in activities |
 
 ---
 
-## 3 · SCHEMA DB PROPOSTO
+## 2 · GAP ANALYSIS (post-decisioni)
 
-> Principio guida: **estendere** ciò che è già in uso (`studio_relations` +
-> `studio_relationship_events`). **Deprecare** modelli paralleli non
-> usati. Aggiungere **5 tabelle nuove** e **1 vista** per chiudere i gap.
+Tutti i gap P0 sono **chiusi** dalle decisioni D1–D5. Restano i task
+implementativi documentati nella roadmap separata (M0–M5).
 
-### 3.1 Modello canonical (decisioni)
-
-| Concetto | Canonical | Deprecato |
+| Gap | Risolto da | Milestone |
 |---|---|---|
-| Account commerciale | `tenants` | `accounts` (deprecato) |
-| Contatti multi-ruolo | **NEW**: `tenant_contacts` | `contacts`, `studio_team_members` |
-| Timeline narrativa | `studio_relationship_events` (estesa) | `tenant_activity_events`, free `kind` |
-| Activity log commerciale | **NEW**: `relationship_activities` | `advisor_lead_activities` |
-| Notifiche interne | `relationship_notifications` (già rich) | `notifications` (generica) |
-| Reminder / next action | `advisor_followups` (già attiva) | — |
+| Modello multi-contatto frammentato | D1 + nuova `tenant_contacts` | M0+M1 |
+| Notification system doppio | D3 + canonical `relationship_notifications` | M0+M4 |
+| Activity log doppio | Nuova `relationship_activities` | M0+M3 |
+| `kind`/`event_type` hardcoded | 3 cataloghi `platform_*` | M0 |
+| Tenant Overview surface assente | Nuova `/command-center/tenants/:id` | M5 (vedi anche §5 sotto su anticipo) |
+| Advisor KPI assenti | Estensione `AdvisorConsole` | M5 |
+| Email events nel timeline | Vista filtrata per template whitelist (D5) | M2 |
+| Internal notification badge UI | `<NotificationBell />` + polling | M4 |
 
-### 3.2 Migration `031_relationship_os_foundation.sql` (proposta)
+---
+
+## 3 · SCHEMA DB CANONICO (post-D1/D2/D3)
+
+### 3.1 Migration `031_relationship_os_foundation.sql` (specifica finale)
 
 ```sql
--- ─── platform_relationship_event_types ─────────────────────────────────
--- Tassonomia DB-driven per kind degli eventi della timeline
+-- ─── CATALOGS (D1, D5) ────────────────────────────────────────────────
 CREATE TABLE platform_relationship_event_types (
   code              TEXT PRIMARY KEY,
-  category          TEXT NOT NULL,    -- 'lifecycle' | 'communication' | 'manual' | 'system'
-  source            TEXT NOT NULL,    -- 'auto' | 'manual'
-  icon              TEXT,             -- lucide name
-  color             TEXT,             -- hex / token
+  category          TEXT NOT NULL,    -- 'lifecycle'|'communication'|'manual'|'system'
+  source            TEXT NOT NULL,    -- 'auto'|'manual'
+  show_in_timeline  BOOLEAN NOT NULL DEFAULT TRUE,  -- D5 filter flag
+  icon              TEXT,
+  color             TEXT,
   label_it          TEXT NOT NULL,
   label_en          TEXT NOT NULL,
   sort_order        INT NOT NULL DEFAULT 100,
@@ -115,37 +99,32 @@ CREATE TABLE platform_relationship_event_types (
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ─── platform_contact_roles ────────────────────────────────────────────
--- Tassonomia DB-driven per ruoli contatto (Founder/Owner/Marketing/…)
 CREATE TABLE platform_contact_roles (
   code              TEXT PRIMARY KEY,
-  category          TEXT NOT NULL,    -- 'leadership' | 'operations' | 'commercial' | 'external'
+  category          TEXT NOT NULL,    -- 'leadership'|'operations'|'commercial'|'creative'|'external'
   label_it          TEXT NOT NULL,
   label_en          TEXT NOT NULL,
   sort_order        INT NOT NULL DEFAULT 100,
   enabled           BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- ─── platform_activity_types ───────────────────────────────────────────
--- Tassonomia DB-driven per tipi attività commerciali
 CREATE TABLE platform_activity_types (
-  code              TEXT PRIMARY KEY,    -- 'call'|'meeting'|'email'|'whatsapp'|'linkedin'|'visit'|'internal_note'|'task'
+  code              TEXT PRIMARY KEY,
   icon              TEXT,
   default_duration_min INT,
+  show_in_timeline  BOOLEAN NOT NULL DEFAULT TRUE,
   label_it          TEXT NOT NULL,
   label_en          TEXT NOT NULL,
   sort_order        INT NOT NULL DEFAULT 100,
   enabled           BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- ─── tenant_contacts ────────────────────────────────────────────────────
--- Multi-contact per tenant. Sostituisce contacts+studio_team_members.
+-- ─── tenant_contacts (D1 canonical) ────────────────────────────────────
 CREATE TABLE tenant_contacts (
   id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   studio_relation_id  UUID NULL REFERENCES studio_relations(id) ON DELETE SET NULL,
   user_id             UUID NULL REFERENCES users(id) ON DELETE SET NULL,
-                         -- valorizzato solo se contatto = account di login
   first_name          TEXT NOT NULL,
   last_name           TEXT,
   role_code           TEXT NOT NULL REFERENCES platform_contact_roles(code),
@@ -156,20 +135,27 @@ CREATE TABLE tenant_contacts (
   notes               TEXT,
   preferred_language  TEXT REFERENCES platform_languages(code),
   is_primary          BOOLEAN NOT NULL DEFAULT FALSE,
-  status              TEXT NOT NULL DEFAULT 'active',
-                         -- active | inactive | archived
+  status              TEXT NOT NULL DEFAULT 'active',   -- active|inactive|archived
   metadata            JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_by          UUID NULL REFERENCES users(id) ON DELETE SET NULL,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  last_activity_at    TIMESTAMPTZ
+  last_activity_at    TIMESTAMPTZ,
+  archived_at         TIMESTAMPTZ
 );
-CREATE INDEX idx_tenant_contacts_tenant   ON tenant_contacts(tenant_id);
-CREATE INDEX idx_tenant_contacts_relation ON tenant_contacts(studio_relation_id);
-CREATE UNIQUE INDEX uq_tenant_contacts_primary
-  ON tenant_contacts(tenant_id) WHERE is_primary = TRUE;
+-- Indici dimensionati per 150 tenant × 500+ contatti (~75k righe stimate)
+CREATE INDEX idx_tenant_contacts_tenant_status
+  ON tenant_contacts(tenant_id, status);
+CREATE INDEX idx_tenant_contacts_relation
+  ON tenant_contacts(studio_relation_id) WHERE studio_relation_id IS NOT NULL;
+CREATE INDEX idx_tenant_contacts_email_lower
+  ON tenant_contacts(tenant_id, lower(email)) WHERE email IS NOT NULL;
+CREATE UNIQUE INDEX uq_tenant_contacts_primary_active
+  ON tenant_contacts(tenant_id) WHERE is_primary = TRUE AND status = 'active';
+CREATE INDEX idx_tenant_contacts_role
+  ON tenant_contacts(tenant_id, role_code) WHERE status = 'active';
 
--- ─── relationship_activities ───────────────────────────────────────────
--- Activity log commerciale: call/meeting/email/whatsapp/...
+-- ─── relationship_activities (activity log canonical) ─────────────────
 CREATE TABLE relationship_activities (
   id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id           UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
@@ -185,320 +171,223 @@ CREATE TABLE relationship_activities (
   next_step_due_at    TIMESTAMPTZ,
   reminder_sent_at    TIMESTAMPTZ,
   payload             JSONB NOT NULL DEFAULT '{}'::jsonb,
+  archived_at         TIMESTAMPTZ,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX idx_relationship_activities_tenant_when
   ON relationship_activities(tenant_id, occurred_at DESC);
-CREATE INDEX idx_relationship_activities_owner_when
-  ON relationship_activities(owner_user_id, occurred_at DESC);
-CREATE INDEX idx_relationship_activities_due
-  ON relationship_activities(next_step_due_at) WHERE next_step_due_at IS NOT NULL;
+CREATE INDEX idx_relationship_activities_owner_due
+  ON relationship_activities(owner_user_id, next_step_due_at)
+  WHERE next_step_due_at IS NOT NULL AND archived_at IS NULL;
+CREATE INDEX idx_relationship_activities_contact
+  ON relationship_activities(contact_id, occurred_at DESC)
+  WHERE contact_id IS NOT NULL;
+CREATE INDEX idx_relationship_activities_relation
+  ON relationship_activities(studio_relation_id, occurred_at DESC)
+  WHERE studio_relation_id IS NOT NULL;
 
--- ─── ALTER existing studio_relationship_events ─────────────────────────
+-- ─── ALTER studio_relationship_events ─────────────────────────────────
 ALTER TABLE studio_relationship_events
   ADD COLUMN IF NOT EXISTS tenant_id UUID NULL REFERENCES tenants(id) ON DELETE CASCADE,
   ADD COLUMN IF NOT EXISTS event_type_code TEXT NULL REFERENCES platform_relationship_event_types(code);
--- Back-fill via service. La colonna `kind` storica resta per compatibilità.
+
 CREATE INDEX IF NOT EXISTS idx_relationship_events_tenant_when
   ON studio_relationship_events(tenant_id, occurred_at DESC);
 
--- ─── v_relationship_timeline (vista unificata) ─────────────────────────
--- Aggrega in un solo flusso cronologico:
---   1. studio_relationship_events  (lifecycle/system automatic)
---   2. studio_email_dispatch_log   (email events)
---   3. relationship_activities     (manual commercial activities)
+-- ─── relationship_notifications (D3 canonical) — solo ALTER se servono indici ─
+-- La tabella è già pronta. Aggiungere solo:
+CREATE INDEX IF NOT EXISTS idx_relationship_notifications_recipient_unread
+  ON relationship_notifications(recipient_user_id, created_at DESC)
+  WHERE read_at IS NULL AND archived_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_relationship_notifications_tenant_unread
+  ON relationship_notifications(tenant_id, created_at DESC)
+  WHERE read_at IS NULL AND archived_at IS NULL;
+
+-- ─── v_relationship_timeline (D5 — filtrata) ──────────────────────────
+-- Mostra solo eventi/email/attività con show_in_timeline = TRUE
 CREATE OR REPLACE VIEW v_relationship_timeline AS
-  SELECT 'event' AS source, e.id, e.tenant_id, e.relation_id,
-         e.event_type_code AS type_code, NULL::TEXT AS subject,
-         e.payload, e.actor_id AS owner_user_id, e.occurred_at AS at
-    FROM studio_relationship_events e
+  -- 1) Eventi narrativi (lifecycle/manual)
+  SELECT
+    'event'::TEXT                 AS source,
+    e.id, e.tenant_id, e.relation_id,
+    e.event_type_code             AS type_code,
+    NULL::TEXT                    AS subject,
+    e.payload,
+    e.actor_id                    AS owner_user_id,
+    e.occurred_at                 AS at
+  FROM studio_relationship_events e
+  JOIN platform_relationship_event_types t ON t.code = e.event_type_code
+  WHERE t.show_in_timeline = TRUE
   UNION ALL
-  SELECT 'email' AS source, l.id, l.tenant_id, NULL::UUID AS relation_id,
-         l.template_key AS type_code, l.subject,
-         l.variables AS payload, NULL::UUID, l.created_at AS at
-    FROM studio_email_dispatch_log l
+  -- 2) Email ad alto valore (D5 whitelist su template_key)
+  SELECT
+    'email'::TEXT                 AS source,
+    l.id,
+    l.tenant_id,
+    NULL::UUID                    AS relation_id,
+    l.template_key                AS type_code,
+    l.subject,
+    l.variables                   AS payload,
+    NULL::UUID                    AS owner_user_id,
+    l.created_at                  AS at
+  FROM studio_email_dispatch_log l
+  WHERE l.template_key IN (
+    -- Whitelist D5 — solo eventi relazionali ad alto valore
+    'studio_request_received',
+    'studio_request_review',
+    'studio_request_qualified',
+    'studio_request_approved',
+    'admin_new_studio_request',
+    'founder_invitation_resent',
+    'tenant_activated_notice'
+    -- ESCLUSI deliberatamente: open/click/retry/bounce/magic_link_only ecc.
+  )
   UNION ALL
-  SELECT 'activity' AS source, a.id, a.tenant_id, a.studio_relation_id AS relation_id,
-         a.activity_type_code AS type_code, a.subject,
-         a.payload, a.owner_user_id, a.occurred_at AS at
-    FROM relationship_activities a;
+  -- 3) Attività manuali commerciali
+  SELECT
+    'activity'::TEXT              AS source,
+    a.id, a.tenant_id,
+    a.studio_relation_id          AS relation_id,
+    a.activity_type_code          AS type_code,
+    a.subject,
+    a.payload,
+    a.owner_user_id,
+    a.occurred_at                 AS at
+  FROM relationship_activities a
+  JOIN platform_activity_types t ON t.code = a.activity_type_code
+  WHERE a.archived_at IS NULL
+    AND t.show_in_timeline = TRUE;
 ```
 
-> ⚠ **NON eseguire questa migration prima dell'approvazione utente**.
-> Conservata qui solo come specifica.
+### 3.2 Seed scripts (NON eseguiti — pronti per M0)
 
-### 3.3 Dati seed (CMS-driven)
+- `seed_relationship_event_types.py` — 20 codici (vedi §3.5)
+- `seed_contact_roles.py` — **12 codici approvati**: founder, owner, administration, marketing, sales_manager, project_manager, purchasing, architect, designer, supplier_contact, external_consultant, advisor
+- `seed_activity_types.py` — 8 codici: call, meeting, email, whatsapp, linkedin, visit, internal_note, task
 
-Tre seed script da preparare in M1 (NON eseguiti adesso):
+### 3.3 Tenant isolation rules (D4)
 
-- `seed_relationship_event_types.py` — 18 codici (relation_opened, contact_made, status_changed, …)
-- `seed_contact_roles.py` — 12 codici (founder, owner, administration, marketing, sales_manager, project_manager, purchasing, supplier_contact, external_consultant, advisor, technical, finance)
-- `seed_activity_types.py` — 8 codici (call, meeting, email, whatsapp, linkedin, visit, internal_note, task)
+Tutti gli endpoint multi-tenant **devono**:
+- per Founder (`role=owner`): filtrare WHERE `tenant_id = me.tenant_id`
+- per Advisor: filtrare WHERE `studio_relation.owner_advisor_id = me.user_id`
+- per Admin/Editor: nessun filtro
+- Founder NON può: leggere/scrivere `tenant_memberships` cross-tenant, riassegnare advisor, modificare ruoli MOOD-side.
+- Founder PUÒ: CRUD `tenant_contacts` (D4), CRUD `relationship_activities` con `tenant_id = me.tenant_id`, lettura della propria timeline e delle proprie notifiche.
+
+### 3.4 Percorso di migrazione futuro (D2 — documentato, non implementato)
+
+> **Non eseguire ora.** Riportato qui solo per memoria storica.
+
+1. M+6 mesi: contare quante righe ci sono in `contacts`/`accounts`/
+   `studio_team_members`/`notifications`/`tenant_activity_events`/
+   `advisor_lead_activities`/`advisor_notes`. Se ancora vuote → DROP
+   senza migrazione.
+2. Se popolate (improbabile): script `migrate_legacy_contacts.py`
+   transcoderà `contacts` → `tenant_contacts` con join su `accounts.tenant_id`.
+3. Le tabelle legacy verranno marcate `pg_dump`-excluded e poi
+   eliminate in una migration `040_legacy_contacts_drop.sql`.
+
+### 3.5 Codici tassonomia (specifica seed, NON eseguito)
+
+#### `platform_relationship_event_types` (20 codici)
+| code | category | source | show_in_timeline | trigger |
+|---|---|---|---|---|
+| `relation_opened` | lifecycle | auto | ✅ | Quando `studio_relations` insert |
+| `studio_request_submitted` | lifecycle | auto | ✅ | V2 submit |
+| `status_changed` | lifecycle | auto | ✅ | Status transition |
+| `temperature_changed` | lifecycle | auto | ❌ | Diagnostica advisor |
+| `ownership_changed` | lifecycle | auto | ✅ | Reassign advisor |
+| `qualification_done` | lifecycle | auto | ✅ | qualified status |
+| `activated` | lifecycle | auto | ✅ | Tenant attivato |
+| `magic_link_issued` | communication | auto | ✅ | Activation |
+| `magic_link_consumed` | communication | auto | ✅ | First login |
+| `blueprint_first_access` | communication | auto | ✅ | First Blueprint visit |
+| `password_set` | communication | auto | ❌ | Diagnostica |
+| `password_reset_requested` | communication | auto | ❌ | Diagnostica |
+| `contact_added` | manual | auto | ✅ | Contact creato |
+| `contact_archived` | manual | auto | ❌ | Cosmetico |
+| `note_added` | manual | manual | ✅ | Internal note |
+| `visit_recorded` | manual | manual | ✅ | Visit report saved |
+| `presentation_scheduled` | manual | manual | ✅ | Manual scheduling |
+| `presentation_delivered` | manual | manual | ✅ | Manual delivery |
+| `ecosystem_aligned` | manual | manual | ✅ | Quality milestone |
+| `archived` | lifecycle | auto | ✅ | Status=archived |
 
 ---
 
-## 4 · MODULO 1 — CONTACT CRM
+## 4 · MODULI MVP — ORDINE FINALE APPROVATO
 
-### 4.1 Surface
-- `/command-center/tenants/:tenantId/contacts` (admin)
-- `/blueprint/contacts` (founder, scope limitato al proprio tenant)
+L'ordine implementativo è stato approvato dall'utente come segue:
 
-### 4.2 API
-| Endpoint | Verb | Note |
+1. **M0** — DB Consolidation (obbligatorio)
+2. **M1** — Contact CRM (priorità assoluta) ⭐
+3. **M2** — Relationship Timeline
+4. **M3** — Activity Log
+5. **M4** — Notification Center
+6. **M5** — Advisor Workspace + KPI
+
+> Il suggerimento "Timeline prima del CRM" è stato esplicitamente
+> **rifiutato**. Motivazione utente: prima sapere CHI segue cosa, poi
+> raccontare COSA succede.
+
+I dettagli implementativi per ciascun milestone sono in:
+**`/app/memory/RELATIONSHIP_OS_IMPLEMENTATION_ROADMAP.md`**.
+
+---
+
+## 5 · DATA STRATEGY — Verso la Scala (150 tenant)
+
+Ogni relazione deve accumulare in modo strutturato:
+
+| Dato | Tabella canonica | Volume stimato @ 150 tenant |
 |---|---|---|
-| `/api/admin/tenants/:id/contacts` | GET | Lista contatti del tenant |
-| `/api/admin/tenants/:id/contacts` | POST | Crea (anti-duplicato su email lower) |
-| `/api/admin/tenants/:id/contacts/:cid` | PATCH | Aggiorna |
-| `/api/admin/tenants/:id/contacts/:cid` | DELETE | Soft-delete (status='archived') |
-| `/api/admin/tenants/:id/contacts/:cid/set-primary` | POST | Mark primary |
-| `/api/catalogs/contact-roles` | GET | DB-driven (cached 60s) |
+| Contatti | `tenant_contacts` | ~3-5 contatti/tenant → **~750** righe |
+| Attività | `relationship_activities` | ~5/mese/tenant → **~9k/anno** |
+| Timeline events | `studio_relationship_events` | ~12/tenant/anno → **~1.8k/anno** |
+| Email events | `studio_email_dispatch_log` | ~50/tenant/anno → **~7.5k/anno** |
+| Mercati | `tenant_markets` (esiste) | ~4 mercati/tenant → 600 |
+| Ruoli | `platform_contact_roles` × `tenant_contacts.role_code` | n/a |
+| Lingue | `tenant_contacts.preferred_language` | n/a |
+| Project Types | (futuro) `platform_project_types` × `tenant_project_types` | M6+ |
+| Specializzazioni | (futuro) `platform_specializations` × `tenant_specializations` | M6+ |
+| Touchpoints | derivati da `relationship_activities` JOIN `contacts` | n/a |
 
-### 4.3 Componenti UI
-- `<ContactList tenantId>` — tabella con role/email/lang/primary
-- `<ContactForm>` — form con select role dal catalogo + select preferred_language dal catalogo
-- `<PrimaryContactBadge>` — chip "primary"
+Tutti questi dati saranno consumabili da:
+- **Advisor Intelligence** — matching advisor↔studio per affinità mercato/specializzazione
+- **Editorial Intelligence** — personalizzazione editoriale per cluster di tenant
+- **Market Intelligence** — aggregati per geo/archetipo
+- **Specification Intelligence** — pattern di richiesta materiali
+- **AI Services** — features ML su payload eterogenei
 
----
-
-## 5 · MODULO 2 — RELATIONSHIP TIMELINE
-
-### 5.1 Surface
-- Tab `Timeline` dentro Relation Detail (esistente)
-- Tab `Timeline` dentro Tenant Overview (nuova)
-
-### 5.2 Dati
-Read-only su `v_relationship_timeline` filtrata per `tenant_id`.
-
-### 5.3 Eventi automatici (writer)
-Da hook esistenti che già scrivono in `studio_relationship_events`:
-- `relation_opened` (già emesso)
-- `status_changed` (già emesso)
-- `temperature_changed` (già emesso)
-- `activated` (da aggiungere in `activate_studio_ecosystem`)
-- `email_sent` (NUOVO: hook in `email_dispatcher.send_template`)
-- `login_first_access` (NUOVO: hook in `magic-link/consume`)
-- `magic_link_issued` (NUOVO: hook in activation flow)
-- `blueprint_first_access` (NUOVO: hook nel mount di `BlueprintApp`)
-
-### 5.4 Eventi manuali
-Scritti via `POST /api/admin/tenants/:id/activities` (vedi Modulo 3).
-
-### 5.5 UI
-- `<TimelineFeed tenantId>` — lista cronologica con icona per `type_code`, narrativa derivata da `payload`, locale-aware
+> **Principio architetturale**: i JSONB `payload` su `relationship_activities`
+> e `studio_relationship_events` sono **estendibili** senza migration.
+> Permettono di accumulare feature signals senza romperel lo schema.
 
 ---
 
-## 6 · MODULO 3 — ACTIVITY LOG
+## 6 · DOCUMENTI CORRELATI
 
-### 6.1 Surface
-- Tab `Attività` dentro Tenant Overview
-- Sidebar `Le mie attività` dentro Advisor Console
-
-### 6.2 API
-| Endpoint | Verb |
-|---|---|
-| `/api/admin/tenants/:id/activities` | GET (filter: type, owner, date_range) |
-| `/api/admin/tenants/:id/activities` | POST |
-| `/api/admin/tenants/:id/activities/:aid` | PATCH |
-| `/api/admin/tenants/:id/activities/:aid` | DELETE (soft) |
-| `/api/admin/me/activities/upcoming` | GET (next_step_due_at ≤ +7d) |
-| `/api/catalogs/activity-types` | GET |
-
-### 6.3 Componenti
-- `<ActivityForm>` (tipo, contact, outcome, next_step, due_at)
-- `<UpcomingTasksWidget>` — usata sia in Overview che in Advisor Console
+- 📄 `/app/memory/RELATIONSHIP_OS_FOUNDATION_PLAN.md` — questo documento (architettura)
+- 📄 `/app/memory/RELATIONSHIP_OS_IMPLEMENTATION_ROADMAP.md` — roadmap dettagliata M0-M5
+- 📄 `/app/memory/FIRST_REAL_TENANT_CERTIFICATION_REPORT.md` — base di partenza certificata
 
 ---
 
-## 7 · MODULO 4 — INTERNAL NOTIFICATION CENTER
+## 7 · VERDETTO FINALE
 
-### 7.1 Trigger (regole di emissione, scritte server-side)
-| Trigger | Recipient | Tipo |
-|---|---|---|
-| Nuova candidatura V2 ricevuta | Super-admin + advisor pool | `studio_request_received` |
-| Lead senza review >48h | Super-admin | `lead_stale` |
-| Tenant attivato | Owner + advisor + super-admin | `tenant_activated` |
-| Founder primo login | Advisor + super-admin | `founder_first_login` |
-| Activity `next_step_due_at` <24h | Owner attività | `task_due_soon` |
-| Activity `next_step_due_at` < NOW | Owner attività | `task_overdue` |
+🟢 **`FOUNDATION_READY`**
 
-### 7.2 Storage
-`relationship_notifications` (già esistente, 17 colonne pronte).
+Tutte le 5 decisioni architetturali approvate. Schema canonico
+definito. Legacy tables congelate come READ-ONLY senza rischio
+regressione. Tenant isolation founder esplicitamente progettata.
+Timeline filtering D5 specificato. Scale target (150 tenant · 500+
+contatti) considerato negli indici e nei volumi previsti.
 
-### 7.3 API
-| Endpoint | Verb |
-|---|---|
-| `/api/notifications` | GET (paginate, filter unread) |
-| `/api/notifications/unread-count` | GET (cheap, poll-able 30s) |
-| `/api/notifications/:id/read` | POST |
-| `/api/notifications/read-all` | POST |
-| `/api/notifications/:id/archive` | POST |
-
-### 7.4 UI
-- `<NotificationBell />` nella WorkspaceShell topbar, badge numerico con polling 30s
-- `<NotificationPanel />` slide-out, raggruppa per giorno
+L'implementazione può partire da M0 con un singolo "Vai" dell'utente.
 
 ---
 
-## 8 · MODULO 5 — TENANT OVERVIEW
-
-### 8.1 Surface
-- **Admin**: `/command-center/tenants/:id` (nuova route)
-- **Founder**: `/blueprint/overview` (nuova route, scope tenant proprio)
-
-### 8.2 Tab layout
-1. **Studio** — header con nome/slug/website/logo, market HQ + target countries
-2. **Contatti** (Modulo 1)
-3. **Timeline** (Modulo 2)
-4. **Attività** (Modulo 3)
-5. **Advisor** — owner_advisor_id + commission rules + visits
-6. **Mercati** — operating market + target countries (modificabili dal founder?)
-7. **Blueprint Status** — pages count, last publish, last access
-8. **Ultimo accesso** — `users.last_login_at` del primary contact
-
-### 8.3 API aggregata
-`GET /api/admin/tenants/:id/overview` → unico payload (anti-N+1) con:
-```
-{ tenant, relation, contacts, advisor, kpis: { contacts_n, activities_30d, last_login_at } }
-```
-
----
-
-## 9 · MODULO 6 — ADVISOR WORKSPACE
-
-### 9.1 Surface
-Estendere `/command-center/advisor-console` esistente.
-
-### 9.2 KPI in cima alla pagina
-| KPI | Origine SQL |
-|---|---|
-| Lead aperti | `COUNT studio_relations WHERE owner = me AND status IN ('prospect','contacted')` |
-| Review pendenti | `COUNT studio_requests WHERE assigned_advisor_id = me AND status='submitted'` |
-| Tenant attivi | `COUNT studio_relations WHERE owner = me AND status='activated'` |
-| Ultime 7 attività | `relationship_activities WHERE owner_user_id = me ORDER BY occurred_at DESC LIMIT 7` |
-| Reminder oggi | `advisor_followups WHERE advisor_id = me AND status='open' AND due_at::date = CURRENT_DATE` |
-
-### 9.3 Scope (già implementato, da preservare)
-Filtro su `owner_advisor_id = me.id` o `assigned_advisor_id IS NULL OR = me.id`. Già in `_advisor_scope.py`.
-
----
-
-## 10 · NO HARDCODED — Tassonomie DB-driven
-
-| Tassonomia | Tabella | Cached |
-|---|---|---|
-| Ruoli contatto | `platform_contact_roles` | 60s in `services/catalogs.py` |
-| Tipi attività | `platform_activity_types` | 60s |
-| Kind eventi | `platform_relationship_event_types` | 60s |
-| Lingue preferite | `platform_languages` (esiste) | 60s |
-| Mercati | `markets` (esiste) | 60s |
-| Paesi | `countries` (esiste) | 60s |
-| Project types (futuro) | `platform_project_types` (M3) | 60s |
-| Specializzazioni (futuro) | `platform_specializations` (M3) | 60s |
-
-Endpoint pubblico unico: `GET /api/catalogs/:name?locale=it-IT`.
-
----
-
-## 11 · EFFORT REALE
-
-> Stima senior backend+frontend, riserve incluse. **NON è una promessa di consegna**.
-
-| Milestone | Backend | Frontend | DB | QA | Tot |
-|---|---|---|---|---|---|
-| **M0** Consolidamento schema (decisioni + migration) | 1.5d | — | 1d | 0.5d | **3d** |
-| **M1** Contact CRM (Modulo 1) | 1.5d | 2d | — | 0.5d | **4d** |
-| **M2** Timeline + view (Modulo 2) | 1d | 1.5d | 0.5d | 0.5d | **3.5d** |
-| **M3** Activity Log (Modulo 3) | 1d | 1.5d | — | 0.5d | **3d** |
-| **M4** Notification Center (Modulo 4) | 2d | 1.5d | — | 1d | **4.5d** |
-| **M5** Tenant Overview + Advisor KPI (Moduli 5+6) | 1.5d | 2d | — | 1d | **4.5d** |
-| **Totale** | 8.5d | 8.5d | 1.5d | 4d | **~22.5d** |
-
----
-
-## 12 · ROADMAP M1→M5
-
-```
-M0  Consolidamento DB        ──┐
-                               │  bloccante per tutto il resto
-M1  Contact CRM              ──┤
-                               │
-M2  Relationship Timeline    ──┼──► Foundation Ready
-                               │
-M3  Activity Log             ──┤
-                               │
-M4  Notification Center      ──┤
-                               │
-M5  Overview + Advisor KPI   ──┘
-```
-
-| M | Output verificabile |
-|---|---|
-| M0 | Migration 031 applicata, 3 cataloghi seed, decisioni canonical documentate |
-| M1 | `/command-center/tenants/:id/contacts` CRUD, anti-duplicate, primary unique |
-| M2 | `v_relationship_timeline` interrogabile, tab Timeline in Relation Detail + Tenant Overview |
-| M3 | Activity form completo, upcoming widget, due reminders working |
-| M4 | 🔔 badge in topbar, 6 trigger automatici, anti-spam idempotency |
-| M5 | Tenant Overview unico endpoint + Advisor KPI bar |
-
-### Acceptance criteria globali
-- ✅ Tenant isolation preservata (founder vede SOLO il proprio tenant)
-- ✅ Advisor scope preservato (advisor vede SOLO i propri lead+relations)
-- ✅ Audit script `first_real_tenant_audit.py` continua a passare con 0 P0
-- ✅ Test E2E nuovo `relationship_os_e2e.py` con scenario reale Martinel
-- ✅ Zero hardcoded enum: tutto da catalog API
-
----
-
-## 13 · DOMANDE APERTE PER L'UTENTE
-
-Per chiudere la classificazione `FOUNDATION_READY`, servono **5 decisioni**
-che richiedono parere strategico, non implementativo:
-
-1. 🔵 **Modello multi-contatto canonical**:
-   - (a) Nuova `tenant_contacts` (proposta sopra)
-   - (b) Estendere `studio_team_members` esistente
-   - (c) Adottare `contacts`+`accounts` riconciliando con `tenants`
-2. 🔵 **`accounts` / `contacts` legacy**: drop, deprecate-only, o mantenere come API surface diversa?
-3. 🔵 **Notification storage canonical**:
-   - (a) `relationship_notifications` (proposta, già ricca)
-   - (b) `notifications` (più generica, va estesa)
-4. 🔵 **Founder può modificare i propri contatti dal Blueprint?**
-   - (a) Sì, scope tenant-self (proposto)
-   - (b) Solo read-only; modifiche via advisor
-5. 🔵 **Eventi email nel timeline**: includere sempre, o filtrare per template_key (es. solo `studio_request_*` e non `magic_link`)?
-
-> Fino a queste 5 risposte non parte M0. Sono decisioni da 30 minuti
-> insieme. Tutte le altre scelte (UX, naming, micro-API) le prendiamo
-> in implementazione.
-
----
-
-## 14 · COSA NON FACCIAMO (esplicitamente FUORI SCOPE)
-
-- ❌ AI matching / suggerimenti automatici
-- ❌ Launch Pack / Health Score
-- ❌ Analytics dashboard
-- ❌ Material Intelligence
-- ❌ Nuove integrazioni (Resend OK, no Twilio/Slack/Hubspot)
-- ❌ Migrazione dati legacy da `contacts`/`accounts` (sono vuoti)
-- ❌ Mobile-first redesign del Command Center
-
----
-
-## 15 · VERDETTO
-
-🟡 **`NEEDS_ARCHITECTURE_WORK`** — 3 giorni di consolidamento (M0)
-indispensabili prima di poter dichiarare `FOUNDATION_READY`.
-
-Le 5 decisioni del §13 sbloccano M0. Una volta sciolte, l'intero
-Relationship OS™ MVP è realizzabile in ~22 giorni-uomo distribuiti
-su 6 milestone (M0–M5) chiaramente indipendenti e testabili una alla
-volta.
-
----
-
-*Generato il 2 Giu 2026 da E1 (Emergent), su istruzione utente
-"P1 — RELATIONSHIP OS FOUNDATION™".*
-*Nessuna migration eseguita. Nessuna feature implementata. Solo progettazione.*
+*Aggiornato il 2 Giu 2026 da E1 (Emergent), su istruzione utente
+"APPROVAZIONE ARCHITETTURALE — RELATIONSHIP OS™ FOUNDATION".*
+*Nessuna migration eseguita. Solo consolidamento architetturale definitivo.*

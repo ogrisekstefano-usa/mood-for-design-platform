@@ -27,7 +27,7 @@ i founder accedono al loro Blueprint workspace via magic-link.
 3. `adminApi.js` — `adminAuth.clear()` non puliva le chiavi legacy → token zombie. Fix esteso `clear()`.
 
 ## P1 backlog (FROZEN by user)
-- **Relationship OS™ Foundation** — Piano completo in `/app/memory/RELATIONSHIP_OS_FOUNDATION_PLAN.md` (2 Giu 2026, classification `NEEDS_ARCHITECTURE_WORK`, 5 decisioni di modello dati pendenti dell'utente prima di partire con M0)
+- **Relationship OS™ Foundation** — 🟢 **FOUNDATION_READY** (2 Giu 2026). 5 decisioni architetturali ratificate (D1 `tenant_contacts` canonical, D2 legacy READ-ONLY, D3 `relationship_notifications` canonical, D4 founder gestisce propri contatti con isolation, D5 timeline filtra email tecniche). Roadmap M0–M5 dettagliata in `/app/memory/RELATIONSHIP_OS_IMPLEMENTATION_ROADMAP.md` (24.5d totali). M0 pronto a partire.
 - Tenant Launch Pack M1 (Schema 031 + CMS seed)
 - Advisor Digest (`advisor_new_lead` digest pool)
 - Studio Requests UI: chip markets/languages/experiences
