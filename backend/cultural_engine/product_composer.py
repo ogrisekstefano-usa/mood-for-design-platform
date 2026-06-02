@@ -122,16 +122,24 @@ def _run_vision_batch(
     *,
     db_client: Any = None,
     tenant_id: Optional[str] = None,
+    progress_cb: Optional[Callable[[int, int], None]] = None,
 ) -> Tuple[int, int, int, int]:
     """Synchronously dispatch Vision Layer 2 calls with hybrid cache.
 
     Returns (ok_count, failed_count, cache_hits, cache_misses).
     Mutates each record's `classification` dict in-place with vision_* keys.
+
+    Per-image hard timeout (ITER189 fix): the VLM call is wrapped in
+    asyncio.wait_for so a single hanging image does NOT block the whole batch.
     """
     sem = asyncio.Semaphore(VISION_CONCURRENCY)
     model = os.environ.get("CULTURAL_VISION_MODEL", "gpt-5.1")
     cache_hits = [0]
     cache_misses = [0]
+    done_counter = [0]
+    total = len(candidate_records)
+    # Per-image timeout: VLM calls > 45s indicate a stuck call (see ITER189 LUXOR hang)
+    PER_IMAGE_TIMEOUT = float(os.environ.get("CULTURAL_VISION_PER_IMAGE_TIMEOUT_S", "45"))
 
     async def _one(rec: Dict[str, Any]) -> bool:
         async with sem:
@@ -142,19 +150,41 @@ def _run_vision_batch(
                 if cached:
                     cache_hits[0] += 1
                     _merge_vision_into_classification(rec, cached, from_cache=True)
+                    done_counter[0] += 1
+                    if progress_cb and done_counter[0] % 5 == 0:
+                        try: progress_cb(done_counter[0], total)
+                        except Exception: pass
                     return True
                 cache_misses[0] += 1
-            # ── Vision LLM call ──
+            # ── Vision LLM call (with hard timeout) ──
             try:
                 ext = rec.get("image_ext") or "jpg"
                 mime = "image/png" if ext == "png" else "image/jpeg"
-                r = await vision_asset_classifier.enrich_asset_bytes(
-                    rec["image_bytes"], media_id=rec["key"], mime=mime,
+                r = await asyncio.wait_for(
+                    vision_asset_classifier.enrich_asset_bytes(
+                        rec["image_bytes"], media_id=rec["key"], mime=mime,
+                    ),
+                    timeout=PER_IMAGE_TIMEOUT,
                 )
+            except asyncio.TimeoutError:
+                logger.warning(f"vision batch TIMEOUT on {rec['key']} (>{PER_IMAGE_TIMEOUT}s)")
+                done_counter[0] += 1
+                if progress_cb:
+                    try: progress_cb(done_counter[0], total)
+                    except Exception: pass
+                return False
             except Exception as e:
                 logger.warning(f"vision batch error on {rec['key']}: {e}")
+                done_counter[0] += 1
+                if progress_cb:
+                    try: progress_cb(done_counter[0], total)
+                    except Exception: pass
                 return False
             if not r or not r.get("ok") or not r.get("enrichment"):
+                done_counter[0] += 1
+                if progress_cb and done_counter[0] % 5 == 0:
+                    try: progress_cb(done_counter[0], total)
+                    except Exception: pass
                 return False
             enrichment = r["enrichment"]
             _merge_vision_into_classification(rec, enrichment, from_cache=False)
@@ -162,6 +192,10 @@ def _run_vision_batch(
             if db_client and phash:
                 _vcache.store_cache(db_client, phash, tenant_id, model,
                                      enrichment, scope="tenant")
+            done_counter[0] += 1
+            if progress_cb and done_counter[0] % 5 == 0:
+                try: progress_cb(done_counter[0], total)
+                except Exception: pass
             return True
 
     async def _all():
@@ -234,6 +268,7 @@ def compose_products_from_pdf(
     asset_uploader: Callable[[bytes, str], Tuple[Optional[str], Optional[str]]],
     max_candidates: int = 240,
     log_step: Optional[Callable[[str, Dict[str, Any]], None]] = None,
+    vision_progress_cb: Optional[Callable[[int, int], None]] = None,
 ) -> Dict[str, Any]:
     """Run the full Product Composer pipeline.
 
@@ -331,6 +366,7 @@ def compose_products_from_pdf(
         _log("vision_layer2_start", {"assets": len(candidate_records)})
         vision_ok, vision_failed, v_hits, v_miss = _run_vision_batch(
             candidate_records, db_client=db_client, tenant_id=tenant_id,
+            progress_cb=vision_progress_cb,
         )
         _log("vision_layer2_done", {
             "enriched": vision_ok, "failed": vision_failed,

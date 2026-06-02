@@ -501,6 +501,98 @@ def delete_set_document(set_id: str, doc_id: str,
 # ────────────────────────────────────────────────────────────────────
 # ─── EXTRACTION ─────────────────────────────────────────────────────
 # ────────────────────────────────────────────────────────────────────
+
+# ITER189-pre · UX improvement: live page progress.
+# Map composer stage → estimated progress percentage of the document.
+# Used to drive `pages_processed = floor(stage_pct * page_count)` so the
+# UI can render "34/90 pages" instead of "0%" until the document finishes.
+_STAGE_PROGRESS_PCT: Dict[str, float] = {
+    "section_detection_start":      0.02,
+    "section_detection_done":       0.10,
+    "image_extraction_start":       0.12,
+    "image_extraction_done":        0.25,
+    "image_classification_start":   0.27,
+    "image_classification_done":    0.40,
+    "vision_layer2_start":          0.42,
+    "vision_layer2_done":           0.85,
+    "vision_layer2_skipped":        0.85,
+    "dedup_done":                   0.88,
+    "section_assignment_done":      0.90,
+    "product_composition_start":    0.92,
+    "product_composition_done":     0.99,
+}
+
+
+def _make_progress_logger(c, bcd_id: str, set_id: str, page_count: int):
+    """Return a callback that updates pages_processed at each composer stage.
+
+    The pipeline doesn't process page-by-page (it works in stages), so we
+    derive an estimated page count from the stage progress %. This makes
+    extraction OBSERVABLE in the UI ("34/90 pages") instead of the previous
+    "0% until done" behaviour that triggered false-stall reports.
+    """
+    last_pct_state = {"v": -1.0}
+
+    def _cb(step: str, payload: Optional[Dict[str, Any]] = None):
+        pct = _STAGE_PROGRESS_PCT.get(step)
+        if pct is None or page_count <= 0:
+            return
+        # Only persist if the stage progress moved meaningfully
+        if pct <= last_pct_state["v"]:
+            return
+        last_pct_state["v"] = pct
+        try:
+            est_pages = max(0, min(page_count, int(round(pct * page_count))))
+            c.table("brand_catalog_documents").update({
+                "pages_processed": est_pages,
+                "updated_at": _now(),
+                # Stash stage in metrics so the UI can render a sub-label
+                "metrics": {"stage": step, "stage_pct": round(pct, 2),
+                            "stage_at": _now(),
+                            "payload": (payload or {})},
+            }).eq("id", bcd_id).execute()
+            _refresh_set_progress(c, set_id)
+        except Exception as e:
+            logger.warning(f"progress_logger update warn: {e}")
+    return _cb
+
+
+def _make_vision_progress_cb(c, bcd_id: str, set_id: str, page_count: int):
+    """Per-image progress callback fired by _run_vision_batch every 5 images.
+
+    Within Vision Layer 2 (stage = 42% → 85%), we additionally interpolate
+    page_progress = lerp(42%, 85%, current/total). This gives the UI a
+    fine-grained moving counter during the slowest stage (~70% of total time).
+    """
+    last_n_state = {"v": -1}
+
+    def _cb(current: int, total: int):
+        if total <= 0 or page_count <= 0:
+            return
+        # Throttle: only update every 5 images
+        if current - last_n_state["v"] < 5 and current < total:
+            return
+        last_n_state["v"] = current
+        frac = current / max(total, 1)
+        lo, hi = 0.42, 0.85
+        pct = lo + (hi - lo) * frac
+        try:
+            est_pages = max(0, min(page_count, int(round(pct * page_count))))
+            c.table("brand_catalog_documents").update({
+                "pages_processed": est_pages,
+                "updated_at": _now(),
+                "metrics": {"stage": "vision_layer2",
+                            "stage_pct": round(pct, 3),
+                            "vision_current": current,
+                            "vision_total": total,
+                            "stage_at": _now()},
+            }).eq("id", bcd_id).execute()
+            _refresh_set_progress(c, set_id)
+        except Exception as e:
+            logger.warning(f"vision_progress update warn: {e}")
+    return _cb
+
+
 def _run_set_extraction(set_id: str, tenant_id: str,
                          max_candidates: int = 600,
                          rebuild_index: bool = True) -> None:
@@ -542,8 +634,11 @@ def _run_set_extraction(set_id: str, tenant_id: str,
         bcd_id = d["id"]
         src_doc_id = d["source_document_id"]
         try:
-            # Skip already extracted docs unless explicitly re-run
-            if d["extraction_status"] in ("review", "validated"):
+            # Skip already extracted docs and previously-failed docs (failed docs
+            # require manual retry via the dedicated endpoint, not the batch
+            # extract — prevents re-loops on documents that systematically hang
+            # the pipeline, e.g. Vision Layer 2 timeouts).
+            if d["extraction_status"] in ("review", "validated", "failed"):
                 continue
             # 1. Download PDF
             storage_path = d.get("storage_path") or (
@@ -614,6 +709,8 @@ def _run_set_extraction(set_id: str, tenant_id: str,
                 tenant_id=tenant_id, brand_id=brand_id,
                 db_client=c, asset_uploader=asset_uploader,
                 max_candidates=max_candidates,
+                log_step=_make_progress_logger(c, bcd_id, set_id, d.get("page_count") or 0),
+                vision_progress_cb=_make_vision_progress_cb(c, bcd_id, set_id, d.get("page_count") or 0),
             )
 
             # 1.b · Page-level analysis (OCR candidates + language hint)
@@ -789,15 +886,44 @@ def extraction_status(set_id: str, ctx=Depends(get_tenant_context)):
                  "review": "completed", "validated": "completed",
                  "failed": "failed"}.get(s, s or "queued")
 
+    # ITER189-pre · human-readable stage labels (drives the UI sub-label
+    # under "X/Y pages" so users see *what* the extractor is doing, not
+    # just *how much* is done).
+    _STAGE_LABEL = {
+        "section_detection_start":    "Rilevamento sezioni…",
+        "section_detection_done":     "Sezioni rilevate",
+        "image_extraction_start":     "Estrazione immagini…",
+        "image_extraction_done":      "Immagini estratte",
+        "image_classification_start": "Classificazione immagini…",
+        "image_classification_done":  "Immagini classificate",
+        "vision_layer2_start":        "Analisi Vision Layer 2…",
+        "vision_layer2":              "Analisi Vision Layer 2…",
+        "vision_layer2_done":         "Vision Layer 2 completata",
+        "vision_layer2_skipped":      "Vision saltata",
+        "dedup_done":                 "Deduplicazione",
+        "section_assignment_done":    "Assegnazione asset alle sezioni",
+        "product_composition_start":  "Composizione prodotti…",
+        "product_composition_done":   "Prodotti composti",
+    }
+
     doc_rows = []
     for d in docs:
         m = (d.get("metrics") or {})
+        stage = m.get("stage")
+        stage_pct = m.get("stage_pct")
+        vision_current = m.get("vision_current")
+        vision_total = m.get("vision_total")
         doc_rows.append({
             **{k: v for k, v in d.items() if k != "_id"},
             "phase": _phase(d.get("extraction_status") or "pending"),
             "ocr_pages": int(m.get("ocr_pages") or 0),
             "text_pages": int(m.get("text_pages") or 0),
             "language": m.get("language") or "unknown",
+            "stage": stage,
+            "stage_pct": stage_pct,
+            "stage_label": _STAGE_LABEL.get(stage) if stage else None,
+            "vision_current": vision_current,
+            "vision_total": vision_total,
         })
 
     return {

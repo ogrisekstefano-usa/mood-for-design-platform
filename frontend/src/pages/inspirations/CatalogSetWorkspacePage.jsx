@@ -247,13 +247,35 @@ function ExtractionPanel({ setId, status, statusData, onTrigger, busy }) {
           {docs.map((d) => {
             const dpct = d.page_count
               ? Math.round(100 * (d.pages_processed || 0) / d.page_count) : 0;
+            const isExtracting = d.extraction_status === 'extracting';
+            const stageLine = isExtracting && d.stage_label
+              ? d.stage_label
+              : null;
+            const visionLine = isExtracting && d.vision_total
+              ? `· ${d.vision_current || 0}/${d.vision_total} immagini`
+              : '';
             return (
-              <li key={d.id} className="ke-extract-docrow">
-                <span className="ke-extract-docname">{d.display_name}</span>
+              <li key={d.id} className="ke-extract-docrow"
+                   data-testid={`ke-extract-docrow-${d.id}`}>
+                <span className="ke-extract-docname">
+                  {d.display_name}
+                  {stageLine && (
+                    <em style={{
+                      display: 'block', fontStyle: 'normal',
+                      fontSize: '11px', color: 'var(--bp-text-muted, #94a3b8)',
+                      marginTop: '2px',
+                    }} data-testid={`ke-extract-stage-${d.id}`}>
+                      {stageLine} {visionLine}
+                    </em>
+                  )}
+                </span>
                 <span className={`ke-pill ke-pill-${d.extraction_status}`}>
                   {DOC_STATUS_LABEL[d.extraction_status] || d.extraction_status}
                 </span>
-                <span className="ke-extract-docpct">{dpct}%</span>
+                <span className="ke-extract-docpct"
+                       data-testid={`ke-extract-docpct-${d.id}`}>
+                  {(d.pages_processed || 0)}/{d.page_count || 0} pag · {dpct}%
+                </span>
               </li>
             );
           })}
