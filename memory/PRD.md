@@ -1,5 +1,83 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER187 · MOOD BRAND KNOWLEDGE FACTORY™ · PHASE 1 SPIKE BACKEND-FIRST · DELIVERED · 02 Feb 2026
+
+**🎯 Obiettivo Founder:** Trasformare le PDF dei produttori in **Product Knowledge Object™** canonici (nome, designer, materiali, finiture, dimensioni, descrizione IT/EN, immagini classificate per ruolo), riutilizzabili da Marketboard / Moodboard / Academy / Magazine / Specification.
+
+**📋 Proposta architetturale approvata:** `/app/memory/ITER187_KNOWLEDGE_FACTORY_PHASE1_PROPOSAL.md`
+
+### ✅ Phase 1 Spike (backend-first) — completata
+- **Migration `116_brand_knowledge_factory_phase1.sql`** applicata (idempotente). 4 nuove tabelle: `source_documents`, `product_sections`, `products`, `product_assets`. `media_library` NON toccata.
+- **Schema `products`** include i campi Product Knowledge Object™ richiesti dal Founder: `usage_contexts`, `suggested_applications`, `mood_tags`, `market_tags`, `spec_ready`, `academy_ready`, `content_ready` (popolati o vuoti in Phase 1, ricomputati su ogni PATCH).
+- **Pipeline a 7 step** (`cultural_engine/product_composer.py`): registration → section detection → image extraction → classification + pHash → image-to-section assignment + intra-section dedup → text parsing (regex IT/EN) → product composition draft (`review_status='draft'` su tutti).
+- **Moduli nuovi**:
+  - `cultural_engine/section_detector.py` (typography heuristics + TOC cross-check + designer line)
+  - `cultural_engine/section_text_parser.py` (regex materials/finishes/dimensions/3D/diameter, language detect IT/EN)
+  - `cultural_engine/image_dedup.py` (pHash 64-bit, soglia Hamming ≤ 8)
+  - `cultural_engine/product_composer.py` (orchestrator)
+- **Router** `routers/knowledge_factory.py` montato su `/api/inspirations/knowledge-factory` — 11 endpoint (upload doc, process, list/get docs, list/get/patch/approve/reject/merge products, patch/delete assets).
+- **Background task** FastAPI: pipeline asincrona, logs streaming su `source_documents.processing_logs`.
+
+### 📊 Run E2E reale su PDF sintetico 6-pagine (2 prodotti: ARIA + ECLISSI)
+| Metric | Target Phase 1 | Risultato |
+|---|---|---|
+| Products created | ≥ 2 | **2** ✅ |
+| Sections detected | n/a | 3 |
+| Assets assigned | ≥ 2 | **2** ✅ |
+| Dimensions hit % | ≥ 60% | **100%** ✅ |
+| Materials hit % | ≥ 50% | **100%** ✅ |
+| Descriptions hit % | ≥ 50% | **100%** ✅ |
+| Avg confidence | ≥ 0.55 | **0.72** ✅ |
+
+### 🧪 Backend tests
+- `/app/backend/tests/test_iter187_knowledge_factory.py`: **16/16 PASS · 100%**
+  - 3 test section_detector (titles, designer, multipage spread)
+  - 6 test section_text_parser (dims/diameter/materials/finishes/IT/EN)
+  - 3 test image_dedup (phash, identical, distinct)
+  - 4 test API E2E (full pipeline, invalid PDF, non-PDF, unauthorized)
+
+### 🆕 Endpoints (mounted under `/api/inspirations`)
+- `POST   /knowledge-factory/documents` upload PDF
+- `POST   /knowledge-factory/documents/{id}/process` start background pipeline
+- `GET    /knowledge-factory/documents[?status=&brand_id=]` list
+- `GET    /knowledge-factory/documents/{id}` detail (doc + sections + product summaries)
+- `GET    /knowledge-factory/products[?review_status=&brand_id=&source_document_id=]`
+- `GET    /knowledge-factory/products/{id}` detail (product + assets grouped by role)
+- `PATCH  /knowledge-factory/products/{id}` edit + auto-recompute Knowledge Object flags
+- `POST   /knowledge-factory/products/{id}/approve|reject|merge`
+- `PATCH/DELETE /knowledge-factory/products/{id}/assets/{pa_id}`
+
+### 🔒 Sicurezza & isolamento
+- Tenant-scoped su tutte le 4 tabelle (Phase 1 vincolo Founder).
+- Endpoints richiedono auth (401 verificato).
+- RLS bypass via service_role (uso interno backend).
+
+### 📁 File creati/modificati
+- ✨ `/app/supabase/migrations/116_brand_knowledge_factory_phase1.sql`
+- ✨ `/app/scripts/apply_migration_116.py`
+- ✨ `/app/backend/cultural_engine/section_detector.py`
+- ✨ `/app/backend/cultural_engine/section_text_parser.py`
+- ✨ `/app/backend/cultural_engine/image_dedup.py`
+- ✨ `/app/backend/cultural_engine/product_composer.py`
+- ✨ `/app/backend/routers/knowledge_factory.py`
+- ✨ `/app/backend/tests/test_iter187_knowledge_factory.py`
+- 📝 `/app/backend/server.py` (router mount)
+- 📝 `/app/backend/requirements.txt` (imagehash + langdetect + scipy + PyWavelets)
+
+### 🚦 Lint
+Tutti i 5 nuovi file passano `ruff` con zero issues.
+
+### 🔜 Pending (post-spike — Verifica Founder + Phase 2)
+- **P0 (next)** Test pipeline su PDF reali (Bonaldo + Cattelan 729 + Margraf + Riva) con misurazione metriche live.
+- **P0 (next)** Frontend admin review (`/inspirations/knowledge-factory[/:docId]`): DocumentsPipelinePage, DocumentReviewPage, ProductReviewDrawer 3-col, AssetRoleSelector con drag-drop.
+- **P1 Phase 2** Vision LLM Layer 2 fallback per immagini sotto soglia conf, OCR fallback per PDF scansionati, cross-document dedup.
+- **P1 Phase 2** Curated_public promotion (admin promote tenant product → public knowledge base).
+- **P2 Phase 3** Spec sheet auto-generation, Academy module generation, Magazine snippet composer dai products approved.
+
+---
+
+
+
 ## 🟢 ITER186.A · P0 HARDENING EXECUTION · DELIVERED · 02 Feb 2026 · GO
 
 **🎯 Founder Option C eseguita:** 8 fix P0 dall'audit ITER186 implementati. Blueprint passa da `🟡 GO WITH FIXES` a `🟢 GO`.
