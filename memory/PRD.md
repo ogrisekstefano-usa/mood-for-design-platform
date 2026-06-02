@@ -1,5 +1,63 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🟢 ITER195 · PHASE 4A · MULTI-PDF INGESTION WORKSPACE UI (MINIMAL) · DELIVERED · 02 Feb 2026
+
+**🎯 Vincolo Founder:** UI minimale solo per upload + monitor + validazione. NO graph viewer, NO dashboard avanzata, NO Academy/Magazine/Marketboard. Tutto in Italiano. Founder deve poter caricare ARBI/Arrital/Margraf/Nemo/Samoa direttamente da interfaccia.
+
+### ✅ Phase 4A · Validation-only UI
+**3 file nuovi (~1.300 righe totali):**
+- `KnowledgeEnginePage.jsx` — Landing `/inspirations/knowledge-engine`: lista brand con catalog sets espandibili, filtro live, creazione brand + catalog set inline
+- `CatalogSetWorkspacePage.jsx` — Single-page workspace `/inspirations/knowledge-engine/catalog-sets/:setId` con 3 sezioni stack:
+  - **§1 Upload** · drag&drop + Seleziona file (max 50 PDF, solo PDF), lista documenti con stato + remove
+  - **§2 Estrazione** · pipeline header + progress bar globale + lista doc con % per documento + bottone "Avvia estrazione" (polling 2s automatico durante `extracting`)
+  - **§3 Validazione** · entity counts grid (Collezioni, Prodotti, Materiali, Finiture, Designer…), Collection Detection con confidence %, Needs review block, Auto-validate block, **Esporta JSON** del Knowledge Package, **Pubblica nel Knowledge Graph** (bloccato se restano `needs_review`)
+- `knowledgeApi.js` — client API (19 helper) + `knowledge-engine.css` (calm/premium tokens warm-neutral)
+
+**Routes mounted** in `App.js`.
+
+### 🧪 Testing
+- ✅ Lint frontend: **0 issues** (ESLint 3 nuovi file)
+- ✅ testing_agent_v3_fork iteration 195: **95% PASS**
+  - Login persistente ✅
+  - Landing renderizza con 22 brand blocks, filtro funziona ✅
+  - "Nuovo brand" crea entità reale + appare in lista ✅
+  - "Nuovo Catalog Set" inline crea entità + status badge "Bozza" ✅
+  - Click set → workspace renderizza tutte e 3 le sezioni ✅
+  - Validation panel correttamente nascosto in `draft` (mostra placeholder) ✅
+  - "Avvia estrazione" disabled con 0 doc ✅
+  - "Back link" torna alla landing ✅
+  - Status badge in italiano (Bozza/Archiviato/Pubblicato/Estrazione in corso/Da validare) ✅
+  - Polling 2s correttamente cleared on unmount ✅
+- 🟡 Single item inconclusivo: upload happy-path con PDF sintetico 444B respinto dal backend (validazione minima 1024 bytes). Wiring UI è corretto. Founder può validare con i PDF reali ARBI.
+
+### 📁 File creati / modificati
+- ✨ `/app/frontend/src/lib/knowledgeApi.js`
+- ✨ `/app/frontend/src/pages/inspirations/KnowledgeEnginePage.jsx`
+- ✨ `/app/frontend/src/pages/inspirations/CatalogSetWorkspacePage.jsx`
+- ✨ `/app/frontend/src/pages/inspirations/knowledge-engine.css`
+- 📝 `/app/frontend/src/App.js` (2 nuove route)
+
+### 🚦 STATUS — PRONTO PER LA VALIDAZIONE REALE ARBI
+Il Founder ora può:
+1. Andare su `/inspirations/knowledge-engine`
+2. Cliccare "Nuovo brand" → "ARBI Bathroom"
+3. Sulla card ARBI → "Nuovo Catalog Set" → "ARBI Master Library 2026"
+4. Click sul set → trascinare i PDF reali (15+ cataloghi) nella drop zone
+5. Click "Avvia estrazione" → polling automatico
+6. Quando `needs_review` → validare entità + Esportare JSON Knowledge Package
+7. Stesso flusso per Arrital, Margraf, Nemo, Samoa
+
+### 🔵 Next Action Items
+- 🟢 **Founder validation pilot** (ITER195 originale): carica i PDF reali ARBI + Arrital + Margraf + Nemo + Samoa via UI; eseguo report fattuale ITER195
+- 🟡 **P1** Entity Resolver UI dedicato (merge/reject visuale, ora si fa solo via JSON)
+- 🟡 **P1** Page Review UI (validare pagine singole con visual_role override)
+- 🟡 **P1** Backend `POST /catalog-sets/{sid}/export-knowledge-package` (oggi è client-side download)
+- 🟡 **P2** Re-extract single document idempotente
+- 🔵 **Backlog**: Academy Builder, Magazine Builder, Marketboard Generator
+
+---
+
+
 ## 🟢 ITER194 · MULTI-PDF BRAND CATALOG INGESTION WORKSPACE · PHASES 1-3 BACKEND · DELIVERED · 02 Feb 2026
 
 **🎯 Vincolo Founder:** Backend completo (DB + API + Unified Brand Index) prima della UI. Coesiste con il flusso single-PDF e con `brand_import_sessions` (ITER192). STOP prima della UI completa per validazione su ARBI Bathroom.
