@@ -15,7 +15,7 @@ from typing import List
 import uuid
 from datetime import datetime, timezone
 
-load_dotenv(ROOT_DIR / '.env')
+load_dotenv(ROOT_DIR / '.env', override=True)
 
 # MongoDB connection (temporary — Supabase-ready adapter in db/adapter.py)
 mongo_url = os.environ['MONGO_URL']
@@ -117,6 +117,55 @@ async def _ensure_buckets():
         await ensure_buckets()
     except Exception as e:
         logging.getLogger(__name__).warning("ensure_buckets failed at startup: %s", e)
+
+
+# Verify Resend integration at startup — surfaces broken email config in
+# the first 5 seconds of the process life. Never raises (uses ok flag).
+from services.email_dispatcher import email_health_check, log_email_health
+@app.on_event("startup")
+async def _email_health():
+    try:
+        report = await email_health_check()
+        log_email_health(report)
+        # Cache the report on the app state for the diagnostic endpoint
+        app.state.email_health = report
+    except Exception as e:
+        logging.getLogger(__name__).error("email_health_check failed: %s", e)
+        app.state.email_health = {'ok': False, 'detail': str(e)}
+
+
+@app.get("/api/admin/email-health")
+async def email_health():
+    """Live diagnostic surface for the Resend integration.
+
+    Returns the latest startup report plus the dispatch log summary
+    (total / sent / failed / sandbox counts, last dispatch timestamp).
+    Used by the Command Center "email diagnostic" drawer.
+    """
+    from sqlalchemy import text as _text
+    from database import AsyncSessionLocal as _Session
+    report = getattr(app.state, 'email_health', None) or await email_health_check()
+    async with _Session() as s:
+        agg = (await s.execute(_text("""
+            SELECT
+              COUNT(*)                              AS total,
+              COUNT(*) FILTER (WHERE status='sent')    AS sent,
+              COUNT(*) FILTER (WHERE status='failed')  AS failed,
+              COUNT(*) FILTER (WHERE status='sandbox') AS sandbox,
+              MAX(created_at)                       AS last_dispatch
+            FROM studio_email_dispatch_log
+        """))).mappings().first()
+        last_err = (await s.execute(_text("""
+            SELECT template_key, to_email, status, error, created_at
+              FROM studio_email_dispatch_log
+             WHERE status IN ('failed','sandbox')
+             ORDER BY created_at DESC LIMIT 1
+        """))).mappings().first()
+    return {
+        'integration': report,
+        'dispatch': dict(agg) if agg else {},
+        'last_error': dict(last_err) if last_err else None,
+    }
 
 app.add_middleware(
     CORSMiddleware,

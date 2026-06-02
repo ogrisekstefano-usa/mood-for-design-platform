@@ -34,6 +34,18 @@ const TenantActivationConsole = () => {
   const [selectedReq, setSelectedReq] = useState(null);
   const [savingId, setSavingId] = useState(null);
   const [activationFor, setActivationFor] = useState(null); // request id when modal open
+  const [emailHealth, setEmailHealth] = useState(null);
+
+  const fetchEmailHealth = async () => {
+    try {
+      const r = await axios.get(`${BACKEND}/api/admin/email-health`, {
+        headers: adminAuth.headers(),
+      });
+      setEmailHealth(r.data);
+    } catch {
+      setEmailHealth({ integration: { ok: false, detail: 'health endpoint unreachable' } });
+    }
+  };
 
   const fetchPipeline = async () => {
     setLoading(true);
@@ -62,7 +74,7 @@ const TenantActivationConsole = () => {
     } catch { setEmails([]); }
   };
 
-  useEffect(() => { fetchPipeline(); }, []); // eslint-disable-line
+  useEffect(() => { fetchPipeline(); fetchEmailHealth(); }, []); // eslint-disable-line
   useEffect(() => { if (selectedReq) fetchEmails(selectedReq.id); }, [selectedReq]);
 
   const updateStatus = async (id, status) => {
@@ -108,6 +120,60 @@ const TenantActivationConsole = () => {
           una comunicazione editoriale al referente dello studio.
         </p>
       </header>
+
+      {/* Email diagnostic banner — TASK 6 hardening visibility */}
+      {emailHealth && (
+        <div data-testid="email-health-banner" style={{
+          marginBottom: '1.8rem',
+          padding: '0.8rem 1.1rem',
+          background: emailHealth.integration?.ok
+            ? 'rgba(160,224,182,0.07)'
+            : 'rgba(255,107,107,0.08)',
+          border: '1px solid ' + (emailHealth.integration?.ok
+            ? 'rgba(160,224,182,0.25)'
+            : 'rgba(255,107,107,0.25)'),
+          borderRadius: 6, fontFamily: 'Inter, sans-serif',
+          display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap',
+        }}>
+          <span style={{ fontSize: '0.72rem', letterSpacing: '0.18em',
+                         textTransform: 'uppercase',
+                         color: emailHealth.integration?.ok ? '#A0E0B6' : '#FF6B6B' }}>
+            Email layer · {emailHealth.integration?.ok ? 'READY' : 'DEGRADED'}
+          </span>
+          <span style={{ fontSize: '0.78rem', color: '#BBB' }}>
+            Resend: <strong style={{ color: '#FFF' }}>
+              {emailHealth.integration?.api_reachable ? 'OK' : 'NOT_REACHABLE'}
+            </strong>
+            {' '} · Domain: <strong style={{ color: '#FFF' }}>
+              {emailHealth.integration?.domain || '—'}
+            </strong>
+            {' '} · Sandbox: <strong style={{
+              color: emailHealth.integration?.sandbox ? '#FF6B6B' : '#A0E0B6'
+            }}>
+              {emailHealth.integration?.sandbox ? 'ON' : 'OFF'}
+            </strong>
+          </span>
+          <span style={{ fontSize: '0.78rem', color: '#888', marginLeft: 'auto' }}>
+            sent: <strong style={{ color: '#FFF' }}>{emailHealth.dispatch?.sent ?? 0}</strong>
+            {' '}· failed: <strong style={{ color: emailHealth.dispatch?.failed ? '#FF6B6B' : '#FFF' }}>
+              {emailHealth.dispatch?.failed ?? 0}
+            </strong>
+            {' '}· sandbox: <strong style={{ color: emailHealth.dispatch?.sandbox ? '#F0B95F' : '#FFF' }}>
+              {emailHealth.dispatch?.sandbox ?? 0}
+            </strong>
+            {' '}· last:{' '}
+            {emailHealth.dispatch?.last_dispatch
+              ? new Date(emailHealth.dispatch.last_dispatch).toLocaleString()
+              : '—'}
+          </span>
+          {emailHealth.integration?.detail && (
+            <span style={{ width: '100%', fontSize: '0.72rem',
+                           color: '#FF6B6B', marginTop: 4 }}>
+              ⚠ {emailHealth.integration.detail}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* KPI counters */}
       <div style={{ display: 'flex', gap: 14, marginBottom: '2rem', flexWrap: 'wrap' }}>
@@ -356,13 +422,29 @@ const TenantActivationConsole = () => {
                      background: 'rgba(255,255,255,0.03)',
                      borderLeft: '2px solid ' + (
                        e.status === 'sent'    ? '#00C9B3' :
-                       e.status === 'failed'  ? '#c54' : '#888'),
+                       e.status === 'failed'  ? '#c54' :
+                       e.status === 'sandbox' ? '#F0B95F' : '#888'),
                      fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
                    }}>
                 <p style={{ color: '#FFF' }}>{e.template_key}</p>
                 <p style={{ color: '#888', fontSize: '0.74rem', marginTop: 4 }}>
-                  {e.to_email} · {e.status} · {new Date(e.created_at).toLocaleString()}
+                  {e.to_email} · <span style={{
+                    color: e.status === 'sent' ? '#A0E0B6' :
+                           e.status === 'sandbox' ? '#F0B95F' :
+                           e.status === 'failed' ? '#FF6B6B' : '#888'
+                  }}>{e.status}</span> · {new Date(e.created_at).toLocaleString()}
                 </p>
+                {e.external_id && (
+                  <p style={{ color: '#666', fontSize: '0.7rem', marginTop: 2,
+                              fontFamily: 'monospace' }}>
+                    resend_id: {e.external_id}
+                  </p>
+                )}
+                {e.error && (
+                  <p style={{ color: '#FF6B6B', fontSize: '0.7rem', marginTop: 2 }}>
+                    error: {e.error}
+                  </p>
+                )}
               </div>
             ))}
           </div>

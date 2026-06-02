@@ -29,10 +29,30 @@ from tenant_resolver import get_corporate_tenant
 
 logger = logging.getLogger("email_dispatcher")
 DEFAULT_LOCALE = 'it-IT'
-RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
-SENDER_EMAIL   = os.environ.get("ACCESS_SENDER_EMAIL", "no-reply@mail.moodfordesign.com")
-SENDER_NAME    = os.environ.get("ACCESS_SENDER_NAME",  "MOOD for DESIGN")
-BASE_URL       = os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
+
+# IMPORTANT — Runtime env lookups, NEVER module-level constants.
+# Reason: with uvicorn --reload, the email_dispatcher module can be
+# imported into a worker BEFORE load_dotenv has populated os.environ
+# (race window during watchfiles spawns). A module-level constant would
+# get "fail-cached" as empty string and stay that way for the rest of
+# the worker's life, silently routing every send to status='sandbox'.
+# Each accessor below re-reads os.environ on every call.
+def _resend_api_key() -> str:
+    return os.environ.get("RESEND_API_KEY", "").strip()
+
+def _sender_email() -> str:
+    return os.environ.get("ACCESS_SENDER_EMAIL", "no-reply@mail.moodfordesign.com")
+
+def _sender_name() -> str:
+    return os.environ.get("ACCESS_SENDER_NAME", "MOOD for DESIGN")
+
+def _base_url() -> str:
+    return os.environ.get("ACCESS_LINK_BASE_URL", "").rstrip("/")
+
+def _is_sandbox_key(key: str) -> bool:
+    """A key is considered sandbox-only if missing or matching the
+    documented placeholder prefix."""
+    return (not key) or key.startswith("re_sandbox_placeholder")
 
 
 # ── HTML wrapper (structure-only; copy comes from CMS) ──────────────────────
@@ -163,7 +183,7 @@ async def dispatch_email(*, template_key: str, to_email: str,
     note      = _interpolate(copy.get('note')      or '', variables) or None
     signature = _interpolate(copy.get('signature') or 'MOOD for DESIGN™', variables)
 
-    cta_url = cta_url_override or (f"{BASE_URL}{cta_path}" if cta_path else None)
+    cta_url = cta_url_override or (f"{_base_url()}{cta_path}" if cta_path else None)
 
     html = _wrap_html(subject, eyebrow, headline, body, cta_label, cta_url, note, signature)
     text_body = (
@@ -173,14 +193,15 @@ async def dispatch_email(*, template_key: str, to_email: str,
         f"— {signature}\n"
     )
 
-    if not RESEND_API_KEY or RESEND_API_KEY.startswith('re_sandbox_placeholder'):
-        logger.info("EMAIL_DEV_PREVIEW template=%s to=%s subject=%r",
+    api_key = _resend_api_key()
+    if _is_sandbox_key(api_key):
+        logger.info("EMAIL_DEV_PREVIEW template=%s to=%s subject=%r (sandbox: key missing/placeholder)",
                     template_key, to_email, subject)
         return await _log_dispatch(template_key, to_email, locale,
                                    subject, variables, 'sandbox')
 
-    resend.api_key = RESEND_API_KEY
-    from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>"
+    resend.api_key = api_key
+    from_field = f"{_sender_name()} <{_sender_email()}>"
     to_field   = f"{to_name} <{to_email}>" if to_name else to_email
 
     def _send():
@@ -203,12 +224,21 @@ async def dispatch_email(*, template_key: str, to_email: str,
 
 
 async def retry_failed(limit: int = 25) -> int:
-    """Idempotent retry loop for status='failed' rows. Returns count retried."""
+    """Idempotent retry loop for stuck dispatches.
+
+    Picks up rows in status IN ('failed','sandbox') with retry_count < 3.
+    'sandbox' inclusion lets us auto-recover emails that were short-
+    circuited during a window where RESEND_API_KEY wasn't yet loaded
+    (e.g. brief reload race) — once the key is back, the next call to
+    retry_failed will retry them and they'll go out as 'sent'.
+
+    Returns the count of rows successfully re-dispatched.
+    """
     async with AsyncSessionLocal() as s:
         rows = (await s.execute(text("""
             SELECT id, template_key, to_email, locale, variables
               FROM studio_email_dispatch_log
-             WHERE status = 'failed' AND retry_count < 3
+             WHERE status IN ('failed','sandbox') AND retry_count < 3
              ORDER BY created_at ASC LIMIT :lim
         """), {"lim": limit})).mappings().all()
     count = 0
@@ -228,3 +258,82 @@ async def retry_failed(limit: int = 25) -> int:
         except Exception:
             continue
     return count
+
+
+# ── Startup health check ────────────────────────────────────────────
+async def email_health_check() -> dict:
+    """Live verification of the Resend integration at startup.
+
+    Performs:
+      • presence + shape of RESEND_API_KEY,
+      • Resend GET /domains (so we know the key is accepted),
+      • match between ACCESS_SENDER_EMAIL and a verified domain.
+
+    Returns a dict suitable for both startup logging and a future admin
+    diagnostic surface. NEVER raises — failures are reported in the dict.
+    """
+    import httpx
+    out = {
+        'ok':                False,
+        'api_key_present':   False,
+        'sandbox':           True,
+        'domain_verified':   False,
+        'domain':            None,
+        'sender_email':      _sender_email(),
+        'sender_name':       _sender_name(),
+        'base_url':          _base_url(),
+        'api_reachable':     False,
+        'detail':            None,
+    }
+    key = _resend_api_key()
+    out['api_key_present'] = bool(key)
+    out['sandbox'] = _is_sandbox_key(key)
+    if out['sandbox']:
+        out['detail'] = 'RESEND_API_KEY missing or placeholder — emails routed to sandbox'
+        return out
+    sender_email = _sender_email()
+    sender_domain = sender_email.split('@', 1)[-1].lower() if '@' in sender_email else None
+    try:
+        async with httpx.AsyncClient(timeout=8) as cx:
+            r = await cx.get(
+                "https://api.resend.com/domains",
+                headers={'Authorization': f'Bearer {key}'},
+            )
+            if r.status_code != 200:
+                out['detail'] = f'Resend API HTTP {r.status_code}: {r.text[:160]}'
+                return out
+            out['api_reachable'] = True
+            data = r.json() or {}
+            for d in (data.get('data') or []):
+                if (d.get('name') or '').lower() == sender_domain:
+                    out['domain'] = d.get('name')
+                    out['domain_verified'] = d.get('status') == 'verified'
+                    break
+            if not out['domain']:
+                out['detail'] = f"Sender domain '{sender_domain}' not present in Resend account"
+                return out
+            if not out['domain_verified']:
+                out['detail'] = f"Sender domain '{out['domain']}' not yet verified"
+                return out
+    except Exception as e:
+        out['detail'] = f'Resend reachability error: {e!r}'
+        return out
+    out['ok'] = True
+    return out
+
+
+def log_email_health(report: dict) -> None:
+    """Log the email health report at startup (or anywhere)."""
+    if report.get('ok'):
+        logger.info(
+            "EMAIL STATUS · Resend API: OK · Domain: %s · Sandbox: OFF · Ready: YES",
+            report.get('domain'),
+        )
+    else:
+        logger.error(
+            "EMAIL STATUS · Resend API: %s · Domain: %s · Sandbox: %s · Ready: NO · detail=%s",
+            'OK' if report.get('api_reachable') else 'NOT_REACHABLE',
+            report.get('domain') or '—',
+            'ON' if report.get('sandbox') else 'OFF',
+            report.get('detail'),
+        )

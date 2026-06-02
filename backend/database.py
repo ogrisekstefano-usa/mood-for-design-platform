@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine,
 )
 
-load_dotenv(Path(__file__).parent / '.env')
+load_dotenv(Path(__file__).parent / '.env', override=True)
 
 DATABASE_URL: str = os.environ['DATABASE_URL']
 
