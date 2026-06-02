@@ -616,6 +616,38 @@ def _run_set_extraction(set_id: str, tenant_id: str,
                 max_candidates=max_candidates,
             )
 
+            # 1.b · Page-level analysis (OCR candidates + language hint)
+            ocr_pages = 0
+            text_pages = 0
+            lang_counts = {"it": 0, "en": 0, "other": 0}
+            try:
+                import fitz as _fitz
+                _doc = _fitz.open(stream=pdf_bytes, filetype="pdf")
+                IT_HINTS = ("della", "delle", "degli", "questo", "questa",
+                            "anche", "nostra", "nostro", "design", "italiano",
+                            "collezione", "finitura", "materiale", "specchio")
+                EN_HINTS = ("the ", "and ", "with ", "design ", "collection",
+                            "finish", "material", "available", "designed")
+                for _p in _doc:
+                    txt = (_p.get_text("text") or "").strip()
+                    if len(txt) < 30:
+                        ocr_pages += 1
+                        continue
+                    text_pages += 1
+                    low = txt.lower()
+                    it_hit = sum(1 for h in IT_HINTS if h in low)
+                    en_hit = sum(1 for h in EN_HINTS if h in low)
+                    if it_hit > en_hit and it_hit >= 2:
+                        lang_counts["it"] += 1
+                    elif en_hit > it_hit and en_hit >= 2:
+                        lang_counts["en"] += 1
+                    else:
+                        lang_counts["other"] += 1
+                _doc.close()
+            except Exception as e:
+                logger.debug(f"page analysis skipped: {e}")
+            doc_lang = max(lang_counts, key=lang_counts.get) if any(lang_counts.values()) else "unknown"
+
             # 2. Write page snapshots (visual_role per page)
             page_count = d.get("page_count") or 0
             sections = (c.table("product_sections")
@@ -631,17 +663,24 @@ def _run_set_extraction(set_id: str, tenant_id: str,
             )
 
             # 3. Mark doc as review-ready
+            metrics_full = dict(result.get("metrics") or {})
+            metrics_full.update({
+                "ocr_pages": ocr_pages,
+                "text_pages": text_pages,
+                "language": doc_lang,
+                "language_pages_breakdown": lang_counts,
+            })
             c.table("brand_catalog_documents").update({
                 "extraction_status": "review",
                 "extraction_completed_at": _now(),
                 "pages_processed": pages_written,
-                "metrics": result["metrics"],
+                "metrics": metrics_full,
                 "updated_at": _now(),
             }).eq("id", bcd_id).execute()
             c.table("source_documents").update({
                 "extraction_status": "review",
                 "extraction_completed_at": _now(),
-                "metrics": result["metrics"],
+                "metrics": metrics_full,
                 "updated_at": _now(),
             }).eq("id", src_doc_id).execute()
             _refresh_set_progress(c, set_id)
@@ -707,18 +746,182 @@ def extraction_status(set_id: str, ctx=Depends(get_tenant_context)):
                     "metrics,extraction_started_at,extraction_completed_at")
             .eq("catalog_set_id", set_id).eq("tenant_id", tid)
             .order("sort_order").execute().data or [])
+
+    # ── ETA computation (linear projection from elapsed/processed)
+    eta_seconds = None
+    elapsed_seconds = None
+    pages_per_second = None
+    started_at = cset.get("extraction_started_at")
+    total_pages = int(cset.get("total_pages") or 0)
+    pages_done = int(cset.get("pages_processed") or 0)
+    if started_at and total_pages > 0:
+        try:
+            from datetime import datetime as _dt, timezone as _tz
+            t_start = _dt.fromisoformat(started_at.replace("Z", "+00:00"))
+            if t_start.tzinfo is None:
+                t_start = t_start.replace(tzinfo=_tz.utc)
+            now = _dt.now(_tz.utc)
+            elapsed_seconds = max(0, int((now - t_start).total_seconds()))
+            if elapsed_seconds > 5 and pages_done > 0:
+                pps = pages_done / elapsed_seconds
+                pages_per_second = round(pps, 3)
+                remaining = max(0, total_pages - pages_done)
+                if pps > 0:
+                    eta_seconds = int(remaining / pps)
+        except Exception:
+            pass
+
+    # Aggregate OCR + language hints from per-doc metrics
+    ocr_pages_total = 0
+    text_pages_total = 0
+    lang_pages = {"it": 0, "en": 0, "other": 0}
+    for d in docs:
+        m = (d.get("metrics") or {})
+        ocr_pages_total += int(m.get("ocr_pages") or 0)
+        text_pages_total += int(m.get("text_pages") or 0)
+        b = (m.get("language_pages_breakdown") or {})
+        for k in ("it", "en", "other"):
+            lang_pages[k] += int(b.get(k) or 0)
+
+    # Per-doc normalised status labels for the UI (queued/processing/completed/failed)
+    def _phase(s: str) -> str:
+        return {"pending": "queued", "extracting": "processing",
+                 "review": "completed", "validated": "completed",
+                 "failed": "failed"}.get(s, s or "queued")
+
+    doc_rows = []
+    for d in docs:
+        m = (d.get("metrics") or {})
+        doc_rows.append({
+            **{k: v for k, v in d.items() if k != "_id"},
+            "phase": _phase(d.get("extraction_status") or "pending"),
+            "ocr_pages": int(m.get("ocr_pages") or 0),
+            "text_pages": int(m.get("text_pages") or 0),
+            "language": m.get("language") or "unknown",
+        })
+
     return {
         "catalog_set_id":      set_id,
         "status":              cset["status"],
+        "phase":               {"draft":"queued","uploading":"queued",
+                                "extracting":"processing",
+                                "needs_review":"completed",
+                                "validated":"completed","published":"completed",
+                                "archived":"archived"}.get(cset["status"], cset["status"]),
         "document_count":      cset.get("document_count") or 0,
         "documents_extracted": cset.get("documents_extracted") or 0,
         "documents_failed":    cset.get("documents_failed") or 0,
-        "total_pages":         cset.get("total_pages") or 0,
-        "pages_processed":     cset.get("pages_processed") or 0,
+        "total_pages":         total_pages,
+        "pages_processed":     pages_done,
+        "pages_remaining":     max(0, total_pages - pages_done),
         "extraction_progress": float(cset.get("extraction_progress") or 0.0),
-        "extraction_started_at":   cset.get("extraction_started_at"),
+        "extraction_started_at":   started_at,
         "extraction_completed_at": cset.get("extraction_completed_at"),
-        "documents":           [_slim(d) for d in docs],
+        "elapsed_seconds":     elapsed_seconds,
+        "eta_seconds":         eta_seconds,
+        "pages_per_second":    pages_per_second,
+        "ocr_pages":           ocr_pages_total,
+        "text_pages":          text_pages_total,
+        "language_pages_breakdown": lang_pages,
+        "documents":           doc_rows,
+    }
+
+
+@router.get("/catalog-sets/{set_id}/extraction-summary")
+def extraction_summary(set_id: str, ctx=Depends(get_tenant_context)):
+    """Final extraction-only summary. Independent from Knowledge Package scoring.
+
+    Per Founder lock ITER195: this report covers ONLY raw extraction quality:
+    duration, OCR pages, failed pages, detected language distribution. No
+    Brand Atlas readiness, no Academy/Marketboard scoring.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    cset = _require_set(c, tid, set_id)
+    docs = (c.table("brand_catalog_documents")
+            .select("id,display_name,original_filename,extraction_status,"
+                    "page_count,pages_processed,metrics,extraction_started_at,"
+                    "extraction_completed_at,error_logs")
+            .eq("catalog_set_id", set_id).eq("tenant_id", tid)
+            .order("sort_order").execute().data or [])
+
+    # Duration
+    started_at = cset.get("extraction_started_at")
+    completed_at = cset.get("extraction_completed_at")
+    duration_seconds = None
+    if started_at and completed_at:
+        try:
+            from datetime import datetime as _dt, timezone as _tz
+            t0 = _dt.fromisoformat(started_at.replace("Z", "+00:00"))
+            t1 = _dt.fromisoformat(completed_at.replace("Z", "+00:00"))
+            if t0.tzinfo is None:
+                t0 = t0.replace(tzinfo=_tz.utc)
+            if t1.tzinfo is None:
+                t1 = t1.replace(tzinfo=_tz.utc)
+            duration_seconds = max(0, int((t1 - t0).total_seconds()))
+        except Exception:
+            pass
+
+    completed = [d for d in docs if d["extraction_status"] in ("review", "validated")]
+    failed = [d for d in docs if d["extraction_status"] == "failed"]
+
+    ocr_pages_total = sum(int((d.get("metrics") or {}).get("ocr_pages") or 0)
+                           for d in completed)
+    text_pages_total = sum(int((d.get("metrics") or {}).get("text_pages") or 0)
+                            for d in completed)
+    pages_processed_total = sum(int(d.get("pages_processed") or 0) for d in docs)
+    pages_failed_total = sum(int(d.get("page_count") or 0) for d in failed)
+
+    lang_pages = {"it": 0, "en": 0, "other": 0}
+    docs_by_lang = {"it": 0, "en": 0, "other": 0, "unknown": 0}
+    for d in completed:
+        m = (d.get("metrics") or {})
+        b = (m.get("language_pages_breakdown") or {})
+        for k in ("it", "en", "other"):
+            lang_pages[k] += int(b.get(k) or 0)
+        lang = m.get("language") or "unknown"
+        if lang not in docs_by_lang:
+            lang = "unknown"
+        docs_by_lang[lang] += 1
+
+    # Per-doc rows for the report
+    doc_report = []
+    for d in docs:
+        m = (d.get("metrics") or {})
+        errs = d.get("error_logs") or []
+        first_err = errs[0].get("error") if errs and isinstance(errs[0], dict) else None
+        doc_report.append({
+            "id": d["id"],
+            "filename": d.get("original_filename") or d.get("display_name"),
+            "status": d["extraction_status"],
+            "page_count": d.get("page_count"),
+            "pages_processed": d.get("pages_processed"),
+            "ocr_pages": int(m.get("ocr_pages") or 0),
+            "text_pages": int(m.get("text_pages") or 0),
+            "language": m.get("language") or "unknown",
+            "extraction_started_at": d.get("extraction_started_at"),
+            "extraction_completed_at": d.get("extraction_completed_at"),
+            "error": (first_err[:200] if first_err else None),
+        })
+
+    return {
+        "catalog_set_id": set_id,
+        "catalog_set_name": cset.get("name"),
+        "status": cset["status"],
+        "documents_total": len(docs),
+        "documents_completed": len(completed),
+        "documents_failed": len(failed),
+        "pages_total": cset.get("total_pages") or 0,
+        "pages_processed": pages_processed_total,
+        "pages_failed": pages_failed_total,
+        "ocr_pages": ocr_pages_total,
+        "text_pages": text_pages_total,
+        "duration_seconds": duration_seconds,
+        "language_pages_breakdown": lang_pages,
+        "language_documents_breakdown": docs_by_lang,
+        "extraction_started_at": started_at,
+        "extraction_completed_at": completed_at,
+        "documents": doc_report,
     }
 
 
