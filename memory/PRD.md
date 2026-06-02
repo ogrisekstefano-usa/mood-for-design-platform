@@ -28,6 +28,7 @@ i founder accedono al loro Blueprint workspace via magic-link.
 
 ## P1 backlog (FROZEN by user)
 - **Relationship OS™ Foundation** — 🟢 **FOUNDATION_READY** (2 Giu 2026). 5 decisioni architetturali ratificate (D1 `tenant_contacts` canonical, D2 legacy READ-ONLY, D3 `relationship_notifications` canonical, D4 founder gestisce propri contatti con isolation, D5 timeline filtra email tecniche). Roadmap M0–M5 dettagliata in `/app/memory/RELATIONSHIP_OS_IMPLEMENTATION_ROADMAP.md` (24.5d totali). M0 pronto a partire.
+- **M1 Contact CRM** — 🟢 **READY_FOR_M1_IMPLEMENTATION** (2 Giu 2026). Piano esecutivo definitivo in `/app/memory/COMMAND_CENTER_CRM_M1_EXECUTION_PLAN.md`: UX completa (5 tab tenant detail, drawer contact card, sidebar Tenants), schema delta integrabile in 031 (+0.5g per relationship_owner + quick_action + GIN search indexes), API surface admin+founder, search globale `cmd+k`, filtri persistiti, permission matrix, acceptance criteria, effort revisionato a ~10.5g (era 5g — scope ampliato con search/filtri/quick actions/mirror founder).
 - Tenant Launch Pack M1 (Schema 031 + CMS seed)
 - Advisor Digest (`advisor_new_lead` digest pool)
 - Studio Requests UI: chip markets/languages/experiences
