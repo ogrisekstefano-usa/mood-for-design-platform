@@ -10805,3 +10805,29 @@ ARBI render perfetto: badge, heart saved, mood pills, quick preview hover, top c
 - Brand non certificati: workflow per popolare hero_image + mood_dna in batch
 - Cleanup duplicato ARBI (P0 dell'audit ITER202.5)
 - Drawer "Quick Preview" anche mobile (touch)
+
+---
+
+## ITER203-BIS · BRAND IDENTITY LAYER™ (2026-06-03)
+
+### 🎯 Identità persistente, non immagini casuali
+Eliminata dipendenza da hero_image_url. Ogni brand ha identità progettuale DB-driven che guida la card del Brand Atlas anche senza foto.
+
+### Schema (migration 124)
+`brands.brand_language` (TEXT) + `brands.hero_strategy` (TEXT). Più `positioning` e `mood_dna` ora popolati.
+
+### 16 brand curati + ARBI seeded con identità reale
+- ARBI / Artemide / Margraf / Boffi / B&B Italia / Cassina / Flexform / Edra / Minotti / Molteni&C / Rimadesio / Poliform / Maxalto / Bonaldo / Cattelan Italia / Flos
+- Ogni brand ha positioning, hero_strategy, brand_language
+
+### Hero strategies (6 trattamenti visivi)
+`bathroom_environment` (cool light + tile pattern) · `iconic_product` (dark stage spotlight) · `quarry_project_texture` (stone vein) · `flagship_environment` (warm interior glow) · `editorial_portrait` (vignette) · `material_swatch` (conic gradient) + `default` fallback
+
+### Card gerarchia rivista
+1. Hero (image OR strategy treatment) → 2. Positioning UPPERCASE → 3. Name editoriale → 4. Brand language italic → 5. Mood DNA pills → 6. Top collections → 7. CTA
+
+### Critical Rules rispettate
+NO gradient placeholder generico. NO immagini casuali. NO hardcoded UI. Tutto DB-driven. Chameleon-ready via CSS class + CSS variable.
+
+### Report
+`/app/memory/ITER203_BIS_BRAND_IDENTITY_LAYER_REPORT.md`

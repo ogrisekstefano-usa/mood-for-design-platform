@@ -226,6 +226,132 @@
   background: linear-gradient(180deg,
     rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%);
 }
+
+/* ── HERO TREATMENTS (no-photo states) ────────────────────────────
+ * Each treatment is a distinct visual signature driven by
+ * brands.hero_strategy. Adding a new strategy = adding a new CSS
+ * block — no JS change required. Chameleon™ can override at runtime
+ * by injecting --atlas2-treatment-* CSS variables.
+ */
+.atlas2-hero--treatment {
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background-color: var(--atlas2-surface-2);
+}
+.atlas2-hero-treatment-inner {
+  position: relative; z-index: 2;
+  text-align: center;
+  padding: 24px;
+  color: rgba(255,255,255,.92);
+}
+.atlas2-hero-initial {
+  font-family: var(--atlas2-font-heading);
+  font-size: 88px;
+  line-height: 1;
+  font-weight: 400;
+  color: rgba(255,255,255,.15);
+  letter-spacing: -.04em;
+  margin-bottom: 8px;
+}
+.atlas2-hero-positioning {
+  font-family: var(--atlas2-font-heading);
+  font-style: italic;
+  font-size: 19px;
+  color: rgba(255,255,255,.85);
+  max-width: 260px;
+  line-height: 1.25;
+  margin: 0 auto;
+}
+.atlas2-hero-strategy-label {
+  margin-top: 14px;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+}
+
+/* — bathroom_environment: cool architectural light + tile pattern — */
+.atlas2-hero-strategy--bathroom_environment {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(173,216,230,.18), transparent 60%),
+    linear-gradient(160deg, #1a2532 0%, #0f1b27 100%);
+}
+.atlas2-hero-strategy--bathroom_environment::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+.atlas2-hero-strategy--bathroom_environment .atlas2-hero-initial {
+  color: rgba(173,216,230,.22);
+}
+
+/* — iconic_product: dark stage + spotlight pool — */
+.atlas2-hero-strategy--iconic_product {
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 65%, rgba(255,255,255,.10), transparent 70%),
+    linear-gradient(180deg, #0d0d10 0%, #1a1a1f 100%);
+}
+.atlas2-hero-strategy--iconic_product .atlas2-hero-initial {
+  color: rgba(201,168,117,.32);
+}
+
+/* — quarry_project_texture: stone vein texture — */
+.atlas2-hero-strategy--quarry_project_texture {
+  background:
+    radial-gradient(ellipse at 70% 30%, rgba(180,160,130,.18), transparent 65%),
+    linear-gradient(135deg, #2a241c 0%, #1a1612 60%, #2c2620 100%);
+}
+.atlas2-hero-strategy--quarry_project_texture::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background-image:
+    radial-gradient(circle at 20% 40%, rgba(255,255,255,.06) 0%, transparent 8%),
+    radial-gradient(circle at 65% 70%, rgba(255,255,255,.04) 0%, transparent 12%),
+    radial-gradient(circle at 80% 25%, rgba(180,160,130,.08) 0%, transparent 14%);
+}
+.atlas2-hero-strategy--quarry_project_texture .atlas2-hero-initial {
+  color: rgba(180,160,130,.3);
+}
+
+/* — flagship_environment: warm interior light — */
+.atlas2-hero-strategy--flagship_environment {
+  background:
+    radial-gradient(ellipse at 25% 90%, rgba(232,180,120,.16), transparent 60%),
+    linear-gradient(170deg, #1e1812 0%, #0e0a07 100%);
+}
+.atlas2-hero-strategy--flagship_environment::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(232,180,120,.04) 35%, transparent 70%);
+}
+.atlas2-hero-strategy--flagship_environment .atlas2-hero-initial {
+  color: rgba(232,180,120,.3);
+}
+
+/* — editorial_portrait: vignette focus — */
+.atlas2-hero-strategy--editorial_portrait {
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 40%, rgba(255,255,255,.08), transparent 70%),
+    #0a0a0c;
+}
+
+/* — material_swatch: tonal grid — */
+.atlas2-hero-strategy--material_swatch {
+  background:
+    conic-gradient(from 200deg at 50% 50%,
+      #2a241c 0deg, #1a1612 90deg, #312e2b 180deg, #1a1a1f 270deg, #2a241c 360deg);
+}
+.atlas2-hero-strategy--material_swatch::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(0deg, rgba(0,0,0,.4), rgba(0,0,0,0));
+}
+
+/* — default fallback (when hero_strategy is null/unknown) — */
+.atlas2-hero--treatment.atlas2-hero-strategy--default {
+  background: linear-gradient(135deg, #1a1a1f 0%, #2a261c 50%, #312e2b 100%);
+}
 .atlas2-card-badges {
   position: absolute; top: 12px; left: 12px;
   display: flex; gap: 6px;
@@ -304,9 +430,10 @@
 .atlas2-card-body {
   padding: 18px 18px 22px;
 }
-.atlas2-card-cat {
+.atlas2-card-positioning {
   font-size: 10px; font-weight: 600;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
+  text-transform: uppercase;
   color: var(--atlas2-accent);
   margin-bottom: 6px;
 }
@@ -316,12 +443,11 @@
   margin: 0 0 6px;
   letter-spacing: -.005em;
 }
-.atlas2-card-narrative {
+.atlas2-card-language {
   font-size: 13px;
   color: var(--atlas2-text-muted);
   margin: 0 0 14px;
   line-height: 1.45;
-  font-style: italic;
 }
 
 .atlas2-mood-row {

@@ -12,9 +12,6 @@ import { toast } from 'sonner';
 import KE from '../../lib/knowledgeApi';
 import './brand-atlas-2.css';
 
-const FALLBACK_HERO =
-  'linear-gradient(135deg, #1a1a1f 0%, #2a261c 50%, #312e2b 100%)';
-
 export default function BrandAtlas2Page() {
   const [cards, setCards] = useState(null);
   const [facets, setFacets] = useState({ mood_dna: [], markets: [], positioning: [] });
@@ -174,10 +171,13 @@ export default function BrandAtlas2Page() {
 /* ─────────────────────────────────────────────────────────────────── */
 function AtlasCard({ card, isHovered, onHover, onToggleSave }) {
   const hasHero = !!card.hero_image_url;
+  const strategy = card.hero_strategy || 'default';
   const heroStyle = hasHero
     ? { backgroundImage: `url(${card.hero_image_url})` }
-    : { backgroundImage: FALLBACK_HERO };
+    : {};
   const moods = (card.mood_dna || []).slice(0, 3);
+  // Initial used by treatment fallback (data-driven, not hardcoded)
+  const initial = (card.name || '?').trim()[0]?.toUpperCase() || '?';
   return (
     <Link
       to={`/inspirations/brands/${card.id}`}
@@ -186,10 +186,31 @@ function AtlasCard({ card, isHovered, onHover, onToggleSave }) {
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >
-      <div className="atlas2-card-hero" style={heroStyle}>
+      <div
+        className={`atlas2-card-hero ${hasHero
+          ? 'atlas2-hero--photo'
+          : `atlas2-hero--treatment atlas2-hero-strategy--${strategy}`}`}
+        style={heroStyle}
+        data-strategy={strategy}
+        data-testid={`atlas2-hero-${card.id}`}
+      >
+        {/* Treatment-only chrome (only when no photo) */}
+        {!hasHero && (
+          <div className="atlas2-hero-treatment-inner">
+            <div className="atlas2-hero-initial">{initial}</div>
+            {card.positioning && (
+              <div className="atlas2-hero-positioning">
+                {card.positioning}
+              </div>
+            )}
+            <div className="atlas2-hero-strategy-label">
+              {(strategy || 'default').replace(/_/g, ' ')}
+            </div>
+          </div>
+        )}
+
         <div className="atlas2-card-veil" />
 
-        {/* Save button — top right */}
         <button
           className={`atlas2-save ${card.saved ? 'atlas2-save--on' : ''}`}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(); }}
@@ -200,7 +221,6 @@ function AtlasCard({ card, isHovered, onHover, onToggleSave }) {
                        : <Icons.Heart size={14} />}
         </button>
 
-        {/* Badge — top left */}
         <div className="atlas2-card-badges">
           {card.certified ? (
             <span className="atlas2-badge atlas2-badge--certified">
@@ -215,7 +235,6 @@ function AtlasCard({ card, isHovered, onHover, onToggleSave }) {
           )}
         </div>
 
-        {/* Quick preview on hover (desktop) */}
         {isHovered && (
           <div className="atlas2-quick-preview" data-testid={`atlas2-preview-${card.id}`}>
             <QPItem icon={<Icons.Layers size={12} />}
@@ -230,16 +249,20 @@ function AtlasCard({ card, isHovered, onHover, onToggleSave }) {
         )}
       </div>
 
-      {/* Body */}
+      {/* Body — hierarchy: Positioning → Name → Mood DNA → CTA */}
       <div className="atlas2-card-body">
         {card.positioning && (
-          <div className="atlas2-card-cat">
-            {String(card.positioning).toUpperCase()}
+          <div className="atlas2-card-positioning"
+                data-testid={`atlas2-card-${card.id}-positioning`}>
+            {card.positioning}
           </div>
         )}
         <h3 className="atlas2-card-name">{card.name}</h3>
-        {card.hero_subtitle && (
-          <p className="atlas2-card-narrative">{card.hero_subtitle}</p>
+        {card.brand_language && (
+          <p className="atlas2-card-language"
+              data-testid={`atlas2-card-${card.id}-language`}>
+            {card.brand_language}
+          </p>
         )}
         {moods.length > 0 && (
           <div className="atlas2-mood-row">

@@ -249,6 +249,9 @@ def brand_embassy(brand_id: str, ctx=Depends(get_tenant_context)):
             "country":     brand.get("country"),
             "website":     brand.get("website"),
             "logo_url":    brand.get("logo_url"),
+            "positioning":      brand.get("positioning"),
+            "brand_language":   brand.get("brand_language"),
+            "hero_strategy":    brand.get("hero_strategy"),
             "atlas_certified_at": brand.get("atlas_certified_at"),
             "verified":    bool(brand.get("atlas_certified_at")
                                 or (cset and cset[0]["status"] == "published")),
@@ -501,12 +504,14 @@ def atlas_discover(ctx=Depends(get_tenant_context)):
     private_brands = (c.table("brands").select(
         "id,name,slug,category,country,logo_url,positioning,luxury_tier,"
         "primary_markets,hero_image_url,hero_title,hero_subtitle,"
-        "hero_description,mood_dna,atlas_certified_at")
+        "hero_description,mood_dna,atlas_certified_at,"
+        "brand_language,hero_strategy")
         .eq("tenant_id", tid).execute().data or [])
     curated_brands = (c.table("brands").select(
         "id,name,slug,category,country,logo_url,positioning,luxury_tier,"
         "primary_markets,hero_image_url,hero_title,hero_subtitle,"
-        "hero_description,mood_dna,atlas_certified_at")
+        "hero_description,mood_dna,atlas_certified_at,"
+        "brand_language,hero_strategy")
         .is_("tenant_id", "null").execute().data or [])
     brands = sorted(private_brands + curated_brands,
                      key=lambda b: (b.get("name") or "").lower())
@@ -596,6 +601,8 @@ def atlas_discover(ctx=Depends(get_tenant_context)):
             "hero_title":       b.get("hero_title") or b["name"],
             "hero_subtitle":    b.get("hero_subtitle"),
             "hero_description": b.get("hero_description"),
+            "brand_language":   b.get("brand_language"),
+            "hero_strategy":    b.get("hero_strategy"),
             "mood_dna":         (b.get("mood_dna") or [])[:5],
             "counts": {
                 "collections": col_count,
