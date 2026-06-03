@@ -280,3 +280,67 @@
 ### Report
 - `/app/memory/ACTIVATION_FOUNDATION_IMPLEMENTATION_REPORT.md`
 - `/app/test_reports/iteration_162.json`
+
+---
+
+## ITER204 · Studio Library Bridge™ + UI Refactor — 2026-06-03
+
+**Stato:** ✅ Completato · Backend 15/15 PASS · Frontend 100% testids · 0 regressioni i18n
+
+### Consegnato
+
+**1. UI Refactor (Navbar + Sidebar + Global Create Modal)**
+- Topbar pulita: rimossi `WorkspaceChip` ("85 MOOD for DESIGN") e `PrimaryCta` ("Nuovo Lead" / "Nuovo Design Journey™")
+- Sidebar: rimosso "+ Nuovo Lead", sostituito con **"+ Crea"** (data-testid: `sidebar-create-trigger`)
+- Brand mark in sidebar usa il monogramma dinamico da `tenant.theme.monogram` (no più "M" hardcoded)
+- **Global Create Modal** (`CreateModal.jsx`) montato a livello root in `DashboardLayout.jsx`. Config-driven, 6 card (Design Journey, Lead, Moodboard, Brand, Ispirazione, Materiale). 100% theme tokens, 100% `t()` i18n.
+
+**2. Create Moodboard™ Modal (2 percorsi)**
+- Nuovo `CreateMoodboardModal.jsx` con due path: **From Studio Library™** (Consigliato) · **Start Blank Canvas**
+- Vincolo Design Journey enforced: senza Journey attivo mostra notice + CTA "Scegli un Journey →"
+- Mostra il count dinamico di item nella Studio Library
+
+**3. ITER204 · Studio Library Bridge™ (Backend)**
+- Migrazione `125_iter204_studio_library_bridge.sql`:
+  - Tabella `studio_library_items` (polimorfica: brand/collection/product/material/designer)
+  - `source_type` nullable (academy/editorial/case_study/market_insight/brand_atlas/manual/import)
+  - UNIQUE (tenant_id, entity_type, entity_id) → idempotenza
+  - Backfill automatico da `studio_brand_links`
+  - Nav module `studio_library` registrato in `feature_modules_registry`
+- Router `studio_library.py`: GET `/stats`, GET `/`, GET `/resolved`, POST `/`, POST `/toggle`, DELETE `/{item_id}`, DELETE `/by-entity`
+- Sync bidirezionale con `studio_brand_links` legacy
+
+**4. ITER204 · Studio Library Bridge™ (Frontend)**
+- `/app/frontend/src/pages/inspirations/StudioLibraryPage.jsx` (+ CSS): pagina editoriale con header curatoriale, counter, filtri per tipo, search, grid card, empty state, rimozione
+- `SaveToLibraryButton.jsx` riusabile (compact/full mode)
+- API client `studioLibraryApi.js`
+- Route `/studio-library` registrata in `App.js`
+
+**5. i18n (it-IT + en-US)**
+- Aggiunti namespace `studio_library.*` (eyebrow, subtitle, total, types, source, empty, remove, save, missing)
+- Aggiunti namespace `create.*` (cta, modal, designJourney, lead, moodboard.modal/from_library/blank/recommended, brand, inspiration, material)
+- `nav.studio_library` aggiunto a entrambi i locale
+
+### Bug risolti (dal testing agent)
+- **DELETE /api/studio-library/by-entity returned 500** — FastAPI route-ordering bug: `@router.delete("/{item_id}")` veniva dichiarato PRIMA di `/by-entity` e catturava la stringa come UUID. Fix: route statiche dichiarate prima di quelle dinamiche.
+
+### API endpoints (nuovi)
+- `GET /api/studio-library/stats` → counts per entity_type
+- `GET /api/studio-library/` → lista item (filtro `?entity_type=`)
+- `GET /api/studio-library/resolved` → lista con entità hydrate
+- `POST /api/studio-library/` → save (idempotente)
+- `POST /api/studio-library/toggle` → toggle save/unsave
+- `DELETE /api/studio-library/{item_id}` → rimuovi per id
+- `DELETE /api/studio-library/by-entity` → rimuovi per (entity_type, entity_id)
+
+### File chiave
+- Backend: `/app/backend/routers/studio_library.py`, `/app/backend/routers/brand_experience.py` (sync), `/app/supabase/migrations/125_iter204_studio_library_bridge.sql`, `/app/backend/scripts/apply_migration_125.py`
+- Frontend: `CreateModal.jsx`, `CreateMoodboardModal.jsx`, `DashboardLayout.jsx`, `StudioLibraryPage.jsx`, `SaveToLibraryButton.jsx`, `studioLibraryApi.js`, `App.js`, `i18n/strings/it-IT.json` + `en-US.json`
+- Test: `/app/backend/tests/test_iter204_studio_library.py` (15 PASS)
+- Report: `/app/test_reports/iteration_204.json`
+
+### Note backlog (non bloccanti)
+- Pre-existing React warning "setState during render" su mount Dashboard (non introdotto da ITER204)
+- "missing 8" badge editoriale residuo per chiavi i18n di altri namespace fuori scope
+- Pulsanti "Salva in Studio Library" da inserire nelle card di Collection/Product/Material/Designer dentro `BrandEmbassyPage` (component `SaveToLibraryButton` già pronto)
+

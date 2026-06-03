@@ -514,7 +514,8 @@
     "new_journey": "Nuovo Design Journey™",
     "new_relationship": "Nuovo Lead",
     "new_contact": "Nuovo Contatto",
-    "new_lead": "Nuovo Lead"
+    "new_lead": "Nuovo Lead",
+    "studio_library": "Studio Library"
   },
   "projects": {
     "tabs": {
@@ -2308,6 +2309,103 @@
       "zone_desktop": "Desktop 16:9",
       "zone_square": "Card 1:1",
       "zone_mobile": "Blocco mobile"
+    }
+  },
+  "studio_library": {
+    "eyebrow": "Patrimonio curatoriale",
+    "subtitle": "Brand, collezioni, prodotti, materiali e designer che lo studio ha scelto di conservare. Da qui partono i Design Journey e le Moodboard.",
+    "total": "salvati",
+    "loading": "Sto leggendo l’archivio…",
+    "search": {
+      "placeholder": "Cerca per nome…"
+    },
+    "types": {
+      "all": "Tutti",
+      "brand": "Brand",
+      "collection": "Collezioni",
+      "product": "Prodotti",
+      "material": "Materiali",
+      "designer": "Designer"
+    },
+    "source": {
+      "academy": "academy",
+      "editorial": "editorial",
+      "case_study": "case study",
+      "market_insight": "market insight",
+      "brand_atlas": "brand atlas",
+      "manual": "manuale",
+      "import": "import"
+    },
+    "empty": {
+      "title": "Lo scaffale è ancora vuoto",
+      "body": "Visita la Brand Atlas e salva i brand, le collezioni o i materiali che vuoi avere a portata di mano per ogni progetto.",
+      "cta": "Esplora Brand Atlas"
+    },
+    "remove": {
+      "success": "Rimosso dalla Studio Library",
+      "error": "Rimozione fallita",
+      "aria": "Rimuovi dalla Library"
+    },
+    "save": {
+      "add": "Salva in Library",
+      "saved": "In Library",
+      "toast_saved": "Salvato in Studio Library™",
+      "toast_removed": "Rimosso da Studio Library™",
+      "toast_error": "Operazione fallita"
+    },
+    "missing": {
+      "name": "Voce rimossa"
+    }
+  },
+  "create": {
+    "cta": {
+      "label": "Crea"
+    },
+    "modal": {
+      "title": "Crea nuovo",
+      "subtitle": "Scegli cosa vuoi creare"
+    },
+    "designJourney": {
+      "title": "Nuovo Design Journey",
+      "desc": "Avvia un nuovo progetto e guida il cliente dalla scoperta alla realizzazione."
+    },
+    "lead": {
+      "title": "Nuovo Lead",
+      "desc": "Aggiungi un nuovo contatto o opportunità commerciale."
+    },
+    "moodboard": {
+      "title": "Nuova Moodboard",
+      "desc": "Crea una moodboard collegata a un progetto esistente.",
+      "recommended": "Consigliato",
+      "modal": {
+        "title": "Create Moodboard",
+        "subtitle_no_journey": "Le Moodboard appartengono sempre a un Design Journey.",
+        "subtitle_in_journey": "Per il Design Journey \"{name}\""
+      },
+      "from_library": {
+        "title": "From Studio Library™",
+        "desc": "Utilizza brand, materiali, prodotti e collezioni già selezionati nella Studio Library.",
+        "count": "{n} elementi disponibili",
+        "empty": "Library vuota — salva prima qualche brand dall’Atlas"
+      },
+      "blank": {
+        "title": "Start Blank Canvas",
+        "desc": "Inizia una moodboard libera e aggiungi contenuti successivamente."
+      },
+      "requires_journey": "Per continuare seleziona o crea un Design Journey: ogni Moodboard vive dentro un percorso progettuale.",
+      "go_select_journey": "Scegli un Journey →"
+    },
+    "brand": {
+      "title": "Nuovo Brand",
+      "desc": "Aggiungi un produttore o partner alla libreria."
+    },
+    "inspiration": {
+      "title": "Nuova Ispirazione",
+      "desc": "Salva immagini, link o idee nella Inspiration Library."
+    },
+    "material": {
+      "title": "Nuovo Materiale",
+      "desc": "Aggiungi un materiale alla Material Library."
     }
   }
 }
