@@ -1,5 +1,11 @@
 # M3 — ACTIVITY LOG ADVANCED™ — EXECUTION PLAN
 
+> ⚠️ **SUPERATO da `M3_FINAL_EXECUTION_PLAN.md` (2026-06-02)**
+>
+> Questo documento è la **v0** del piano M3. Il piano definitivo
+> recepisce le decisioni utente D1-D7 e si trova in
+> `/app/memory/M3_FINAL_EXECUTION_PLAN.md`. Consultare quello.
+>
 > *Generato 2026-06-02 da E1 (Emergent) su autorizzazione utente.*
 > **STOP — Solo piano. Nessuna implementazione, migration o deploy.**
 
