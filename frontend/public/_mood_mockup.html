@@ -47,6 +47,8 @@
   .topbar .actions .bell{position:relative;color:var(--t2);padding:0.4rem;cursor:pointer}
   .topbar .actions .bell:hover{color:var(--t1)}
   .topbar .actions .bell .badge{position:absolute;top:-2px;right:-2px;background:var(--red);color:#fff;font-size:0.55rem;font-weight:600;padding:1px 4px;border-radius:8px;font-variant-numeric:tabular-nums}
+  .topbar .actions .bell .bell-crit{position:absolute;top:-6px;left:-6px;width:14px;height:14px;background:var(--red);color:#fff;font-size:0.6rem;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:pulse 1.8s infinite;border:1px solid var(--bg)}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(229,72,77,0.7)}50%{box-shadow:0 0 0 6px rgba(229,72,77,0)}}
   .topbar .actions .user{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--t2)}
   .topbar .actions .user .ava{width:24px;height:24px;background:var(--bg-3);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--teal);font-weight:600;letter-spacing:0.05em}
 
@@ -327,6 +329,7 @@
         <div class="bell" onclick="document.body.classList.toggle('show-notif')">
           🔔
           <span class="badge">12</span>
+          <span class="bell-crit" title="Notifiche critiche">!</span>
         </div>
         <div class="user">
           <span>Raffaella</span>
@@ -846,17 +849,37 @@
     <div class="filters">
       <a class="on">Tutte <span style="color:var(--t4);font-size:0.55rem">· 47</span></a>
       <a>Non lette <span style="color:var(--t4);font-size:0.55rem">· 12</span></a>
-      <a>Menzioni</a>
-      <a>Sistema</a>
+      <a style="color:var(--red)">Critiche <span style="color:var(--t4);font-size:0.55rem">· 3</span></a>
+      <a>Attività</a>
+      <a>Tenant</a>
+      <a>Advisor</a>
     </div>
     <div class="body">
 
       <div class="notif unread followup">
         <div class="ic">▲</div>
         <div class="body-m">
+          <div class="cat" style="color:var(--red)">Lead Awaiting Review</div>
+          <div class="msg">La richiesta di <b>Studio Verri Milano</b> è in attesa di revisione da più di <b>48h</b>.</div>
+          <div class="when">Studio Verri · 3 min fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread studio">
+        <div class="ic">◆</div>
+        <div class="body-m">
+          <div class="cat" style="color:var(--teal)">Activity Assigned</div>
+          <div class="msg">Ti è stata assegnata <b>"Demo Material Intelligence"</b> su Martinel ID.</div>
+          <div class="when">Martinel ID · 8 min fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread followup">
+        <div class="ic">▲</div>
+        <div class="body-m">
           <div class="cat">Follow-Up Overdue</div>
           <div class="msg">Il follow-up <b>"Sintesi call con Luca Conti"</b> è in ritardo di 3 giorni.</div>
-          <div class="when">Studio Bianchi · 5 min fa</div>
+          <div class="when">Studio Bianchi · 12 min fa</div>
         </div>
       </div>
 
