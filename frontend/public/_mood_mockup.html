@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MOOD · Activity & Timeline · Mockup Editoriale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #0A0A0B; color: #FFFFFF; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { display: flex; min-height: 100vh; }
+
+  /* === SHELL === */
+  aside {
+    width: 260px; padding: 2rem 1rem; border-right: 1px solid rgba(255,255,255,0.06);
+    background: #0A0A0B; position: sticky; top: 0; height: 100vh; flex-shrink: 0;
+  }
+  aside .logo { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: #fff; letter-spacing: 0.05em; }
+  aside .logo small { display: block; font-family: 'Montserrat'; font-size: 0.55rem; letter-spacing: 0.4em; color: #00C9B3; margin-top: 4px; }
+  aside .eyebrow { font-size: 0.6rem; letter-spacing: 0.32em; text-transform: uppercase; color: #00C9B3; margin-top: 1.4rem; }
+  aside .title  { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-top: 2px; }
+  aside .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 1.4rem 0; }
+  aside nav a { display: flex; gap: 0.75rem; padding: 0.65rem 0.9rem; color: rgba(255,255,255,0.55); font-size: 0.82rem; text-decoration: none; letter-spacing: 0.04em; }
+  aside nav a.active { color: #00C9B3; background: rgba(0,201,179,0.08); }
+
+  /* === MAIN === */
+  main { flex: 1; padding: 0; background: #FFFFFF; color: #1c1917; overflow-y: auto; }
+  .page-pad { padding: 4rem 5rem; max-width: 1080px; }
+
+  /* Page header — editorial */
+  .page-eyebrow { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: #a8a29e; }
+  .page-title   { font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1.1; margin-top: 0.4rem; font-weight: 400; }
+  .page-sub     { font-size: 0.95rem; color: #78716c; margin-top: 0.7rem; max-width: 560px; line-height: 1.55; }
+
+  /* Affina (filter) — discreet text-button */
+  .toolbar { margin-top: 2rem; display: flex; align-items: center; gap: 1.6rem; padding-bottom: 1.2rem; border-bottom: 1px solid #e7e5e4; }
+  .toolbar .search { flex: 1; }
+  .toolbar input {
+    width: 100%; border: none; border-bottom: 1px solid transparent;
+    background: transparent; color: #1c1917;
+    font-family: 'Montserrat'; font-size: 0.95rem; padding: 0.45rem 0;
+    outline: none;
+  }
+  .toolbar input::placeholder { color: #a8a29e; font-style: italic; }
+  .toolbar input:focus { border-bottom-color: #1c1917; }
+  .toolbar .affina { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1c1917; cursor: pointer; background: none; border: none; font-family: inherit; }
+  .toolbar .nuova {
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    background: #000; color: #fff; border: none; padding: 0.75rem 1.4rem; cursor: pointer; font-family: inherit;
+  }
+
+  /* Section: Da completare — hero */
+  .section { margin-top: 3.5rem; }
+  .section h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400;
+    color: #1c1917; padding-bottom: 0.4rem;
+  }
+  .section .count {
+    font-family: 'Montserrat'; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #a8a29e; margin-left: 0.7rem; vertical-align: middle;
+  }
+  .section .intro { font-size: 0.9rem; color: #78716c; margin-bottom: 1.6rem; max-width: 540px; }
+
+  /* Da completare items — list, no card */
+  .todo-list { list-style: none; }
+  .todo-list li {
+    display: flex; align-items: baseline; gap: 1.5rem;
+    padding: 1.1rem 0; border-bottom: 1px solid #e7e5e4;
+    transition: padding-left 0.18s ease;
+  }
+  .todo-list li:hover { padding-left: 0.4rem; }
+  .todo-list .what {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; color: #1c1917; flex: 1;
+  }
+  .todo-list .when {
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: #78716c; white-space: nowrap;
+  }
+  .todo-list .when.overdue { color: #1c1917; border-left: 2px solid #00C9B3; padding-left: 0.7rem; }
+  .todo-list .action {
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: #1c1917; text-decoration: none;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .todo-list li:hover .action { opacity: 1; }
+
+  /* Storico activity — narrative blocks */
+  .narr-list { list-style: none; margin-top: 1.2rem; }
+  .narr-list li {
+    padding: 2.2rem 0; border-bottom: 1px solid #e7e5e4; cursor: pointer;
+    transition: padding-left 0.18s ease;
+  }
+  .narr-list li:hover { padding-left: 0.4rem; }
+  .narr-list li:last-child { border-bottom: none; }
+  .narr-list .person {
+    font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1.15; color: #1c1917; font-weight: 400;
+  }
+  .narr-list .topic {
+    font-family: 'Montserrat'; font-size: 1.05rem; color: #1c1917; margin-top: 0.4rem; font-weight: 500;
+  }
+  .narr-list .row { display: flex; gap: 0.7rem; margin-top: 0.9rem; font-size: 0.9rem; color: #44403c; }
+  .narr-list .row .k {
+    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: #a8a29e; padding-top: 0.18rem; min-width: 6rem; flex-shrink: 0;
+  }
+  .narr-list .row .v { flex: 1; line-height: 1.55; }
+  .narr-list .when {
+    font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;
+    color: #a8a29e; margin-top: 1.4rem;
+  }
+  .narr-list .when .author { color: #1c1917; text-transform: none; letter-spacing: 0.04em; }
+
+  /* Completed marker — typographic, not chip */
+  .narr-list .closed .person { color: #78716c; }
+  .narr-list .closed::before {
+    content: "Concluso ·";
+    font-size: 0.6rem; letter-spacing: 0.32em; text-transform: uppercase; color: #00C9B3;
+    margin-right: 0.6rem; vertical-align: super;
+  }
+
+  /* Empty state — emotional */
+  .empty {
+    margin: 3rem 0; padding: 4rem 2rem; text-align: center;
+    border-top: 1px solid #e7e5e4; border-bottom: 1px solid #e7e5e4;
+  }
+  .empty h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; font-style: italic; color: #1c1917;
+  }
+  .empty p { font-size: 0.9rem; color: #78716c; margin-top: 0.6rem; }
+  .empty .cta {
+    margin-top: 1.6rem; display: inline-block; font-size: 0.7rem;
+    letter-spacing: 0.25em; text-transform: uppercase; color: #1c1917; text-decoration: underline; text-underline-offset: 6px;
+  }
+
+  /* === TIMELINE === */
+  .tl-list { list-style: none; margin-top: 2.4rem; }
+  .tl-day { display: grid; grid-template-columns: 9rem 1fr; gap: 2.5rem; padding: 1.4rem 0; border-top: 1px solid #e7e5e4; }
+  .tl-day .date {
+    font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase; color: #1c1917;
+    padding-top: 0.45rem; position: sticky; top: 1rem; align-self: start;
+  }
+  .tl-day .date small { display: block; color: #a8a29e; font-size: 0.6rem; margin-top: 0.3rem; letter-spacing: 0.2em; }
+  .tl-day .events {}
+  .tl-day .events p {
+    font-family: 'Playfair Display', serif; font-size: 1.25rem; line-height: 1.55; color: #1c1917; font-weight: 400;
+    padding: 0.35rem 0;
+  }
+  .tl-day .events p .meta {
+    font-family: 'Montserrat'; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: #a8a29e; margin-left: 0.7rem; vertical-align: middle;
+  }
+
+  /* Footer spacing */
+  footer.foot { padding: 3rem 5rem; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: #a8a29e; }
+  footer.foot button {
+    background: none; border: none; color: #a8a29e; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+    cursor: pointer; font-family: inherit;
+  }
+  footer.foot button:hover { color: #1c1917; }
+
+  /* === MOBILE === */
+  body.mobile aside { display: none; }
+  body.mobile main { padding: 0; }
+  body.mobile .page-pad { padding: 2.4rem 1.5rem 4rem; }
+  body.mobile .page-title { font-size: 2rem; }
+  body.mobile .toolbar { gap: 0.8rem; }
+  body.mobile .toolbar .nuova { padding: 0.6rem 1rem; font-size: 0.65rem; }
+  body.mobile .todo-list .what { font-size: 1.05rem; }
+  body.mobile .todo-list li { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
+  body.mobile .narr-list .person { font-size: 1.4rem; }
+  body.mobile .narr-list .topic { font-size: 0.95rem; }
+  body.mobile .narr-list .row { flex-direction: column; gap: 0.2rem; }
+  body.mobile .narr-list .row .k { min-width: 0; }
+  body.mobile .tl-day { grid-template-columns: 1fr; gap: 0.6rem; }
+  body.mobile .tl-day .events p { font-size: 1.05rem; }
+
+  /* Variant: Timeline page */
+  body.view-timeline .activity-block { display: none; }
+  body.view-activity .timeline-block { display: none; }
+
+  /* Variant: empty */
+  body.view-empty .populated { display: none; }
+  body:not(.view-empty) .empty-only { display: none; }
+
+</style>
+</head>
+<body class="view-activity">
+
+  <aside>
+    <div class="logo">MOOD<small>for DESIGN</small></div>
+    <div class="eyebrow">MOOD</div>
+    <div class="title">Command Center</div>
+    <div class="divider"></div>
+    <nav>
+      <a>Overview</a>
+      <a class="active">Tenants</a>
+      <a>Advisors</a>
+      <a>Advisor Console</a>
+      <a>Studio Requests</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="page-pad">
+
+      <!-- ========== ACTIVITY (default) ========== -->
+      <div class="activity-block">
+
+        <div class="page-eyebrow">Tenant · Martinel Interior Design · Pordenone, IT</div>
+        <h1 class="page-title">Relazioni</h1>
+        <p class="page-sub">Ogni conversazione, ogni email, ogni decisione presa con questo studio. In ordine, in italiano, senza rumore.</p>
+
+        <!-- Toolbar: discreet -->
+        <div class="toolbar">
+          <div class="search">
+            <input placeholder="Cerca per persona, argomento, esito…" />
+          </div>
+          <button class="affina">Affina vista +</button>
+          <button class="nuova">Annota attività</button>
+        </div>
+
+        <!-- DA COMPLETARE -->
+        <section class="section populated">
+          <h2>Da completare <span class="count">3</span></h2>
+          <p class="intro">Impegni che hai preso con lo studio. In sospeso fino a che non li chiudi tu.</p>
+          <ul class="todo-list">
+            <li>
+              <span class="what">Call con Mario Rossi</span>
+              <span class="when overdue">Scadenza 5 giugno</span>
+              <a class="action">Segna conclusa →</a>
+            </li>
+            <li>
+              <span class="what">Meeting showroom Pordenone</span>
+              <span class="when">Scadenza 7 giugno</span>
+              <a class="action">Segna conclusa →</a>
+            </li>
+            <li>
+              <span class="what">Email a Studio Bianchi · proposta materiali</span>
+              <span class="when">Scadenza 9 giugno</span>
+              <a class="action">Segna conclusa →</a>
+            </li>
+          </ul>
+        </section>
+
+        <!-- DA COMPLETARE — empty -->
+        <section class="section empty-only">
+          <h2>Da completare</h2>
+          <div class="empty">
+            <h3>Niente in sospeso, oggi.</h3>
+            <p>Nessun impegno aperto con questo studio. Quando registri una nuova attività con un prossimo passo, riapparirà qui.</p>
+            <a class="cta">Annota una nuova attività →</a>
+          </div>
+        </section>
+
+        <!-- STORICO -->
+        <section class="section populated">
+          <h2>Storico <span class="count">48</span></h2>
+          <p class="intro">La memoria condivisa con lo studio, dalla prima conversazione a oggi.</p>
+          <ul class="narr-list">
+
+            <li>
+              <div class="person">Mario Rossi</div>
+              <div class="topic">Discussione onboarding Blueprint</div>
+              <div class="row">
+                <div class="k">Esito</div>
+                <div class="v">Interessato alla sezione Material Intelligence. Vuole capire come funziona la curation dei fornitori.</div>
+              </div>
+              <div class="row">
+                <div class="k">Prossimo passo</div>
+                <div class="v">Demo con responsabile acquisti, settimana prossima.</div>
+              </div>
+              <div class="when">03 Giugno 2026 · ore 14:30 · <span class="author">annotata da Raffaella</span> · in call</div>
+            </li>
+
+            <li>
+              <div class="person">Giulia Bianchi</div>
+              <div class="topic">Revisione catalogo tessuti per Villa Verde</div>
+              <div class="row">
+                <div class="k">Esito</div>
+                <div class="v">Campioni approvati. Lo studio ha confermato la palette autunno per il progetto.</div>
+              </div>
+              <div class="row">
+                <div class="k">Prossimo passo</div>
+                <div class="v">Inviare preventivo formale entro venerdì.</div>
+              </div>
+              <div class="when">01 Giugno 2026 · ore 10:15 · <span class="author">annotata da MOOD Admin</span> · in showroom</div>
+            </li>
+
+            <li class="closed">
+              <div class="person">Luca Conti</div>
+              <div class="topic">Primo contatto via LinkedIn</div>
+              <div class="row">
+                <div class="k">Sintesi</div>
+                <div class="v">Architetto interessato a un account Blueprint per il suo studio di Milano. Inviato link di prova.</div>
+              </div>
+              <div class="when">28 Maggio 2026 · <span class="author">annotata da Raffaella</span></div>
+            </li>
+
+          </ul>
+        </section>
+
+        <!-- STORICO — empty -->
+        <section class="section empty-only">
+          <h2>Storico</h2>
+          <div class="empty">
+            <h3>Il foglio è bianco.</h3>
+            <p>Non c'è ancora memoria con questo studio. Inizia annotando il primo incontro, la prima email, la prima telefonata.</p>
+            <a class="cta">Annota la prima attività →</a>
+          </div>
+        </section>
+
+      </div>
+
+
+      <!-- ========== TIMELINE ========== -->
+      <div class="timeline-block">
+
+        <div class="page-eyebrow">Tenant · Martinel Interior Design · Pordenone, IT</div>
+        <h1 class="page-title">Diario</h1>
+        <p class="page-sub">La storia dello studio, giorno per giorno. Tutto ciò che è accaduto — automatico e manuale — in ordine cronologico.</p>
+
+        <div class="toolbar">
+          <div class="search">
+            <input placeholder="Cerca un evento, un nome, una data…" />
+          </div>
+          <button class="affina">Affina vista +</button>
+        </div>
+
+        <ul class="tl-list populated">
+
+          <li class="tl-day">
+            <div class="date">03 Giu 2026<small>Mercoledì</small></div>
+            <div class="events">
+              <p>Lo studio ha aggiunto un nuovo contatto, <strong>Mario Rossi</strong>.</p>
+              <p>Raffaella ha registrato una <strong>call con Mario Rossi</strong>. <span class="meta">14:30</span></p>
+              <p>È stata inviata l'<strong>email di benvenuto</strong> a Giulia Bianchi.</p>
+              <p>Raffaella ha annotato una <strong>nota interna sull'onboarding</strong>.</p>
+            </div>
+          </li>
+
+          <li class="tl-day">
+            <div class="date">01 Giu 2026<small>Lunedì</small></div>
+            <div class="events">
+              <p>Incontro in <strong>showroom di Pordenone</strong> con Giulia Bianchi.</p>
+              <p>Approvati i campioni tessili per il progetto <strong>Villa Verde</strong>.</p>
+            </div>
+          </li>
+
+          <li class="tl-day">
+            <div class="date">28 Mag 2026<small>Venerdì</small></div>
+            <div class="events">
+              <p>Primo contatto su LinkedIn con <strong>Luca Conti</strong>, architetto.</p>
+              <p>Inviato un link di prova al suo studio di Milano.</p>
+            </div>
+          </li>
+
+          <li class="tl-day">
+            <div class="date">12 Mag 2026<small>Origine</small></div>
+            <div class="events">
+              <p>Lo studio Martinel ha completato la richiesta di registrazione.</p>
+              <p>Raffaella è stata assegnata come advisor di riferimento.</p>
+              <p>Il workspace è stato attivato.</p>
+            </div>
+          </li>
+
+        </ul>
+
+        <!-- Timeline — empty -->
+        <div class="empty empty-only">
+          <h3>Il diario è ancora bianco.</h3>
+          <p>Non si è ancora scritto nulla con questo studio. Quando annoterai la prima attività o invierai la prima email, comparirà qui.</p>
+        </div>
+
+      </div>
+
+      <footer class="foot">
+        <button id="toggle-view">Mostra timeline →</button>
+        &nbsp; · &nbsp;
+        <button id="toggle-empty">Mostra empty state →</button>
+        &nbsp; · &nbsp;
+        <button id="toggle-mobile">Mostra mobile →</button>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    let view = 'activity'; let empty = false; let mobile = false;
+    const apply = () => {
+      document.body.classList.toggle('view-activity', view === 'activity');
+      document.body.classList.toggle('view-timeline', view === 'timeline');
+      document.body.classList.toggle('view-empty', empty);
+      document.body.classList.toggle('mobile', mobile);
+      $('#toggle-view').textContent  = view === 'activity' ? 'Mostra timeline →' : 'Mostra activity →';
+      $('#toggle-empty').textContent = empty ? 'Mostra populated →' : 'Mostra empty state →';
+      $('#toggle-mobile').textContent= mobile ? 'Mostra desktop →' : 'Mostra mobile →';
+    };
+    $('#toggle-view').onclick   = () => { view = view === 'activity' ? 'timeline' : 'activity'; apply(); };
+    $('#toggle-empty').onclick  = () => { empty = !empty; apply(); };
+    $('#toggle-mobile').onclick = () => { mobile = !mobile; apply(); };
+    // Allow URL query: ?view=timeline&empty=1&mobile=1
+    const q = new URLSearchParams(location.search);
+    if (q.get('view') === 'timeline') view = 'timeline';
+    if (q.get('empty') === '1') empty = true;
+    if (q.get('mobile') === '1') mobile = true;
+    apply();
+  </script>
+
+</body>
+</html>
