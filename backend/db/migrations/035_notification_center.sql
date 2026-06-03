@@ -61,6 +61,9 @@ ALTER TABLE relationship_notifications
     ADD COLUMN IF NOT EXISTS contact_id        UUID NULL REFERENCES tenant_contacts(id) ON DELETE SET NULL,
     ADD COLUMN IF NOT EXISTS activity_id       UUID NULL REFERENCES relationship_activities(id) ON DELETE SET NULL,
     ADD COLUMN IF NOT EXISTS advisor_user_id   UUID NULL REFERENCES users(id) ON DELETE SET NULL,
+    -- denormalized + audit (post-checkin §C + new request)
+    ADD COLUMN IF NOT EXISTS tenant_name        TEXT NULL,
+    ADD COLUMN IF NOT EXISTS created_by_user_id UUID NULL REFERENCES users(id) ON DELETE SET NULL,
     -- correlation to source event for audit/dedup
     ADD COLUMN IF NOT EXISTS source_event_type TEXT,
     ADD COLUMN IF NOT EXISTS source_event_id   UUID,

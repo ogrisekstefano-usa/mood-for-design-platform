@@ -265,6 +265,34 @@ async def create_contact(tenant_id: str, payload: dict[str, Any],
              "name": f"{payload['first_name']} {payload.get('last_name','')}".strip()})
 
         await s.commit()
+
+    # ── M4 · notify on new_contact ─────────────────────────────────────────
+    try:
+        from services import notifications as _notif
+        async with AsyncSessionLocal() as _ns:
+            from sqlalchemy import text as _t
+            role_lbl = (await _ns.execute(_t(
+                "SELECT label_it FROM platform_contact_roles WHERE code = :c"
+            ), {"c": payload["role_code"]})).scalar() or payload["role_code"]
+            full = f"{payload['first_name']} {payload.get('last_name','') or ''}".strip()
+            await _notif.notify(
+                _ns,
+                type_code='new_contact',
+                tenant_id=tenant_id,
+                contact_id=str(new),
+                payload={'contact_name': full, 'role': role_lbl},
+                sender_user_id=actor_user_id,
+                created_by_user_id=actor_user_id,
+                dedup_key=f'new_contact:{new}',
+                source_event_type='activity:new_contact',
+                source_event_id=str(new),
+            )
+            await _ns.commit()
+    except Exception as _ex:
+        import logging
+        logging.getLogger('tenant_contacts').warning(
+            'M4 notify(new_contact) failed: %s', _ex)
+
     return await get_contact(tenant_id, str(new))
 
 

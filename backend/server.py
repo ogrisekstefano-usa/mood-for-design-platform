@@ -129,6 +129,24 @@ from routers.blueprint_activities import router as blueprint_activities_router  
 app.include_router(admin_activities_router)
 app.include_router(blueprint_activities_router)
 
+# M4 — Internal Notification Center
+from routers.notifications import router as notifications_router  # /api/notifications/*
+app.include_router(notifications_router)
+
+# M4 — Background scheduler (follow-up overdue, etc.)
+from jobs.scheduler import start_scheduler as _start_m4_scheduler, stop_scheduler as _stop_m4_scheduler
+@app.on_event("startup")
+async def _m4_scheduler_startup():
+    try:
+        _start_m4_scheduler()
+    except Exception as _ex:
+        import logging
+        logging.getLogger('m4-scheduler').error('start_scheduler failed: %s', _ex)
+
+@app.on_event("shutdown")
+async def _m4_scheduler_shutdown():
+    _stop_m4_scheduler()
+
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets
 @app.on_event("startup")

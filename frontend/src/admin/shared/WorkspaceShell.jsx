@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, RefreshCw, ExternalLink } from 'lucide-react';
 import { adminAuth, adminApi } from '../adminApi';
+import NotificationBell from '../../components/notifications/NotificationBell';
 
 /**
  * Shared chrome for both MOOD workspaces:
@@ -127,7 +128,15 @@ const WorkspaceShell = ({
         </div>
       </aside>
 
-      <main style={{ flex: 1, minWidth: 0 }} data-testid="workspace-main">
+      <main style={{ flex: 1, minWidth: 0, position: 'relative' }} data-testid="workspace-main">
+        <div
+          data-testid="workspace-topbar-bell"
+          style={{
+            position: 'fixed', top: 14, right: 18, zIndex: 40,
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+          <NotificationBell />
+        </div>
         <div style={{ padding: mainPadding }}>
           {children}
         </div>

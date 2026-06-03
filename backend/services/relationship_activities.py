@@ -346,6 +346,57 @@ async def create_activity(tenant_id: str, payload: dict[str, Any], *,
 
         await s.commit()
 
+    # ── M4 · notify advisor when somebody other than owner created activity ─
+    # Notifies the tenant's relationship owner (advisor) iff creator != owner
+    # and iff target audience matches catalog routing.
+    try:
+        from services import notifications as _notif
+        async with AsyncSessionLocal() as _ns:
+            # Resolve type label for narrative
+            from sqlalchemy import text as _t
+            tlabel = (await _ns.execute(_t(
+                "SELECT label_it FROM platform_activity_types WHERE code = :c"
+            ), {"c": code})).scalar() or code
+            # Actor display
+            actor_name = (await _ns.execute(_t(
+                "SELECT full_name FROM users WHERE id = CAST(:u AS uuid)"
+            ), {"u": created_by or owner_user_id})).scalar() or "—"
+            await _notif.notify(
+                _ns,
+                type_code='new_activity',
+                tenant_id=tenant_id,
+                contact_id=contact_id,
+                activity_id=str(new_id),
+                payload={'activity_type': tlabel, 'actor': actor_name},
+                sender_user_id=created_by or owner_user_id,
+                created_by_user_id=created_by or owner_user_id,
+                dedup_key=f'new_activity:{new_id}',
+                source_event_type='activity:new_activity',
+                source_event_id=str(new_id),
+            )
+            # activity_assigned: notify owner if assigned by a different user
+            if actor_owner and created_by and str(actor_owner) != str(created_by):
+                await _notif.notify(
+                    _ns,
+                    type_code='activity_assigned',
+                    tenant_id=tenant_id,
+                    contact_id=contact_id,
+                    activity_id=str(new_id),
+                    explicit_recipients=[actor_owner],
+                    advisor_user_id=actor_owner,
+                    payload={'subject': subject or tlabel},
+                    sender_user_id=created_by,
+                    created_by_user_id=created_by,
+                    dedup_key=f'activity_assigned:{new_id}:{actor_owner}',
+                    source_event_type='assignment:activity_assigned',
+                    source_event_id=str(new_id),
+                )
+            await _ns.commit()
+    except Exception as _ex:
+        import logging
+        logging.getLogger('relationship_activities').warning(
+            'M4 notify(new_activity/activity_assigned) failed: %s', _ex)
+
     return await get_activity(tenant_id, str(new_id))
 
 

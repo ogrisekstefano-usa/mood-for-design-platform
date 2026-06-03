@@ -204,6 +204,12 @@
   .notif .msg b{color:var(--t1);font-weight:600}
   .notif .when{font-size:0.55rem;color:var(--t4);margin-top:5px;letter-spacing:0.16em;text-transform:uppercase}
   .notif.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--teal)}
+  .notif.priority-high::before{background:var(--red);width:3px}
+  /* Critiche hero section in drawer */
+  .notif-section-h{padding:1rem 1.2rem 0.5rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-2)}
+  .notif-section-h .lbl{font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--t2)}
+  .notif-section-h.crit .lbl{color:var(--red)}
+  .notif-section-h .ct{font-size:0.6rem;letter-spacing:0.16em;color:var(--t4);font-variant-numeric:tabular-nums}
 
   /* === ADVISOR WORKSPACE === */
   body.advisor aside nav .sec-cc{display:none}
@@ -329,7 +335,6 @@
         <div class="bell" onclick="document.body.classList.toggle('show-notif')">
           🔔
           <span class="badge">12</span>
-          <span class="bell-crit" title="Notifiche critiche">!</span>
         </div>
         <div class="user">
           <span>Raffaella</span>
@@ -856,7 +861,12 @@
     </div>
     <div class="body">
 
-      <div class="notif unread followup">
+      <div class="notif-section-h crit">
+        <div class="lbl">▴ Critiche · richiedono attenzione</div>
+        <div class="ct">3 non lette</div>
+      </div>
+
+      <div class="notif unread followup priority-high">
         <div class="ic">▲</div>
         <div class="body-m">
           <div class="cat" style="color:var(--red)">Lead Awaiting Review</div>
@@ -865,22 +875,27 @@
         </div>
       </div>
 
-      <div class="notif unread studio">
+      <div class="notif unread studio priority-high">
         <div class="ic">◆</div>
         <div class="body-m">
-          <div class="cat" style="color:var(--teal)">Activity Assigned</div>
+          <div class="cat" style="color:var(--red)">Activity Assigned</div>
           <div class="msg">Ti è stata assegnata <b>"Demo Material Intelligence"</b> su Martinel ID.</div>
           <div class="when">Martinel ID · 8 min fa</div>
         </div>
       </div>
 
-      <div class="notif unread followup">
+      <div class="notif unread followup priority-high">
         <div class="ic">▲</div>
         <div class="body-m">
-          <div class="cat">Follow-Up Overdue</div>
+          <div class="cat" style="color:var(--red)">Follow-Up Overdue</div>
           <div class="msg">Il follow-up <b>"Sintesi call con Luca Conti"</b> è in ritardo di 3 giorni.</div>
           <div class="when">Studio Bianchi · 12 min fa</div>
         </div>
+      </div>
+
+      <div class="notif-section-h">
+        <div class="lbl">Tutte le altre</div>
+        <div class="ct">9 totali · 9 non lette</div>
       </div>
 
       <div class="notif unread studio">

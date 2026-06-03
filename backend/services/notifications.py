@@ -206,6 +206,7 @@ async def notify(
     tenant_id: Optional[UUID] = None,
     payload: Optional[dict] = None,
     sender_user_id: Optional[UUID] = None,
+    created_by_user_id: Optional[UUID] = None,
     contact_id: Optional[UUID] = None,
     activity_id: Optional[UUID] = None,
     advisor_user_id: Optional[UUID] = None,
@@ -223,8 +224,27 @@ async def notify(
 
     Returns the list of newly-created `relationship_notifications.id`.
     Duplicate inserts (same dedup_key for same recipient) are skipped silently.
+
+    Denormalized fields populated automatically:
+      • tenant_name        — looked up from tenants(id) if tenant_id provided
+                             and not already in payload
+      • created_by_user_id — the user who performed the underlying action
+                             (distinct from sender_user_id, which can be the
+                             trigger; for most events they coincide)
     """
     payload = payload or {}
+
+    # 0) Auto-lookup tenant_name for denormalization (avoids FE roundtrip)
+    tenant_name: Optional[str] = None
+    if tenant_id is not None:
+        row = (await s.execute(text(
+            "SELECT name FROM tenants WHERE id = CAST(:t AS uuid)"
+        ), {"t": str(tenant_id)})).first()
+        if row:
+            tenant_name = row[0]
+            # also expose to template if missing
+            payload.setdefault("studio_name", tenant_name)
+            payload.setdefault("tenant_name", tenant_name)
 
     # 1) Load catalog row
     type_row = (await s.execute(text("""
@@ -288,17 +308,17 @@ async def notify(
         try:
             res = await s.execute(text("""
                 INSERT INTO relationship_notifications (
-                    tenant_id, lead_id, recipient_user_id, recipient_type,
-                    sender_user_id, sender_type,
+                    tenant_id, tenant_name, lead_id, recipient_user_id, recipient_type,
+                    sender_user_id, sender_type, created_by_user_id,
                     notification_type, notification_type_code,
                     title, narrative, payload, priority,
                     contact_id, activity_id, advisor_user_id,
                     source_event_type, source_event_id, dedup_key,
                     action_url, action_label
                 ) VALUES (
-                    CAST(:tid AS uuid), CAST(:lid AS uuid),
+                    CAST(:tid AS uuid), :tname, CAST(:lid AS uuid),
                     CAST(:rid AS uuid), :rtype,
-                    CAST(:sid AS uuid), :stype,
+                    CAST(:sid AS uuid), :stype, CAST(:cbid AS uuid),
                     :ntype, :ntcode,
                     :title, :narr, CAST(:payload AS jsonb), :prio,
                     CAST(:cid AS uuid), CAST(:aid AS uuid), CAST(:advid AS uuid),
@@ -310,11 +330,14 @@ async def notify(
                 RETURNING id
             """), {
                 "tid": str(tenant_id) if tenant_id else None,
+                "tname": tenant_name,
                 "lid": str(lead_id) if lead_id else None,
                 "rid": str(rid),
                 "rtype": role,
                 "sid": str(sender_user_id) if sender_user_id else None,
                 "stype": ("user" if sender_user_id else "system"),
+                "cbid": str(created_by_user_id) if created_by_user_id else (
+                        str(sender_user_id) if sender_user_id else None),
                 "ntype": type_code,
                 "ntcode": type_code,
                 "title": title,
@@ -379,15 +402,19 @@ async def list_for_user(
     sql = f"""
         SELECT n.id, n.notification_type_code, n.title, n.narrative, n.priority,
                n.read_at, n.archived_at, n.created_at,
-               n.tenant_id, n.contact_id, n.activity_id, n.advisor_user_id, n.lead_id,
-               n.sender_user_id, n.action_url, n.action_label,
+               n.tenant_id, n.tenant_name,
+               n.contact_id, n.activity_id, n.advisor_user_id, n.lead_id,
+               n.sender_user_id, n.created_by_user_id,
+               n.action_url, n.action_label,
                t.label_it, t.label_en, t.icon, t.color, t.category,
-               tn.name AS tenant_name,
-               u.full_name AS sender_display
+               COALESCE(n.tenant_name, tn.name) AS tenant_display,
+               u.full_name AS sender_display,
+               cu.full_name AS created_by_display
           FROM relationship_notifications n
           LEFT JOIN platform_notification_types t ON t.code = n.notification_type_code
           LEFT JOIN tenants tn ON tn.id = n.tenant_id
           LEFT JOIN users   u  ON u.id = n.sender_user_id
+          LEFT JOIN users   cu ON cu.id = n.created_by_user_id
          WHERE {' AND '.join(where)}
          ORDER BY n.created_at DESC, n.id DESC
          LIMIT :limit

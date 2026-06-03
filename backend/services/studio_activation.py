@@ -585,6 +585,32 @@ async def submit_request(
             logging.getLogger('studio_activation').warning(
                 'transactional email dispatch failed: %s', _ex)
 
+        # ── M4 · Internal notification (in-app) ────────────────────────────
+        try:
+            from services import notifications as _notif
+            async with AsyncSessionLocal() as _ns:
+                # Catalog routing has notify_admin=True → notify() fans out
+                # to every active admin user automatically.
+                await _notif.notify(
+                    _ns,
+                    type_code='studio_request_received',
+                    tenant_id=None,
+                    lead_id=request_id,
+                    payload={
+                        'studio_name': studio_name or '—',
+                        'reference':   reference,
+                        'city':        city or '',
+                    },
+                    dedup_key=f'studio_req:{request_id}',
+                    source_event_type='lifecycle:studio_request_received',
+                    source_event_id=request_id,
+                )
+                await _ns.commit()
+        except Exception as _ex:
+            import logging
+            logging.getLogger('studio_activation').warning(
+                'M4 notify(studio_request_received) failed: %s', _ex)
+
         return {"ok": True, "request_id": request_id, "reference": reference}
 
 
@@ -898,6 +924,53 @@ async def activate_request_full_auto(
 
     result['relation_id'] = relation_id
     result['request_id']  = request_id
+
+    # ── M4 · Internal notifications on activation ──────────────────────────
+    try:
+        from services import notifications as _notif
+        tenant_id_new = result.get('tenant_id')
+        async with AsyncSessionLocal() as _ns:
+            await _notif.notify(
+                _ns,
+                type_code='tenant_activated',
+                tenant_id=tenant_id_new,
+                payload={
+                    'studio_name':   result.get('tenant_name') or '—',
+                    'founder_email': result.get('founder_email') or '',
+                },
+                sender_user_id=actor_user_id,
+                created_by_user_id=actor_user_id,
+                dedup_key=f'tenant_activated:{tenant_id_new}',
+                source_event_type='lifecycle:tenant_activated',
+                source_event_id=tenant_id_new,
+            )
+            # If an advisor became the relationship owner, notify them too
+            if actor_advisor_id:
+                # Find the user_id behind the advisor_profile id
+                from sqlalchemy import text as _t
+                arow = (await _ns.execute(_t("""
+                    SELECT user_id FROM advisor_profiles
+                     WHERE id = CAST(:aid AS uuid) AND user_id IS NOT NULL
+                """), {"aid": actor_advisor_id})).first()
+                if arow and arow[0]:
+                    await _notif.notify(
+                        _ns,
+                        type_code='advisor_assigned',
+                        tenant_id=tenant_id_new,
+                        payload={'studio_name': result.get('tenant_name') or '—'},
+                        explicit_recipients=[arow[0]],
+                        advisor_user_id=arow[0],
+                        created_by_user_id=actor_user_id,
+                        dedup_key=f'advisor_assigned:{tenant_id_new}:{arow[0]}',
+                        source_event_type='assignment:advisor_assigned',
+                        source_event_id=tenant_id_new,
+                    )
+            await _ns.commit()
+    except Exception as _ex:
+        import logging
+        logging.getLogger('studio_activation').warning(
+            'M4 notify(tenant_activated/advisor_assigned) failed: %s', _ex)
+
     return result
 
 

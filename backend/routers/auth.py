@@ -418,9 +418,52 @@ async def magic_link_consume(body: MagicLinkConsumeRequest):
     looks up the editorial concierge copy keyed by `reason`.
     """
     try:
-        return await access_continuity.consume_magic_link(body.token)
+        result = await access_continuity.consume_magic_link(body.token)
     except Exception:
         return {"ok": False, "reason": "invalid"}
+
+    # ── M4 · workspace_first_access notification ───────────────────────────
+    # Fired only on the very first successful magic-link consume per user.
+    try:
+        if isinstance(result, dict) and result.get("ok"):
+            user = result.get("user") or {}
+            tenant = result.get("tenant") or {}
+            user_id = user.get("id")
+            tenant_id = tenant.get("id")
+            if user_id and tenant_id:
+                from services import notifications as _notif
+                from database import AsyncSessionLocal as _Session
+                from sqlalchemy import text as _t
+                async with _Session() as _ns:
+                    # Use last_login_at column to detect first-time consume
+                    is_first = (await _ns.execute(_t("""
+                        SELECT 1 FROM users
+                         WHERE id = CAST(:u AS uuid)
+                           AND (last_login_at IS NULL
+                                OR last_login_at < NOW() - INTERVAL '1 minute')
+                        LIMIT 1
+                    """), {"u": user_id})).scalar()
+                    if is_first:
+                        await _notif.notify(
+                            _ns,
+                            type_code='workspace_first_access',
+                            tenant_id=tenant_id,
+                            payload={
+                                'user_name':  user.get("full_name") or user.get("email") or "—",
+                                'studio_name': tenant.get("name") or "—",
+                            },
+                            created_by_user_id=user_id,
+                            dedup_key=f'first_access:{user_id}',
+                            source_event_type='access:workspace_first_access',
+                            source_event_id=user_id,
+                        )
+                        await _ns.commit()
+    except Exception as _ex:
+        import logging
+        logging.getLogger('auth').warning(
+            'M4 notify(workspace_first_access) failed: %s', _ex)
+
+    return result
 
 
 # ── Password reset (P0-C) ─────────────────────────────────────────────

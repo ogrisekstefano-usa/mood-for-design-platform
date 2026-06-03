@@ -1,0 +1,42 @@
+{
+  "summary": "M4 Notification Center — production-readiness validation. Backend: 19/19 pytest PASS (auth guard, 9-code catalog, unread-count shape + has_critical flag, list filters all/only_unread/only_critical/type_codes, mark-read by-ids + all=true + 400-validation, archive + 404 on unknown, preferences full matrix + bulk upsert with persistence verify, RBAC strict — random uuid returns updated:0 / 404, cron run_followup_overdue_scan() invocable with correct summary shape). Frontend (admin@moodfordesign.com, JWT in localStorage, /command-center/advisor-console & /blueprint shells): notification-bell mounted fixed at top:14, right:18 ✓; badge logic verified (teal #00C9B3 normal, red #E5484D when has_critical=true) ✓; NO '!' punctuation in badge or button — sober numeric-only as required ✓; click bell → notification-drawer opens (380px right, dark backdrop) ✓; ALL 6 filters present in EXACT order Tutte / Non lette / Critiche / Attività / Tenant / Advisor (data-testid notification-filter-{all,unread,critical,activity,tenant,advisor}) ✓; critical filter text rendered in red (#E5484D) when inactive ✓; notification-mark-all-read button present ✓; notification-empty rendered when zero items ✓; notification-drawer-close present ✓. Seed scenario for the 'Critiche'-section split could not be validated visually because the admin had 0 unread at test time and the seeded qa:m4:* rows are cleaned at teardown — but the JSX (NotificationDrawer.jsx 122-135) correctly partitions items by priority∈{high,urgent} && !read_at and emits two SectionHeader blocks ('Critiche · richiedono attenzione' #E5484D, then 'Tutte le altre').",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Initial /command-center mount emits a 401 (pre-existing whoami probe before JWT is read by axios interceptor) → React dev overlay covers the page and intercepts subsequent clicks (notification-drawer-close test failed to close because overlay was on top). The notifications API itself returns 200; the 401 originates from an UNRELATED endpoint. Same observation was logged in iteration_6.json. Not a regression introduced by M4 — but it prevents end-to-end UI flow validation in dev.",
+        "affected_selectors": ["[data-testid='notification-drawer-close']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_m4_notifications.py",
+    "/app/test_reports/pytest/m4_notifications.xml"
+  ],
+  "action_items": [
+    "Defer /api/auth/me whoami probe on /command-center first paint until the JWT/admin-key is present (see iteration_6 note). The dev runtime error overlay it triggers blocks subsequent UI interactions and prevents clean E2E validation of notification-drawer-close, item-click→navigate, and the polling-refresh flow. Cosmetic in prod (overlay hidden), but worth fixing for testability.",
+    "Consider adding a one-shot seed endpoint guarded by ADMIN_API_KEY (e.g. POST /api/admin/dev/seed-notifications) so QA can validate the 'Critiche' hero section + deep-link click navigation without going through the full studio_v2 → activate flow."
+  ],
+  "critical_code_review_comments": [
+    "services/notifications.py: notify() catches every per-recipient INSERT exception silently with bare 'except Exception: continue' (line 359). If a real schema violation occurs (e.g. wrong priority enum), the call returns [] without any log line — making prod incidents hard to diagnose. Recommend logging the exception at WARNING with type_code + recipient_id.",
+    "services/notifications.py: NOT NULL on relationship_notifications.tenant_id is enforced at DB level (verified during test seeding) but notify() signature has tenant_id: Optional[UUID]=None. Either tighten the type to required, or add an explicit precondition + clear error before INSERT.",
+    "routers/notifications.py mark-read: returns {updated:N} where N=0 for unknown ids — this is fine for RBAC silent-deny but a malformed UUID will currently raise 422 (FastAPI validation) and a foreign-but-valid UUID returns 200/{updated:0}. Document this contract explicitly in the OpenAPI description.",
+    "NotificationDrawer.jsx: filter pills are nested <button> elements without keyboard focus styling — add :focus-visible outline for a11y.",
+    "useNotifications.js polling: per spec 60s/10min visibility-aware (foreground/background). Not retested in this run because the dev overlay blocked the drawer; the hook source matches the spec but the live cadence should be re-verified once the 401 overlay is gone."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_m4_notifications.py"
+  ],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "~85% (bell+badge+drawer+6 filters+empty+mark-all-read OK; close click + item navigate + polling could not be visually validated due to pre-existing dev overlay)"},
+  "test_credentials": "admin@moodfordesign.com / MoodAdmin2026! via POST /api/auth/login (returns JWT). Frontend stores at localStorage['mood-jwt'].",
+  "seed_data_creation": "All transient notifications are seeded with dedup_key prefix 'qa:m4:' and deleted by session-scoped autouse fixture cleanup_qa_rows. No long-lived rows remain after the suite.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression: /app/backend/tests/test_m4_notifications.py — 19 tests, uses raw asyncpg (statement_cache_size=0 mandatory for pgbouncer) with a session-scoped event_loop fixture; seed_notification(user_id, type_code=, priority=, dedup_suffix=) factory is reusable. studio_tenant_id = 848354b9-a43e-4147-bdad-116fb93bd585 (slug=studio). To validate the Critiche section visually, seed a notification with priority='high' for the admin user (id 2efb86f8-6546-4bb0-a653-6eab772a0da3) BEFORE opening the drawer; then it will appear in the 'Critiche · richiedono attenzione' bordered block above 'Tutte le altre'.",
+  "rca of the issue": "Drawer close click failure RCA: the React dev runtime overlay rendered due to an UNRELATED axios 401 (most likely /api/admin/whoami fired before localStorage['mood-admin-key'] was read by the axios interceptor on /command-center/advisor-console). The overlay has z-index above the drawer's z-index:50, so click(force=True) registered on the overlay rather than on notification-drawer-close. The notifications API itself responded 200 (verified: drawer body rendered fully with empty-state and all 6 filter buttons). Fix path is in adminAuth bootstrap, not in M4."
+}
