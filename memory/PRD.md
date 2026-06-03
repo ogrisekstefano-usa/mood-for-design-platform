@@ -10692,3 +10692,45 @@ Zero modifiche di codice per onboardare Arrital/Margraf/Nemo/Samoa/Riva1920. Bra
 
 ### Strict lock rispettato
 Nessuna feature Academy / Magazine / Marketboard / Moodboard.
+
+---
+
+## ITER202 · BRAND EXPERIENCE LAYER™ — Digital Brand Embassy™ (2026-06-02)
+
+### 🎯 Premium Brand Page (designer-facing, no tech metrics)
+
+ARBI è una **Digital Brand Embassy™**: pagina cinematic per architetti/designer.
+Knowledge Engine dati nascosti, solo trust signal "Certified Brand Atlas™".
+
+### Implementato
+**Backend** (`routers/brand_experience.py`, migration `123_iter202_brand_experience.sql`):
+- `GET /brands/{id}/embassy` — payload composito (hero, collezioni, materiali, designer, prodotti, mood DNA, story, theme tokens)
+- `PATCH /brands/{id}/hero` (admin only) + `POST /brands/{id}/hero/upload`
+- `POST /brands/{id}/regenerate-mood-dna` — Claude Sonnet 4.5 via Emergent Universal Key
+- `POST/DELETE /brands/{id}/link-to-studio` — Add to Studio Library™ minimal
+- DB: aggiunti `hero_*`, `story_*`, `mood_dna`, `atlas_certified_at` su `brands`; nuova tabella `studio_brand_links`
+
+**Frontend** (`pages/inspirations/BrandEmbassyPage.jsx` + `brand-embassy.css`):
+- Hero cinematic full-width 70vh + Change Hero modal (admin hover ✏️)
+- 9 sezioni: TopBar, Hero, MOOD DNA™ tags, Collection Universe™, Material Intelligence™, Designers, Story, Products Gallery (filtri category+collection), Studio Library CTA
+- Academy slot condizionale (nascosto se nessun modulo)
+- Chameleon™ tokens lettura tenant (primary/secondary color, font heading/body) con fallback editoriale
+- Route: `/inspirations/brands/{id}` → Embassy ; `/inspirations/brands/{id}/admin` → vecchia BrandDetailPage
+
+### Strict Lock™ rispettato
+NO knowledge_score / extraction / graph / audit / entity_count / confidence visibili nel layer designer.
+NO Academy/Magazine/Marketboard/Moodboard.
+Tutto dinamico da DB, multilingua-ready, no hardcoded.
+
+### Test live
+ARBI Embassy renderizzato correttamente: hero "Italian Bathroom Architecture™", 5 MOOD DNA keyword da Claude, 24 collezioni, 12 materiali, 10 designer verificati, 60 prodotti gallery, Studio Library link/unlink funzionante.
+
+### Report
+`/app/memory/ITER202_BRAND_EXPERIENCE_LAYER_REPORT.md`
+
+### Backlog ITER203+
+- Granular Studio Library (link prodotti/materiali/collezioni singoli)
+- AI Search readiness (embeddings + indexing)
+- Multilingua story (i18n per story_title/body)
+- Onboarding Arrital (popolare `brand_designer_registry["arrital"]`)
+- Refactoring App.js / ProjectDetailPage.jsx

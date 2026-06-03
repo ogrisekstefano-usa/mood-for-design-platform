@@ -1,0 +1,488 @@
+/**
+ * ITER202 · Digital Brand Embassy™ — editorial premium styling.
+ * Chameleon™ tokens (read from --embassy-*) override editorial defaults.
+ * Dark cinematic palette by default — meant for designer / architect.
+ */
+
+.embassy-page {
+  --embassy-bg:           #0a0a0c;
+  --embassy-surface:      #111114;
+  --embassy-surface-2:    #1a1a1f;
+  --embassy-border:       rgba(255,255,255,.08);
+  --embassy-border-2:     rgba(255,255,255,.16);
+  --embassy-text:         rgba(255,255,255,.92);
+  --embassy-text-muted:   rgba(255,255,255,.60);
+  --embassy-text-faint:   rgba(255,255,255,.40);
+  --embassy-accent:       #c9a875;       /* warm gold — overridable */
+  --embassy-accent-2:     #475569;
+  --embassy-font-heading: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --embassy-font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+  min-height: 100vh;
+  background: var(--embassy-bg);
+  color: var(--embassy-text);
+  font-family: var(--embassy-font-body);
+  padding: 24px 32px 80px;
+}
+
+.embassy-loading,
+.embassy-err {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; padding: 80px 24px;
+  color: var(--embassy-text-muted);
+}
+.embassy-err {
+  flex-direction: column;
+}
+.embassy-spin { animation: embassy-spin 1s linear infinite; }
+@keyframes embassy-spin { to { transform: rotate(360deg); } }
+
+/* ── TOPBAR ──────────────────────────────────────────────────────── */
+.embassy-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 8px 0 24px;
+  border-bottom: 1px solid var(--embassy-border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.embassy-breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--embassy-text-muted);
+}
+.embassy-bc-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--embassy-text-muted); text-decoration: none;
+  transition: color .15s;
+}
+.embassy-bc-link:hover { color: var(--embassy-accent); }
+.embassy-bc-sep { color: var(--embassy-text-faint); }
+.embassy-bc-current {
+  color: var(--embassy-text);
+  font-family: var(--embassy-font-heading);
+  font-size: 16px; letter-spacing: .02em;
+}
+.embassy-topbar-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────── */
+.embassy-btn,
+.embassy-btn-primary,
+.embassy-btn-ghost,
+.embassy-btn-linked {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--embassy-border-2);
+  border-radius: 999px;
+  color: var(--embassy-text);
+  font: 500 13px/1 var(--embassy-font-body);
+  cursor: pointer; transition: all .15s;
+  text-decoration: none;
+}
+.embassy-btn:hover,
+.embassy-btn-primary:hover,
+.embassy-btn-ghost:hover {
+  background: rgba(255,255,255,.04);
+  border-color: var(--embassy-accent);
+}
+.embassy-btn-primary {
+  background: var(--embassy-accent);
+  border-color: var(--embassy-accent);
+  color: #0a0a0c;
+}
+.embassy-btn-primary:hover {
+  background: transparent;
+  color: var(--embassy-accent);
+}
+.embassy-btn-ghost { border-color: transparent; padding: 6px 10px; }
+.embassy-btn-linked {
+  background: rgba(34,197,94,.15);
+  border-color: rgba(34,197,94,.4);
+  color: #4ade80;
+}
+.embassy-btn:disabled,
+.embassy-btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+.embassy-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: transparent; border: 1px solid var(--embassy-border-2);
+  color: var(--embassy-text); cursor: pointer; transition: all .15s;
+}
+.embassy-icon-btn:hover { background: rgba(255,255,255,.06); }
+
+/* ── HERO ────────────────────────────────────────────────────────── */
+.embassy-hero {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 720px);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+.embassy-hero-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: saturate(0.95);
+}
+.embassy-hero-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(10,10,12,0) 0%,
+    rgba(10,10,12,.3) 40%,
+    rgba(10,10,12,.85) 100%);
+}
+.embassy-hero-content {
+  position: absolute;
+  left: 48px; right: 48px; bottom: 48px;
+  max-width: 720px;
+}
+.embassy-hero-title {
+  font-family: var(--embassy-font-heading);
+  font-size: clamp(56px, 8vw, 120px);
+  line-height: .95; letter-spacing: -.01em;
+  margin: 0 0 12px;
+  text-shadow: 0 4px 24px rgba(0,0,0,.6);
+}
+.embassy-hero-subtitle {
+  font-family: var(--embassy-font-heading);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 32px);
+  color: var(--embassy-text);
+  margin: 0 0 16px;
+  letter-spacing: .01em;
+}
+.embassy-hero-description {
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: var(--embassy-text-muted);
+  margin: 0 0 24px;
+  max-width: 580px; line-height: 1.6;
+}
+.embassy-hero-badges {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.embassy-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: .02em;
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.18);
+}
+.embassy-badge--verified { color: #4ade80; }
+.embassy-badge--atlas { color: var(--embassy-accent); }
+
+.embassy-hero-edit {
+  position: absolute; top: 16px; right: 16px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(255,255,255,.18);
+  color: #fff;
+  font: 500 12px/1 var(--embassy-font-body);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s;
+  backdrop-filter: blur(20px);
+}
+.embassy-hero:hover .embassy-hero-edit { opacity: 1; }
+
+/* ── SECTION SHELL ───────────────────────────────────────────────── */
+.embassy-section {
+  padding: 36px 0 24px;
+  border-top: 1px solid var(--embassy-border);
+}
+.embassy-section:first-of-type { border-top: none; }
+.embassy-section-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.embassy-eyebrow {
+  font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--embassy-accent);
+  font-weight: 600;
+}
+.embassy-section-title {
+  font-family: var(--embassy-font-heading);
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -.005em;
+  font-weight: 400;
+  margin: 6px 0 0;
+}
+.embassy-section-cta {
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── MOOD DNA ────────────────────────────────────────────────────── */
+.embassy-mood-row {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.embassy-mood-tag {
+  padding: 10px 18px;
+  background: rgba(201,168,117,.08);
+  border: 1px solid rgba(201,168,117,.25);
+  border-radius: 999px;
+  font-family: var(--embassy-font-heading);
+  font-size: 16px; letter-spacing: .02em;
+  color: var(--embassy-accent);
+}
+
+/* ── COLLECTIONS ─────────────────────────────────────────────────── */
+.embassy-coll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.embassy-coll-card {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .25s;
+}
+.embassy-coll-card:hover { transform: scale(1.015); }
+.embassy-coll-image {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+.embassy-coll-overlay {
+  position: absolute; inset: 0;
+  padding: 16px 16px 18px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0) 40%, rgba(0,0,0,.75) 100%);
+}
+.embassy-coll-overlay--center {
+  justify-content: center; align-items: center; text-align: center;
+}
+.embassy-coll-card--more {
+  background: rgba(255,255,255,.04);
+  border: 1px dashed var(--embassy-border-2);
+}
+.embassy-coll-name {
+  font-family: var(--embassy-font-heading);
+  font-size: 22px; margin: 0; letter-spacing: .01em;
+  text-shadow: 0 1px 8px rgba(0,0,0,.5);
+}
+.embassy-coll-meta {
+  font-size: 12px; color: var(--embassy-text-muted);
+  margin: 2px 0 0; text-transform: uppercase; letter-spacing: .08em;
+}
+
+/* ── MATERIALS ───────────────────────────────────────────────────── */
+.embassy-mat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+.embassy-mat-card {
+  background: var(--embassy-surface);
+  border: 1px solid var(--embassy-border);
+  border-radius: 10px;
+  padding: 14px; text-align: left;
+  transition: border-color .15s;
+}
+.embassy-mat-card:hover { border-color: var(--embassy-accent); }
+.embassy-mat-swatch {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: 6px;
+  background:
+    radial-gradient(at 30% 30%, rgba(255,255,255,.06), transparent 60%),
+    linear-gradient(135deg, #1e293b, #312e2b);
+  margin-bottom: 10px;
+}
+.embassy-mat-label {
+  font-family: var(--embassy-font-heading);
+  font-size: 18px; letter-spacing: .01em;
+  text-transform: capitalize;
+}
+.embassy-mat-sub {
+  font-size: 11px; color: var(--embassy-text-faint);
+  margin-top: 4px; text-transform: uppercase; letter-spacing: .06em;
+}
+
+/* ── DESIGNERS ───────────────────────────────────────────────────── */
+.embassy-des-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
+.embassy-des-card {
+  background: var(--embassy-surface);
+  border: 1px solid var(--embassy-border);
+  border-radius: 10px;
+  padding: 20px 16px; text-align: center;
+}
+.embassy-des-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%; margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--embassy-font-heading);
+  font-size: 24px; font-weight: 500;
+  background: linear-gradient(135deg, var(--embassy-accent), #8a6d3b);
+  color: #0a0a0c;
+}
+.embassy-des-name {
+  font-family: var(--embassy-font-heading);
+  font-size: 16px; letter-spacing: .01em;
+}
+.embassy-des-role {
+  font-size: 11px;
+  color: var(--embassy-text-faint);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-top: 4px;
+}
+
+/* ── STORY ───────────────────────────────────────────────────────── */
+.embassy-section--story { padding: 48px 0 32px; }
+.embassy-story-body {
+  font-family: var(--embassy-font-heading);
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.5;
+  letter-spacing: .005em;
+  max-width: 760px;
+  margin: 0;
+  color: var(--embassy-text);
+}
+
+/* ── PRODUCTS ────────────────────────────────────────────────────── */
+.embassy-product-filters {
+  display: flex; gap: 6px; align-items: center;
+}
+.embassy-select {
+  padding: 8px 12px;
+  background: var(--embassy-surface);
+  border: 1px solid var(--embassy-border-2);
+  border-radius: 999px;
+  color: var(--embassy-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.embassy-prod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.embassy-prod-card {
+  background: var(--embassy-surface);
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--embassy-border);
+  transition: transform .2s, border-color .15s;
+}
+.embassy-prod-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--embassy-accent);
+}
+.embassy-prod-image {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background-size: cover; background-position: center;
+  background-color: var(--embassy-surface-2);
+}
+.embassy-prod-body { padding: 12px 14px; }
+.embassy-prod-name {
+  font-size: 14px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.embassy-prod-cat {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--embassy-text-faint); margin-top: 2px;
+}
+.embassy-prod-footer {
+  margin-top: 18px;
+  font-size: 12px; color: var(--embassy-text-muted);
+}
+
+/* ── ACADEMY ─────────────────────────────────────────────────────── */
+.embassy-academy-empty {
+  padding: 24px;
+  background: var(--embassy-surface); border-radius: 10px;
+  color: var(--embassy-text-muted); font-size: 14px;
+}
+
+/* ── STUDIO LIBRARY CTA ──────────────────────────────────────────── */
+.embassy-cta {
+  margin-top: 48px;
+  padding: 36px;
+  background: linear-gradient(135deg, #1a1a1f, #2a261c);
+  border: 1px solid var(--embassy-border);
+  border-radius: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; flex-wrap: wrap;
+}
+.embassy-cta-eyebrow {
+  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--embassy-accent); font-weight: 600;
+}
+.embassy-cta-title {
+  font-family: var(--embassy-font-heading);
+  font-size: clamp(20px, 2.4vw, 28px);
+  margin-top: 4px;
+}
+.embassy-cta-sub {
+  font-size: 13px; color: var(--embassy-text-muted);
+  margin-top: 6px; max-width: 560px;
+}
+
+/* ── MODAL ───────────────────────────────────────────────────────── */
+.embassy-modal-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.7);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+.embassy-modal {
+  background: var(--embassy-surface);
+  border: 1px solid var(--embassy-border);
+  border-radius: 14px;
+  width: min(540px, 92vw);
+  max-height: 88vh; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.embassy-modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--embassy-border);
+}
+.embassy-modal-head h2 {
+  font-family: var(--embassy-font-heading);
+  font-size: 20px; margin: 0;
+}
+.embassy-modal-body {
+  padding: 20px; display: flex; flex-direction: column; gap: 14px;
+}
+.embassy-modal-foot {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--embassy-border);
+}
+.embassy-field {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.embassy-field > span {
+  font-size: 11px; color: var(--embassy-text-muted);
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.embassy-field input,
+.embassy-field textarea {
+  background: var(--embassy-surface-2);
+  border: 1px solid var(--embassy-border-2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--embassy-text);
+  font-family: var(--embassy-font-body);
+  font-size: 13px;
+  resize: vertical;
+}
+.embassy-field input:focus,
+.embassy-field textarea:focus {
+  outline: none; border-color: var(--embassy-accent);
+}

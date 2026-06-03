@@ -83,6 +83,23 @@ export const bulkAction = (setId, payload) =>
 export const publishGate = (setId) =>
   api.get(`${BASE}/catalog-sets/${setId}/publish-gate`);
 
+// ─── ITER202 · Brand Experience Layer™ ──────────────────────────────
+export const brandEmbassy = (brandId) =>
+  api.get(`${BASE}/brands/${brandId}/embassy`);
+export const patchBrandHero = (brandId, payload) =>
+  api.patch(`${BASE}/brands/${brandId}/hero`, payload);
+export const uploadBrandHero = (brandId, formData) =>
+  api.post(`${BASE}/brands/${brandId}/hero/upload`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 60000,
+  });
+export const regenerateMoodDna = (brandId) =>
+  api.post(`${BASE}/brands/${brandId}/regenerate-mood-dna`);
+export const linkBrandToStudio = (brandId, payload = {}) =>
+  api.post(`${BASE}/brands/${brandId}/link-to-studio`, payload);
+export const unlinkBrandFromStudio = (brandId) =>
+  api.delete(`${BASE}/brands/${brandId}/link-to-studio`);
+
 export default {
   listBrands, getBrand, createBrand,
   listCatalogSets, createCatalogSet, getCatalogSet, updateCatalogSet,
@@ -95,4 +112,6 @@ export default {
   listNeedsReview, approveEntity, rejectEntity,
   promoteEntityToCanonical,
   reviewSummary, entityDetail, mergeAliases, bulkAction, publishGate,
+  brandEmbassy, patchBrandHero, uploadBrandHero, regenerateMoodDna,
+  linkBrandToStudio, unlinkBrandFromStudio,
 };

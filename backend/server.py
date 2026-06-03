@@ -156,6 +156,9 @@ api_router.include_router(brand_catalog_sets.router,     prefix="/knowledge", ta
 # ITER197 · Persistent Extraction Jobs™
 from routers import extraction_jobs as _extr_jobs_router  # noqa: E402
 api_router.include_router(_extr_jobs_router.router, prefix="/knowledge", tags=["extraction-jobs"])
+
+from routers import brand_experience as _brand_exp_router  # noqa: E402
+api_router.include_router(_brand_exp_router.router, prefix="/knowledge", tags=["brand-experience"])
 api_router.include_router(journey_mail.router,           prefix="/journey-mail", tags=["journey-mail-intelligence"])
 api_router.include_router(brands_registry.router,   prefix="/inspirations", tags=["brand-registry"])
 api_router.include_router(curated_references.router, prefix="/inspirations", tags=["curated-references"])
