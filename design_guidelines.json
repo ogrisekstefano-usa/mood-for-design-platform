@@ -1,121 +1,65 @@
 {
-  "project_name": "MOOD for DESIGN",
-  "theme": "LIGHT",
-  "archetype": "Archetype 4 (Swiss & High-Contrast) + Archetype 5 (Jewel & Luxury)",
-  "vibe": "Architectural Luxury Light. Editorial, cinematic, pristine, deeply structured yet spacious. It blends the authority and clarity of Swiss typography with the moody, expensive feel of high-end editorial magazines.",
-  "colors": {
-    "background_primary": "#F9F9F8",
-    "background_secondary": "#FFFFFF",
-    "background_tertiary": "#F2F2F0",
-    "text_primary": "#0A0A0A",
-    "text_secondary": "#5A5A5A",
-    "brand_teal": "#3DDAD0",
-    "border_subtle": "rgba(10, 10, 10, 0.1)",
-    "border_strong": "rgba(10, 10, 10, 1)",
-    "rules": [
-      "No full-screen teal gradients. Teal is an accent, a kinetic trigger used strictly for CTAs and hover states.",
-      "Always use pure charcoal (#0A0A0A) for headings, never soft grey.",
-      "Background must be #F9F9F8 (Off-White/Bone) for structural sections to provide warmth and avoid sterile tech feels."
-    ]
+  "project_context": "MOOD for DESIGN - Activity Feed & Timeline Redesign",
+  "design_philosophy": {
+    "archetype": "Swiss & High-Contrast mixed with Editorial Luxury",
+    "theme": "Light theme for content area, inside the existing #0A0A0B shell",
+    "core_concept": "The platform is an architectural blueprint, an editorial magazine, a professional notebook. It is NOT a dark-mode CRM. The interface must read like a curated story, eliminating technical metadata, chips, and database-like tables.",
+    "shape_language": "Sharp edges only. rounded-none everywhere. Borders are thin, structural lines (1px stone-200)."
   },
   "typography": {
-    "heading_font": "Cormorant Garamond, serif",
-    "body_font": "Manrope, sans-serif",
-    "scales": {
-      "H1": "text-5xl sm:text-6xl lg:text-[5rem] tracking-tighter leading-none font-light",
-      "H2": "text-4xl sm:text-5xl tracking-tight leading-none font-normal",
-      "H3": "text-2xl sm:text-3xl tracking-tight leading-snug font-normal",
-      "H4": "text-xl font-medium tracking-tight",
-      "Body": "text-base leading-relaxed tracking-normal text-[#5A5A5A]",
-      "Overline": "text-xs tracking-[0.2em] uppercase font-bold text-[#0A0A0A]"
-    },
-    "rules": [
-      "Headings must strictly use Cormorant Garamond to enforce the editorial aesthetic.",
-      "Overlines and small interactive labels use Manrope with wide tracking.",
-      "Do NOT use Inter or standard geometric fonts for any primary heading.",
-      "Do not center-align everything. Use explicit left/right alignments to create visual tension."
-    ]
+    "h1_h2": "Playfair Display (Serif) - Used for Person Names, Section Headers (e.g., 'Da completare'). Provides the 'Editorial/Magazine' feel.",
+    "ui_body": "Montserrat (Sans) - Used for activity subjects, outcomes, dates, and UI chrome. Clean, architectural, highly readable.",
+    "hierarchy_rules": "Persona (text-2xl/3xl Serif) > Argomento (text-lg medium Sans) > Esito/Prossimo Passo (text-base Sans) > Data (text-xs uppercase tracking-widest stone-400)."
   },
-  "grids_and_layouts": {
-    "spacing_scale": "p-4, p-8, p-12, p-24, p-32",
-    "marketing_grid": "MODE A: Tetris Grid. grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12",
-    "rules": [
-      "Generous Spacing Philosophy: Use 2-3x more spacing than typical SaaS designs. p-24 and p-32 are standard for section paddings.",
-      "Tension over Symmetry: Avoid standard 3-column Bootstrap layouts. Use bento-style spans like col-span-8 and col-span-4.",
-      "Optical Alignment: Never perfectly center elements if it looks visually heavy on one side. Balance negative space.",
-      "Cardless Architecture: Do not wrap content in floating white boxes with drop shadows. Use 1px borders or subtle background shifts (#F9F9F8 to #FFFFFF)."
-    ]
+  "colors": {
+    "shell_background": "#0A0A0B",
+    "content_background": "#FFFFFF",
+    "text_primary": "stone-900 (#1c1917)",
+    "text_secondary": "stone-500 (#78716c)",
+    "text_tertiary": "stone-400 (#a8a29e)",
+    "borders": "stone-200 (#e7e5e4)",
+    "accent": "#00C9B3",
+    "cta_background": "#000000",
+    "cta_text": "#FFFFFF",
+    "rules": "No generic grey. Use stone palette for warmth. Accent teal (#00C9B3) is used strictly for subtle indicators (e.g., a 2px left border on overdue tasks), NEVER for large backgrounds or pill containers."
   },
-  "visual_enhancers": {
-    "surfaces": [
-      "Solid Backgrounds: Flat colors with hard 1px borders.",
-      "Glassmorphism (for sticky nav): backdrop-blur-xl bg-[#F9F9F8]/70 border-b border-black/10.",
-      "No rounded corners. Use rounded-none or rounded-sm (max 4px) to retain architectural crispness."
-    ],
-    "shadows": [
-      "Avoid heavy drop shadows.",
-      "Use diffuse ambient shadows (shadow-[0_8px_32px_rgba(0,0,0,0.04)]) strictly for overlapping editorial images."
-    ]
+  "vocabulary_mapping": [
+    {"before": "Record / Item / Entity", "after": "Attività / Relazione"},
+    {"before": "Event Type", "after": "Natura / Argomento"},
+    {"before": "Outcome chip", "after": "Esito / Sintesi"},
+    {"before": "Filter pill", "after": "Vista / Affina"},
+    {"before": "No data available", "after": "Il foglio è bianco. Inizia una nuova attività."}
+  ],
+  "ux_explanation": "The redesign shifts the cognitive model from 'Data Entry' to 'Story Reading'. In traditional CRMs, the user scans columns (Type, Status, Date, Name). Here, the user reads a narrative. By removing chips and badges, we reduce visual noise. White space and typographic contrast (Serif vs Sans) do the heavy lifting of information architecture. The 'Da completare' section acts as an urgent, hero-style editorial to-do list, entirely segregated from the historical feed. The timeline groups events by day as continuous text, mimicking a logbook rather than an IT audit trail.",
+  "empty_states": {
+    "da_completare": "Nessuna attività in sospeso. Ottimo lavoro.",
+    "storico": "Nessuna attività passata. Inizia a costruire le tue relazioni.",
+    "timeline": "Il diario è vuoto."
   },
   "components": {
-    "buttons": "Flat, sharp edges (rounded-none). Primary is #0A0A0A with #FFFFFF text. Hover state switches to #3DDAD0 with #0A0A0A text. Secondary button is border border-[#0A0A0A] bg-transparent text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-[#FFFFFF].",
-    "navigation": "Minimal sticky header. Glassmorphism effect. Logo on left, navigation centered, Locale Switcher + CTA right. Must be z-50.",
-    "footer": "4-column grid. py-32 bg-[#0A0A0A] text-[#F9F9F8]. Massive logo typographic treatment.",
-    "forms_and_inputs": "Shadcn based. Stripped of all rounding. border-b only or sharp 1px borders.",
-    "sections": {
-      "EditorialHero": "Massive serif H1, cinematic image right or bottom. Strict asymmetrical grid.",
-      "SplitStory": "50/50 image and text layout. Image spans full height, text centered vertically in its column.",
-      "PricingCards": "Not SaaS cards. Editorial price lists. Clean tables, 1px horizontal dividers. Subtle teal highlights.",
-      "CinematicQuote": "Massive serif quote (text-4xl to 6xl), heavily indented, generous top/bottom padding."
-    }
+    "filters": "Discreet text-based interaction. A minimal input line (border-b only) 'Cerca o affina vista...' or a text button 'Filtri +' that opens the existing ContactDrawer. No permanent dropdowns on the screen.",
+    "da_completare_section": "Hero-style block. Pure white background, bold Playfair heading. Items are listed with their deadline. Minimal UI, looks like a typed list.",
+    "activity_feed_item": "A narrative block. No card background (just rests on white). Separated by 1px stone-200 bottom border. Name is massive (Serif). Content flows organically.",
+    "timeline_day_group": "Left column: Sticky Date (text-xs uppercase stone-400). Right column: Stacked text lines of events. No dots or connecting lines, alignment implies sequence."
   },
-  "motion": {
-    "scrolling": "Lenis smooth scroll is MANDATORY for premium momentum feel.",
-    "animations": "Framer Motion for staggered fade-ups (opacity 0 to 1, y: 20 to 0). Duration 0.8s, ease: [0.16, 1, 0.3, 1].",
-    "interactions": "Hover states must be instantaneous but visually impactful (e.g., color inversion or sharp scale)."
+  "wireframes": {
+    "activity_feed_desktop": "DA COMPLETARE\n\nCall con Mario Rossi — Scadenza 5 giugno\nMeeting showroom — Scadenza 7 giugno\nEmail architetto — Scadenza 9 giugno\n\n--------------------------------------------------\n\nSTORICO ATTIVITÀ\n\nMario Rossi\nDiscussione onboarding Blueprint\nEsito: Interessato alla sezione Material Intelligence\nProssimo passo: Demo con responsabile acquisti\n03 GIUGNO 2026\n\n--------------------------------------------------\n\nGiulia Bianchi\nIncontro per revisione catalogo tessuti\nEsito: Campioni approvati per il progetto Villa Verde\nProssimo passo: Inviare preventivo formale\n01 GIUGNO 2026",
+    "timeline_desktop": "03 GIU 2026      Introduzione ricevuta\n                 Advisor assegnato\n                 Call con Mario Rossi\n                 Inviata proposta\n                 Demo pianificata\n\n01 GIU 2026      Email inviata a Giulia Bianchi\n                 Risposta ricevuta",
+    "mobile_activity_feed": "Mobile follows the same narrative structure. 390px viewport means padding is reduced to p-4 or p-6. Typography scales down (H1 text-xl), but the sequence remains: Name -> Topic -> Outcome -> Next Step -> Date. No horizontal scrolling, no tables."
   },
-  "accessibility": {
-    "contrast": "Ensure pure black or charcoal (#0A0A0A) on off-white (#F9F9F8) for body text. Teal (#3DDAD0) must only be used on dark backgrounds or as hover states where contrast is maintained.",
-    "testing": "All interactive and key informational elements MUST include data-testid attribute (e.g., data-testid='corporate-nav-cta')."
-  },
-  "media_urls": {
-    "hero_architectural_cinematic": {
-      "url": "https://static.prod-images.emergentagent.com/jobs/8710080e-5188-4ec5-bd65-70ec654c95f9/images/47b99628f6050f1aa60c175bf389e79b1bfe0f2d1ce288c4f1f637d3b0df271b.png",
-      "description": "Wide landscape format, ultra-minimalist luxury interior. Use for the main EditorialHero section."
-    },
-    "editorial_moodboard_materials": {
-      "url": "https://static.prod-images.emergentagent.com/jobs/8710080e-5188-4ec5-bd65-70ec654c95f9/images/a1a0631e310012f11b40f292a4e5d0ad766e9bacca39cc796c3853b19daa65ed.png",
-      "description": "Editorial collage of material swatches. Use for SplitStory or FeatureNarrative sections."
-    },
-    "unsplash_living_room_1": {
-      "url": "https://images.unsplash.com/photo-1682184805271-11671b7ecf4c",
-      "description": "Modern minimalist living room window view. Great for CaseStudyPreview or JournalGrid."
-    },
-    "unsplash_living_room_2": {
-      "url": "https://images.unsplash.com/photo-1700474568247-2bf81611b293",
-      "description": "Living room with architectural speakers and couch. Use for Platform features."
-    },
-    "unsplash_sofa": {
-      "url": "https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea",
-      "description": "Black and brown leather padded tub sofa. Use for product/feature visual."
-    },
-    "unsplash_studio_1": {
-      "url": "https://images.unsplash.com/photo-1598367815092-a2c0cbc1ea3d",
-      "description": "Creative architect sitting at a table. Use for AboutPage or Team sections."
-    },
-    "unsplash_studio_2": {
-      "url": "https://images.unsplash.com/photo-1742440711413-da7afb0f4930",
-      "description": "Two men in a studio shelving unit. Use for Start Your Studio or About sections."
-    }
+  "interactions": {
+    "hover_states": "Items in 'Da completare' show a 'Rispondi / Segna completata' text link in stone-900 on hover. No heavy background color changes.",
+    "click_details": "Clicking an activity row opens the existing 'ContactDrawer.jsx' on the right side for full editing, keeping the reading view clean.",
+    "lazy_loading": "Use infinite scroll with a discreet 'Caricamento...' text instead of traditional spinning loaders or heavy pagination controls."
   },
   "instructions_to_main_agent": [
-    "DO NOT use standard SaaS marketing templates. This is an architectural luxury site. Build with raw HTML, Tailwind grids, and immense negative space.",
-    "Implement Lenis for smooth scrolling at the root of the corporate layout.",
-    "Add 'Cormorant Garamond' and 'Manrope' via Google Fonts.",
-    "Use Shadcn UI components ONLY for complex interactive parts (Forms, Dialogs, Select), but OVERRIDE their default styles to be sharp (rounded-none), cardless, and border-heavy.",
-    "When applying overlays on images (like the Hero), use max bg-black/30 or gradient-to-t. Do not kill the imagery with heavy black filters.",
-    "Ensure the locale switcher in CorporateNav is perfectly integrated without bloating the header.",
-    "All components must be visually distinct but share the same underlying CMS section registry.",
-    "Add data-testid to every interactive button, link, and form element to comply with E1 constraints."
+    "Create standard .js React components. Use Shadcn primitives if needed but strip ALL rounded corners (use rounded-none).",
+    "Implement 'ActivityFeed.js' and 'TimelineLog.js'.",
+    "Ensure Playfair Display and Montserrat are loaded in the HTML or via CSS imports.",
+    "Use standard Tailwind classes. For fonts: font-serif for Playfair, font-sans for Montserrat.",
+    "Ensure responsive design: Mobile (390px) completely abandons any tabular approach.",
+    "Ensure all interactive elements have data-testid attributes (e.g., data-testid='activity-item-mario-rossi', data-testid='filter-drawer-trigger').",
+    "DO NOT use traditional CRM chips/badges for statuses. Map them to readable text ('Esito: ...').",
+    "DO NOT modify the WorkspaceShell.jsx. These components will render inside the <main>."
   ]
 }
