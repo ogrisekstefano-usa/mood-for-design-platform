@@ -344,3 +344,79 @@
 - "missing 8" badge editoriale residuo per chiavi i18n di altri namespace fuori scope
 - Pulsanti "Salva in Studio Library" da inserire nelle card di Collection/Product/Material/Designer dentro `BrandEmbassyPage` (component `SaveToLibraryButton` già pronto)
 
+
+---
+
+## ITER204-B · Entity Navigation Layer™ — 2026-06-03
+
+**Stato:** ✅ Completato · Backend 27/27 PASS · Frontend 100% retest (3/3 cold navigations) · 0 regressioni
+
+### Problema risolto
+Le card di Collection/Product/Material/Designer in Brand Embassy erano vetrine statiche con count "20 prodotti" hardcoded (limite di paginazione). Cliccando non succedeva nulla. Il Knowledge Graph era estratto ma non navigabile.
+
+### Consegnato
+
+**1. Backend — 4 composite endpoints (`/api/knowledge/`)**
+- `GET /brands/{brand_id}/collections/{collection_id}` → hero, count REALI (products/materials/designers), grid prodotti, materiali aggregati, designer, related_collections, `saved` flag, `states` per empty
+- `GET /brands/{brand_id}/products/{product_id}` → hero, full gallery, category, materials, designers, related_products
+- `GET /materials/{material_id}` → accetta UUID (canonical/detected) E nome (case-insensitive). 404 quando nulla matcha
+- `GET /designers/{designer_id}` → accetta UUID (canonical/detected). Bio + brands + collections + products
+- `brand_experience.py/embassy` → ora restituisce `product_count` REALE (bulk count query), non più capped a 20
+
+**2. Frontend — 4 detail pages editoriali dark**
+- `CollectionDetailPage` `/inspirations/brands/:brandId/collections/:collectionId`
+- `ProductDetailPage`    `/inspirations/brands/:brandId/products/:productId`
+- `MaterialDetailPage`   `/inspirations/materials/:materialId`
+- `DesignerDetailPage`   `/inspirations/designers/:designerId`
+- CSS condiviso `entity-detail.css` — 100% theme tokens, no white, no CRUD feeling
+- Retry logic (3 attempts, 600ms backoff): solo HTTP 404 → not_found, tutti gli altri errori retry
+
+**3. Clickability pass (BrandEmbassyPage)**
+- Collection cards `embassy-coll-*` → click → `/inspirations/brands/.../collections/...`
+- Product cards `embassy-product-*` → click → `/inspirations/brands/.../products/...`
+- Material cards `embassy-mat-*` → click → `/inspirations/materials/{id}`
+- Designer cards `embassy-designer-*` → click → `/inspirations/designers/{id}`
+
+**4. Studio Library Bridge™ enhanced**
+- `/api/studio-library/resolved` ora idrata designer/material da `brand_detected_entities` in fallback (non solo da `*_canonical`). Più "Voce rimossa" per designer salvati da Brand Atlas.
+- Supporto save di material per nome (es. entity_id="wood")
+
+**5. i18n (it-IT + en-US)**
+- Nuovi namespace: `entity.collection.*`, `entity.product.*`, `entity.material.*`, `entity.designer.*`, `common.loading`
+- 0 ⟦missing⟧ token sulle detail pages
+
+**6. SaveToLibraryButton** integrato su ogni detail page (collection/product/material/designer)
+
+### Acceptance criteria (12/12)
+1. ✅ Collection cards cliccabili
+2. ✅ Collection Detail page esistente
+3. ✅ Product cards cliccabili
+4. ✅ Product Detail page esistente
+5. ✅ Material cards cliccabili
+6. ✅ Material Detail page esistente
+7. ✅ Designer cards cliccabili
+8. ✅ Designer Detail page esistente
+9. ✅ No fake counts (Essentials: 123 reali, non 20)
+10. ✅ Empty states chiari ("Prodotti in indicizzazione", "Materiali da collegare", ...)
+11. ✅ Save-to-Studio-Library hooks presenti
+12. ✅ Graph navigabile Brand → Collection → Product → Material → Designer
+
+### Test scenario ARBI (verificato)
+1. ✅ Open Brand Atlas
+2. ✅ Enter ARBI Embassy
+3. ✅ Click "Essentials" collection → CollectionDetailPage carica con 123 prodotti, mood DNA, materiali
+4. ✅ Click prodotto → ProductDetailPage carica con hero, gallery, breadcrumb
+5. ✅ Click materiale → MaterialDetailPage carica con brands/collections/products
+6. ✅ Click designer → DesignerDetailPage carica con counts e griglie
+7. ✅ Save Collection/Product/Material/Designer → appaiono in /studio-library
+
+### File chiave
+- Backend: `/app/backend/routers/entity_navigation.py` (nuovo), `/app/backend/routers/brand_experience.py` (bulk count), `/app/backend/routers/studio_library.py` (resolved hydration)
+- Frontend: `CollectionDetailPage`, `ProductDetailPage`, `MaterialDetailPage`, `DesignerDetailPage`, `entity-detail.css`, `entityNavigationApi.js`, `BrandEmbassyPage.jsx` (clickability), `App.js` (4 routes)
+- i18n: `it-IT.json`, `en-US.json` (entity.* namespaces)
+- Test: `/app/backend/tests/test_iter205_entity_navigation.py` (12 PASS) + `/app/backend/tests/test_iter204_studio_library.py` (15 PASS) — 27 totali
+- Report: `/app/test_reports/iteration_205.json`, `/app/test_reports/iteration_206.json`
+
+### Note (non bloccanti)
+- React warning `LocalizationOverlay` su mount: pre-esistente, fuori scope
+- Auth.login.* e nav.* i18n keys mancanti: pre-esistente, fuori scope
