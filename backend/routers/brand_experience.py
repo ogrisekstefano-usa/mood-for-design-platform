@@ -475,3 +475,203 @@ def unlink_from_studio(brand_id: str, ctx=Depends(get_tenant_context)):
     c.table("studio_brand_links").delete() \
         .eq("tenant_id", tid).eq("brand_id", brand_id).execute()
     return {"ok": True, "linked": False}
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  5 · BRAND ATLAS 2.0™ · Design Discovery Engine
+# ══════════════════════════════════════════════════════════════════════
+@router.get("/atlas/discover")
+def atlas_discover(ctx=Depends(get_tenant_context)):
+    """Return cards-ready data for the Brand Atlas 2.0 discovery grid.
+
+    Each card includes:
+      - id, name, positioning (luxury_tier), markets
+      - hero_image_url (brand.hero_image_url OR first canonical product image)
+      - hero_title / hero_subtitle (narrative copy)
+      - mood_dna (3-5 keywords)
+      - counts (collections / products / materials / designers) — for hover only
+      - top_collections (first 3 canonical collection names)
+      - certified (atlas_certified_at or published catalog set)
+      - saved (in current studio_brand_links)
+    NO global stats. NO hardcoded data. Everything from DB / Knowledge Graph.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    # Include both tenant-private brands AND curated NULL-tenant brands
+    # (curated brands are shared across the platform).
+    private_brands = (c.table("brands").select(
+        "id,name,slug,category,country,logo_url,positioning,luxury_tier,"
+        "primary_markets,hero_image_url,hero_title,hero_subtitle,"
+        "hero_description,mood_dna,atlas_certified_at")
+        .eq("tenant_id", tid).execute().data or [])
+    curated_brands = (c.table("brands").select(
+        "id,name,slug,category,country,logo_url,positioning,luxury_tier,"
+        "primary_markets,hero_image_url,hero_title,hero_subtitle,"
+        "hero_description,mood_dna,atlas_certified_at")
+        .is_("tenant_id", "null").execute().data or [])
+    brands = sorted(private_brands + curated_brands,
+                     key=lambda b: (b.get("name") or "").lower())
+
+    # Bulk: studio_brand_links saved set
+    saved_ids = set()
+    try:
+        for r in (c.table("studio_brand_links").select("brand_id")
+                  .eq("tenant_id", tid).execute().data or []):
+            saved_ids.add(r["brand_id"])
+    except Exception:
+        pass
+
+    # Bulk: per-brand catalog set + counts
+    cards: List[Dict[str, Any]] = []
+    for b in brands:
+        # Latest set for this brand
+        cset_rows = (c.table("brand_catalog_sets")
+                     .select("id,status,published_at")
+                     .eq("brand_id", b["id"]).eq("tenant_id", tid)
+                     .in_("status", ["published", "validated", "needs_review"])
+                     .order("updated_at", desc=True).limit(1).execute().data or [])
+        set_id = cset_rows[0]["id"] if cset_rows else None
+        is_published = bool(cset_rows and cset_rows[0]["status"] == "published")
+
+        col_count = mat_count = des_count = prod_count = 0
+        top_collections: List[str] = []
+        hero_image = b.get("hero_image_url")
+
+        if set_id:
+            try:
+                col_count = (c.table("brand_detected_entities").select("id", count="exact")
+                              .eq("catalog_set_id", set_id).eq("entity_type", "collection")
+                              .execute().count or 0)
+                mat_count = (c.table("brand_detected_entities").select("id", count="exact")
+                              .eq("catalog_set_id", set_id).eq("entity_type", "material")
+                              .execute().count or 0)
+                des_count = (c.table("brand_detected_entities").select("id", count="exact")
+                              .eq("catalog_set_id", set_id).eq("entity_type", "designer_registered")
+                              .execute().count or 0)
+                docs = (c.table("brand_catalog_documents").select("source_document_id")
+                        .eq("catalog_set_id", set_id).execute().data or [])
+                src_ids = [d["source_document_id"] for d in docs if d.get("source_document_id")]
+                if src_ids:
+                    prod_count = (c.table("products").select("id", count="exact")
+                                  .in_("source_document_id", src_ids).execute().count or 0)
+                # Top 3 canonical collections
+                canon = (c.table("collections_canonical")
+                         .select("display_name,metadata_json")
+                         .eq("tenant_id", tid).eq("brand_id", b["id"])
+                         .limit(20).execute().data or [])
+                canon = [x for x in canon
+                         if (x.get("metadata_json") or {}).get("catalog_set_id") == set_id]
+                top_collections = [x["display_name"] for x in canon[:3]]
+                # Auto hero: first product asset if no brand hero
+                if not hero_image:
+                    prod_rows = (c.table("products").select("id")
+                                  .in_("source_document_id", src_ids)
+                                  .limit(20).execute().data or [])
+                    pids = [p["id"] for p in prod_rows]
+                    if pids:
+                        ass = (c.table("product_assets")
+                               .select("metadata_json,is_primary")
+                               .in_("product_id", pids[:20])
+                               .order("is_primary", desc=True)
+                               .limit(20).execute().data or [])
+                        for a in ass:
+                            url = (a.get("metadata_json") or {}).get("public_url")
+                            if url:
+                                hero_image = url
+                                break
+            except Exception as ex:
+                logger.warning(f"discover counts {b['id']}: {ex}")
+
+        certified = bool(b.get("atlas_certified_at") or is_published)
+        cards.append({
+            "id":          b["id"],
+            "name":        b["name"],
+            "slug":        b.get("slug"),
+            "category":    b.get("category"),
+            "country":     b.get("country"),
+            "logo_url":    b.get("logo_url"),
+            "positioning": b.get("positioning") or b.get("luxury_tier"),
+            "luxury_tier": b.get("luxury_tier"),
+            "markets":     b.get("primary_markets") or [],
+            "hero_image_url":   hero_image,
+            "hero_title":       b.get("hero_title") or b["name"],
+            "hero_subtitle":    b.get("hero_subtitle"),
+            "hero_description": b.get("hero_description"),
+            "mood_dna":         (b.get("mood_dna") or [])[:5],
+            "counts": {
+                "collections": col_count,
+                "products":    prod_count,
+                "materials":   mat_count,
+                "designers":   des_count,
+            },
+            "top_collections": top_collections,
+            "certified":       certified,
+            "saved":           b["id"] in saved_ids,
+        })
+
+    # Deduplicate by name — keep the richest record (most products + mood_dna)
+    by_name: Dict[str, Dict[str, Any]] = {}
+    for card in cards:
+        name_key = (card.get("name") or "").strip().lower()
+        if not name_key:
+            continue
+        existing = by_name.get(name_key)
+        if not existing:
+            by_name[name_key] = card
+            continue
+        # Pick the richer one (more products + mood_dna)
+        existing_score = (existing["counts"]["products"]
+                           + 10 * len(existing.get("mood_dna") or []))
+        new_score = (card["counts"]["products"]
+                     + 10 * len(card.get("mood_dna") or []))
+        if new_score > existing_score:
+            by_name[name_key] = card
+
+    return {"cards": list(by_name.values()), "total": len(by_name)}
+
+
+@router.get("/atlas/facets")
+def atlas_facets(ctx=Depends(get_tenant_context)):
+    """Filter facets derived from REAL data:
+      - mood_dna: union of all mood_dna keywords across brands (counted)
+      - markets:  union of brand.primary_markets (counted)
+      - positioning: union of luxury_tier (counted)
+    NO hardcoded lists. If a facet has 0 brands, it doesn't appear.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    private_brands = (c.table("brands").select(
+        "luxury_tier,positioning,primary_markets,mood_dna,category")
+        .eq("tenant_id", tid).execute().data or [])
+    curated_brands = (c.table("brands").select(
+        "luxury_tier,positioning,primary_markets,mood_dna,category")
+        .is_("tenant_id", "null").execute().data or [])
+    brands = private_brands + curated_brands
+
+    mood: Dict[str, int] = {}
+    markets: Dict[str, int] = {}
+    positioning: Dict[str, int] = {}
+    categories: Dict[str, int] = {}
+    for b in brands:
+        for k in (b.get("mood_dna") or []):
+            k = str(k).strip()
+            if k:
+                mood[k] = mood.get(k, 0) + 1
+        for m in (b.get("primary_markets") or []):
+            if m:
+                markets[m] = markets.get(m, 0) + 1
+        p = b.get("positioning") or b.get("luxury_tier")
+        if p:
+            positioning[p] = positioning.get(p, 0) + 1
+        cat = b.get("category")
+        if cat:
+            categories[cat] = categories.get(cat, 0) + 1
+
+    return {
+        "mood_dna":   sorted([{"key": k, "count": v} for k, v in mood.items()],
+                              key=lambda x: -x["count"]),
+        "markets":    sorted([{"key": k, "count": v} for k, v in markets.items()],
+                              key=lambda x: -x["count"]),
+        "positioning": sorted([{"key": k, "count": v} for k, v in positioning.items()],
+                               key=lambda x: -x["count"]),
+        "categories": sorted([{"key": k, "count": v} for k, v in categories.items()],
+                              key=lambda x: -x["count"]),
+    }

@@ -99,6 +99,9 @@ export const linkBrandToStudio = (brandId, payload = {}) =>
   api.post(`${BASE}/brands/${brandId}/link-to-studio`, payload);
 export const unlinkBrandFromStudio = (brandId) =>
   api.delete(`${BASE}/brands/${brandId}/link-to-studio`);
+// ITER204-A · Brand Atlas 2.0 (Discovery Engine)
+export const atlasDiscover = () => api.get(`${BASE}/atlas/discover`);
+export const atlasFacets = () => api.get(`${BASE}/atlas/facets`);
 
 export default {
   listBrands, getBrand, createBrand,
@@ -114,4 +117,5 @@ export default {
   reviewSummary, entityDetail, mergeAliases, bulkAction, publishGate,
   brandEmbassy, patchBrandHero, uploadBrandHero, regenerateMoodDna,
   linkBrandToStudio, unlinkBrandFromStudio,
+  atlasDiscover, atlasFacets,
 };

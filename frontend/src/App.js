@@ -72,6 +72,7 @@ const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
 const StudioCollectionsPage = lazy(() => import('./pages/inspirations/StudioCollectionsPage'));
 const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
+const BrandAtlas2Page = lazy(() => import('./pages/inspirations/BrandAtlas2Page'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
 const BrandEmbassyPage = lazy(() => import('./pages/inspirations/BrandEmbassyPage'));
 const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
@@ -633,7 +634,8 @@ function App() {
                   <Route path="/settings/integrations" element={G('integrations', <IntegrationsHub />)} />
                   <Route path="/inspirations" element={G('inspirations', <InspirationsPage />)} />
                   <Route path="/inspirations/collections" element={G('inspirations', <StudioCollectionsPage />)} />
-                  <Route path="/inspirations/brands" element={G('brand_atlas', <BrandModePage />)} />
+                  <Route path="/inspirations/brands" element={G('brand_atlas', <BrandAtlas2Page />)} />
+                  <Route path="/inspirations/brands/legacy" element={G('brand_atlas', <BrandModePage />)} />
                   <Route path="/inspirations/brands/:brandId" element={G('brand_atlas', <BrandEmbassyPage />)} />
                   <Route path="/inspirations/brands/:brandId/admin" element={G('brand_atlas', <BrandDetailPage />)} />
                   {/* Sprint UI-SYS-01 · Brand Atlas™ canonical alias */}

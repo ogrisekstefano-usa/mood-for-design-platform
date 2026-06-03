@@ -10765,3 +10765,43 @@ Il dato esiste, la connessione UX no.
 
 ### Report
 `/app/memory/ITER202_5_UX_REALITY_AUDIT_REPORT.md` (con tabella P0/P1/P2 dettagliata)
+
+---
+
+## ITER204-A · BRAND ATLAS 2.0™ — Design Discovery Engine™ (2026-06-03)
+
+### 🎯 Da directory → libreria di linguaggi progettuali
+
+### Implementato
+**Backend** (`routers/brand_experience.py`):
+- `GET /api/knowledge/atlas/discover` — cards-ready data (hero, mood_dna, counts, top_collections, saved flag, certified badge); include tenant-private + curated NULL-tenant brands; dedup automatica by name
+- `GET /api/knowledge/atlas/facets` — faccette filtri da DB (mood_dna / markets / positioning / categories)
+
+**Frontend** (`pages/inspirations/BrandAtlas2Page.jsx` + `brand-atlas-2.css`):
+- Hero editoriale: "Manufacturers as design languages" (no global stats)
+- Search globale + 3 filtri ricchi (MOOD DNA / Mercato / Posizionamento) con dropdown e count + toggle Studio Library
+- Card narrativa: hero 16:11, badge CERTIFIED ATLAS™/CURATED BY MOOD™, positioning UPPERCASE, name editoriale, subtitle italic, MOOD DNA pills (3+more), top 3 collections, CTA "Enter the Embassy →"
+- ♡ Save to Studio Library inline (no entry detail)
+- Quick preview on hover desktop (16 Coll · 398 Prod · 12 Mat · 10 Des) — nascosto mobile
+- Skeleton shimmer loading state
+- Visual language: Apple/AD Archive/Material Bank inspired (gold #c9a875, Cormorant Garamond)
+
+### Critical Rules rispettate
+- ❌ NO hardcoded data / images / mood_dna / tags / counts
+- ✅ Tutto da DB (brands, collections_canonical, brand_detected_entities, product_assets, studio_brand_links)
+
+### Route
+- `/inspirations/brands` → Brand Atlas 2.0 (default)
+- `/inspirations/brands/legacy` → vecchia BrandModePage (deprecabile)
+- Sidebar invariata, Design Journey invariato
+
+### Test verificato
+ARBI render perfetto: badge, heart saved, mood pills, quick preview hover, top collections, CTA. Filtro MOOD DNA dropdown popolato con 5 opzioni reali da Claude-generated mood_dna.
+
+### Report
+`/app/memory/ITER204_A_BRAND_ATLAS_2_REPORT.md`
+
+### Backlog
+- Brand non certificati: workflow per popolare hero_image + mood_dna in batch
+- Cleanup duplicato ARBI (P0 dell'audit ITER202.5)
+- Drawer "Quick Preview" anche mobile (touch)
