@@ -1,0 +1,36 @@
+{
+  "summary": "M4 Internal Notification Center: full backend + frontend verification. 20/20 pytest cases pass (categories, debug publish + unread-count delta, high_priority_count, list filters, mark read, mark-all-read, archive, archive-read bulk, preferences with opt-out skip, hooks new_contact / new_activity / activity_assigned, debug cron). Frontend: bell visible in topbar on /dashboard, initial GET /api/notifications/categories + /api/notifications/unread-count fire on mount, badge with unread count rendered, drawer opens via portal with all 3 tabs (all/unread/archived), per-item archive button present, clicking a new_contact item navigated to /relations/{account_id} (deep link resolved from payload). RBAC 403 verified cross-user for PATCH /read and POST /archive. Cron debug endpoint returns {ok:true, scanned, emitted, skipped}.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global runtime", "issues": ["Pre-existing React warning 'Cannot update a component (LocalizationOverlay) while rendering a different component' still fires on mount — same residual as iteration_206, non-blocking, unrelated to M4."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter_m4_notification_center.py",
+    "/app/test_reports/pytest/iter_m4_results.xml"
+  ],
+  "action_items": [
+    "(LOW) Same LocalizationOverlay setState-in-render warning carried over from prior iterations — not part of M4 scope but still worth a future cleanup.",
+    "(INFO/no-op) When user opt-out for a category is enabled, publish() returns ok:false silently — current behavior is correct per spec but is invisible to client callers; consider surfacing 'skipped_reason' in the _debug/publish response for QA clarity."
+  ],
+  "critical_code_review_comments": [
+    "notification_publisher.publish() correctly enforces (a) catalog membership, (b) per-user opt-out, (c) deep-link templating with fallback_link, and is best-effort (never raises) — solid pattern.",
+    "Strict RBAC on /{id}/read and /{id}/archive is enforced via _load_for_user (both recipient_user_id AND tenant_id match), and verified 403 for cross-user PATCH/POST.",
+    "_debug/publish gated by is_super_admin — appropriate for QA helper.",
+    "Cron uses APScheduler BackgroundScheduler at 08:00 Europe/Rome, with a 20h dedup window via payload.action_id containment query — idempotent re-runs verified.",
+    "NotificationBell visibility-aware polling (60s visible / 600s hidden) is correctly armed via document.visibilitychange. Initial mount poll fires once for unread-count + categories — verified.",
+    "Drawer renders via createPortal, anchored top-right, with tabs all/unread/archived and per-item archive button — all data-testids present and consistent with spec (notification-bell, notification-bell-badge, notification-bell-highdot, notification-drawer, notification-tab-{all|unread|archived}, nb-item-{id}, nb-archive-{id}, nb-mark-all-read, nb-archive-read, nb-empty)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter_m4_notification_center.py (new — 20 tests, 27s wallclock)"
+  ],
+  "success_rate": {"backend": "100% (20/20)", "frontend": "100% on M4 critical flows (bell, polling, drawer, tabs, archive, deep-link nav)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin)",
+  "seed_data_creation": "Test suite creates TEST_M4 accounts/contacts/interactions/actions and TEST_M4 notifications during the run. Account fixture has a best-effort teardown via DELETE /api/relationships/accounts/{aid}. Residual TEST_M4 notifications may remain in relationship_notifications for admin user — they are mostly archived or read by end of suite and don't affect future runs since assertions use deltas (before→after).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite: /app/backend/tests/test_iter_m4_notification_center.py (20 tests, ~27s). Login via POST /api/auth/login returns {session:{access_token}}. The dev frontend is at REACT_APP_BACKEND_URL=https://content-hub-pro-22.preview.emergentagent.com (NOT blueprint.moodfordesign.com — that production frontend serves an OLDER bell component without M4 features). When testing UI, always use the preview emergentagent.com host so frontend code from /app is exercised. Cookie-based auth makes in-page fetch() to /_debug/publish return 401 unless the call goes through axios with its interceptor; use the API directly via pytest with Bearer instead for seeding."
+}

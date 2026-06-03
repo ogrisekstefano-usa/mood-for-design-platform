@@ -165,6 +165,9 @@ api_router.include_router(_entity_nav_router.router, prefix="/knowledge", tags=[
 # ITER204 · Studio Library Bridge™ — unified curatorial library
 from routers import studio_library as _studio_library_router  # noqa: E402
 api_router.include_router(_studio_library_router.router, prefix="/studio-library", tags=["studio-library"])
+# M4 · Internal Notification Center™ — DB-driven catalog + drawer API
+from routers import notifications as _notifications_router  # noqa: E402
+api_router.include_router(_notifications_router.router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(journey_mail.router,           prefix="/journey-mail", tags=["journey-mail-intelligence"])
 api_router.include_router(brands_registry.router,   prefix="/inspirations", tags=["brand-registry"])
 api_router.include_router(curated_references.router, prefix="/inspirations", tags=["curated-references"])
@@ -364,4 +367,14 @@ async def _iter197_recover_orphan_extraction_jobs():
             logger.info("[ITER197] no orphan extraction jobs on startup")
     except Exception as e:
         logger.exception(f"[ITER197] orphan recovery failed: {e}")
+
+
+# ─── M4 · Notification Cron — 08:00 Europe/Rome daily ──────────────────
+@app.on_event("startup")
+async def _m4_start_notification_scheduler():
+    try:
+        from services.notification_cron import start_scheduler
+        start_scheduler()
+    except Exception as e:
+        logger.exception(f"[M4] notification scheduler failed to start: {e}")
 

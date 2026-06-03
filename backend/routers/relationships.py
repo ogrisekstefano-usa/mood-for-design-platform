@@ -365,6 +365,21 @@ def add_contact(account_id: str, body: ContactIn, ctx=Depends(get_tenant_context
     })
     c.table("contacts").insert(row).execute()
     _touch_account(c, account_id, tid)
+    # M4 · emit new_contact (self-notification so the actor sees it in their bell)
+    try:
+        from services.notification_publisher import publish
+        publish(
+            tenant_id=tid,
+            recipient_user_id=ctx.get("profile_id"),
+            category_key="new_contact",
+            title="Nuovo contatto",
+            narrative=f"Aggiunto contatto: {row.get('full_name') or row.get('email') or ''}".strip(),
+            payload={"account_id": account_id, "contact_id": cid},
+            sender_user_id=ctx.get("profile_id"),
+            sender_type="user",
+        )
+    except Exception:  # noqa: BLE001
+        pass
     return {"ok": True, "contact": row}
 
 
@@ -428,6 +443,23 @@ def add_interaction(account_id: str, body: InteractionIn,
     })
     c.table("interactions").insert(row).execute()
     _touch_account(c, account_id, tid, when=row["occurred_at"])
+
+    # M4 · emit new_activity for the actor (self-feedback in bell)
+    try:
+        from services.notification_publisher import publish
+        publish(
+            tenant_id=tid,
+            recipient_user_id=ctx.get("profile_id"),
+            category_key="new_activity",
+            title=row.get("title") or row.get("interaction_type") or "Attività",
+            narrative=(row.get("summary") or row.get("title") or "")[:280],
+            payload={"account_id": account_id, "interaction_id": iid,
+                     "interaction_type": row.get("interaction_type")},
+            sender_user_id=ctx.get("profile_id"),
+            sender_type="user",
+        )
+    except Exception:  # noqa: BLE001
+        pass
 
     # Auto-create the follow-up action when next_step + date are provided.
     if body.next_step and body.next_follow_up_date:
@@ -510,6 +542,25 @@ def create_action(account_id: str, body: ActionIn,
         "updated_at": _iso(),
     })
     c.table("relationship_actions").insert(row).execute()
+    # M4 · emit activity_assigned when assignee differs from creator
+    try:
+        assignee = row.get("assigned_to")
+        creator = ctx.get("profile_id")
+        if assignee and assignee != creator:
+            from services.notification_publisher import publish
+            publish(
+                tenant_id=tid,
+                recipient_user_id=assignee,
+                category_key="activity_assigned",
+                title=row.get("title") or "Nuova attività assegnata",
+                narrative=f"Ti è stata assegnata un'attività: {row.get('title') or ''}".strip(),
+                payload={"account_id": account_id, "action_id": aid,
+                         "due_date": row.get("due_date")},
+                sender_user_id=creator,
+                sender_type="user",
+            )
+    except Exception:  # noqa: BLE001
+        pass
     return {"ok": True, "action": row}
 
 

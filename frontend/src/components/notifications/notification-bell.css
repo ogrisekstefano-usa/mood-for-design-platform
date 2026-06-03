@@ -44,6 +44,105 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* HIGH priority dot — sits on top-left of bell when ≥1 unread is high */
+.nb__pill .nb__highdot {
+  position: absolute;
+  top: -2px; left: -2px;
+  width: 10px; height: 10px;
+  background: #E0A872;
+  border: 2px solid #14110D;
+  border-radius: 999px;
+  box-shadow: 0 0 0 0 rgba(224, 168, 114, 0.55);
+  animation: nb-glow-high 2s ease-out infinite;
+}
+@keyframes nb-glow-high {
+  0%   { box-shadow: 0 0 0 0 rgba(224, 168, 114, 0.6); }
+  60%  { box-shadow: 0 0 0 8px rgba(224, 168, 114, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(224, 168, 114, 0); }
+}
+
+/* Per-item archive affordance */
+.nb-item {
+  position: relative;
+}
+.nb-item__archive {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: transparent;
+  border: 0;
+  color: rgba(245, 242, 237, 0.32);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 160ms ease, color 160ms ease, background 160ms ease;
+}
+.nb-item:hover .nb-item__archive { opacity: 1; }
+.nb-item__archive:hover { color: #00C9B3; background: rgba(0, 201, 179, 0.08); }
+
+/* Drawer toolbar (tabs + actions) */
+.nb-drawer__tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding: 2px;
+  background: rgba(245, 242, 237, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(245, 242, 237, 0.06);
+}
+.nb-drawer__tab {
+  flex: 1;
+  padding: 7px 10px;
+  background: transparent;
+  border: 0;
+  color: rgba(245, 242, 237, 0.5);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+.nb-drawer__tab:hover { color: rgba(245, 242, 237, 0.86); }
+.nb-drawer__tab--active {
+  background: rgba(0, 201, 179, 0.12);
+  color: #00C9B3;
+}
+
+.nb-drawer__actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  justify-content: flex-end;
+}
+.nb-drawer__action {
+  background: transparent;
+  border: 1px solid rgba(245, 242, 237, 0.10);
+  color: rgba(245, 242, 237, 0.65);
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.nb-drawer__action:hover {
+  color: #00C9B3;
+  border-color: rgba(0, 201, 179, 0.35);
+}
+
+.nb-item__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(245, 242, 237, 0.96);
+  margin: 0 0 4px;
+  padding-right: 24px;
+  letter-spacing: -0.002em;
+}
+
+
 /* ── DRAWER ──────────────────────────────────────────────── */
 .nb-overlay {
   position: fixed; inset: 0;
