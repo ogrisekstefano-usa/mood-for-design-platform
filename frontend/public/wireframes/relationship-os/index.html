@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOOD Relationship OS™ — Wireframes</title>
+<style>
+  :root{
+    --bg:#0A0A0B;
+    --card:#111214;
+    --card-2:#15171B;
+    --border:#23252A;
+    --border-soft:#1B1D22;
+    --text:#E7E9EE;
+    --muted:#8B8F98;
+    --faint:#5A5E66;
+    --accent:#00C9B3;
+    --accent-dim:rgba(0,201,179,.16);
+    --warn:#F59E0B;
+    --danger:#EF4444;
+    --good:#10B981;
+    --font-head:'Playfair Display', Georgia, serif;
+    --font-num:'Montserrat', system-ui, sans-serif;
+    --font-ui:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  /* ── shell shared ── */
+  .ros{padding:36px 40px 28px;border-bottom:1px solid var(--border)}
+  .ros h2.ros-title{margin:0;font-family:var(--font-head);font-style:italic;font-weight:400;font-size:30px;line-height:1.05;letter-spacing:-.01em}
+  .ros .eyebrow{font-family:var(--font-num);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+  .ros .lede{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:80ch}
+
+  /* ── top nav ── */
+  .nav{display:flex;align-items:center;gap:18px;padding:14px 28px;border-bottom:1px solid var(--border);background:#0C0C0E;position:sticky;top:0;z-index:5}
+  .nav .logo{font-family:var(--font-head);font-style:italic;font-size:17px;letter-spacing:.02em}
+  .nav .logo .tm{font-family:var(--font-num);font-size:9px;color:var(--accent);vertical-align:top;margin-left:2px}
+  .nav-tabs{display:flex;gap:4px;margin-left:30px}
+  .nav-tabs a{font-family:var(--font-num);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:8px 14px;border-radius:4px;text-decoration:none;border:1px solid transparent}
+  .nav-tabs a.active{color:var(--text);background:var(--card-2);border-color:var(--border)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .bell{position:relative;width:34px;height:34px;border:1px solid var(--border);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);color:var(--muted)}
+  .bell .badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:#0A0A0B;font-family:var(--font-num);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+  .me{width:30px;height:30px;border-radius:50%;background:#1d2027;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-head);font-style:italic;font-size:13px;color:var(--text);border:1px solid var(--border)}
+  .cmdk{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:var(--font-num);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase}
+  .cmdk kbd{font-family:var(--font-num);background:var(--card-2);border:1px solid var(--border);padding:2px 6px;border-radius:3px;font-size:9.5px}
+
+  /* ── grid 3 columns ── */
+  .center{display:grid;grid-template-columns:340px 1fr 360px;gap:0;border-bottom:1px solid var(--border)}
+  .col{border-right:1px solid var(--border)}
+  .col:last-child{border-right:none}
+  .col-h{display:flex;justify-content:space-between;align-items:baseline;padding:16px 22px 12px;border-bottom:1px solid var(--border-soft);background:#0C0C0E;position:sticky;top:0}
+  .col-h .t{font-family:var(--font-num);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--text)}
+  .col-h .c{font-family:var(--font-num);font-size:11px;color:var(--muted)}
+  .col-body{padding:14px 0}
+
+  /* ── COL 1 · Relationship Summary cards ── */
+  .rel-card{padding:14px 22px;border-bottom:1px solid var(--border-soft);cursor:pointer;display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center}
+  .rel-card:hover{background:var(--card)}
+  .rel-card.active{background:var(--card);border-left:2px solid var(--accent);padding-left:20px}
+  .rel-card .av{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-head);font-style:italic;color:var(--text);background:#222;border:1px solid var(--border);font-size:13px}
+  .rel-card .meta{min-width:0}
+  .rel-card .name{font-size:13.5px;color:var(--text);font-weight:500;line-height:1.2}
+  .rel-card .sub{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .rel-card .dot{width:6px;height:6px;border-radius:50%}
+  .dot.healthy{background:var(--good)}
+  .dot.warn{background:var(--warn)}
+  .dot.risk{background:var(--danger)}
+  .dot.cold{background:#6B7280}
+  .rel-card .when{font-family:var(--font-num);font-size:10px;color:var(--faint);text-align:right;text-transform:uppercase;letter-spacing:.12em}
+  .rel-card .pillrow{display:flex;gap:4px;margin-top:6px}
+  .rel-card .pill{font-family:var(--font-num);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:var(--card-2);color:var(--muted);border:1px solid var(--border)}
+  .rel-card .pill.accent{background:var(--accent-dim);color:var(--accent);border-color:transparent}
+
+  /* search/filter pills */
+  .sf{padding:12px 22px;display:flex;gap:6px;border-bottom:1px solid var(--border-soft);background:#0C0C0E;flex-wrap:wrap}
+  .sf input{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:7px 10px;color:var(--text);font-size:12px;flex:1;min-width:140px}
+  .sf input::placeholder{color:var(--faint)}
+  .seg{display:inline-flex;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:2px}
+  .seg button{background:transparent;border:none;color:var(--muted);font-family:var(--font-num);font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:5px 9px;border-radius:3px;cursor:pointer}
+  .seg button.on{background:var(--accent);color:#0A0A0B;font-weight:600}
+
+  /* ── COL 2 · Timeline ── */
+  .acc-head{padding:22px 32px;border-bottom:1px solid var(--border-soft);background:linear-gradient(180deg,#0F1013, #0A0A0B 80%)}
+  .acc-head .tag{font-family:var(--font-num);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+  .acc-head h1{margin:6px 0 0;font-family:var(--font-head);font-style:italic;font-weight:400;font-size:30px;letter-spacing:-.005em}
+  .acc-head .meta{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap}
+  .acc-head .meta .b{display:flex;flex-direction:column;gap:3px}
+  .acc-head .meta .lab{font-family:var(--font-num);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+  .acc-head .meta .val{font-family:var(--font-num);font-size:13px;color:var(--text);letter-spacing:.02em}
+  .acc-head .meta .val.num{font-size:22px;line-height:1}
+  .acc-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+  .btn{background:var(--card);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--font-num);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;padding:8px 14px;cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+  .btn:hover{border-color:#3a3d44}
+  .btn.primary{background:var(--accent);color:#0A0A0B;border-color:transparent;font-weight:600}
+  .btn.ghost{background:transparent}
+
+  /* composer */
+  .comp{padding:14px 32px;border-bottom:1px solid var(--border-soft);background:#0D0D0F}
+  .comp-row{display:flex;gap:8px;flex-wrap:wrap}
+  .comp-row .chip{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:var(--font-num);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+  .comp-row .chip:hover{color:var(--text);border-color:#3a3d44}
+  .comp-row .chip.voice{color:var(--accent);border-color:var(--accent-dim)}
+
+  /* timeline events */
+  .tl{padding:6px 32px 22px;position:relative}
+  .tl::before{content:'';position:absolute;left:53px;top:24px;bottom:8px;width:1px;background:var(--border)}
+  .ev{display:grid;grid-template-columns:36px 1fr;gap:18px;padding:14px 0;position:relative}
+  .ev .icn{width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);z-index:1;margin-left:6px;font-family:var(--font-num);font-size:13px}
+  .ev .icn.email{color:#7CC0F4;border-color:#23303d}
+  .ev .icn.call{color:#9BE7C4;border-color:#1f2f29}
+  .ev .icn.note{color:#FBBF77;border-color:#3a2f1c}
+  .ev .icn.voice{color:var(--accent);border-color:var(--accent-dim);background:#062e29}
+  .ev .icn.visit{color:#D7B3F0;border-color:#33233a}
+  .ev .icn.task{color:var(--warn);border-color:#3a2c14}
+  .ev .icn.auto{color:var(--faint)}
+  .ev .body{min-width:0}
+  .ev .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .ev .top .type{font-family:var(--font-num);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+  .ev .top .who{font-size:12px;color:var(--muted)}
+  .ev .top .when{font-family:var(--font-num);font-size:10px;color:var(--faint);letter-spacing:.12em;margin-left:auto}
+  .ev .ttl{font-size:14px;color:var(--text);margin-top:4px;line-height:1.35;font-weight:500}
+  .ev .desc{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .ev .qa{display:flex;gap:6px;margin-top:8px;opacity:.85}
+  .ev .qa a{font-family:var(--font-num);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:4px 8px;border-radius:4px;border:1px solid var(--border);text-decoration:none;background:var(--card)}
+  .ev .qa a:hover{color:var(--text)}
+
+  /* voice waveform mock */
+  .wf{display:flex;gap:2px;align-items:center;height:22px;margin-top:6px;padding:4px 8px;background:var(--card);border:1px solid var(--border);border-radius:4px;width:fit-content}
+  .wf i{display:inline-block;width:2px;background:var(--accent);border-radius:2px}
+  .wf .t{font-family:var(--font-num);font-size:10px;color:var(--muted);margin-left:8px;letter-spacing:.1em}
+
+  /* ── COL 3 · Follow-up queue ── */
+  .fu-card{padding:14px 22px;border-bottom:1px solid var(--border-soft);position:relative}
+  .fu-card.due{background:rgba(239,68,68,.04)}
+  .fu-card .badge{font-family:var(--font-num);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--danger);font-weight:600}
+  .fu-card.due .badge::before{content:'●  '; color:var(--danger)}
+  .fu-card .badge.soft{color:var(--warn)}
+  .fu-card .badge.cold{color:var(--muted)}
+  .fu-card h4{margin:5px 0 4px;font-size:13.5px;font-weight:500;color:var(--text);line-height:1.3}
+  .fu-card .who{font-size:11.5px;color:var(--muted)}
+  .fu-card .qa{display:flex;gap:5px;margin-top:9px}
+  .fu-card .qa button{background:var(--card);border:1px solid var(--border);color:var(--muted);font-family:var(--font-num);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;padding:5px 9px;border-radius:4px;cursor:pointer}
+  .fu-card .qa button.ok{background:var(--accent-dim);border-color:var(--accent-dim);color:var(--accent)}
+  .fu-card .qa button:hover{color:var(--text)}
+
+  /* ── Notification drawer ── */
+  .drawer{display:grid;grid-template-columns:1fr 380px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg);box-shadow:0 30px 70px -20px rgba(0,0,0,.6);margin:30px 40px}
+  .drawer .bg-fade{padding:30px;background:radial-gradient(ellipse at top right, #161719, var(--bg));font-size:12px;color:var(--faint)}
+  .drawer .notif{background:var(--card);border-left:1px solid var(--border)}
+  .notif-h{padding:14px 20px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center}
+  .notif-h .tt{font-family:var(--font-num);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--text)}
+  .notif-h .tt b{color:var(--accent);font-weight:600}
+  .notif-h a{font-family:var(--font-num);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .notif-tabs{display:flex;border-bottom:1px solid var(--border-soft)}
+  .notif-tabs a{flex:1;text-align:center;font-family:var(--font-num);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:11px 0;border-bottom:2px solid transparent;text-decoration:none}
+  .notif-tabs a.on{color:var(--text);border-color:var(--accent)}
+  .ni{padding:12px 20px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:24px 1fr;gap:12px;cursor:pointer}
+  .ni:hover{background:var(--card-2)}
+  .ni.unread{border-left:2px solid var(--accent)}
+  .ni .ic{font-family:var(--font-num);font-size:14px;color:var(--muted)}
+  .ni .tt{font-size:12.5px;color:var(--text);line-height:1.35}
+  .ni .ms{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .ni .when{font-family:var(--font-num);font-size:9.5px;color:var(--faint);letter-spacing:.12em;margin-top:6px}
+
+  /* ── Advisor workspace ── */
+  .adv{display:grid;grid-template-columns:220px 1fr;min-height:600px;background:var(--bg);border-bottom:1px solid var(--border)}
+  .adv-side{background:#0C0C0E;border-right:1px solid var(--border);padding:24px 16px}
+  .adv-side .logo{font-family:var(--font-head);font-style:italic;font-size:15px;margin-bottom:24px;padding-left:8px}
+  .adv-side .grp{font-family:var(--font-num);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);padding:14px 8px 6px}
+  .adv-side a{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:5px;text-decoration:none;color:var(--muted);font-family:var(--font-ui);font-size:13px;margin:1px 0}
+  .adv-side a.on{background:var(--card);color:var(--text)}
+  .adv-side a .ct{font-family:var(--font-num);font-size:10.5px;color:var(--faint);background:transparent;padding:1px 6px;border-radius:10px}
+  .adv-side a.on .ct{background:var(--accent-dim);color:var(--accent)}
+  .adv-main{padding:32px 40px}
+  .adv-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px}
+  .kpi{padding:18px 18px;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+  .kpi .l{font-family:var(--font-num);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .kpi .n{font-family:var(--font-num);font-size:30px;font-weight:600;color:var(--text);line-height:1}
+  .kpi .d{font-size:11.5px;color:var(--muted);margin-top:6px}
+  .kpi.accent .n{color:var(--accent)}
+  .kpi.warn .n{color:var(--warn)}
+  .adv-row{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:8px}
+  .panel-h{padding:14px 18px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center}
+  .panel-h .t{font-family:var(--font-head);font-style:italic;font-size:17px;letter-spacing:-.005em}
+  .panel-h .more{font-family:var(--font-num);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .panel-body{padding:6px 0}
+  .row-it{display:grid;grid-template-columns:32px 1fr auto;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border-soft);align-items:center}
+  .row-it:last-child{border-bottom:none}
+  .row-it .av{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-head);font-style:italic;background:#1d2027;border:1px solid var(--border);font-size:12px}
+  .row-it .name{font-size:12.5px;font-weight:500}
+  .row-it .sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .row-it .right{text-align:right}
+  .row-it .right .when{font-family:var(--font-num);font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.12em}
+  .row-it .right .pill{display:inline-block;font-family:var(--font-num);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-top:3px}
+  .pill.green{background:rgba(16,185,129,.14);color:var(--good)}
+  .pill.amber{background:rgba(245,158,11,.14);color:var(--warn)}
+  .pill.red{background:rgba(239,68,68,.14);color:var(--danger)}
+
+  /* ── Mobile ── */
+  .mobile{display:flex;gap:24px;justify-content:center;padding:36px 24px;background:#0F1013;border-bottom:1px solid var(--border)}
+  .phone{width:330px;background:var(--bg);border:8px solid #2A2D33;border-radius:32px;overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);min-height:660px}
+  .ph-h{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 10px;border-bottom:1px solid var(--border)}
+  .ph-h .l{font-family:var(--font-head);font-style:italic;font-size:14px}
+  .ph-h .bell{width:28px;height:28px}
+  .ph-tabs{display:flex;border-bottom:1px solid var(--border)}
+  .ph-tabs a{flex:1;text-align:center;font-family:var(--font-num);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:10px 4px;text-decoration:none;border-bottom:2px solid transparent}
+  .ph-tabs a.on{color:var(--accent);border-color:var(--accent)}
+  .ph-body{padding:6px 0}
+  .ph-card{padding:12px 14px;border-bottom:1px solid var(--border-soft)}
+  .ph-card .badge{font-family:var(--font-num);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--danger);font-weight:600}
+  .ph-card h5{margin:4px 0 3px;font-size:13px;font-weight:500}
+  .ph-card .sub{font-size:11px;color:var(--muted)}
+  .ph-fab{position:absolute;bottom:18px;right:18px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#0A0A0B;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-num);font-size:18px;box-shadow:0 8px 24px -6px rgba(0,201,179,.4)}
+
+  .section-title{padding:42px 40px 0;font-family:var(--font-head);font-style:italic;font-size:36px;letter-spacing:-.015em}
+  .section-sub{padding:6px 40px 0;color:var(--muted);font-size:13px}
+  .legend{padding:18px 40px 30px;color:var(--faint);font-size:11px;font-family:var(--font-num);letter-spacing:.16em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     1 · RELATIONSHIP CENTER
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="ros">
+  <p class="eyebrow">MOOD Relationship OS™ · Wireframe 1</p>
+  <h2 class="ros-title">Relationship Center</h2>
+  <p class="lede">Una vista, tre colonne. Il foglio unico del team commerciale: chi è la relazione (col 1), cosa è successo (col 2), cosa fare ora (col 3). Sostituisce ActivityFeed, TimelineFeed e MemoryTimeline.</p>
+</header>
+
+<div class="nav">
+  <div class="logo">MOOD<span class="tm">™</span></div>
+  <div class="nav-tabs">
+    <a>Dashboard</a>
+    <a class="active">Relationships</a>
+    <a>Journeys</a>
+    <a>Studio Library</a>
+    <a>Advisor</a>
+  </div>
+  <div class="nav-right">
+    <div class="cmdk">⌘ <kbd>K</kbd> &nbsp;cerca relazione</div>
+    <div class="bell">🔔<span class="badge">7</span></div>
+    <div class="me">L</div>
+  </div>
+</div>
+
+<div class="center">
+  <!-- COL 1 · Relationship Summary -->
+  <div class="col">
+    <div class="col-h">
+      <span class="t">My Relationships · 24</span>
+      <span class="c">filtered</span>
+    </div>
+    <div class="sf">
+      <input placeholder="Search studios, founders, owners…" />
+    </div>
+    <div class="sf" style="border-top:none;padding-top:0">
+      <div class="seg"><button class="on">All</button><button>Hot</button><button>Follow up</button><button>Cold</button></div>
+    </div>
+    <div class="col-body">
+      <div class="rel-card active">
+        <span class="av">SG</span>
+        <div class="meta">
+          <div class="name">Studio Greco · Milano</div>
+          <div class="sub"><span class="dot healthy"></span>Active · Raffaella Greco · 4 follow-ups</div>
+          <div class="pillrow"><span class="pill accent">Hot</span><span class="pill">Active</span><span class="pill">Account</span></div>
+        </div>
+        <div class="when">2h</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">AB</span>
+        <div class="meta">
+          <div class="name">ARBI Bathroom · Vicenza</div>
+          <div class="sub"><span class="dot warn"></span>Needs follow up · 2 open</div>
+          <div class="pillrow"><span class="pill">Prospect</span><span class="pill">Discovery</span></div>
+        </div>
+        <div class="when">1d</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">CG</span>
+        <div class="meta">
+          <div class="name">Cattelan Italia · Treviso</div>
+          <div class="sub"><span class="dot healthy"></span>Editorial · Luca Cattelan</div>
+          <div class="pillrow"><span class="pill">Customer</span><span class="pill">3y</span></div>
+        </div>
+        <div class="when">3d</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">VR</span>
+        <div class="meta">
+          <div class="name">Verde Showroom · Lecce</div>
+          <div class="sub"><span class="dot risk"></span>At risk · 14d silent</div>
+          <div class="pillrow"><span class="pill">Lead</span><span class="pill">Cold</span></div>
+        </div>
+        <div class="when">14d</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">BS</span>
+        <div class="meta">
+          <div class="name">Boffi · Stefano</div>
+          <div class="sub"><span class="dot cold"></span>Dormant · 67d</div>
+          <div class="pillrow"><span class="pill">Prospect</span></div>
+        </div>
+        <div class="when">2mo</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">YP</span>
+        <div class="meta">
+          <div class="name">Yacht Pininfarina · Genova</div>
+          <div class="sub"><span class="dot healthy"></span>Active · 2 advisors</div>
+          <div class="pillrow"><span class="pill accent">Hot</span><span class="pill">Account</span></div>
+        </div>
+        <div class="when">5h</div>
+      </div>
+      <div class="rel-card">
+        <span class="av">IM</span>
+        <div class="meta">
+          <div class="name">In Motion · Rovigo</div>
+          <div class="sub"><span class="dot healthy"></span>Discovery scheduled</div>
+          <div class="pillrow"><span class="pill">Lead</span><span class="pill">Hot</span></div>
+        </div>
+        <div class="when">today</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COL 2 · Relationship Timeline -->
+  <div class="col">
+    <div class="acc-head">
+      <span class="tag">Active Account · Customer · 2 advisors</span>
+      <h1>Studio Greco · Milano</h1>
+      <div class="meta">
+        <div class="b"><span class="lab">Founder</span><span class="val">Raffaella Greco</span></div>
+        <div class="b"><span class="lab">Owner</span><span class="val">Luca Veronese</span></div>
+        <div class="b"><span class="lab">Last touch</span><span class="val">2h ago · voice note</span></div>
+        <div class="b"><span class="lab">Open</span><span class="val num">4</span></div>
+        <div class="b"><span class="lab">Open opportunities</span><span class="val num">2</span></div>
+        <div class="b"><span class="lab">Temperature</span><span class="val" style="color:var(--accent)">● Hot</span></div>
+      </div>
+      <div class="acc-actions">
+        <button class="btn primary">+ Log activity</button>
+        <button class="btn">🎤 Voice note</button>
+        <button class="btn">+ Follow-up</button>
+        <button class="btn">+ Note</button>
+        <button class="btn ghost">⋯ More</button>
+      </div>
+    </div>
+
+    <div class="comp">
+      <div class="comp-row">
+        <div class="chip">📝 Note</div>
+        <div class="chip">📧 Email</div>
+        <div class="chip">📞 Call</div>
+        <div class="chip">🤝 Visit</div>
+        <div class="chip">📅 Follow-up</div>
+        <div class="chip voice">🎤 Voice · ready</div>
+      </div>
+    </div>
+
+    <div class="tl">
+
+      <div class="ev">
+        <span class="icn voice">🎤</span>
+        <div class="body">
+          <div class="top"><span class="type">Voice Note</span><span class="who">Raffaella · advisor</span><span class="when">2h ago</span></div>
+          <div class="ttl">Debrief post-visit Milano showroom</div>
+          <div class="desc">"Greco molto interessato al divano modulare. Vuole vedere campioni materiali la prossima settimana. Riccardo entrerà in conference call lunedì."</div>
+          <div class="wf">
+            <i style="height:6px"></i><i style="height:14px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:8px"></i><i style="height:22px"></i><i style="height:13px"></i><i style="height:7px"></i><i style="height:17px"></i><i style="height:21px"></i><i style="height:9px"></i><i style="height:14px"></i><i style="height:6px"></i><i style="height:12px"></i>
+            <span class="t">02:34</span>
+          </div>
+          <div class="qa">
+            <a>▶ Play</a><a>Transcribe</a><a>+ Follow-up</a><a>Pin</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <span class="icn email">✉</span>
+        <div class="body">
+          <div class="top"><span class="type">Email · received</span><span class="who">raffaella@studiogreco.it</span><span class="when">yesterday 17:42</span></div>
+          <div class="ttl">Re: catalogo collezione Essentials</div>
+          <div class="desc">"Grazie Luca, mi piacciono molto i materiali wood — possiamo programmare una visita al magazzino?"</div>
+          <div class="qa"><a>Reply</a><a>+ Task</a><a>Link to journey</a></div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <span class="icn task">⏱</span>
+        <div class="body">
+          <div class="top"><span class="type">Follow-up · scheduled</span><span class="who">Luca</span><span class="when">tomorrow 10:00</span></div>
+          <div class="ttl">Invio campioni materiali (wood + brass)</div>
+          <div class="desc">Coordinare con Cattelan per consegna in 48h. Allegare scheda tecnica Essentials.</div>
+          <div class="qa"><a>Complete</a><a>Reschedule</a><a>Reassign</a></div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <span class="icn visit">★</span>
+        <div class="body">
+          <div class="top"><span class="type">Visit · logged</span><span class="who">Raffaella · Milano showroom</span><span class="when">2d ago</span></div>
+          <div class="ttl">Visita showroom Milano · Greco + 2 architetti</div>
+          <div class="desc">3 collezioni viste · 1 moodboard creata · 2 prodotti aggiunti alla shortlist.</div>
+          <div class="qa"><a>View moodboard</a><a>+ Note</a></div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <span class="icn auto">●</span>
+        <div class="body">
+          <div class="top"><span class="type">Auto · journey advanced</span><span class="who">System</span><span class="when">2d ago</span></div>
+          <div class="ttl">Journey "Greco Penthouse" → Material Exploration</div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <span class="icn note">✎</span>
+        <div class="body">
+          <div class="top"><span class="type">Note</span><span class="who">Luca</span><span class="when">5d ago</span></div>
+          <div class="ttl">Budget orientativo confermato</div>
+          <div class="desc">Greco indica budget 80–120k per arredo principale, decisione entro Q2.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COL 3 · Follow-up queue -->
+  <div class="col">
+    <div class="col-h">
+      <span class="t">Follow-up Queue</span>
+      <span class="c">My 12</span>
+    </div>
+    <div class="sf">
+      <div class="seg"><button class="on">Mine</button><button>Team</button></div>
+      <div class="seg"><button>Today</button><button class="on">Open</button><button>Done</button></div>
+    </div>
+    <div class="col-body">
+
+      <div class="fu-card due">
+        <span class="badge">Overdue · 2d</span>
+        <h4>Send material samples to Greco</h4>
+        <div class="who">Studio Greco · Milano</div>
+        <div class="qa"><button class="ok">Complete</button><button>Snooze 1d</button><button>+ Note</button></div>
+      </div>
+
+      <div class="fu-card">
+        <span class="badge soft">Today · 14:00</span>
+        <h4>Call Cattelan re: spec sheet</h4>
+        <div class="who">Cattelan Italia · Treviso</div>
+        <div class="qa"><button class="ok">Complete</button><button>Reschedule</button><button>+ Note</button></div>
+      </div>
+
+      <div class="fu-card">
+        <span class="badge soft">Tomorrow · 10:00</span>
+        <h4>Onboarding ARBI · phase 2</h4>
+        <div class="who">ARBI Bathroom · Vicenza</div>
+        <div class="qa"><button class="ok">Complete</button><button>Reschedule</button></div>
+      </div>
+
+      <div class="fu-card">
+        <span class="badge cold">Fri · 09:30</span>
+        <h4>Re-engage Verde · 14d silent</h4>
+        <div class="who">Verde Showroom · Lecce</div>
+        <div class="qa"><button class="ok">Complete</button><button>Reschedule</button></div>
+      </div>
+
+      <div class="fu-card">
+        <span class="badge cold">Next week</span>
+        <h4>Quarterly review · Yacht Pininfarina</h4>
+        <div class="who">Yacht Pininfarina · Genova</div>
+        <div class="qa"><button class="ok">Complete</button><button>Reschedule</button></div>
+      </div>
+
+      <div class="fu-card">
+        <span class="badge cold">No date</span>
+        <h4>Send proposal v3 · Boffi</h4>
+        <div class="who">Boffi · Stefano</div>
+        <div class="qa"><button class="ok">Complete</button><button>+ Date</button></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     2 · NOTIFICATION CENTER
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="ros">
+  <p class="eyebrow">Wireframe 2</p>
+  <h2 class="ros-title">Notification Center</h2>
+  <p class="lede">In-app only. Bell icon globale · drawer overlay · zero pagina dedicata · zero email digest. Click su una notifica = deep-link alla Relationship Timeline ancorata all'evento.</p>
+</header>
+
+<div class="drawer">
+  <div class="bg-fade">
+    (Dashboard background — il drawer apre sopra la pagina corrente, non ruba focus né naviga via)
+  </div>
+  <div class="notif">
+    <div class="notif-h">
+      <span class="tt">Notifications <b>7 unread</b></span>
+      <a>Mark all read · Settings ⚙</a>
+    </div>
+    <div class="notif-tabs">
+      <a class="on">All</a><a>Mentions</a><a>Follow-ups</a><a>System</a>
+    </div>
+
+    <div class="ni unread">
+      <span class="ic">🎤</span>
+      <div>
+        <div class="tt"><b>Raffaella</b> ha registrato un voice note su <b>Studio Greco</b></div>
+        <div class="ms">"Greco molto interessato al divano modulare…"</div>
+        <div class="when">2h ago</div>
+      </div>
+    </div>
+    <div class="ni unread">
+      <span class="ic">⚠</span>
+      <div>
+        <div class="tt">Follow-up <b>Send material samples</b> è scaduto · Studio Greco</div>
+        <div class="when">2d overdue</div>
+      </div>
+    </div>
+    <div class="ni unread">
+      <span class="ic">✉</span>
+      <div>
+        <div class="tt">Email da <b>raffaella@studiogreco.it</b> · 1 thread aperto</div>
+        <div class="ms">Re: catalogo collezione Essentials</div>
+        <div class="when">yesterday</div>
+      </div>
+    </div>
+    <div class="ni unread">
+      <span class="ic">●</span>
+      <div>
+        <div class="tt"><b>Riccardo</b> ti ha menzionato in una nota su <b>Cattelan</b></div>
+        <div class="ms">"Luca puoi coordinare con Cattelan per la consegna campioni?"</div>
+        <div class="when">3h ago</div>
+      </div>
+    </div>
+    <div class="ni">
+      <span class="ic">★</span>
+      <div>
+        <div class="tt">Journey <b>Greco Penthouse</b> avanzato a <b>Material Exploration</b></div>
+        <div class="when">2d ago</div>
+      </div>
+    </div>
+    <div class="ni">
+      <span class="ic">●</span>
+      <div>
+        <div class="tt">Nuovo studio referente <b>In Motion</b> creato da advisor <b>Marco</b></div>
+        <div class="when">3d ago</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     3 · ADVISOR WORKSPACE
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="ros">
+  <p class="eyebrow">Wireframe 3</p>
+  <h2 class="ros-title">Advisor Workspace</h2>
+  <p class="lede">Vera area commerciale. Non un clone del Command Center. Sidebar permanente · KPI in alto · My Studios + Follow-ups + Recent Activity. Stile Attio · Affinity · HubSpot Enterprise.</p>
+</header>
+
+<div class="adv">
+  <aside class="adv-side">
+    <div class="logo">Advisor<span style="font-family:var(--font-num);font-size:9px;color:var(--accent);margin-left:4px">™</span></div>
+    <a class="on">Overview <span class="ct">·</span></a>
+    <a>My Studios <span class="ct">18</span></a>
+    <a>Activities <span class="ct">42</span></a>
+    <a>Follow-ups <span class="ct">7</span></a>
+    <a>Notifications <span class="ct">3</span></a>
+    <div class="grp">Revenue</div>
+    <a>Commissions <span class="ct">€4.2k</span></a>
+    <a>Reports <span class="ct">12</span></a>
+    <div class="grp">Account</div>
+    <a>Settings</a>
+  </aside>
+
+  <main class="adv-main">
+    <p class="eyebrow" style="color:var(--accent);font-family:var(--font-num);font-size:10px;letter-spacing:.24em;text-transform:uppercase;margin:0">Advisor Workspace · Overview</p>
+    <h2 style="font-family:var(--font-head);font-style:italic;font-weight:400;font-size:34px;margin:6px 0 24px;letter-spacing:-.01em">Buongiorno, Raffaella.</h2>
+
+    <div class="adv-kpis">
+      <div class="kpi accent"><div class="l">My Studios</div><div class="n">18</div><div class="d">14 active · 3 onboarding · 1 dormant</div></div>
+      <div class="kpi warn"><div class="l">Follow-ups due</div><div class="n">7</div><div class="d">3 overdue · 4 this week</div></div>
+      <div class="kpi"><div class="l">New requests</div><div class="n">3</div><div class="d">awaiting reply</div></div>
+      <div class="kpi"><div class="l">Commission MTD</div><div class="n">€4.2k</div><div class="d">+12% vs last month</div></div>
+    </div>
+
+    <div class="adv-row">
+      <div class="panel">
+        <div class="panel-h"><div class="t">My Studios</div><a class="more">View all →</a></div>
+        <div class="panel-body">
+          <div class="row-it">
+            <span class="av">SG</span>
+            <div><div class="name">Studio Greco · Milano</div><div class="sub">Active customer · 4 open follow-ups</div></div>
+            <div class="right"><div class="when">2h ago</div><span class="pill green">Hot</span></div>
+          </div>
+          <div class="row-it">
+            <span class="av">CG</span>
+            <div><div class="name">Cattelan Italia · Treviso</div><div class="sub">3y · editorial partner</div></div>
+            <div class="right"><div class="when">3d ago</div><span class="pill green">Healthy</span></div>
+          </div>
+          <div class="row-it">
+            <span class="av">VR</span>
+            <div><div class="name">Verde Showroom · Lecce</div><div class="sub">14d silent · 1 task overdue</div></div>
+            <div class="right"><div class="when">14d</div><span class="pill red">At risk</span></div>
+          </div>
+          <div class="row-it">
+            <span class="av">IM</span>
+            <div><div class="name">In Motion · Rovigo</div><div class="sub">Discovery scheduled today</div></div>
+            <div class="right"><div class="when">today</div><span class="pill amber">Discovery</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><div class="t">Follow-ups · due</div><a class="more">Open queue →</a></div>
+        <div class="panel-body">
+          <div class="row-it">
+            <span class="av" style="background:rgba(239,68,68,.18);color:var(--danger);border-color:#3a1f1f">!</span>
+            <div><div class="name">Send material samples · Greco</div><div class="sub">overdue 2d</div></div>
+            <div class="right"><button class="btn" style="font-size:9.5px;padding:5px 9px">Complete</button></div>
+          </div>
+          <div class="row-it">
+            <span class="av">●</span>
+            <div><div class="name">Call Cattelan re: spec</div><div class="sub">today 14:00</div></div>
+            <div class="right"><button class="btn" style="font-size:9.5px;padding:5px 9px">Complete</button></div>
+          </div>
+          <div class="row-it">
+            <span class="av">●</span>
+            <div><div class="name">Onboarding ARBI phase 2</div><div class="sub">tomorrow 10:00</div></div>
+            <div class="right"><button class="btn" style="font-size:9.5px;padding:5px 9px">Complete</button></div>
+          </div>
+        </div>
+        <div class="panel-h" style="border-top:1px solid var(--border-soft);border-bottom:none"><div class="t" style="font-size:14px">Recent activity</div></div>
+        <div class="panel-body">
+          <div class="row-it">
+            <span class="av" style="color:var(--accent)">🎤</span>
+            <div><div class="name">Voice note · Studio Greco</div><div class="sub">02:34 · Raffaella</div></div>
+            <div class="right"><div class="when">2h ago</div></div>
+          </div>
+          <div class="row-it">
+            <span class="av">✉</span>
+            <div><div class="name">Email reply · Cattelan</div><div class="sub">Re: spec sheet v2</div></div>
+            <div class="right"><div class="when">5h ago</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     4 · MOBILE
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="ros">
+  <p class="eyebrow">Wireframe 4</p>
+  <h2 class="ros-title">Mobile — single column adaptive</h2>
+  <p class="lede">Su mobile le 3 colonne diventano 3 tab. La timeline è il default. Voice note disponibile come FAB primary. Notifiche raggiungibili dal bell in header.</p>
+</header>
+
+<div class="mobile">
+
+  <div class="phone" style="position:relative">
+    <div class="ph-h">
+      <div class="l">Studio Greco</div>
+      <div class="bell">🔔<span class="badge" style="top:-3px;right:-3px">3</span></div>
+    </div>
+    <div class="ph-tabs">
+      <a>Summary</a>
+      <a class="on">Timeline</a>
+      <a>Follow-ups <span style="background:rgba(239,68,68,.18);color:var(--danger);padding:1px 5px;border-radius:8px;font-size:8px">4</span></a>
+    </div>
+    <div class="ph-body">
+      <div class="ph-card">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--accent)">🎤 VOICE · 2h</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">02:34</span></div>
+        <h5>Debrief post-visit Milano</h5>
+        <div class="sub">"Greco molto interessato al divano modulare…"</div>
+        <div style="display:flex;gap:2px;margin-top:8px;align-items:center">
+          <i style="display:inline-block;width:2px;height:6px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:14px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:10px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:18px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:8px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:22px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:13px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:7px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:17px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:21px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:9px;background:var(--accent);border-radius:1px"></i>
+          <i style="display:inline-block;width:2px;height:14px;background:var(--accent);border-radius:1px"></i>
+        </div>
+      </div>
+      <div class="ph-card">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:#7CC0F4">✉ EMAIL · 1d</span></div>
+        <h5>Re: catalogo Essentials</h5>
+        <div class="sub">"Grazie Luca, mi piacciono molto i materiali wood…"</div>
+      </div>
+      <div class="ph-card">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--warn)">⏱ FOLLOW-UP · tomorrow</span></div>
+        <h5>Invio campioni (wood + brass)</h5>
+        <div class="sub">Coordinare con Cattelan</div>
+      </div>
+      <div class="ph-card">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:#D7B3F0">★ VISIT · 2d</span></div>
+        <h5>Showroom Milano</h5>
+        <div class="sub">3 collezioni · 1 moodboard · 2 prodotti shortlist</div>
+      </div>
+    </div>
+    <div class="ph-fab">🎤</div>
+  </div>
+
+  <div class="phone" style="position:relative">
+    <div class="ph-h">
+      <div class="l">Notifications</div>
+      <div style="font-family:var(--font-num);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.16em">Mark all</div>
+    </div>
+    <div class="ph-tabs">
+      <a class="on">All <span style="background:rgba(0,201,179,.18);color:var(--accent);padding:1px 5px;border-radius:8px;font-size:8px">7</span></a>
+      <a>Mentions</a>
+      <a>Follow-ups</a>
+    </div>
+    <div class="ph-body">
+      <div class="ph-card" style="border-left:2px solid var(--accent)">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--accent)">🎤 VOICE</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">2h</span></div>
+        <h5>Raffaella · Studio Greco</h5>
+        <div class="sub">Debrief post-visit Milano</div>
+      </div>
+      <div class="ph-card" style="border-left:2px solid var(--accent)">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--danger)">⚠ OVERDUE</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">2d</span></div>
+        <h5>Send material samples · Greco</h5>
+      </div>
+      <div class="ph-card" style="border-left:2px solid var(--accent)">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:#7CC0F4">✉ EMAIL</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">1d</span></div>
+        <h5>raffaella@studiogreco.it</h5>
+        <div class="sub">Re: catalogo Essentials</div>
+      </div>
+      <div class="ph-card" style="border-left:2px solid var(--accent)">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--muted)">@ MENTION</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">3h</span></div>
+        <h5>Riccardo · Cattelan</h5>
+        <div class="sub">"Luca puoi coordinare la consegna?"</div>
+      </div>
+      <div class="ph-card">
+        <div style="display:flex;justify-content:space-between"><span class="badge" style="color:var(--muted)">● JOURNEY</span><span style="font-family:var(--font-num);font-size:9.5px;color:var(--faint)">2d</span></div>
+        <h5>Greco Penthouse → Material Exploration</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">End wireframes · MOOD Relationship OS™ · Function before aesthetic · SaaS-first</div>
+
+</body>
+</html>
