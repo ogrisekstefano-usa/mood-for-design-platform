@@ -12,6 +12,7 @@ router = APIRouter(prefix="/api/catalogs", tags=["catalogs"])
 _ALLOWED = {
     "contact-roles", "activity-types", "relationship-event-types",
     "contact-sources", "languages", "markets", "timeline-types",
+    "activity-sources", "activity-outcomes",
 }
 
 

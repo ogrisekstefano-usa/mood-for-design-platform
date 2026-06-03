@@ -39,6 +39,7 @@ async def require_admin_tenant(
     """
     role: str | None = None
     tenant_slug_from_jwt: str | None = None
+    user_id_from_jwt: str | None = None
 
     # 1) Bearer JWT path
     if authorization and authorization.lower().startswith("bearer "):
@@ -50,6 +51,7 @@ async def require_admin_tenant(
             raise HTTPException(status_code=401, detail="Invalid session")
         role = (claims.get("role") or "").lower()
         tenant_slug_from_jwt = claims.get("tenant_slug")
+        user_id_from_jwt = claims.get("sub")
         if role not in ALLOWED_ROLES:
             raise HTTPException(status_code=403, detail="Insufficient role")
 
@@ -80,6 +82,7 @@ async def require_admin_tenant(
     else:
         tenant = dict(await get_corporate_tenant())
     tenant['_role'] = role
+    tenant['user_id'] = user_id_from_jwt
     return tenant
 
 

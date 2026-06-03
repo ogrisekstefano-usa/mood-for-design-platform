@@ -61,6 +61,18 @@ _DEF = {
         "TRUE",
         "label_it, code",
     ),
+    "activity-sources": (
+        "platform_activity_sources",
+        ["code", "label_it", "label_en", "icon", "sort_order"],
+        "enabled = TRUE",
+        "sort_order, code",
+    ),
+    "activity-outcomes": (
+        "platform_activity_outcomes",
+        ["code", "label_it", "label_en", "color", "is_terminal", "sort_order"],
+        "enabled = TRUE",
+        "sort_order, code",
+    ),
 }
 
 

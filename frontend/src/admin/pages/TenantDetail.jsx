@@ -11,6 +11,8 @@ import {
   Phone, Mail, MessageCircle, Linkedin, StickyNote, Clock, Bell, Activity as ActivityIcon,
 } from 'lucide-react';
 import ContactDrawer from '../components/ContactDrawer';
+import ActivityDrawer from '../components/ActivityDrawer';
+import ActivityFeed from '../components/ActivityFeed';
 import TimelineFeed from '../components/TimelineFeed';
 import useCatalog from '../../lib/useCatalog';
 
@@ -50,6 +52,7 @@ const TenantDetail = () => {
   const [activities, setActivities] = useState([]);
   const [eligibleOwners, setEligibleOwners] = useState([]);
   const [drawerContact, setDrawerContact] = useState(null);
+  const [activityDrawerId, setActivityDrawerId] = useState(null);   // 'new' | uuid
   const roles = useCatalog('contact-roles');
   const roleMap = Object.fromEntries(roles.map((r) => [r.code, r]));
 
@@ -295,37 +298,12 @@ const TenantDetail = () => {
 
         {tab === 'activities' && (
           <div data-testid="activities-pane">
-            <h2 className="text-lg mb-4 flex items-center gap-2">
-              <ActivityIcon size={16} /> Attività recenti
-              <span className="text-xs text-stone-400 ml-2">— preview M1; visualizzazione completa in M3</span>
-            </h2>
-            <div className="border border-stone-200 bg-white">
-              {activities.length === 0 ? (
-                <div className="px-6 py-10 text-center text-stone-400 text-sm">
-                  Ancora nessuna attività. Apri un contatto per registrare la prima via Quick Action.
-                </div>
-              ) : activities.map((a) => {
-                const Icon = ACTIVITY_ICON[a.activity_type_code] || ActivityIcon;
-                return (
-                  <div key={a.id} data-testid={`activity-row-${a.id}`}
-                       className="flex items-start gap-4 px-4 py-3 border-b border-stone-100 last:border-0">
-                    <Icon size={16} className="text-stone-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="text-sm">
-                        <strong>{a.type_label_it || a.activity_type_code}</strong>
-                        {a.subject && <> · {a.subject}</>}
-                        {a.contact_display && <span className="text-stone-500"> · {a.contact_display}</span>}
-                      </div>
-                      {a.outcome && <div className="text-xs text-stone-500 mt-1">{a.outcome}</div>}
-                      <div className="text-[10px] text-stone-400 mt-1">
-                        {new Date(a.occurred_at).toLocaleString('it-IT')}
-                        {a.owner_display && <> · {a.owner_display}</>}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <ActivityFeed
+              apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
+              scope="admin"
+              onCreate={() => setActivityDrawerId('new')}
+              onEdit={(a) => setActivityDrawerId(a.id)}
+            />
           </div>
         )}
 
@@ -356,6 +334,19 @@ const TenantDetail = () => {
           onClose={() => { setDrawerContact(null); setSearchParams({ tab }); }}
           onSaved={loadAll}
           adminMode={true}
+        />
+      )}
+
+      {activityDrawerId && (
+        <ActivityDrawer
+          apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
+          scope="admin"
+          activityId={activityDrawerId === 'new' ? null : activityDrawerId}
+          contacts={contacts}
+          users={eligibleOwners}
+          selfUserId={JSON.parse(localStorage.getItem('mood_user') || '{}').id}
+          onClose={() => setActivityDrawerId(null)}
+          onSaved={() => { setActivityDrawerId(null); loadAll(); }}
         />
       )}
     </div>

@@ -123,6 +123,12 @@ from routers.blueprint_timeline import router as blueprint_timeline_router  # /a
 app.include_router(admin_timeline_router)
 app.include_router(blueprint_timeline_router)
 
+# M3 — Activity Log Advanced™
+from routers.admin_activities     import router as admin_activities_router      # /api/admin/* (activities v2)
+from routers.blueprint_activities import router as blueprint_activities_router  # /api/blueprint/* (activities v2)
+app.include_router(admin_activities_router)
+app.include_router(blueprint_activities_router)
+
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets
 @app.on_event("startup")

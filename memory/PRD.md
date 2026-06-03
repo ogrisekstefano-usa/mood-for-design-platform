@@ -74,13 +74,14 @@ i founder accedono al loro Blueprint workspace via magic-link.
 - `/app/memory/M2_IMPLEMENTATION_REPORT.md` — M2 implementation report (02/06/2026) 🟢
 - `/app/memory/M3_ACTIVITY_LOG_ADVANCED_EXECUTION_PLAN.md` — piano M3 v0 (superato)
 - `/app/memory/M3_FINAL_EXECUTION_PLAN.md` — piano M3 definitivo (D1-D7 recepite, 02/06/2026)
+- `/app/memory/M3_IMPLEMENTATION_REPORT.md` — M3 implementation report (03/06/2026) 🟢
 
-## Stato Relationship OS™ (02/06/2026)
+## Stato Relationship OS™ (03/06/2026)
 - ✅ **M0** DB foundation (view `v_relationship_timeline`, indici, catalog) — VALIDATED
 - ✅ **M1** Contact CRM (CRUD + Org Owner + Founder mirror + RBAC) — VALIDATED
 - ✅ **M1.0.1** Hotfix (`catalogs/languages` 200 · `preferred_language` normalize) — VALIDATED
-- ✅ **M2** Relationship Timeline + Health Hooks — COMPLETED (121/121 PASS · 16/16 security)
-- 🟢 **M3** Activity Log Advanced™ (Relationship Memory Layer) — **READY_FOR_M3_IMPLEMENTATION** (in attesa "VAI")
+- ✅ **M2** Relationship Timeline + Health Hooks — COMPLETED (121/121 PASS)
+- ✅ **M3** Activity Log Advanced™ · Relationship Memory Layer — **COMPLETED** (153/153 PASS · 32/32 acceptance)
 - ⏸️ **M4** Notification Center — pianificato (predisposizione `notifiable` in M2 ✅)
 - ⏸️ **M5** Advisor Workspace + KPI — pianificato
 - ⏸️ **M1.1** Performance Hardening (connection pool) — task separato

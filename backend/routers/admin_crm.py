@@ -165,7 +165,7 @@ async def tenant_overview(tid: str, scope: dict = Depends(require_advisor_scope)
 
     primary = await tc.list_contacts(tid, status="active", limit=200)
     primary_contact = next((c for c in primary if c["is_primary"]), primary[0] if primary else None)
-    recent = await ra.list_activities(tid, limit=3)
+    recent = (await ra.list_activities(tid, limit=3))["items"]
 
     return {
         "tenant":   dict(tenant),
@@ -256,7 +256,7 @@ async def list_activities(tid: str,
                            contact_id: Optional[str] = Query(None),
                            limit: int = Query(10, ge=1, le=50),
                            scope: dict = Depends(require_advisor_scope)):
-    return await ra.list_activities(tid, contact_id=contact_id, limit=limit)
+    return (await ra.list_activities(tid, contact_id=contact_id, limit=limit))["items"]
 
 
 @router.post("/tenants/{tid}/activities/quick")

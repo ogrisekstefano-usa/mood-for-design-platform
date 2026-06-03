@@ -79,7 +79,7 @@ async def overview(tenant: dict = Depends(require_admin_tenant)):
         "primary_contact": next((c for c in primary if c["is_primary"]),
                                  primary[0] if primary else None),
         "kpis": kpis,
-        "recent_activities": await ra.list_activities(tid, limit=3),
+        "recent_activities": (await ra.list_activities(tid, limit=3))["items"],
     }
 
 
@@ -156,7 +156,7 @@ async def list_my_activities(
     tenant: dict = Depends(require_admin_tenant),
 ):
     tid = await _tenant_id_from_scope(tenant)
-    return await ra.list_activities(tid, contact_id=contact_id, limit=limit)
+    return (await ra.list_activities(tid, contact_id=contact_id, limit=limit))["items"]
 
 
 @router.post("/activities/quick")
