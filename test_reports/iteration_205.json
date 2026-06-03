@@ -1,0 +1,48 @@
+{
+  "summary": "ITER205 / ITER204-B Entity Navigation Layer tested end-to-end. Backend: 12/12 pytest pass (4 composite detail endpoints + embassy real-count fix + studio-library saved flag integration). Frontend: Material, Designer detail pages render correctly with required testids and Save buttons; Brand Embassy real product_count for Essentials confirmed via backend; however the Collection Detail page renders 'Collezione non trovata' when reached through Brand Embassy → Essentials click flow (backend API for the SAME ids returns 200 with 123 products), indicating a frontend routing/param-extraction bug in CollectionDetailPage. Studio Library save flow from designer page could not be confirmed (designer not visible on /studio-library after save action, while ARBI Brand correctly persists).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/knowledge/materials/{name}", "issue": "Unknown material names (e.g. '__definitely_unknown_material_xyz__') return 200 with empty payload instead of 404; consider returning 404 when neither canonical, detected, nor any product matches."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "CollectionDetailPage", "issue": "When navigating via Brand Embassy → Essentials card click the page renders 'Collezione non trovata' even though the underlying GET /api/knowledge/brands/{brandId}/collections/{collectionId} returns 200 with 123 products for the same ids. Likely a frontend param-extraction / fetch wiring issue in CollectionDetailPage.jsx (e.g. swapped useParams keys, missing await, or wrong API client method). Backend is healthy.", "selector": "[data-testid='collection-detail-page']", "priority": "HIGH"},
+      {"component": "Studio Library save flow", "issue": "After clicking [data-testid='designer-save-to-library'] (Marco Acerbis) and navigating to /studio-library, the saved designer does not appear in the grid. The Save button does flip to 'In Library' on the designer page (suggesting at least optimistic UI worked), but persistence/listing on Studio Library was not confirmed.", "selector": "[data-testid='designer-save-to-library']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [
+      {"flow": "Brand Embassy → Collection Detail", "issue": "Click navigation reaches /inspirations/brands/:brandId/collections/:collectionId but the detail page shows 'Collezione non trovata'. Backend confirmed healthy with same ids.", "affected_selectors": ["[data-testid^='embassy-coll-']", "[data-testid='collection-detail-page']"]}
+    ],
+    "design_issues": [
+      {"screen": "Material & Designer detail pages", "issues": ["Many missing it-IT i18n keys (entity.material.brands_label/collections_label/products_label/no_*_title/no_*; entity.designer.bio_pending/brands_label/collections_label/products_label/no_*) — fallbacks render but localization layer incomplete.", "Residual 'Cannot update a component while rendering a different component' React warning fires on multiple mounts (already flagged in ITER204).", "GuidedTour API returns 503 (background, non-blocking)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter205_entity_navigation.py",
+    "/app/test_reports/pytest/iter205_results.xml"
+  ],
+  "action_items": [
+    "FIX (HIGH): CollectionDetailPage.jsx — page renders 'Collezione non trovata' though the backend endpoint returns 200 for the test ids (ab1399d7-… / 03c481c4-…). Verify useParams key names (brandId, collectionId), the entityNavigationApi.js method, and how 404/error states are derived from the response.",
+    "FIX (MEDIUM): Investigate why a saved designer (entity_type=designer) is not showing up in /studio-library grid even though the Save button reflects 'In Library' state. Possible cache/refetch issue on the Studio Library list, or the studio_library_items entry isn't being created/looked up with the right entity_id when source isn't 'brand_atlas'.",
+    "ADD missing it-IT i18n keys for entity.material.* and entity.designer.* groups (full list in design_issues).",
+    "(Optional) Make GET /api/knowledge/materials/{name} return 404 when there is no canonical, no detected entity, and no matching products."
+  ],
+  "critical_code_review_comments": [
+    "Composite endpoints are well-structured and tenant-scoped via get_tenant_context.",
+    "Material endpoint correctly accepts both UUID and name (case-insensitive) with sensible fallback logic.",
+    "saved flag wiring through _is_saved + studio_library_items works as verified by the integration test.",
+    "Material endpoint's broad product scan (limit 2000, python filter) is fine for current data sizes but is O(n) and may need an index on materials_text or a GIN on materials for scale.",
+    "Frontend collection detail rendering 404 against a healthy backend is the most important bug to fix in this iteration."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter205_entity_navigation.py (new — 12 tests)"
+  ],
+  "success_rate": {"backend": "100% (12/12)", "frontend": "~60% (Material, Designer, Embassy load OK with correct testids; Collection Detail navigation broken; Studio Library save→list flow not confirmed)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Backend test creates and cleans up a studio_library_items entry for entity_type=designer / entity_id=fa5ede59-… (source_type=brand_atlas). The earlier ITER204 ARBI brand save (1 row) remains in the Studio Library and is visible in /studio-library.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite at /app/backend/tests/test_iter205_entity_navigation.py — 12 tests, all green on the preview URL in ~20s. Login token via response.json()['session']['access_token']. Studio Library POST requires source_type in: ['academy','brand_atlas','case_study','editorial','import','manual','market_insight'] or null — 'knowledge_graph' is NOT accepted. When E1 fixes CollectionDetailPage, re-run a Playwright pass: login → /inspirations/brands/ab1399d7-…-/collections/03c481c4-…- and assert data-testid='collection-detail-page' renders, counts show 123, and Save button works.",
+  "rca of the issue": "Frontend CollectionDetailPage shows 'Collezione non trovata' on click-through despite backend returning 200 for the same brand/collection ids. Most likely causes (to verify in code): (a) useParams() destructuring uses wrong key (e.g. :collection_id vs :collectionId mismatch with the route), (b) entityNavigationApi method called with swapped args (brandId/collectionId), or (c) response error handling treats any non-200 from a sibling call (e.g. saved-flag prefetch) as full-page 404. Reproduction: login as admin, open /inspirations/brands/ab1399d7-ab6a-498e-8c4f-bc36af69e182, click the Essentials collection card. Mitigation: align useParams keys with App.js route, ensure entityNavigationApi.getCollectionDetail(brandId, collectionId) wraps the correct path, and gate the 404 view on the actual collection response only."
+}

@@ -100,11 +100,29 @@ def brand_embassy(brand_id: str, ctx=Depends(get_tenant_context)):
                  .execute().data or [])
         canon = [x for x in canon
                  if (x.get("metadata_json") or {}).get("catalog_set_id") == set_id]
+        canon_ids = [x["id"] for x in canon]
+
+        # Bulk: real product counts per collection (single query)
+        real_counts: Dict[str, int] = {}
+        if canon_ids:
+            try:
+                count_rows = (c.table("products")
+                              .select("canonical_collection_id")
+                              .in_("canonical_collection_id", canon_ids)
+                              .limit(5000).execute().data or [])
+                for r in count_rows:
+                    cid = r.get("canonical_collection_id")
+                    if cid:
+                        real_counts[cid] = real_counts.get(cid, 0) + 1
+            except Exception as ex:
+                logger.warning(f"bulk count for collections failed: {ex}")
+
         for col in canon:
+            # Sample fetch — just for hero image (one is enough)
             prods = (c.table("products")
-                     .select("id,product_name,category_label,metadata_json")
+                     .select("id")
                      .eq("canonical_collection_id", col["id"])
-                     .limit(20).execute().data or [])
+                     .limit(8).execute().data or [])
             hero_img = None
             for p in prods:
                 hero_img = _product_image(p["id"])
@@ -115,7 +133,7 @@ def brand_embassy(brand_id: str, ctx=Depends(get_tenant_context)):
                 "name": col["display_name"],
                 "slug": col.get("collection_key"),
                 "kind": (col.get("metadata_json") or {}).get("kind", "detected"),
-                "product_count": len(prods),
+                "product_count": real_counts.get(col["id"], len(prods)),
                 "hero_image_url": hero_img,
             })
         collections.sort(key=lambda x: -x["product_count"])

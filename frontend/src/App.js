@@ -74,6 +74,11 @@ const StudioCollectionsPage = lazy(() => import('./pages/inspirations/StudioColl
 const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
 const BrandAtlas2Page = lazy(() => import('./pages/inspirations/BrandAtlas2Page'));
 const StudioLibraryPage = lazy(() => import('./pages/inspirations/StudioLibraryPage'));
+// ITER204-B · Entity Navigation Layer™ — detail pages
+const CollectionDetailPage = lazy(() => import('./pages/inspirations/CollectionDetailPage'));
+const ProductDetailPage    = lazy(() => import('./pages/inspirations/ProductDetailPage'));
+const MaterialDetailPage2  = lazy(() => import('./pages/inspirations/MaterialDetailPage'));
+const DesignerDetailPage   = lazy(() => import('./pages/inspirations/DesignerDetailPage'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
 const BrandEmbassyPage = lazy(() => import('./pages/inspirations/BrandEmbassyPage'));
 const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
@@ -641,6 +646,15 @@ function App() {
                   <Route path="/inspirations/brands/legacy" element={G('brand_atlas', <BrandModePage />)} />
                   <Route path="/inspirations/brands/:brandId" element={G('brand_atlas', <BrandEmbassyPage />)} />
                   <Route path="/inspirations/brands/:brandId/admin" element={G('brand_atlas', <BrandDetailPage />)} />
+                  {/* ITER204-B · Entity Navigation Layer™ — detail pages */}
+                  <Route path="/inspirations/brands/:brandId/collections/:collectionId"
+                          element={G('brand_atlas', <CollectionDetailPage />)} />
+                  <Route path="/inspirations/brands/:brandId/products/:productId"
+                          element={G('brand_atlas', <ProductDetailPage />)} />
+                  <Route path="/inspirations/materials/:materialId"
+                          element={G('material_view', <MaterialDetailPage2 />)} />
+                  <Route path="/inspirations/designers/:designerId"
+                          element={G('brand_atlas', <DesignerDetailPage />)} />
                   {/* Sprint UI-SYS-01 · Brand Atlas™ canonical alias */}
                   <Route path="/brand-atlas" element={<Navigate to="/inspirations/brands" replace />} />
                   <Route path="/brand-atlas/:brandId" element={<Navigate to="/inspirations/brands/:brandId" replace />} />

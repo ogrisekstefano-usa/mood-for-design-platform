@@ -149,16 +149,17 @@ export default function BrandEmbassyPage() {
       )}
 
       {data.collections?.length > 0 && (
-        <CollectionUniverse collections={data.collections} />
+        <CollectionUniverse collections={data.collections} brandId={brandId} />
       )}
 
       {data.materials?.length > 0 && (
         <MaterialIntelligence materials={data.materials}
-                               totalFinishes={data.counts?.finishes} />
+                               totalFinishes={data.counts?.finishes}
+                               brandId={brandId} />
       )}
 
       {data.designers?.length > 0 && (
-        <DesignersSection designers={data.designers} />
+        <DesignersSection designers={data.designers} brandId={brandId} />
       )}
 
       {(data.story?.title || data.story?.body) && (
@@ -171,7 +172,8 @@ export default function BrandEmbassyPage() {
         filter={productFilter}
         setFilter={setProductFilter}
         categoryFacets={categoryFacets}
-        collections={data.collections || []} />
+        collections={data.collections || []}
+        brandId={brandId} />
 
       {data.academy?.available && data.academy.modules_count > 0 && (
         <AcademySlot modules={data.academy.modules_count} />
@@ -319,7 +321,8 @@ function MoodDnaSection({ moods, onRegenerate, busy }) {
 /* ─────────────────────────────────────────────────────────────────── */
 /*  COLLECTION UNIVERSE                                                */
 /* ─────────────────────────────────────────────────────────────────── */
-function CollectionUniverse({ collections }) {
+function CollectionUniverse({ collections, brandId }) {
+  const navigate = useNavigate();
   const top = collections.slice(0, 8);
   const rest = collections.length - top.length;
   return (
@@ -330,7 +333,14 @@ function CollectionUniverse({ collections }) {
       />
       <div className="embassy-coll-grid">
         {top.map((c) => (
-          <article key={c.id} className="embassy-coll-card"
+          <article key={c.id} className="embassy-coll-card embassy-coll-card--clickable"
+                    onClick={() => navigate(`/inspirations/brands/${brandId}/collections/${c.id}`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') navigate(`/inspirations/brands/${brandId}/collections/${c.id}`);
+                    }}
+                    style={{ cursor: 'pointer' }}
                     data-testid={`embassy-coll-${c.id}`}>
             <div className="embassy-coll-image"
                   style={{
@@ -340,7 +350,11 @@ function CollectionUniverse({ collections }) {
                   }} />
             <div className="embassy-coll-overlay">
               <h3 className="embassy-coll-name">{c.name}</h3>
-              <p className="embassy-coll-meta">{c.product_count} prodotti</p>
+              <p className="embassy-coll-meta">
+                {c.product_count > 0
+                  ? `${c.product_count} prodotti`
+                  : 'Prodotti in indicizzazione'}
+              </p>
             </div>
           </article>
         ))}
@@ -361,7 +375,8 @@ function CollectionUniverse({ collections }) {
 /* ─────────────────────────────────────────────────────────────────── */
 /*  MATERIAL INTELLIGENCE                                              */
 /* ─────────────────────────────────────────────────────────────────── */
-function MaterialIntelligence({ materials, totalFinishes }) {
+function MaterialIntelligence({ materials, totalFinishes, brandId }) {
+  const navigate = useNavigate();
   return (
     <section className="embassy-section" data-testid="embassy-materials">
       <SectionHeader
@@ -371,6 +386,13 @@ function MaterialIntelligence({ materials, totalFinishes }) {
       <div className="embassy-mat-grid">
         {materials.slice(0, 12).map((m) => (
           <div key={m.id} className="embassy-mat-card"
+                onClick={() => navigate(`/inspirations/materials/${m.id}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') navigate(`/inspirations/materials/${m.id}`);
+                }}
+                style={{ cursor: 'pointer' }}
                 data-testid={`embassy-mat-${m.id}`}>
             <div className="embassy-mat-swatch" />
             <div className="embassy-mat-label">{m.name}</div>
@@ -385,7 +407,8 @@ function MaterialIntelligence({ materials, totalFinishes }) {
 /* ─────────────────────────────────────────────────────────────────── */
 /*  DESIGNERS                                                          */
 /* ─────────────────────────────────────────────────────────────────── */
-function DesignersSection({ designers }) {
+function DesignersSection({ designers, brandId }) {
+  const navigate = useNavigate();
   return (
     <section className="embassy-section" data-testid="embassy-designers">
       <SectionHeader
@@ -399,6 +422,13 @@ function DesignersSection({ designers }) {
             .map((s) => s[0]).join('').toUpperCase();
           return (
             <div key={d.id} className="embassy-des-card"
+                  onClick={() => navigate(`/inspirations/designers/${d.id}`)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate(`/inspirations/designers/${d.id}`);
+                  }}
+                  style={{ cursor: 'pointer' }}
                   data-testid={`embassy-designer-${d.id}`}>
               <div className="embassy-des-avatar">{initials}</div>
               <div className="embassy-des-name">{d.name}</div>
@@ -428,7 +458,8 @@ function StorySection({ story }) {
 /*  PRODUCTS GALLERY                                                   */
 /* ─────────────────────────────────────────────────────────────────── */
 function ProductsGallery({ products, totalCount, filter, setFilter,
-                            categoryFacets, collections }) {
+                            categoryFacets, collections, brandId }) {
+  const navigate = useNavigate();
   return (
     <section className="embassy-section" data-testid="embassy-products">
       <SectionHeader
@@ -467,6 +498,13 @@ function ProductsGallery({ products, totalCount, filter, setFilter,
       <div className="embassy-prod-grid">
         {products.slice(0, 40).map((p) => (
           <article key={p.id} className="embassy-prod-card"
+                    onClick={() => navigate(`/inspirations/brands/${brandId}/products/${p.id}`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') navigate(`/inspirations/brands/${brandId}/products/${p.id}`);
+                    }}
+                    style={{ cursor: 'pointer' }}
                     data-testid={`embassy-product-${p.id}`}>
             <div className="embassy-prod-image"
                   style={{

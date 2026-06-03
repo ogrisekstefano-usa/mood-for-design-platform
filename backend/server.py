@@ -159,6 +159,9 @@ api_router.include_router(_extr_jobs_router.router, prefix="/knowledge", tags=["
 
 from routers import brand_experience as _brand_exp_router  # noqa: E402
 api_router.include_router(_brand_exp_router.router, prefix="/knowledge", tags=["brand-experience"])
+# ITER204-B · Entity Navigation Layer™ — Collection/Product/Material/Designer detail
+from routers import entity_navigation as _entity_nav_router  # noqa: E402
+api_router.include_router(_entity_nav_router.router, prefix="/knowledge", tags=["entity-navigation"])
 # ITER204 · Studio Library Bridge™ — unified curatorial library
 from routers import studio_library as _studio_library_router  # noqa: E402
 api_router.include_router(_studio_library_router.router, prefix="/studio-library", tags=["studio-library"])
