@@ -119,15 +119,11 @@ class TestMaterialDetail:
         # should have products if catalog seeded
         assert isinstance(d["products"], list)
 
-    def test_material_unknown_returns_payload_or_404(self, client):
-        # Endpoint accepts arbitrary names; unknown names currently return 200
-        # with empty products list (see backend material fallback logic).
+    def test_material_unknown_returns_404(self, client):
+        # After ITER205 retest fix: unknown free-form names must return 404.
         url = f"{BASE_URL}/api/knowledge/materials/__definitely_unknown_material_xyz__"
         r = client.get(url, timeout=30)
-        assert r.status_code in (200, 404)
-        if r.status_code == 200:
-            d = r.json()
-            assert d["counts"]["products"] == 0
+        assert r.status_code == 404, f"expected 404, got {r.status_code}: {r.text[:300]}"
 
 
 # ── 4 · Designer Detail ─────────────────────────────────────────────

@@ -29,12 +29,26 @@ export default function CollectionDetailPage() {
   const [data, setData] = useState(null); // null = loading
 
   const reload = useCallback(async () => {
-    try {
-      const r = await EN.collectionDetail(brandId, collectionId);
-      setData(r.data);
-    } catch (e) {
-      setData({ _error: e?.response?.data?.detail || 'fetch failed' });
+    // Retry up to 2 times on transient errors before declaring not-found.
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await EN.collectionDetail(brandId, collectionId);
+        setData(r.data);
+        return;
+      } catch (e) {
+        lastErr = e;
+        const status = e?.response?.status;
+        // Only abort early on a genuine 404
+        if (status === 404) {
+          setData({ _error: e?.response?.data?.detail || 'not_found' });
+          return;
+        }
+        // Transient: small backoff then retry
+        await new Promise((res) => setTimeout(res, 600 * (attempt + 1)));
+      }
     }
+    setData({ _error: lastErr?.response?.data?.detail || 'fetch_failed' });
   }, [brandId, collectionId]);
 
   useEffect(() => { reload(); }, [reload]);

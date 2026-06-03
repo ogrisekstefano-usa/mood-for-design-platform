@@ -359,7 +359,41 @@ def list_items_resolved(
                   .select("id,display_name,material_key,brand_id,metadata_json")
                   .in_("id", by_type["material"][:200])
                   .execute().data or [])
-        resolved["material"] = {x["id"]: x for x in m_rows}
+        m_map: Dict[str, Dict[str, Any]] = {x["id"]: x for x in m_rows}
+        # Fallback: hydrate from brand_detected_entities for non-canonical
+        # material saves (and surface name-based saves like "wood" as-is)
+        missing_ids = [i for i in by_type["material"] if i not in m_map]
+        if missing_ids:
+            try:
+                # Try detected entities
+                bd = (c.table("brand_detected_entities")
+                      .select("id,display_name,attributes")
+                      .in_("id", [m for m in missing_ids
+                                  if len(m) == 36 and m.count("-") == 4][:200])
+                      .execute().data or [])
+                for x in bd:
+                    m_map[x["id"]] = {
+                        "id":           x["id"],
+                        "display_name": x["display_name"],
+                        "material_key": None,
+                        "brand_id":     None,
+                        "metadata_json": x.get("attributes") or {},
+                    }
+                # Name-based saves (entity_id is a literal name like "wood")
+                for mid in missing_ids:
+                    if mid in m_map:
+                        continue
+                    if not (len(mid) == 36 and mid.count("-") == 4):
+                        m_map[mid] = {
+                            "id":           mid,
+                            "display_name": str(mid).title(),
+                            "material_key": str(mid).lower(),
+                            "brand_id":     None,
+                            "metadata_json": {},
+                        }
+            except Exception:
+                pass
+        resolved["material"] = m_map
 
     # ── Designers
     if by_type.get("designer"):
@@ -367,7 +401,27 @@ def list_items_resolved(
                   .select("id,display_name,designer_key,brand_id,metadata_json")
                   .in_("id", by_type["designer"][:200])
                   .execute().data or [])
-        resolved["designer"] = {x["id"]: x for x in d_rows}
+        d_map: Dict[str, Dict[str, Any]] = {x["id"]: x for x in d_rows}
+        # Fallback: hydrate from brand_detected_entities for ids not in
+        # designers_canonical (Brand Atlas saves designer detected entities)
+        missing_ids = [i for i in by_type["designer"] if i not in d_map]
+        if missing_ids:
+            try:
+                bd = (c.table("brand_detected_entities")
+                      .select("id,display_name,attributes")
+                      .in_("id", missing_ids[:200])
+                      .execute().data or [])
+                for x in bd:
+                    d_map[x["id"]] = {
+                        "id":           x["id"],
+                        "display_name": x["display_name"],
+                        "designer_key": None,
+                        "brand_id":     None,
+                        "metadata_json": x.get("attributes") or {},
+                    }
+            except Exception:
+                pass
+        resolved["designer"] = d_map
 
     # Assemble final payload
     items: List[Dict[str, Any]] = []

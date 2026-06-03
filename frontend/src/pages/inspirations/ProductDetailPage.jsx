@@ -26,13 +26,23 @@ export default function ProductDetailPage() {
   const [activeImage, setActiveImage] = useState(0);
 
   const reload = useCallback(async () => {
-    try {
-      const r = await EN.productDetail(brandId, productId);
-      setData(r.data);
-      setActiveImage(0);
-    } catch (e) {
-      setData({ _error: e?.response?.data?.detail || 'fetch failed' });
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await EN.productDetail(brandId, productId);
+        setData(r.data);
+        setActiveImage(0);
+        return;
+      } catch (e) {
+        lastErr = e;
+        if (e?.response?.status === 404) {
+          setData({ _error: e?.response?.data?.detail || 'not_found' });
+          return;
+        }
+        await new Promise((res) => setTimeout(res, 600 * (attempt + 1)));
+      }
     }
+    setData({ _error: lastErr?.response?.data?.detail || 'fetch_failed' });
   }, [brandId, productId]);
 
   useEffect(() => { reload(); }, [reload]);

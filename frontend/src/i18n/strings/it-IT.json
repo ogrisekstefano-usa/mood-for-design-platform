@@ -2407,5 +2407,71 @@
       "title": "Nuovo Materiale",
       "desc": "Aggiungi un materiale alla Material Library."
     }
+  },
+  "entity": {
+    "not_found": "Voce non trovata",
+    "collection": {
+      "eyebrow": "Collection",
+      "products_label": "prodotti",
+      "materials_label": "materiali",
+      "designers_label": "designer",
+      "products_in_collection": "prodotti collegati",
+      "products_indexing_title": "Prodotti in indicizzazione",
+      "products_indexing": "I prodotti sono in fase di indicizzazione.",
+      "materials_in_collection": "materiali ricorrenti",
+      "materials_not_linked_title": "Materiali da collegare",
+      "materials_not_linked": "Nessun materiale collegato a questa collezione.",
+      "designers_in_collection": "designer collegati",
+      "designers_pending_title": "Designer in verifica",
+      "designers_pending": "Informazioni designer in verifica.",
+      "related_title": "Altre collezioni di"
+    },
+    "product": {
+      "not_found": "Prodotto non trovato",
+      "images_label": "immagini",
+      "materials_label": "materiali",
+      "designers_label": "designer",
+      "images_in_set": "immagini disponibili",
+      "images_indexing_title": "Immagini in indicizzazione",
+      "images_indexing": "Le immagini del prodotto sono in fase di indicizzazione.",
+      "materials_section": "materiali usati",
+      "design_dna_title": "Designer collegati",
+      "specs_title": "Dettagli tecnici",
+      "dimensions": "Dimensioni",
+      "finishes": "Finiture",
+      "related_title": "Stessa collezione"
+    },
+    "material": {
+      "not_found": "Materiale non trovato",
+      "brands_label": "brand",
+      "collections_label": "collezioni",
+      "products_label": "prodotti",
+      "references": "riferimenti",
+      "brands_section": "brand collegati",
+      "no_brands_title": "Nessun brand collegato",
+      "no_brands": "Materiale ancora non collegato a nessun brand indicizzato.",
+      "collections_section": "collezioni collegate",
+      "no_collections_title": "Collezioni in indicizzazione",
+      "no_collections": "Nessuna collezione collegata a questo materiale.",
+      "products_section": "prodotti collegati",
+      "no_products_title": "Prodotti in indicizzazione",
+      "no_products": "Nessun prodotto collegato a questo materiale."
+    },
+    "designer": {
+      "not_found": "Designer non trovato",
+      "bio_pending": "Biografia in attesa di verifica.",
+      "brands_label": "brand",
+      "collections_label": "collezioni",
+      "products_label": "prodotti",
+      "brands_section": "Brand collegati",
+      "no_brands_title": "Nessun brand collegato",
+      "no_brands": "Designer ancora non attribuito a un brand.",
+      "collections_section": "collezioni attribuite",
+      "no_collections_title": "Collezioni in indicizzazione",
+      "no_collections": "Nessuna collezione collegata.",
+      "products_section": "prodotti firmati",
+      "no_products_title": "Prodotti in indicizzazione",
+      "no_products": "Nessun prodotto attribuito a questo designer."
+    }
   }
 }

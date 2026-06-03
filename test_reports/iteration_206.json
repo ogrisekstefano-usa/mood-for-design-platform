@@ -1,0 +1,40 @@
+{
+  "summary": "ITER204-B / ITER205 retest: All previously reported regressions are now resolved. Backend 27/27 pytest pass (12 entity navigation + 15 studio library), including the new 404 contract for unknown free-form material names. Frontend: Brand Embassy → Essentials collection click-through is now stable (3/3 passes, products grid 121 images, '123 prodotti' count, no 'Collezione non trovata'). Studio Library shows 'Marco Acerbis' designer card with hydrated name (no longer 'Voce rimossa'). i18n labels on Material and Designer detail pages render localized strings ('brand', 'collezioni', 'prodotti') with no ⟦missing⟧ tokens. The pre-existing React 'Cannot update a component while rendering' warning from LocalizationOverlay still fires (background, non-blocking) — unchanged from ITER204/205.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global runtime", "issues": ["Residual React warning 'Cannot update a component (LocalizationOverlay) while rendering a different component (Sidebar/Section/LoginPage)' fires repeatedly on mount — known issue, non-blocking, but should be addressed by deferring overlay state updates to useEffect.", "Many auth.* and nav.* i18n keys are still missing in it-IT (auth.login.eyebrow, auth.login.email_label, nav.crm_accounts, nav.crm_follow_ups, nav.crm_archived, nav.journey_mail_workspace, nav.editorial_copy_cms, nav.admin_languages, nav.blueprint_admin, nav.section.communications) — unrelated to ITER205 scope but worth catching in a future i18n sweep."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter205_entity_navigation.py",
+    "/app/backend/tests/test_iter204_studio_library.py",
+    "/app/test_reports/pytest/iter205_retest_results.xml",
+    "/app/test_reports/pytest/iter204_retest_results.xml"
+  ],
+  "action_items": [
+    "(LOW) Schedule a cleanup pass on LocalizationOverlay to move setState calls out of render (wrap in useEffect) — fires 'Cannot update a component while rendering' warning on Sidebar/Section/LoginPage mounts.",
+    "(LOW) Add missing it-IT keys for auth.login.* and nav.* groups flagged in design_issues — outside ITER205 scope."
+  ],
+  "critical_code_review_comments": [
+    "Retry-on-transient logic in CollectionDetailPage.jsx (and sibling detail pages) is the right pattern — only HTTP 404 short-circuits to not_found, transient errors back off and retry up to 3x. Verified stable across 3 consecutive cold navigations.",
+    "Material endpoint now correctly returns 404 for unknown free-form names (no canonical, no detected, no products match). UUID and canonical-name lookups continue to return 200 with full payload.",
+    "Studio Library /resolved hydration from brand_detected_entities is working — designer card surfaces real name 'Marco Acerbis' instead of 'Voce rimossa' fallback.",
+    "i18n: entity.material.*, entity.designer.*, entity.collection.*, entity.product.*, common.loading namespaces now resolve in it-IT — no ⟦missing⟧ tokens observed on the two target detail pages."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter205_entity_navigation.py (tightened test_material_unknown_returns_404 to assert strict 404)"
+  ],
+  "success_rate": {"backend": "100% (27/27)", "frontend": "100% on the 4 retest flows (3/3 collection click, designer hydration, i18n on Material+Designer pages, regression on Studio Library page)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Backend save/delete cycle for designer fa5ede59 (source_type=brand_atlas) is self-cleaning. No residual test data created.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "ITER204-B/205 are fully green. Regression suites: /app/backend/tests/test_iter205_entity_navigation.py (12 tests, ~19s) and /app/backend/tests/test_iter204_studio_library.py (15 tests, ~15s) — both should stay green. Login token via response.json()['session']['access_token']. Studio Library source_type whitelist: ['academy','brand_atlas','case_study','editorial','import','manual','market_insight'] or null.",
+  "rca of the issue": "Previous iteration_205 HIGH bug (CollectionDetailPage rendering 'Collezione non trovata') was a transient race where the first fetch occasionally returned a non-200 transient (likely warm-up / cold-start latency on the embassy → collection navigation), which the page treated as full not_found. Fix: only HTTP 404 maps to not_found, all other failures retry up to 3 times with 600ms backoff. Verified stable: 3 consecutive cold navigations to /inspirations/brands/{brandId}/collections/{collectionId} all render data-testid='collection-detail-page' with title 'Essentials', counts '123 prodotti / 11 materiali / 10 designer', and a 121-card products grid."
+}

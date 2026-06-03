@@ -452,6 +452,12 @@ def material_detail(material_id: str, ctx=Depends(get_tenant_context)):
         except Exception:
             ps = []
 
+    # If we resolved purely from a free-form name (no canonical, no detected)
+    # and nothing matches, treat as 404 — the user isn't looking at a real
+    # graph entity, just a typo'd URL.
+    if not is_uuid and not canon_id and not detected_id and not ps:
+        raise HTTPException(404, "Materiale non trovato")
+
     pids = [p["id"] for p in ps]
     assets_map: Dict[str, str] = {}
     if pids:

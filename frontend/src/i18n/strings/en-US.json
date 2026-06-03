@@ -2380,5 +2380,71 @@
       "title": "New Material",
       "desc": "Add a material to the Material Library."
     }
+  },
+  "entity": {
+    "not_found": "Item not found",
+    "collection": {
+      "eyebrow": "Collection",
+      "products_label": "products",
+      "materials_label": "materials",
+      "designers_label": "designers",
+      "products_in_collection": "products linked",
+      "products_indexing_title": "Products indexing",
+      "products_indexing": "Products are being indexed.",
+      "materials_in_collection": "recurring materials",
+      "materials_not_linked_title": "Materials not linked",
+      "materials_not_linked": "No materials linked to this collection yet.",
+      "designers_in_collection": "designers connected",
+      "designers_pending_title": "Designer information pending",
+      "designers_pending": "Designer information pending verification.",
+      "related_title": "More collections from"
+    },
+    "product": {
+      "not_found": "Product not found",
+      "images_label": "images",
+      "materials_label": "materials",
+      "designers_label": "designers",
+      "images_in_set": "images available",
+      "images_indexing_title": "Images indexing",
+      "images_indexing": "Product images are being indexed.",
+      "materials_section": "materials used",
+      "design_dna_title": "Designers connected",
+      "specs_title": "Specification ready",
+      "dimensions": "Dimensions",
+      "finishes": "Finishes",
+      "related_title": "Same collection"
+    },
+    "material": {
+      "not_found": "Material not found",
+      "brands_label": "brands",
+      "collections_label": "collections",
+      "products_label": "products",
+      "references": "references",
+      "brands_section": "brands connected",
+      "no_brands_title": "No brands linked",
+      "no_brands": "Material not yet linked to any indexed brand.",
+      "collections_section": "collections connected",
+      "no_collections_title": "Collections indexing",
+      "no_collections": "No collections linked to this material.",
+      "products_section": "products connected",
+      "no_products_title": "Products indexing",
+      "no_products": "No products linked to this material."
+    },
+    "designer": {
+      "not_found": "Designer not found",
+      "bio_pending": "Biography pending verification.",
+      "brands_label": "brands",
+      "collections_label": "collections",
+      "products_label": "products",
+      "brands_section": "Brands connected",
+      "no_brands_title": "No brands linked",
+      "no_brands": "Designer not yet attributed to a brand.",
+      "collections_section": "collections attributed",
+      "no_collections_title": "Collections indexing",
+      "no_collections": "No collections linked.",
+      "products_section": "products signed",
+      "no_products_title": "Products indexing",
+      "no_products": "No products attributed to this designer."
+    }
   }
 }

@@ -18,12 +18,22 @@ export default function DesignerDetailPage() {
   const [data, setData] = useState(null);
 
   const reload = useCallback(async () => {
-    try {
-      const r = await EN.designerDetail(designerId);
-      setData(r.data);
-    } catch (e) {
-      setData({ _error: e?.response?.data?.detail || 'fetch failed' });
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await EN.designerDetail(designerId);
+        setData(r.data);
+        return;
+      } catch (e) {
+        lastErr = e;
+        if (e?.response?.status === 404) {
+          setData({ _error: e?.response?.data?.detail || 'not_found' });
+          return;
+        }
+        await new Promise((res) => setTimeout(res, 600 * (attempt + 1)));
+      }
     }
+    setData({ _error: lastErr?.response?.data?.detail || 'fetch_failed' });
   }, [designerId]);
 
   useEffect(() => { reload(); }, [reload]);
