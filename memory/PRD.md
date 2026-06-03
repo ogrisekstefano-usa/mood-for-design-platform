@@ -83,7 +83,16 @@ i founder accedono al loro Blueprint workspace via magic-link.
 - ✅ **M2** Relationship Timeline + Health Hooks — COMPLETED (121/121 PASS)
 - ✅ **M3** Activity Log Advanced™ · Relationship Memory Layer — **COMPLETED** (153/153 PASS · 32/32 acceptance)
 - ✅ **M2/M3 UI Alignment** — `ActivityFeed.jsx` + `TimelineFeed.jsx` allineati ai token Command Center (03/06/2026). Report: `/app/memory/ACTIVITY_TIMELINE_UI_ALIGNMENT_REPORT.md` 🟢
-- ⏸️ **M4** Notification Center — pianificato (predisposizione `notifiable` in M2 ✅)
+- 🔄 **M2/M3 UI direction rifocata** (03/06/2026) — l'utente ha rifiutato l'orientamento editoriale ("CRM dark mode") e ha riapprovato il modello SaaS-prima (Salesforce/Hubspot/Linear/Notion/Attio). Architettura Relationship OS ridisegnata in `/app/memory/RELATIONSHIP_OS_ARCHITECTURE_DELIVERABLE.md`. M6 (Relationship Center 3-colonne) postposto dopo M4+M5.
+- ✅ **M4** Internal Notification Center — **COMPLETED** (03/06/2026)
+   * Backend 100% (19/19 PASS): migration 035 (catalog 9 categorie + preferences in_app/email/push + 6 FK strutturate)
+   * Service `notifications.py` con `notify()` idempotente · `unread_count` con `has_critical` · RBAC strict
+   * Router REST 7 endpoint (list, unread-count, mark-read, archive, categories, preferences GET+PATCH)
+   * Hook in 5 servizi (studio_v2, activation, activities, contacts, magic-link consume)
+   * Cron `followup_overdue_scan` Europe/Rome 08:00 via APScheduler
+   * Frontend ~85%: Bell numerico sobrio (teal/red dinamico, NO `!`) + Drawer 380px con sezione "Critiche" separata + 6 filtri (Tutte/Non lette/Critiche/Attività/Tenant/Advisor) + polling 60s/10min visibility-aware
+   * Deliverable: `/app/memory/M4_PHASE2_CHECKIN_REPORT.md` + `/app/memory/M4_IMPLEMENTATION_REPORT.md`
+- ⏸️ **M5** Advisor Workspace — pianificato (architettura in deliverable Relationship OS · `/workspace/*` namespace)
 - ⏸️ **M5** Advisor Workspace + KPI — pianificato
 - ⏸️ **M1.1** Performance Hardening (connection pool) — task separato
 - ⏸️ **M2.1** Cosmetic fix header "Untitled studio" — backlog

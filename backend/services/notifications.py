@@ -356,9 +356,13 @@ async def notify(
             row = res.first()
             if row:
                 created_ids.append(row[0])
-        except Exception:
-            # Continue with the other recipients; caller's transaction
-            # won't roll back due to a single conflict.
+        except Exception as _ex:
+            # Log the per-recipient failure but continue with the rest;
+            # one bad recipient must not abort the whole fan-out.
+            import logging
+            logging.getLogger('notifications').warning(
+                'notify INSERT failed for type=%s recipient=%s: %s',
+                type_code, str(rid), _ex)
             continue
 
     return created_ids
