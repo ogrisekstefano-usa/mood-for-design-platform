@@ -1,0 +1,44 @@
+{
+  "summary": "ITER204 Studio Library Bridge™ tested end-to-end. Backend: 15/15 pytest passing after fixing a DELETE route-ordering bug. Frontend: all required testids present and Studio Library page renders the saved brand correctly with type pill + brand_atlas source. CreateModal + CreateMoodboardModal flows verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "DELETE /api/studio-library/by-entity", "issue": "FIXED in this run: was being captured by /{item_id} (static route declared AFTER dynamic route), causing 500 with uuid parse error. Reordered routes in /app/backend/routers/studio_library.py."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global", "issues": ["Many missing i18n keys for it-IT: studio_library.eyebrow, studio_library.subtitle, studio_library.total, studio_library.types.*, studio_library.search.placeholder, studio_library.loading, studio_library.source.*, studio_library.remove.aria, studio_library.missing.name, nav.studio_library, nav.crm_*, nav.section.communications, create.cta.label, create.moodboard.* — fallback strings render, so UI works but localization layer is incomplete (likely also flagged by Editorial Runtime debug badge showing 'missing 25')."]},
+      {"screen": "Console", "issues": ["React warning: 'Cannot update a component while rendering a different component' fires repeatedly during render — minor but indicates a setState-in-render issue somewhere in the layout chain."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter204_studio_library.py",
+    "/app/test_reports/pytest/iter204_results.xml"
+  ],
+  "action_items": [
+    "Add missing it-IT i18n keys listed above (studio_library.*, create.moodboard.*, nav.studio_library, nav.crm_*, nav.section.communications, create.cta.label) — currently only English/Italian fallbacks render.",
+    "Investigate the React 'setState during render' warning (appears on Dashboard mount; not blocking but should be cleaned up).",
+    "(Optional) Verify the route-ordering fix in /app/backend/routers/studio_library.py is acceptable — DELETE /by-entity now declared BEFORE DELETE /{item_id}."
+  ],
+  "critical_code_review_comments": [
+    "BUG (FIXED): DELETE /by-entity was unreachable because FastAPI matched it against DELETE /{item_id} first; static routes must be declared before dynamic ones.",
+    "Idempotency confirmed: POST / returns already_saved=true on duplicate (tenant, entity_type, entity_id).",
+    "Validation: both invalid entity_type and invalid source_type correctly return 400; source_type=null allowed.",
+    "Auth: all endpoints reject unauthenticated calls (401/403).",
+    "studio_brand_links legacy sync working on brand save."
+  ],
+  "updated_files": [
+    "/app/backend/routers/studio_library.py (reordered DELETE routes — static before dynamic)",
+    "/app/backend/tests/test_iter204_studio_library.py (new)"
+  ],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% (all required testids present, no functional bugs)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Test created and cleaned up: 1 brand save (TEST_BRAND_ID), several throw-away uuid material/collection/product/designer entries. The brand ab1399d7-... remained saved at end of test_resolved_hydrates_real_brand and test_brand_save_syncs_legacy_links — the UI showed 7 saved items including ARBI Test Bathroom.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests at /app/backend/tests/test_iter204_studio_library.py cover stats/list/save/toggle/delete/resolved/legacy-sync. All 15 pass against the live preview URL. The fix applied (DELETE route reorder) is the only backend change in this iteration. Frontend regression should focus on i18n key completion if main agent adds those translations.",
+  "rca of the issue": "DELETE /api/studio-library/by-entity returned 500 'invalid input syntax for type uuid: \"by-entity\"'. Root cause: in FastAPI, @router.delete('/{item_id}') was registered BEFORE @router.delete('/by-entity') in studio_library.py, so the dynamic route greedily matched 'by-entity' as the item_id parameter and tried to query the DB with that string. Mitigation: declared the static '/by-entity' route before the dynamic '/{item_id}' route. Verified via pytest and confirmed test_save_brand_then_idempotent and the by-entity cleanup now pass cleanly."
+}

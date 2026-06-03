@@ -130,3 +130,38 @@
   color: var(--cm-card-accent, var(--accent-primary));
   transform: translate(2px, -2px);
 }
+
+/* ─── ITER204 · Create Moodboard™ — recommended badge + meta */
+.cm-moodboard__badge {
+  position: absolute;
+  top: 16px;
+  right: 44px;
+  font-family: var(--atelier-mono, 'JetBrains Mono', monospace);
+  font-size: 8.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cm-card-accent, var(--accent-primary, #5dd9c4)) 18%, transparent);
+  color: var(--cm-card-accent, var(--accent-primary, #5dd9c4));
+  border: 1px solid color-mix(in srgb, var(--cm-card-accent, var(--accent-primary, #5dd9c4)) 35%, transparent);
+}
+
+.cm-moodboard__meta {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: var(--atelier-mono, monospace);
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cm-text-faint, var(--bp-text-faint, rgba(255, 255, 255, .42)));
+}
+
+/* Mark used in Create Moodboard™ title */
+.cm-modal__title .sl-mark {
+  font-family: var(--atelier-mono, monospace);
+  font-size: .35em;
+  vertical-align: top;
+  color: var(--accent-primary, var(--atelier-cyan, #5dd9c4));
+  font-style: normal;
+}

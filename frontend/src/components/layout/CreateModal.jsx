@@ -76,17 +76,22 @@ function buildCreationOptions({ navigate, t, openNewRelationship, activeJourney 
       descKey:  'create.moodboard.desc',
       fallbackTitle: 'Nuova Moodboard',
       fallbackDesc: 'Crea una moodboard collegata a un progetto esistente.',
-      requires: () => activeJourney
-        ? null
-        : t('create.moodboard.requires_journey',
-            null,
-            'Le Moodboard devono essere collegate a un Design Journey. Crea o seleziona un Journey prima.'),
       action: () => {
-        if (activeJourney?.id) {
-          navigate(`/projects/${activeJourney.id}/moodboards/new`);
-        } else {
-          // Fallback: go to journey picker
-          navigate('/workspace/projects?intent=new-moodboard');
+        // ITER204 · Open the Create Moodboard™ two-path modal
+        // (From Studio Library™ · Blank Canvas). The picker enforces
+        // the Design Journey association internally.
+        try {
+          // eslint-disable-next-line global-require
+          require('./CreateMoodboardModal').openCreateMoodboardModal({
+            journey: activeJourney || null,
+          });
+        } catch (_) {
+          // Fallback: direct navigation if the modal module is missing
+          if (activeJourney?.id) {
+            navigate(`/projects/${activeJourney.id}/moodboards/new`);
+          } else {
+            navigate('/workspace/projects?intent=new-moodboard');
+          }
         }
       },
     },

@@ -7,6 +7,8 @@ import PlatformFooterBar from '../common/PlatformFooterBar';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 import OwnerIntroductionGate from '../onboarding/OwnerIntroductionGate';
 import MobileBlocker from './MobileBlocker';
+import CreateModal from './CreateModal';
+import CreateMoodboardModal from './CreateMoodboardModal';
 
 /**
  * DashboardLayout — Blueprint OS shell.
@@ -59,6 +61,12 @@ const DashboardLayout = () => {
         </div>
         {/* S.2 — human-first tenant: nudge owners to introduce themselves */}
         <OwnerIntroductionGate />
+        {/* ITER-UI-REFACTOR · Global Create Modal — single entry point
+            for all creation actions. Opened via window event from sidebar. */}
+        <CreateModal />
+        {/* ITER204 · Create Moodboard Modal — two-path entry
+            (From Studio Library™ · Blank Canvas). Opened from CreateModal. */}
+        <CreateMoodboardModal />
       </TopbarSlotsProvider>
     </BlueprintThemeProvider>
   );

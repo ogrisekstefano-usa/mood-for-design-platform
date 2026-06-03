@@ -73,6 +73,7 @@ const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPag
 const StudioCollectionsPage = lazy(() => import('./pages/inspirations/StudioCollectionsPage'));
 const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
 const BrandAtlas2Page = lazy(() => import('./pages/inspirations/BrandAtlas2Page'));
+const StudioLibraryPage = lazy(() => import('./pages/inspirations/StudioLibraryPage'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
 const BrandEmbassyPage = lazy(() => import('./pages/inspirations/BrandEmbassyPage'));
 const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
@@ -633,6 +634,8 @@ function App() {
                   <Route path="/workspace/reports" element={<ReportsHub />} />
                   <Route path="/settings/integrations" element={G('integrations', <IntegrationsHub />)} />
                   <Route path="/inspirations" element={G('inspirations', <InspirationsPage />)} />
+                  {/* ITER204 · Studio Library Bridge™ — permanent curatorial heritage */}
+                  <Route path="/studio-library" element={G('studio_library', <StudioLibraryPage />)} />
                   <Route path="/inspirations/collections" element={G('inspirations', <StudioCollectionsPage />)} />
                   <Route path="/inspirations/brands" element={G('brand_atlas', <BrandAtlas2Page />)} />
                   <Route path="/inspirations/brands/legacy" element={G('brand_atlas', <BrandModePage />)} />

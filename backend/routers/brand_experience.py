@@ -459,6 +459,25 @@ def link_to_studio(brand_id: str, body: StudioLinkBody = StudioLinkBody(),
                 .eq("tenant_id", tid).eq("brand_id", brand_id)
                 .limit(1).execute().data or [])
     if existing:
+        # ITER204 · backfill new unified table if missing
+        try:
+            sl_exists = (c.table("studio_library_items").select("id")
+                         .eq("tenant_id", tid).eq("entity_type", "brand")
+                         .eq("entity_id", brand_id).limit(1)
+                         .execute().data or [])
+            if not sl_exists:
+                c.table("studio_library_items").insert({
+                    "id":          str(uuid.uuid4()),
+                    "tenant_id":   tid,
+                    "entity_type": "brand",
+                    "entity_id":   brand_id,
+                    "source_type": "brand_atlas",
+                    "saved_by":    ctx.get("profile_id"),
+                    "saved_at":    _now(),
+                    "notes":       body.note,
+                }).execute()
+        except Exception as ex:
+            logger.warning(f"studio_library_items sync (existing link) failed: {ex}")
         return {"ok": True, "linked": True, "already_linked": True}
     c.table("studio_brand_links").insert({
         "id":        str(uuid.uuid4()),
@@ -468,6 +487,20 @@ def link_to_studio(brand_id: str, body: StudioLinkBody = StudioLinkBody(),
         "linked_at": _now(),
         "note":      body.note,
     }).execute()
+    # ITER204 · Mirror to unified studio_library_items
+    try:
+        c.table("studio_library_items").insert({
+            "id":          str(uuid.uuid4()),
+            "tenant_id":   tid,
+            "entity_type": "brand",
+            "entity_id":   brand_id,
+            "source_type": "brand_atlas",
+            "saved_by":    ctx.get("profile_id"),
+            "saved_at":    _now(),
+            "notes":       body.note,
+        }).execute()
+    except Exception as ex:
+        logger.warning(f"studio_library_items sync (new link) failed: {ex}")
     return {"ok": True, "linked": True}
 
 
@@ -477,6 +510,13 @@ def unlink_from_studio(brand_id: str, ctx=Depends(get_tenant_context)):
     _require_brand(c, tid, brand_id)
     c.table("studio_brand_links").delete() \
         .eq("tenant_id", tid).eq("brand_id", brand_id).execute()
+    # ITER204 · Mirror unlink to unified table
+    try:
+        c.table("studio_library_items").delete() \
+            .eq("tenant_id", tid).eq("entity_type", "brand") \
+            .eq("entity_id", brand_id).execute()
+    except Exception as ex:
+        logger.warning(f"studio_library_items unsync failed: {ex}")
     return {"ok": True, "linked": False}
 
 
