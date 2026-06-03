@@ -82,6 +82,7 @@ i founder accedono al loro Blueprint workspace via magic-link.
 - ✅ **M1.0.1** Hotfix (`catalogs/languages` 200 · `preferred_language` normalize) — VALIDATED
 - ✅ **M2** Relationship Timeline + Health Hooks — COMPLETED (121/121 PASS)
 - ✅ **M3** Activity Log Advanced™ · Relationship Memory Layer — **COMPLETED** (153/153 PASS · 32/32 acceptance)
+- ✅ **M2/M3 UI Alignment** — `ActivityFeed.jsx` + `TimelineFeed.jsx` allineati ai token Command Center (03/06/2026). Report: `/app/memory/ACTIVITY_TIMELINE_UI_ALIGNMENT_REPORT.md` 🟢
 - ⏸️ **M4** Notification Center — pianificato (predisposizione `notifiable` in M2 ✅)
 - ⏸️ **M5** Advisor Workspace + KPI — pianificato
 - ⏸️ **M1.1** Performance Hardening (connection pool) — task separato

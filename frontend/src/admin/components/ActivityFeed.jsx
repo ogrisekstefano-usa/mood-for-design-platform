@@ -1,5 +1,8 @@
 /**
- * ActivityFeed — M3 paginated activity list with filters + pending follow-up section.
+ * ActivityFeed — M3 paginated activity list with filters + pending follow-up.
+ * Style aligned to Command Center tokens (bg-black, stone palette, squared
+ * borders, text-[10px] uppercase eyebrows). All labels/icons come from the
+ * platform_activity_* catalogs via useCatalog — no hardcoded catalog values.
  *
  * Props:
  *   - apiBase    : "${BACKEND}/api/admin/tenants/{tid}" or "${BACKEND}/api/blueprint"
@@ -7,23 +10,27 @@
  *   - onEdit(a)
  *   - onCreate()
  */
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Phone, Mail, MessageCircle, Linkedin, Users, MapPin,
-         FileText, CheckSquare, Plus, Search, RefreshCw, Filter as FilterIcon } from 'lucide-react';
+import * as Icons from 'lucide-react';
+import {
+  Plus, Search, RefreshCw, Filter as FilterIcon,
+  User, Eye, Inbox, CheckCircle2, Archive, Clock,
+} from 'lucide-react';
 import useCatalog from '../../lib/useCatalog';
 
 const headers = () => ({
   Authorization: `Bearer ${localStorage.getItem('mood_auth_token') || ''}`,
 });
 
-const ICONS = {
-  call: Phone, email: Mail, whatsapp: MessageCircle, linkedin: Linkedin,
-  meeting: Users, visit: MapPin, internal_note: FileText, task: CheckSquare,
+const iconFor = (name) => {
+  if (!name) return Clock;
+  const key = name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+  return Icons[key] || Clock;
 };
 
 const fmtDateTime = (iso) => new Date(iso).toLocaleString('it-IT', {
-  day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+  day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
 });
 
 export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreate }) {
@@ -77,27 +84,33 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
   };
 
   const renderRow = (a) => {
-    const Icon = ICONS[a.activity_type_code] || FileText;
+    // Icon strictly from catalog (platform_activity_types.icon)
+    const typeMeta = types.find(t => t.code === a.activity_type_code);
+    const Icon = iconFor(a.type_icon || typeMeta?.icon);
     return (
       <div key={a.id} data-testid={`activity-row-${a.id}`}
            onClick={() => onEdit && onEdit(a)}
            className="flex items-start gap-3 px-4 py-3 border-b border-stone-100 hover:bg-stone-50 cursor-pointer last:border-0">
-        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded bg-stone-100">
+        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center border border-stone-200 bg-white">
           <Icon size={14} className="text-stone-700" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <strong className="text-sm">{a.type_label_it || a.activity_type_code}</strong>
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <strong className="text-sm text-stone-900">
+              {a.type_label_it || typeMeta?.label_it || a.activity_type_code}
+            </strong>
             {a.subject && <span className="text-sm text-stone-700">· {a.subject}</span>}
             {a.activity_outcome_code && (
               <span data-testid={`outcome-chip-${a.id}`}
-                    className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
-                    style={{ backgroundColor: (a.outcome_color || '#94a3b8') + '22',
-                             color: a.outcome_color || '#475569' }}>
+                    className="text-[10px] uppercase tracking-wider px-2 py-0.5 border"
+                    style={{
+                      borderColor: a.outcome_color || '#d6d3d1',
+                      color: a.outcome_color || '#44403c',
+                    }}>
                 {a.outcome_label_it || a.activity_outcome_code}
               </span>
             )}
-            <span className="ml-auto text-xs text-stone-400 tabular-nums">
+            <span className="ml-auto text-xs text-stone-400 tabular-nums whitespace-nowrap">
               {fmtDateTime(a.occurred_at)}
             </span>
           </div>
@@ -106,12 +119,32 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
               {a.notes || a.outcome}
             </p>
           )}
-          <div className="text-[10px] text-stone-400 mt-1 flex items-center gap-3">
-            {a.contact_display && <span>👤 {a.contact_display}</span>}
-            {a.owner_display && <span>👁 {a.owner_display}</span>}
-            {a.source_label_it && <span>📥 {a.source_label_it}</span>}
-            {a.completed_at && <span className="text-emerald-600">✓ Completata</span>}
-            {a.archived_at && <span className="text-stone-400">⊘ Archiviata</span>}
+          <div className="text-[10px] uppercase tracking-wider text-stone-400 mt-1.5 flex items-center gap-3 flex-wrap">
+            {a.contact_display && (
+              <span className="inline-flex items-center gap-1">
+                <User size={10} /> {a.contact_display}
+              </span>
+            )}
+            {a.owner_display && (
+              <span className="inline-flex items-center gap-1">
+                <Eye size={10} /> {a.owner_display}
+              </span>
+            )}
+            {a.source_label_it && (
+              <span className="inline-flex items-center gap-1">
+                <Inbox size={10} /> {a.source_label_it}
+              </span>
+            )}
+            {a.completed_at && (
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                <CheckCircle2 size={10} /> Completata
+              </span>
+            )}
+            {a.archived_at && (
+              <span className="inline-flex items-center gap-1 text-stone-400">
+                <Archive size={10} /> Archiviata
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -132,60 +165,60 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
         </form>
         <button data-testid="activity-toggle-filters"
                 onClick={() => setShowFilters(v => !v)}
-                className="flex items-center gap-1 border border-stone-300 px-3 py-2 text-xs hover:bg-stone-50">
+                className="inline-flex items-center gap-1 border border-stone-300 px-3 py-2 text-xs uppercase tracking-wide hover:bg-stone-50">
           <FilterIcon size={12} /> Filtri
         </button>
         <button data-testid="activity-refresh"
                 onClick={() => { setCursor(null); setItems([]); load(true); loadPending(); }}
-                className="flex items-center gap-1 border border-stone-300 px-3 py-2 text-xs hover:bg-stone-50">
+                className="inline-flex items-center gap-1 border border-stone-300 px-3 py-2 text-xs hover:bg-stone-50">
           <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
         </button>
         <button data-testid="activity-new"
                 onClick={() => onCreate && onCreate()}
-                className="flex items-center gap-1 bg-stone-900 text-white px-3 py-2 text-xs hover:bg-stone-800">
+                className="inline-flex items-center gap-1 bg-black text-white px-3 py-2 text-xs uppercase tracking-wide hover:opacity-90">
           <Plus size={12} /> Nuova attività
         </button>
       </div>
 
       {showFilters && (
         <div data-testid="activity-filters-panel"
-             className="border border-stone-200 bg-stone-50 p-4 grid grid-cols-4 gap-3">
+             className="border border-stone-200 bg-stone-50 p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-stone-500">Tipo</label>
+            <label className="block text-[10px] uppercase tracking-wider text-stone-400 mb-1">Tipo</label>
             <select value={filters.activity_type_code}
                     data-testid="activity-filter-type"
                     onChange={(e) => setFilters({ ...filters, activity_type_code: e.target.value })}
-                    className="w-full border border-stone-300 px-2 py-1.5 text-xs">
+                    className="w-full border border-stone-300 px-2 py-1.5 text-xs bg-white">
               <option value="">Tutti</option>
               {types.map(t => <option key={t.code} value={t.code}>{t.label_it}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-stone-500">Esito</label>
+            <label className="block text-[10px] uppercase tracking-wider text-stone-400 mb-1">Esito</label>
             <select value={filters.activity_outcome_code}
                     data-testid="activity-filter-outcome"
                     onChange={(e) => setFilters({ ...filters, activity_outcome_code: e.target.value })}
-                    className="w-full border border-stone-300 px-2 py-1.5 text-xs">
+                    className="w-full border border-stone-300 px-2 py-1.5 text-xs bg-white">
               <option value="">Tutti</option>
               {outcomes.map(o => <option key={o.code} value={o.code}>{o.label_it}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-stone-500">Sorgente</label>
+            <label className="block text-[10px] uppercase tracking-wider text-stone-400 mb-1">Sorgente</label>
             <select value={filters.source_code}
                     data-testid="activity-filter-source"
                     onChange={(e) => setFilters({ ...filters, source_code: e.target.value })}
-                    className="w-full border border-stone-300 px-2 py-1.5 text-xs">
+                    className="w-full border border-stone-300 px-2 py-1.5 text-xs bg-white">
               <option value="">Tutte</option>
               {sources.map(s => <option key={s.code} value={s.code}>{s.label_it}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-stone-500">Stato</label>
+            <label className="block text-[10px] uppercase tracking-wider text-stone-400 mb-1">Stato</label>
             <select value={filters.status}
                     data-testid="activity-filter-status"
                     onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                    className="w-full border border-stone-300 px-2 py-1.5 text-xs">
+                    className="w-full border border-stone-300 px-2 py-1.5 text-xs bg-white">
               <option value="all">Tutte attive</option>
               <option value="open">Open follow-up</option>
               <option value="completed">Completate</option>
@@ -198,10 +231,10 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
       {/* Pending follow-up */}
       {pending.length > 0 && (
         <section data-testid="activity-pending-section">
-          <h3 className="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-2">
-            ▣ Pending follow-up · {pending.length}
+          <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">
+            Pending follow-up · {pending.length}
           </h3>
-          <div className="border border-amber-200 bg-amber-50/30">
+          <div className="border border-stone-300 bg-white">
             {pending.map(renderRow)}
           </div>
         </section>
@@ -209,14 +242,17 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
 
       {/* History */}
       <section>
-        <h3 className="text-[10px] uppercase tracking-wider text-stone-400 font-medium mb-2">
-          ◯ Storico {filters.status === 'archived' ? 'archiviato' : 'recente'} · {items.length}
+        <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">
+          Storico {filters.status === 'archived' ? 'archiviato' : 'recente'} · {items.length}
         </h3>
         <div className="border border-stone-200 bg-white">
           {items.length === 0 && !loading && (
             <div data-testid="activity-feed-empty"
-                 className="px-6 py-10 text-center text-stone-400 text-sm">
-              Nessuna attività. Inizia con una chiamata, un meeting o una nota.
+                 className="px-6 py-12 text-center">
+              <Clock size={24} className="text-stone-300 mx-auto mb-3" />
+              <p className="text-sm text-stone-500">
+                Nessuna attività. Inizia con una chiamata, un meeting o una nota.
+              </p>
             </div>
           )}
           {items.map(renderRow)}
@@ -226,7 +262,7 @@ export default function ActivityFeed({ apiBase, scope = 'admin', onEdit, onCreat
             <button data-testid="activity-load-more"
                     onClick={() => load(false)}
                     disabled={loading}
-                    className="border border-stone-300 px-4 py-2 text-xs hover:bg-stone-50 disabled:opacity-50">
+                    className="border border-stone-300 px-4 py-2 text-xs uppercase tracking-wide hover:bg-stone-50 disabled:opacity-50">
               {loading ? 'Caricamento…' : 'Carica altre'}
             </button>
           </div>

@@ -1,20 +1,19 @@
 /**
  * TimelineFeed — Relationship Timeline (M2).
  *
- * Unified chronological view of:
- *   - lifecycle / relationship events
- *   - whitelisted email dispatches (D5)
- *   - manual quick-action activities
+ * Unified chronological view of lifecycle events, whitelisted email dispatches
+ * and manual quick-action activities. Style aligned to Command Center tokens:
+ * bg-black for active state, border-stone-300/200/100, text-[10px] uppercase
+ * tracking-wider eyebrows, squared borders, monochrome palette.
  *
- * Used by:
- *   - Admin: /command-center/tenants/{tid}?tab=timeline
- *   - Founder: /blueprint?tab=timeline (via the same component, apiBase prop)
+ * Labels/icons come from the timeline API + platform_*_event_types /
+ * platform_activity_types catalogs (filter-options endpoint). The only
+ * UI-internal labels are the three timeline source domains
+ * (event / email / activity), which are not catalog data.
  *
  * Props:
- *   - apiBase: base URL for timeline endpoint
- *       Admin:   `${BACKEND}/api/admin/tenants/{tid}`
- *       Founder: `${BACKEND}/api/blueprint`
- *   - scope:  'admin' | 'founder'  (for testids only)
+ *   - apiBase: `${BACKEND}/api/admin/tenants/{tid}` | `${BACKEND}/api/blueprint`
+ *   - scope:  'admin' | 'founder'
  */
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
@@ -34,10 +33,11 @@ const iconFor = (name) => {
   return Icons[key] || Clock;
 };
 
+// Timeline source domain labels (UI-internal; not catalog data).
 const SOURCE_LABELS = {
-  event:    { it: 'Eventi',   en: 'Events' },
-  email:    { it: 'Email',    en: 'Emails' },
-  activity: { it: 'Attività', en: 'Activities' },
+  event:    'Eventi',
+  email:    'Email',
+  activity: 'Attività',
 };
 
 const fmtDay = (iso) => {
@@ -58,8 +58,8 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filterOptions, setFilterOptions] = useState({ sources: [], type_codes: [] });
-  const [sourceFilter, setSourceFilter] = useState([]);   // active sources
-  const [typeFilter, setTypeFilter] = useState([]);       // active type_codes
+  const [sourceFilter, setSourceFilter] = useState([]);
+  const [typeFilter, setTypeFilter] = useState([]);
   const [manualOnly, setManualOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -94,7 +94,6 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
     }
   }, [apiBase]);
 
-  // (re)load on filter change
   useEffect(() => {
     setCursor(null);
     setItems([]);
@@ -122,27 +121,27 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
     setSourceFilter([]); setTypeFilter([]); setManualOnly(false);
   };
 
+  const activeCount = sourceFilter.length + typeFilter.length + (manualOnly ? 1 : 0);
+
   return (
     <div data-testid={tid} className="space-y-6">
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-stone-500">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="text-sm text-stone-400">
           {items.length === 0 && !loading
             ? 'Nessun evento ancora registrato per questo tenant.'
-            : <>Visualizzati <strong className="text-stone-900">{items.length}</strong> eventi</>}
+            : <>Visualizzati <strong className="text-white">{items.length}</strong> eventi</>}
         </div>
         <div className="flex items-center gap-2">
           <button data-testid="timeline-toggle-filters"
                   onClick={() => setShowFilters(v => !v)}
-                  className="flex items-center gap-2 border border-stone-300 px-3 py-1.5 text-xs hover:bg-stone-50">
+                  className="inline-flex items-center gap-2 border border-stone-300 px-3 py-1.5 text-xs uppercase tracking-wide hover:bg-stone-50">
             <FilterIcon size={12} />
-            Filtri {(sourceFilter.length + typeFilter.length + (manualOnly ? 1 : 0)) > 0
-              ? `(${sourceFilter.length + typeFilter.length + (manualOnly ? 1 : 0)})`
-              : ''}
+            Filtri {activeCount > 0 ? `(${activeCount})` : ''}
           </button>
           <button data-testid="timeline-refresh"
                   onClick={() => { setCursor(null); setItems([]); load(true); loadFilterOptions(); }}
-                  className="flex items-center gap-2 border border-stone-300 px-3 py-1.5 text-xs hover:bg-stone-50">
+                  className="inline-flex items-center gap-2 border border-stone-300 px-3 py-1.5 text-xs uppercase tracking-wide hover:bg-stone-50">
             <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
             Aggiorna
           </button>
@@ -151,48 +150,53 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
 
       {/* Filter panel */}
       {showFilters && (
-        <div data-testid="timeline-filters-panel" className="border border-stone-200 bg-stone-50 p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] uppercase tracking-wider text-stone-500 mr-2">Sorgente</span>
-            {(filterOptions.sources || []).map(s => (
-              <button key={s}
-                      data-testid={`timeline-source-${s}`}
-                      onClick={() => toggleSource(s)}
-                      className={`text-[11px] px-2 py-1 border ${
-                        sourceFilter.includes(s)
-                          ? 'border-stone-900 bg-stone-900 text-white'
-                          : 'border-stone-300 hover:bg-white'}`}>
-                {(SOURCE_LABELS[s] || { it: s }).it}
-              </button>
-            ))}
-            <label className="ml-4 flex items-center gap-2 text-[11px] text-stone-600">
-              <input type="checkbox" data-testid="timeline-manual-only"
-                     checked={manualOnly}
-                     onChange={(e) => setManualOnly(e.target.checked)} />
-              Solo manuali
-            </label>
-            {(sourceFilter.length + typeFilter.length + (manualOnly ? 1 : 0)) > 0 && (
-              <button onClick={clearFilters}
-                      data-testid="timeline-clear-filters"
-                      className="ml-auto text-[11px] text-stone-500 hover:text-stone-900 flex items-center gap-1">
-                <XIcon size={11} /> Reset
-              </button>
-            )}
+        <div data-testid="timeline-filters-panel"
+             className="border border-stone-200 bg-stone-50 p-4 space-y-4">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Sorgente</div>
+            <div className="flex flex-wrap items-center gap-2">
+              {(filterOptions.sources || []).map(s => (
+                <button key={s}
+                        data-testid={`timeline-source-${s}`}
+                        onClick={() => toggleSource(s)}
+                        className={`text-[11px] px-2 py-1 border uppercase tracking-wide ${
+                          sourceFilter.includes(s)
+                            ? 'border-black bg-black text-white'
+                            : 'border-stone-300 bg-white text-stone-700 hover:bg-stone-100'}`}>
+                  {SOURCE_LABELS[s] || s}
+                </button>
+              ))}
+              <label className="ml-2 flex items-center gap-2 text-[11px] text-stone-700">
+                <input type="checkbox" data-testid="timeline-manual-only"
+                       checked={manualOnly}
+                       onChange={(e) => setManualOnly(e.target.checked)} />
+                Solo manuali
+              </label>
+              {activeCount > 0 && (
+                <button onClick={clearFilters}
+                        data-testid="timeline-clear-filters"
+                        className="ml-auto inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-stone-500 hover:text-stone-900">
+                  <XIcon size={11} /> Reset
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] uppercase tracking-wider text-stone-500 mr-2">Tipo evento</span>
-            {(filterOptions.type_codes || []).slice(0, 16).map(t => (
-              <button key={`${t.source}-${t.type_code}`}
-                      data-testid={`timeline-type-${t.type_code}`}
-                      onClick={() => toggleType(t.type_code)}
-                      className={`text-[11px] px-2 py-1 border ${
-                        typeFilter.includes(t.type_code)
-                          ? 'border-stone-900 bg-stone-900 text-white'
-                          : 'border-stone-300 hover:bg-white'}`}>
-                {t.label_it || t.type_code}
-                <span className="ml-1 opacity-60 tabular-nums">({t.occurrences})</span>
-              </button>
-            ))}
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Tipo evento</div>
+            <div className="flex flex-wrap items-center gap-2">
+              {(filterOptions.type_codes || []).slice(0, 16).map(t => (
+                <button key={`${t.source}-${t.type_code}`}
+                        data-testid={`timeline-type-${t.type_code}`}
+                        onClick={() => toggleType(t.type_code)}
+                        className={`text-[11px] px-2 py-1 border ${
+                          typeFilter.includes(t.type_code)
+                            ? 'border-black bg-black text-white'
+                            : 'border-stone-300 bg-white text-stone-700 hover:bg-stone-100'}`}>
+                  {t.label_it || t.type_code}
+                  <span className="ml-1 opacity-60 tabular-nums">({t.occurrences})</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -204,60 +208,59 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
         </div>
       )}
 
-      {/* Items grouped by day */}
+      {/* Empty state */}
       {grouped.length === 0 && !loading && !error && (
         <div data-testid="timeline-empty"
-             className="border border-dashed border-stone-300 px-10 py-16 text-center">
+             className="border border-stone-300 bg-white px-10 py-16 text-center">
           <Clock size={28} className="text-stone-300 mx-auto mb-3" />
           <p className="text-sm text-stone-500">Nessun evento per i filtri selezionati.</p>
         </div>
       )}
 
+      {/* Items grouped by day */}
       {grouped.map(([day, list]) => (
         <section key={day} data-testid={`timeline-day-${day}`} className="space-y-3">
-          <h3 className="text-[10px] uppercase tracking-wider text-stone-400 font-medium">
+          <h3 className="text-[10px] uppercase tracking-wider text-stone-400">
             {fmtDay(day + 'T00:00:00')}
           </h3>
-          <ul className="border-l border-stone-200 pl-4 space-y-3">
-            {list.map((it) => {
-              const Icon = iconFor(it.icon);
-              const color = it.color || (it.source === 'activity' ? '#0f172a'
-                                       : it.source === 'email'    ? '#64748b'
-                                                                  : '#3b82f6');
-              return (
-                <li key={`${it.source}-${it.id}`}
-                    data-testid={`timeline-item-${it.id}`}
-                    className="relative flex items-start gap-3">
-                  <span className="absolute -left-[19px] top-2 w-3 h-3 rounded-full border-2 bg-white"
-                        style={{ borderColor: color }} />
-                  <div className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded bg-stone-100">
-                    <Icon size={14} style={{ color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-sm font-medium text-stone-900">
-                        {it.label_it || it.type_code}
-                      </span>
-                      <span className="text-[10px] uppercase tracking-wide text-stone-400">
-                        {(SOURCE_LABELS[it.source] || { it: it.source }).it}
-                      </span>
-                      <span className="ml-auto text-xs text-stone-400 tabular-nums">
-                        {fmtTime(it.at)}
-                      </span>
+          <div className="border border-stone-200 bg-white p-4">
+            <ul className="border-l border-stone-200 pl-4 space-y-3">
+              {list.map((it) => {
+                const Icon = iconFor(it.icon);
+                return (
+                  <li key={`${it.source}-${it.id}`}
+                      data-testid={`timeline-item-${it.id}`}
+                      className="relative flex items-start gap-3">
+                    <span className="absolute -left-[18px] top-2.5 w-2 h-2 bg-stone-400" />
+                    <div className="flex-shrink-0 w-7 h-7 flex items-center justify-center border border-stone-200 bg-white">
+                      <Icon size={14} className="text-stone-700" />
                     </div>
-                    {it.subject && (
-                      <p className="text-sm text-stone-600 mt-0.5">{it.subject}</p>
-                    )}
-                    {it.owner_display && (
-                      <p className="text-xs text-stone-400 mt-0.5">
-                        Owner: <span className="text-stone-600">{it.owner_display}</span>
-                      </p>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="text-sm font-medium text-stone-900">
+                          {it.label_it || it.type_code}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-wider text-stone-400">
+                          {SOURCE_LABELS[it.source] || it.source}
+                        </span>
+                        <span className="ml-auto text-xs text-stone-400 tabular-nums whitespace-nowrap">
+                          {fmtTime(it.at)}
+                        </span>
+                      </div>
+                      {it.subject && (
+                        <p className="text-sm text-stone-600 mt-0.5 break-words">{it.subject}</p>
+                      )}
+                      {it.owner_display && (
+                        <p className="text-[10px] uppercase tracking-wider text-stone-400 mt-1">
+                          Owner · <span className="text-stone-700 normal-case tracking-normal">{it.owner_display}</span>
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </section>
       ))}
 
@@ -266,7 +269,7 @@ const TimelineFeed = ({ apiBase, scope = 'admin' }) => {
           <button data-testid="timeline-load-more"
                   onClick={() => load(false)}
                   disabled={loading}
-                  className="border border-stone-300 px-4 py-2 text-xs hover:bg-stone-50 disabled:opacity-50">
+                  className="border border-stone-300 px-4 py-2 text-xs uppercase tracking-wide hover:bg-stone-50 disabled:opacity-50">
             {loading ? 'Caricamento…' : 'Carica altri'}
           </button>
         </div>
