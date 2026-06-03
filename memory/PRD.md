@@ -10734,3 +10734,34 @@ ARBI Embassy renderizzato correttamente: hero "Italian Bathroom Architecture™"
 - Multilingua story (i18n per story_title/body)
 - Onboarding Arrital (popolare `brand_designer_registry["arrital"]`)
 - Refactoring App.js / ProjectDetailPage.jsx
+
+---
+
+## ITER202.5 · UX REALITY AUDIT™ (2026-06-03) — solo audit, nessun codice
+
+### 🎯 Verdetto
+Percorso reale "Studio brand → Moodboard": **8-12 click** (target 3-4).
+Il dato esiste, la connessione UX no.
+
+### 12 P0 identificati (consolidati)
+1. Sidebar 30 icone senza label visibili
+2. Dashboard CRM-centric — nessuna menzione Brand Atlas
+3. ARBI duplicato nel Brand Atlas
+4. Studio Library™ link senza pagina di destinazione
+5. Manca hub "I miei brand"
+6. 3 pagine materials separate, tutte vuote eccetto Brand Embassy
+7. Material View non aggrega i materiali dei brand certificati
+8. Material View CTA non importa dai Brand Atlas
+9. Nessun hub Prodotti aggregato
+10. **Nessun ponte Brand Embassy → Moodboard Editor** (no Add to Moodboard su card)
+11. 5 archivi concorrenti senza gerarchia
+12. Studio Collections mostra 0 prodotti ARBI (vs 398 nel Brand Atlas)
+
+### Piano di rimedio (no nuovi moduli)
+- Sprint A: Sidebar label + breadcrumb + logo→Dashboard + CTA contestuale
+- Sprint B: Add-to-Moodboard su Product/MaterialCard + picker brand library nel Moodboard Editor + consolidare Studio Collections ⇄ Studio Library
+- Sprint C: Material View + Inspirations tab Prodotti aggregati da studio_brand_links
+- Sprint D: deduplicare brand record + nascondere CTA admin a non-admin
+
+### Report
+`/app/memory/ITER202_5_UX_REALITY_AUDIT_REPORT.md` (con tabella P0/P1/P2 dettagliata)
