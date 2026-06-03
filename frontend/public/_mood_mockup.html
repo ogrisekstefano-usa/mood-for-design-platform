@@ -1,411 +1,962 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MOOD · Activity & Timeline · Mockup Editoriale</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<html lang="it"><head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MOOD · Relationship OS · Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: #0A0A0B; color: #FFFFFF; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
-  body { display: flex; min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0A0A0B; --bg-2:#111113; --bg-3:#16161A; --bg-4:#1C1C20;
+    --line:rgba(255,255,255,0.06); --line-2:rgba(255,255,255,0.10); --line-3:rgba(255,255,255,0.16);
+    --t1:#FAFAFA; --t2:#B5B5B8; --t3:#7A7A80; --t4:#525258;
+    --teal:#00C9B3; --amber:#F0B100; --red:#E5484D; --green:#30A46C; --purple:#9B7AC6;
+  }
+  html,body{background:var(--bg);color:var(--t1);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased;font-size:13px;line-height:1.45}
+  body{display:flex;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  button{background:none;border:none;color:inherit;font-family:inherit;cursor:pointer;font-size:inherit}
 
   /* === SHELL === */
-  aside {
-    width: 260px; padding: 2rem 1rem; border-right: 1px solid rgba(255,255,255,0.06);
-    background: #0A0A0B; position: sticky; top: 0; height: 100vh; flex-shrink: 0;
-  }
-  aside .logo { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: #fff; letter-spacing: 0.05em; }
-  aside .logo small { display: block; font-family: 'Montserrat'; font-size: 0.55rem; letter-spacing: 0.4em; color: #00C9B3; margin-top: 4px; }
-  aside .eyebrow { font-size: 0.6rem; letter-spacing: 0.32em; text-transform: uppercase; color: #00C9B3; margin-top: 1.4rem; }
-  aside .title  { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-top: 2px; }
-  aside .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 1.4rem 0; }
-  aside nav a { display: flex; gap: 0.75rem; padding: 0.65rem 0.9rem; color: rgba(255,255,255,0.55); font-size: 0.82rem; text-decoration: none; letter-spacing: 0.04em; }
-  aside nav a.active { color: #00C9B3; background: rgba(0,201,179,0.08); }
+  aside{width:240px;background:var(--bg);border-right:1px solid var(--line);flex-shrink:0;display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
+  aside .brand{padding:1.4rem 1.2rem 1rem;border-bottom:1px solid var(--line)}
+  aside .brand .logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.04em}
+  aside .brand .logo small{display:block;font-family:'Montserrat';font-size:0.55rem;letter-spacing:0.4em;color:var(--teal);margin-top:2px}
+  aside .ctx{padding:0.9rem 1.2rem;border-bottom:1px solid var(--line)}
+  aside .ctx .eyebrow{font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--teal)}
+  aside .ctx .title{font-family:'Playfair Display',serif;font-size:1.05rem;margin-top:2px}
+  aside nav{padding:0.6rem 0.6rem;flex:1;overflow-y:auto}
+  aside nav .sec{font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4);padding:1rem 0.6rem 0.45rem}
+  aside nav a{display:flex;align-items:center;gap:0.65rem;padding:0.45rem 0.7rem;color:var(--t2);font-size:0.78rem;border-radius:0;letter-spacing:0.02em}
+  aside nav a:hover{background:var(--bg-3);color:var(--t1)}
+  aside nav a.active{background:rgba(0,201,179,0.08);color:var(--teal)}
+  aside nav a .dot{width:6px;height:6px;background:var(--teal);margin-left:auto;border-radius:50%}
+  aside nav a .count{margin-left:auto;font-size:0.65rem;color:var(--t3);font-variant-numeric:tabular-nums}
+
+  /* === TOPBAR === */
+  .topbar{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 1.2rem;gap:1rem;background:var(--bg);position:sticky;top:0;z-index:10}
+  .topbar .breadcrumb{font-size:0.72rem;color:var(--t3);letter-spacing:0.04em}
+  .topbar .breadcrumb b{color:var(--t1);font-weight:500}
+  .topbar .crumb-sep{color:var(--t4);margin:0 0.5rem}
+  .topbar .search{flex:1;max-width:480px;margin-left:1rem;position:relative}
+  .topbar .search input{width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--t1);padding:0.4rem 0.8rem 0.4rem 2rem;font-size:0.78rem;font-family:inherit;letter-spacing:0.02em}
+  .topbar .search input::placeholder{color:var(--t4)}
+  .topbar .search .kbd{position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--t4);border:1px solid var(--line-2);padding:1px 5px}
+  .topbar .search .ico{position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);color:var(--t4);font-size:0.85rem}
+  .topbar .actions{margin-left:auto;display:flex;align-items:center;gap:0.8rem}
+  .topbar .actions .bell{position:relative;color:var(--t2);padding:0.4rem;cursor:pointer}
+  .topbar .actions .bell:hover{color:var(--t1)}
+  .topbar .actions .bell .badge{position:absolute;top:-2px;right:-2px;background:var(--red);color:#fff;font-size:0.55rem;font-weight:600;padding:1px 4px;border-radius:8px;font-variant-numeric:tabular-nums}
+  .topbar .actions .user{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--t2)}
+  .topbar .actions .user .ava{width:24px;height:24px;background:var(--bg-3);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--teal);font-weight:600;letter-spacing:0.05em}
 
   /* === MAIN === */
-  main { flex: 1; padding: 0; background: #FFFFFF; color: #1c1917; overflow-y: auto; }
-  .page-pad { padding: 4rem 5rem; max-width: 1080px; }
+  main{flex:1;display:flex;flex-direction:column;min-width:0}
+  .page{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-  /* Page header — editorial */
-  .page-eyebrow { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: #a8a29e; }
-  .page-title   { font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1.1; margin-top: 0.4rem; font-weight: 400; }
-  .page-sub     { font-size: 0.95rem; color: #78716c; margin-top: 0.7rem; max-width: 560px; line-height: 1.55; }
+  /* === KPI HEADER === */
+  .acct-header{padding:1rem 1.4rem 0.9rem;border-bottom:1px solid var(--line);background:var(--bg)}
+  .acct-header .top{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
+  .acct-header h1{font-family:'Playfair Display',serif;font-size:1.65rem;font-weight:500;letter-spacing:0.005em}
+  .acct-header h1 small{font-family:'Montserrat';font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:0.2rem;font-weight:400}
+  .acct-header .ctas{display:flex;gap:0.5rem}
+  .acct-header .ctas button{font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.5rem 0.85rem;border:1px solid var(--line-3);color:var(--t1)}
+  .acct-header .ctas button:hover{background:var(--bg-3)}
+  .acct-header .ctas .primary{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+  .acct-header .ctas .primary:hover{background:#26d9c5}
+  .kpi-strip{display:flex;gap:0;margin-top:1rem;border-top:1px solid var(--line);padding-top:0.85rem}
+  .kpi{padding:0 1.4rem 0 0;margin-right:1.4rem;border-right:1px solid var(--line);min-width:0}
+  .kpi:last-child{border-right:none}
+  .kpi .l{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4)}
+  .kpi .v{font-size:0.95rem;color:var(--t1);margin-top:3px;font-weight:500;font-variant-numeric:tabular-nums}
+  .kpi .v.warn{color:var(--amber)}.kpi .v.red{color:var(--red)}.kpi .v.green{color:var(--green)}.kpi .v.teal{color:var(--teal)}
+  .kpi .v .pill{display:inline-block;font-size:0.55rem;padding:1px 5px;border:1px solid var(--line-3);color:var(--t2);margin-left:0.3rem;letter-spacing:0.1em;font-weight:400;text-transform:uppercase;vertical-align:1px}
 
-  /* Affina (filter) — discreet text-button */
-  .toolbar { margin-top: 2rem; display: flex; align-items: center; gap: 1.6rem; padding-bottom: 1.2rem; border-bottom: 1px solid #e7e5e4; }
-  .toolbar .search { flex: 1; }
-  .toolbar input {
-    width: 100%; border: none; border-bottom: 1px solid transparent;
-    background: transparent; color: #1c1917;
-    font-family: 'Montserrat'; font-size: 0.95rem; padding: 0.45rem 0;
-    outline: none;
-  }
-  .toolbar input::placeholder { color: #a8a29e; font-style: italic; }
-  .toolbar input:focus { border-bottom-color: #1c1917; }
-  .toolbar .affina { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1c1917; cursor: pointer; background: none; border: none; font-family: inherit; }
-  .toolbar .nuova {
-    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
-    background: #000; color: #fff; border: none; padding: 0.75rem 1.4rem; cursor: pointer; font-family: inherit;
-  }
+  /* Tabs */
+  .tabs{display:flex;border-bottom:1px solid var(--line);padding:0 1.4rem;background:var(--bg)}
+  .tabs a{padding:0.7rem 0;margin-right:1.4rem;font-size:0.72rem;letter-spacing:0.05em;color:var(--t3);border-bottom:2px solid transparent;position:relative}
+  .tabs a:hover{color:var(--t1)}
+  .tabs a.active{color:var(--t1);border-bottom-color:var(--teal)}
+  .tabs a .c{font-size:0.6rem;color:var(--t4);margin-left:5px;font-variant-numeric:tabular-nums}
 
-  /* Section: Da completare — hero */
-  .section { margin-top: 3.5rem; }
-  .section h2 {
-    font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400;
-    color: #1c1917; padding-bottom: 0.4rem;
-  }
-  .section .count {
-    font-family: 'Montserrat'; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: #a8a29e; margin-left: 0.7rem; vertical-align: middle;
-  }
-  .section .intro { font-size: 0.9rem; color: #78716c; margin-bottom: 1.6rem; max-width: 540px; }
+  /* === 3-COLUMN === */
+  .relcenter{display:grid;grid-template-columns:280px 1fr 340px;flex:1;overflow:hidden;background:var(--bg)}
+  .col{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--line)}
+  .col:last-child{border-right:none}
+  .col-h{padding:0.7rem 1rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+  .col-h .t{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--t3)}
+  .col-h .a{font-size:0.65rem;letter-spacing:0.12em;color:var(--t2);text-transform:uppercase}
+  .col-h .a:hover{color:var(--teal)}
+  .col-body{overflow-y:auto;flex:1}
 
-  /* Da completare items — list, no card */
-  .todo-list { list-style: none; }
-  .todo-list li {
-    display: flex; align-items: baseline; gap: 1.5rem;
-    padding: 1.1rem 0; border-bottom: 1px solid #e7e5e4;
-    transition: padding-left 0.18s ease;
-  }
-  .todo-list li:hover { padding-left: 0.4rem; }
-  .todo-list .what {
-    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; color: #1c1917; flex: 1;
-  }
-  .todo-list .when {
-    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: #78716c; white-space: nowrap;
-  }
-  .todo-list .when.overdue { color: #1c1917; border-left: 2px solid #00C9B3; padding-left: 0.7rem; }
-  .todo-list .action {
-    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: #1c1917; text-decoration: none;
-    opacity: 0; transition: opacity 0.2s;
-  }
-  .todo-list li:hover .action { opacity: 1; }
+  /* === LEFT: CONTACTS === */
+  .role-group{padding:0.7rem 0 0.3rem}
+  .role-group .role-h{padding:0 1rem 0.4rem;font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4);display:flex;justify-content:space-between;align-items:center}
+  .role-group .role-h .c{color:var(--t4);font-size:0.6rem}
+  .contact{display:flex;align-items:flex-start;gap:0.7rem;padding:0.6rem 1rem;border-left:2px solid transparent;cursor:pointer}
+  .contact:hover{background:var(--bg-2);border-left-color:var(--line-3)}
+  .contact.active{background:var(--bg-3);border-left-color:var(--teal)}
+  .contact .av{width:28px;height:28px;background:var(--bg-3);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-size:0.62rem;color:var(--t2);flex-shrink:0;font-weight:500;letter-spacing:0.04em}
+  .contact .meta{flex:1;min-width:0}
+  .contact .name{font-size:0.78rem;color:var(--t1);font-weight:500}
+  .contact .name .prim{color:var(--teal);font-size:0.5rem;letter-spacing:0.2em;margin-left:0.4rem}
+  .contact .sub{font-size:0.66rem;color:var(--t3);margin-top:1px;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center}
+  .contact .sub .sep{color:var(--t4)}
+  .contact .pulse{font-size:0.58rem;color:var(--t4);margin-top:3px;letter-spacing:0.04em}
+  .contact .pulse b{color:var(--t2);font-weight:500}
+  .contact .pulse.red b{color:var(--red)}.contact .pulse.amber b{color:var(--amber)}
 
-  /* Storico activity — narrative blocks */
-  .narr-list { list-style: none; margin-top: 1.2rem; }
-  .narr-list li {
-    padding: 2.2rem 0; border-bottom: 1px solid #e7e5e4; cursor: pointer;
-    transition: padding-left 0.18s ease;
-  }
-  .narr-list li:hover { padding-left: 0.4rem; }
-  .narr-list li:last-child { border-bottom: none; }
-  .narr-list .person {
-    font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1.15; color: #1c1917; font-weight: 400;
-  }
-  .narr-list .topic {
-    font-family: 'Montserrat'; font-size: 1.05rem; color: #1c1917; margin-top: 0.4rem; font-weight: 500;
-  }
-  .narr-list .row { display: flex; gap: 0.7rem; margin-top: 0.9rem; font-size: 0.9rem; color: #44403c; }
-  .narr-list .row .k {
-    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase;
-    color: #a8a29e; padding-top: 0.18rem; min-width: 6rem; flex-shrink: 0;
-  }
-  .narr-list .row .v { flex: 1; line-height: 1.55; }
-  .narr-list .when {
-    font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;
-    color: #a8a29e; margin-top: 1.4rem;
-  }
-  .narr-list .when .author { color: #1c1917; text-transform: none; letter-spacing: 0.04em; }
+  /* === CENTER: TIMELINE === */
+  .tl-filter{padding:0.55rem 1rem;border-bottom:1px solid var(--line);display:flex;gap:0.4rem;align-items:center;background:var(--bg);flex-wrap:wrap}
+  .tl-filter .seg{display:flex;border:1px solid var(--line-2)}
+  .tl-filter .seg button{font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.65rem;color:var(--t3);border-right:1px solid var(--line-2)}
+  .tl-filter .seg button:last-child{border-right:none}
+  .tl-filter .seg button.on{background:var(--bg-3);color:var(--t1)}
+  .tl-filter .chip{font-size:0.6rem;letter-spacing:0.06em;padding:0.3rem 0.55rem;color:var(--t3);border:1px dashed var(--line-2)}
+  .tl-filter .chip:hover{color:var(--t1);border-color:var(--line-3);border-style:solid}
+  .tl-filter .right{margin-left:auto;display:flex;gap:0.5rem;color:var(--t3);font-size:0.62rem}
 
-  /* Completed marker — typographic, not chip */
-  .narr-list .closed .person { color: #78716c; }
-  .narr-list .closed::before {
-    content: "Concluso ·";
-    font-size: 0.6rem; letter-spacing: 0.32em; text-transform: uppercase; color: #00C9B3;
-    margin-right: 0.6rem; vertical-align: super;
-  }
+  .tl-day{padding:0.5rem 0}
+  .tl-day .day-h{padding:0.5rem 1rem;font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4);position:sticky;top:0;background:var(--bg);z-index:1;display:flex;justify-content:space-between;align-items:center}
+  .tl-day .day-h .num{color:var(--t3)}
+  .tl-row{display:grid;grid-template-columns:60px 22px 1fr auto;gap:0.7rem;padding:0.55rem 1rem;border-bottom:1px solid var(--line);align-items:flex-start;cursor:pointer}
+  .tl-row:hover{background:var(--bg-2)}
+  .tl-row.expanded{background:var(--bg-2)}
+  .tl-row .time{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--t4);padding-top:2px;font-variant-numeric:tabular-nums}
+  .tl-row .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-2);color:var(--t2);font-size:0.65rem;background:var(--bg-2)}
+  .tl-row .ic.call{color:var(--teal);border-color:rgba(0,201,179,0.3)}
+  .tl-row .ic.email{color:var(--purple);border-color:rgba(155,122,198,0.3)}
+  .tl-row .ic.wa{color:var(--green);border-color:rgba(48,164,108,0.3)}
+  .tl-row .ic.note{color:var(--amber);border-color:rgba(240,177,0,0.3)}
+  .tl-row .ic.meet{color:#5EB1FF;border-color:rgba(94,177,255,0.3)}
+  .tl-row .ic.task{color:var(--t2)}
+  .tl-row .ic.event{color:var(--t4);background:transparent}
+  .tl-row .content{min-width:0}
+  .tl-row .line1{display:flex;gap:0.5rem;align-items:baseline;flex-wrap:wrap}
+  .tl-row .line1 .type{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3)}
+  .tl-row .line1 .person{font-size:0.78rem;color:var(--t1);font-weight:500}
+  .tl-row .line1 .sep{color:var(--t4)}
+  .tl-row .line1 .subject{font-size:0.78rem;color:var(--t2)}
+  .tl-row .preview{font-size:0.7rem;color:var(--t3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-row .meta-row{display:flex;gap:0.7rem;margin-top:5px;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--t4)}
+  .tl-row .meta-row .ok{color:var(--green)}.tl-row .meta-row .pend{color:var(--amber)}
+  .tl-row .owner{font-size:0.6rem;color:var(--t3);text-align:right;letter-spacing:0.04em;padding-top:3px;white-space:nowrap}
+  .tl-row .owner .ava{display:inline-block;width:16px;height:16px;background:var(--bg-3);border:1px solid var(--line-2);font-size:0.5rem;text-align:center;line-height:14px;margin-right:4px;color:var(--teal);font-weight:600;vertical-align:-3px}
 
-  /* Empty state — emotional */
-  .empty {
-    margin: 3rem 0; padding: 4rem 2rem; text-align: center;
-    border-top: 1px solid #e7e5e4; border-bottom: 1px solid #e7e5e4;
-  }
-  .empty h3 {
-    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; font-style: italic; color: #1c1917;
-  }
-  .empty p { font-size: 0.9rem; color: #78716c; margin-top: 0.6rem; }
-  .empty .cta {
-    margin-top: 1.6rem; display: inline-block; font-size: 0.7rem;
-    letter-spacing: 0.25em; text-transform: uppercase; color: #1c1917; text-decoration: underline; text-underline-offset: 6px;
-  }
+  /* expanded panel */
+  .tl-row.expanded .expand{display:grid}
+  .tl-row .expand{display:none;grid-column:3/4;grid-template-columns:90px 1fr;gap:0.5rem 1rem;margin-top:0.7rem;padding:0.7rem;background:var(--bg-3);border:1px solid var(--line-2);font-size:0.7rem}
+  .tl-row .expand .k{font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--t4);padding-top:2px}
+  .tl-row .expand .v{color:var(--t1);line-height:1.55}
+  .tl-row .expand .actions{grid-column:1/3;display:flex;gap:0.5rem;margin-top:0.5rem;padding-top:0.7rem;border-top:1px solid var(--line-2)}
+  .tl-row .expand .actions button{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.35rem 0.6rem;border:1px solid var(--line-2);color:var(--t2)}
+  .tl-row .expand .actions button:hover{color:var(--t1);border-color:var(--line-3)}
+  .tl-row .expand .actions .primary{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
 
-  /* === TIMELINE === */
-  .tl-list { list-style: none; margin-top: 2.4rem; }
-  .tl-day { display: grid; grid-template-columns: 9rem 1fr; gap: 2.5rem; padding: 1.4rem 0; border-top: 1px solid #e7e5e4; }
-  .tl-day .date {
-    font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase; color: #1c1917;
-    padding-top: 0.45rem; position: sticky; top: 1rem; align-self: start;
-  }
-  .tl-day .date small { display: block; color: #a8a29e; font-size: 0.6rem; margin-top: 0.3rem; letter-spacing: 0.2em; }
-  .tl-day .events {}
-  .tl-day .events p {
-    font-family: 'Playfair Display', serif; font-size: 1.25rem; line-height: 1.55; color: #1c1917; font-weight: 400;
-    padding: 0.35rem 0;
-  }
-  .tl-day .events p .meta {
-    font-family: 'Montserrat'; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
-    color: #a8a29e; margin-left: 0.7rem; vertical-align: middle;
-  }
+  /* === RIGHT: FOLLOW-UP === */
+  .fu-section{padding:0.5rem 0}
+  .fu-section .fu-h{padding:0.7rem 1rem 0.4rem;font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;display:flex;justify-content:space-between;color:var(--t3)}
+  .fu-section.overdue .fu-h{color:var(--red)}
+  .fu-section.today .fu-h{color:var(--amber)}
+  .fu-section .fu-h .c{color:var(--t4);font-variant-numeric:tabular-nums}
+  .fu-item{padding:0.6rem 1rem;border-bottom:1px solid var(--line);cursor:pointer;border-left:2px solid transparent}
+  .fu-item:hover{background:var(--bg-2)}
+  .fu-section.overdue .fu-item{border-left-color:var(--red)}
+  .fu-section.today .fu-item{border-left-color:var(--amber)}
+  .fu-section.week .fu-item{border-left-color:var(--line-3)}
+  .fu-item .what{font-size:0.74rem;color:var(--t1);font-weight:500}
+  .fu-item .who{font-size:0.62rem;color:var(--t3);margin-top:2px}
+  .fu-item .when{font-size:0.55rem;color:var(--t4);margin-top:4px;letter-spacing:0.2em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+  .fu-item .qa{display:none;gap:0.4rem;margin-top:6px}
+  .fu-item:hover .qa{display:flex}
+  .fu-item .qa button{font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.25rem 0.5rem;border:1px solid var(--line-2);color:var(--t2)}
+  .fu-item .qa button:hover{color:var(--t1)}
+  .fu-item .qa .done{color:var(--green);border-color:rgba(48,164,108,0.4)}
 
-  /* Footer spacing */
-  footer.foot { padding: 3rem 5rem; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: #a8a29e; }
-  footer.foot button {
-    background: none; border: none; color: #a8a29e; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
-    cursor: pointer; font-family: inherit;
-  }
-  footer.foot button:hover { color: #1c1917; }
+  /* === NOTIFICATION DRAWER === */
+  .notif-drawer{position:fixed;top:0;right:0;width:380px;height:100vh;background:var(--bg-2);border-left:1px solid var(--line-2);z-index:50;display:none;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,0.5)}
+  body.show-notif .notif-drawer{display:flex}
+  body.show-notif .notif-mask{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:49;display:block}
+  .notif-mask{display:none}
+  .notif-drawer .h{padding:1rem 1.2rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .notif-drawer .h .t{font-family:'Playfair Display',serif;font-size:1.05rem}
+  .notif-drawer .h .t .c{font-size:0.6rem;letter-spacing:0.18em;color:var(--teal);font-family:'Montserrat';margin-left:0.5rem}
+  .notif-drawer .h .acts{display:flex;gap:0.7rem;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--t3)}
+  .notif-drawer .h .acts a:hover{color:var(--t1)}
+  .notif-drawer .filters{display:flex;gap:0;border-bottom:1px solid var(--line);padding:0 1.2rem}
+  .notif-drawer .filters a{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);padding:0.7rem 0;margin-right:1rem;border-bottom:2px solid transparent}
+  .notif-drawer .filters a.on{color:var(--t1);border-bottom-color:var(--teal)}
+  .notif-drawer .body{flex:1;overflow-y:auto}
+  .notif{display:flex;gap:0.7rem;padding:0.85rem 1.2rem;border-bottom:1px solid var(--line);position:relative;cursor:pointer}
+  .notif.unread{background:rgba(0,201,179,0.04)}
+  .notif:hover{background:var(--bg-3)}
+  .notif .ic{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-2);font-size:0.65rem;flex-shrink:0;background:var(--bg-3);color:var(--t2)}
+  .notif.studio .ic{color:var(--teal);border-color:rgba(0,201,179,0.3)}
+  .notif.followup .ic{color:var(--red);border-color:rgba(229,72,77,0.3)}
+  .notif.activation .ic{color:var(--green);border-color:rgba(48,164,108,0.3)}
+  .notif.activity .ic{color:var(--amber);border-color:rgba(240,177,0,0.3)}
+  .notif.contact .ic{color:#5EB1FF;border-color:rgba(94,177,255,0.3)}
+  .notif .body-m{flex:1;min-width:0}
+  .notif .cat{font-size:0.52rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--t4)}
+  .notif .msg{font-size:0.76rem;color:var(--t1);margin-top:3px;line-height:1.5}
+  .notif .msg b{color:var(--t1);font-weight:600}
+  .notif .when{font-size:0.55rem;color:var(--t4);margin-top:5px;letter-spacing:0.16em;text-transform:uppercase}
+  .notif.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--teal)}
+
+  /* === ADVISOR WORKSPACE === */
+  body.advisor aside nav .sec-cc{display:none}
+  body.advisor aside nav .sec-aw{display:block}
+  body.advisor .acct-header{padding:1.2rem 1.4rem}
+  body.advisor .topbar .breadcrumb b{color:var(--teal)}
+
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;padding:1rem 1.4rem;overflow-y:auto;flex:1}
+  .grid-2 .card{background:var(--bg-2);border:1px solid var(--line);padding:0}
+  .grid-2 .card .ch{padding:0.7rem 1rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .grid-2 .card .ch .t{font-size:0.65rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--t2)}
+  .grid-2 .card .ch .a{font-size:0.6rem;letter-spacing:0.12em;color:var(--teal);text-transform:uppercase}
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;border-bottom:1px solid var(--line)}
+  .stat{padding:1rem 1.2rem;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:none}
+  .stat .l{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4)}
+  .stat .v{font-family:'Playfair Display',serif;font-size:1.85rem;color:var(--t1);margin-top:5px;font-weight:500;letter-spacing:0.01em}
+  .stat .delta{font-size:0.6rem;color:var(--t3);margin-top:3px;letter-spacing:0.04em}
+  .stat .delta.up{color:var(--green)}.stat .delta.down{color:var(--red)}
+
+  table{width:100%;border-collapse:collapse;font-size:0.74rem}
+  thead th{text-align:left;font-size:0.55rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--t4);padding:0.5rem 1rem;border-bottom:1px solid var(--line);font-weight:500}
+  tbody td{padding:0.55rem 1rem;border-bottom:1px solid var(--line);color:var(--t2)}
+  tbody tr{cursor:pointer}
+  tbody tr:hover td{background:var(--bg-3);color:var(--t1)}
+  tbody td.name{color:var(--t1);font-weight:500}
+  tbody td .temp{font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:1px 6px;border:1px solid var(--line-3)}
+  tbody td .temp.hot{color:var(--red);border-color:rgba(229,72,77,0.4)}
+  tbody td .temp.warm{color:var(--amber);border-color:rgba(240,177,0,0.4)}
+  tbody td .temp.cold{color:var(--t3)}
+  tbody td .health{display:inline-block;width:32px;height:4px;background:var(--bg-3);margin-right:6px;vertical-align:1px;position:relative}
+  tbody td .health::after{content:'';position:absolute;top:0;left:0;bottom:0;background:var(--teal)}
+  tbody td .health.h82::after{width:82%}.health.h64::after{width:64%;background:var(--amber)}
+  .health.h41::after{width:41%;background:var(--red)}.health.h95::after{width:95%;background:var(--green)}
+
+  /* commissions */
+  .com-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0}
+  .com{padding:1rem;border-right:1px solid var(--line)}
+  .com:last-child{border-right:none}
+  .com .l{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--t4)}
+  .com .v{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--t1);margin-top:5px}
+  .com .v small{font-family:'Montserrat';font-size:0.7rem;color:var(--t3);font-weight:400;margin-left:0.3rem}
+
+  /* === VIEW SWITCHER === */
+  .switcher{position:fixed;bottom:1rem;right:1rem;background:var(--bg-3);border:1px solid var(--line-2);padding:0.4rem;display:flex;gap:0.3rem;z-index:30;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase}
+  .switcher button{padding:0.4rem 0.7rem;color:var(--t3)}
+  .switcher button.on{color:var(--teal);background:var(--bg-4)}
+
+  body.view-rc .v-aw{display:none}body.view-aw .v-rc{display:none}
 
   /* === MOBILE === */
-  body.mobile aside { display: none; }
-  body.mobile main { padding: 0; }
-  body.mobile .page-pad { padding: 2.4rem 1.5rem 4rem; }
-  body.mobile .page-title { font-size: 2rem; }
-  body.mobile .toolbar { gap: 0.8rem; }
-  body.mobile .toolbar .nuova { padding: 0.6rem 1rem; font-size: 0.65rem; }
-  body.mobile .todo-list .what { font-size: 1.05rem; }
-  body.mobile .todo-list li { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
-  body.mobile .narr-list .person { font-size: 1.4rem; }
-  body.mobile .narr-list .topic { font-size: 0.95rem; }
-  body.mobile .narr-list .row { flex-direction: column; gap: 0.2rem; }
-  body.mobile .narr-list .row .k { min-width: 0; }
-  body.mobile .tl-day { grid-template-columns: 1fr; gap: 0.6rem; }
-  body.mobile .tl-day .events p { font-size: 1.05rem; }
-
-  /* Variant: Timeline page */
-  body.view-timeline .activity-block { display: none; }
-  body.view-activity .timeline-block { display: none; }
-
-  /* Variant: empty */
-  body.view-empty .populated { display: none; }
-  body:not(.view-empty) .empty-only { display: none; }
-
+  @media (max-width:760px){
+    aside{display:none}
+    .relcenter{grid-template-columns:1fr;overflow-y:auto;height:auto}
+    .col{border-right:none;border-bottom:1px solid var(--line)}
+    .acct-header h1{font-size:1.2rem}
+    .kpi-strip{flex-wrap:wrap;gap:0.4rem 0;padding-top:0.6rem}
+    .kpi{padding:0 0.8rem 0.5rem 0;margin-right:0.8rem;border-right:1px solid var(--line);margin-bottom:0.3rem}
+    .topbar .search{display:none}
+    .tabs{overflow-x:auto}
+    .tl-row{grid-template-columns:50px 22px 1fr;gap:0.5rem}
+    .tl-row .owner{display:none}
+    .grid-2{grid-template-columns:1fr}
+    .stat-row{grid-template-columns:repeat(2,1fr)}
+    .com-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  body.mobile{width:390px;margin:0 auto}
 </style>
 </head>
-<body class="view-activity">
+<body class="view-rc">
+
+  <div class="notif-mask"></div>
 
   <aside>
-    <div class="logo">MOOD<small>for DESIGN</small></div>
-    <div class="eyebrow">MOOD</div>
-    <div class="title">Command Center</div>
-    <div class="divider"></div>
+    <div class="brand">
+      <div class="logo">MOOD<small>for DESIGN</small></div>
+    </div>
+    <div class="ctx">
+      <div class="eyebrow">MOOD</div>
+      <div class="title v-rc">Command Center</div>
+      <div class="title v-aw">Advisor Workspace</div>
+    </div>
     <nav>
-      <a>Overview</a>
-      <a class="active">Tenants</a>
-      <a>Advisors</a>
-      <a>Advisor Console</a>
-      <a>Studio Requests</a>
+      <div class="sec sec-cc v-rc">MOOD CORE</div>
+      <a class="v-rc">◇  Overview</a>
+      <a class="v-rc active">◆  Studios <span class="count">87</span></a>
+      <a class="v-rc">◇  Advisors</a>
+      <a class="v-rc">◇  Studio Requests <span class="dot"></span></a>
+      <a class="v-rc">◇  Activations</a>
+
+      <div class="sec sec-aw v-aw">MY WORKSPACE</div>
+      <a class="v-aw active">◆  Dashboard</a>
+      <a class="v-aw">◇  My Studios <span class="count">12</span></a>
+      <a class="v-aw">◇  My Activities <span class="count">347</span></a>
+      <a class="v-aw">◇  My Follow-Ups <span class="dot"></span></a>
+      <a class="v-aw">◇  My Notifications <span class="count">12</span></a>
+      <a class="v-aw">◇  My Commissions</a>
+
+      <div class="sec">RELATIONSHIPS</div>
+      <a class="v-rc">◇  Contacts</a>
+      <a class="v-rc">◇  Pipeline</a>
+      <a>◇  Activity Log</a>
+      <a>◇  Follow-Ups <span class="dot"></span></a>
     </nav>
   </aside>
 
   <main>
-    <div class="page-pad">
-
-      <!-- ========== ACTIVITY (default) ========== -->
-      <div class="activity-block">
-
-        <div class="page-eyebrow">Tenant · Martinel Interior Design · Pordenone, IT</div>
-        <h1 class="page-title">Relazioni</h1>
-        <p class="page-sub">Ogni conversazione, ogni email, ogni decisione presa con questo studio. In ordine, in italiano, senza rumore.</p>
-
-        <!-- Toolbar: discreet -->
-        <div class="toolbar">
-          <div class="search">
-            <input placeholder="Cerca per persona, argomento, esito…" />
-          </div>
-          <button class="affina">Affina vista +</button>
-          <button class="nuova">Annota attività</button>
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="breadcrumb v-rc">
+        Studios <span class="crumb-sep">›</span>
+        <b>Martinel Interior Design</b>
+        <span class="crumb-sep">·</span>
+        <span style="color:var(--green)">● Active</span>
+      </div>
+      <div class="breadcrumb v-aw"><b>Raffaella</b> · Advisor Workspace · Q2 2026</div>
+      <div class="search">
+        <span class="ico">⌕</span>
+        <input placeholder="Cerca un contatto, una conversazione, una nota…" />
+        <span class="kbd">⌘ K</span>
+      </div>
+      <div class="actions">
+        <div class="bell" onclick="document.body.classList.toggle('show-notif')">
+          🔔
+          <span class="badge">12</span>
         </div>
+        <div class="user">
+          <span>Raffaella</span>
+          <span class="ava">RM</span>
+        </div>
+      </div>
+    </header>
 
-        <!-- DA COMPLETARE -->
-        <section class="section populated">
-          <h2>Da completare <span class="count">3</span></h2>
-          <p class="intro">Impegni che hai preso con lo studio. In sospeso fino a che non li chiudi tu.</p>
-          <ul class="todo-list">
-            <li>
-              <span class="what">Call con Mario Rossi</span>
-              <span class="when overdue">Scadenza 5 giugno</span>
-              <a class="action">Segna conclusa →</a>
-            </li>
-            <li>
-              <span class="what">Meeting showroom Pordenone</span>
-              <span class="when">Scadenza 7 giugno</span>
-              <a class="action">Segna conclusa →</a>
-            </li>
-            <li>
-              <span class="what">Email a Studio Bianchi · proposta materiali</span>
-              <span class="when">Scadenza 9 giugno</span>
-              <a class="action">Segna conclusa →</a>
-            </li>
-          </ul>
-        </section>
+    <!-- ===== RELATIONSHIP CENTER ===== -->
+    <div class="page v-rc">
 
-        <!-- DA COMPLETARE — empty -->
-        <section class="section empty-only">
-          <h2>Da completare</h2>
-          <div class="empty">
-            <h3>Niente in sospeso, oggi.</h3>
-            <p>Nessun impegno aperto con questo studio. Quando registri una nuova attività con un prossimo passo, riapparirà qui.</p>
-            <a class="cta">Annota una nuova attività →</a>
+      <div class="acct-header">
+        <div class="top">
+          <div>
+            <h1><small>Tenant · Pordenone, IT · EU · 12 contatti</small>Martinel Interior Design</h1>
+          </div>
+          <div class="ctas">
+            <button>Edit</button>
+            <button>Aggiungi contatto</button>
+            <button class="primary">+ Nuova attività</button>
+          </div>
+        </div>
+        <div class="kpi-strip">
+          <div class="kpi"><div class="l">Status</div><div class="v green">● Active <span class="pill">12 mag 26</span></div></div>
+          <div class="kpi"><div class="l">Owner</div><div class="v">Raffaella M. <span class="pill">Advisor</span></div></div>
+          <div class="kpi"><div class="l">Relationship Health</div><div class="v warn">64 / 100</div></div>
+          <div class="kpi"><div class="l">Last Activity</div><div class="v">2h fa</div></div>
+          <div class="kpi"><div class="l">Open Follow-Ups</div><div class="v red">3 <span class="pill" style="color:var(--red);border-color:rgba(229,72,77,0.4)">2 overdue</span></div></div>
+          <div class="kpi"><div class="l">Contacts</div><div class="v">12</div></div>
+          <div class="kpi"><div class="l">Activities (30g)</div><div class="v">47</div></div>
+          <div class="kpi"><div class="l">Notifications</div><div class="v teal">5</div></div>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <a class="active">Relationship Center</a>
+        <a>Contacts <span class="c">12</span></a>
+        <a>Activities <span class="c">347</span></a>
+        <a>Timeline</a>
+        <a>Opportunities <span class="c">2</span></a>
+        <a>Documents</a>
+        <a>Settings</a>
+      </nav>
+
+      <div class="relcenter">
+
+        <!-- LEFT: CONTACTS -->
+        <section class="col">
+          <div class="col-h">
+            <div class="t">Contacts <span style="color:var(--t4)">· 12</span></div>
+            <a class="a">+ Add</a>
+          </div>
+          <div class="col-body">
+            <div class="role-group">
+              <div class="role-h">Founders <span class="c">2</span></div>
+              <div class="contact active">
+                <div class="av">MR</div>
+                <div class="meta">
+                  <div class="name">Mario Rossi <span class="prim">PRIMARY</span></div>
+                  <div class="sub">Founder <span class="sep">·</span> IT</div>
+                  <div class="pulse"><b>2h fa</b> · Call · esito positivo</div>
+                </div>
+              </div>
+              <div class="contact">
+                <div class="av">EM</div>
+                <div class="meta">
+                  <div class="name">Elena Martinel</div>
+                  <div class="sub">Co-founder <span class="sep">·</span> IT</div>
+                  <div class="pulse"><b>3g fa</b> · Email</div>
+                </div>
+              </div>
+            </div>
+            <div class="role-group">
+              <div class="role-h">Architects <span class="c">3</span></div>
+              <div class="contact">
+                <div class="av">LC</div>
+                <div class="meta">
+                  <div class="name">Luca Conti</div>
+                  <div class="sub">Lead Architect <span class="sep">·</span> Milano</div>
+                  <div class="pulse amber"><b>9g fa</b> · LinkedIn · in attesa</div>
+                </div>
+              </div>
+              <div class="contact">
+                <div class="av">SP</div>
+                <div class="meta">
+                  <div class="name">Sara Pellegrini</div>
+                  <div class="sub">Project Architect</div>
+                  <div class="pulse"><b>5g fa</b> · WhatsApp</div>
+                </div>
+              </div>
+            </div>
+            <div class="role-group">
+              <div class="role-h">Purchasing <span class="c">2</span></div>
+              <div class="contact">
+                <div class="av">GB</div>
+                <div class="meta">
+                  <div class="name">Giulia Bianchi</div>
+                  <div class="sub">Head of Purchasing</div>
+                  <div class="pulse red"><b>Overdue</b> · Follow-up · 2g in ritardo</div>
+                </div>
+              </div>
+              <div class="contact">
+                <div class="av">AT</div>
+                <div class="meta">
+                  <div class="name">Andrea Tasso</div>
+                  <div class="sub">Buyer Junior</div>
+                  <div class="pulse"><b>1m fa</b></div>
+                </div>
+              </div>
+            </div>
+            <div class="role-group">
+              <div class="role-h">Project Mgmt <span class="c">2</span></div>
+              <div class="contact">
+                <div class="av">FN</div>
+                <div class="meta">
+                  <div class="name">Francesca Negri</div>
+                  <div class="sub">Project Manager</div>
+                  <div class="pulse"><b>4g fa</b> · Meeting</div>
+                </div>
+              </div>
+            </div>
+            <div class="role-group">
+              <div class="role-h">Administration <span class="c">1</span></div>
+              <div class="contact">
+                <div class="av">PM</div>
+                <div class="meta">
+                  <div class="name">Paolo Marini</div>
+                  <div class="sub">CFO</div>
+                  <div class="pulse"><b>2sett fa</b> · Email</div>
+                </div>
+              </div>
+            </div>
+            <div class="role-group">
+              <div class="role-h">Suppliers · Consultants <span class="c">2</span></div>
+              <div class="contact"><div class="av">VG</div><div class="meta"><div class="name">Valeria Guidi</div><div class="sub">Material Sourcing</div><div class="pulse"><b>3sett fa</b></div></div></div>
+            </div>
           </div>
         </section>
 
-        <!-- STORICO -->
-        <section class="section populated">
-          <h2>Storico <span class="count">48</span></h2>
-          <p class="intro">La memoria condivisa con lo studio, dalla prima conversazione a oggi.</p>
-          <ul class="narr-list">
+        <!-- CENTER: TIMELINE -->
+        <section class="col">
+          <div class="col-h">
+            <div class="t">Activity Timeline <span style="color:var(--t4)">· 347 totali</span></div>
+            <a class="a">+ Log Activity</a>
+          </div>
+          <div class="tl-filter">
+            <div class="seg">
+              <button class="on">All</button>
+              <button>Calls</button>
+              <button>Emails</button>
+              <button>Meetings</button>
+              <button>Notes</button>
+              <button>Tasks</button>
+            </div>
+            <span class="chip">+ Owner</span>
+            <span class="chip">+ Outcome</span>
+            <span class="chip">+ Contact</span>
+            <div class="right">Sort: Newest first ↓</div>
+          </div>
+          <div class="col-body">
 
-            <li>
-              <div class="person">Mario Rossi</div>
-              <div class="topic">Discussione onboarding Blueprint</div>
-              <div class="row">
-                <div class="k">Esito</div>
-                <div class="v">Interessato alla sezione Material Intelligence. Vuole capire come funziona la curation dei fornitori.</div>
-              </div>
-              <div class="row">
-                <div class="k">Prossimo passo</div>
-                <div class="v">Demo con responsabile acquisti, settimana prossima.</div>
-              </div>
-              <div class="when">03 Giugno 2026 · ore 14:30 · <span class="author">annotata da Raffaella</span> · in call</div>
-            </li>
+            <div class="tl-day">
+              <div class="day-h"><span>Oggi · Mercoledì 3 Giugno</span><span class="num">6 attività</span></div>
 
-            <li>
-              <div class="person">Giulia Bianchi</div>
-              <div class="topic">Revisione catalogo tessuti per Villa Verde</div>
-              <div class="row">
-                <div class="k">Esito</div>
-                <div class="v">Campioni approvati. Lo studio ha confermato la palette autunno per il progetto.</div>
+              <div class="tl-row expanded">
+                <div class="time">14:30</div>
+                <div class="ic call">☎</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Call</span><span class="sep">·</span>
+                    <span class="person">Mario Rossi</span><span class="sep">·</span>
+                    <span class="subject">Discussione onboarding Blueprint</span>
+                  </div>
+                  <div class="preview">Interessato alla sezione Material Intelligence. Vuole capire come funziona la curation dei fornitori…</div>
+                  <div class="meta-row"><span class="ok">● Completed</span><span class="pend">▸ Next: Demo con resp. acquisti · 10 Giu</span><span>· 22 min</span></div>
+                  <div class="expand">
+                    <div class="k">Esito</div>
+                    <div class="v">Interessato alla sezione Material Intelligence. Vuole capire come funziona la curation dei fornitori.</div>
+                    <div class="k">Note</div>
+                    <div class="v">Il founder è un ex architetto, ha già usato Pipedrive ma non lo trovava adatto al ciclo lungo del design. Apprezza la verticalità MOOD.</div>
+                    <div class="k">Prossimo passo</div>
+                    <div class="v">Demo con Sara Pellegrini (resp. acquisti). Calendario per il <b>10 Giugno · 15:00</b>.</div>
+                    <div class="actions">
+                      <button>Edit</button><button>Reschedule next</button><button>Add task</button><button class="primary">Mark next step done</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
               </div>
-              <div class="row">
-                <div class="k">Prossimo passo</div>
-                <div class="v">Inviare preventivo formale entro venerdì.</div>
-              </div>
-              <div class="when">01 Giugno 2026 · ore 10:15 · <span class="author">annotata da MOOD Admin</span> · in showroom</div>
-            </li>
 
-            <li class="closed">
-              <div class="person">Luca Conti</div>
-              <div class="topic">Primo contatto via LinkedIn</div>
-              <div class="row">
-                <div class="k">Sintesi</div>
-                <div class="v">Architetto interessato a un account Blueprint per il suo studio di Milano. Inviato link di prova.</div>
+              <div class="tl-row">
+                <div class="time">11:05</div>
+                <div class="ic email">✉</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Email</span><span class="sep">·</span>
+                    <span class="person">Giulia Bianchi</span><span class="sep">·</span>
+                    <span class="subject">Proposta materiali Q3 — revisione</span>
+                  </div>
+                  <div class="preview">Hi Giulia, ti allego la proposta aggiornata con i nuovi listini dei fornitori italiani…</div>
+                  <div class="meta-row"><span class="ok">● Sent</span><span>· Thread (3 messaggi)</span><span>· Tracked</span></div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
               </div>
-              <div class="when">28 Maggio 2026 · <span class="author">annotata da Raffaella</span></div>
-            </li>
 
-          </ul>
+              <div class="tl-row">
+                <div class="time">10:22</div>
+                <div class="ic wa">⌬</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">WhatsApp</span><span class="sep">·</span>
+                    <span class="person">Sara Pellegrini</span>
+                  </div>
+                  <div class="preview">"Ciao, perfetto per il 10. Ti mando il brief domani."</div>
+                  <div class="meta-row"><span class="ok">● Reply received</span></div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
+              </div>
+
+              <div class="tl-row">
+                <div class="time">09:14</div>
+                <div class="ic note">▤</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Internal Note</span><span class="sep">·</span>
+                    <span class="subject">Lo studio sta valutando anche il competitor Designgroupe. Da capire posizionamento.</span>
+                  </div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
+              </div>
+
+              <div class="tl-row">
+                <div class="time">08:00</div>
+                <div class="ic event">●</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">System Event</span><span class="sep">·</span>
+                    <span class="subject">Contatto <b style="color:var(--t1)">Andrea Tasso</b> aggiunto allo studio</span>
+                  </div>
+                </div>
+                <div class="owner">· auto</div>
+              </div>
+            </div>
+
+            <div class="tl-day">
+              <div class="day-h"><span>Ieri · Martedì 2 Giugno</span><span class="num">4 attività</span></div>
+
+              <div class="tl-row">
+                <div class="time">16:40</div>
+                <div class="ic meet">⊞</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Meeting</span><span class="sep">·</span>
+                    <span class="person">Sara Pellegrini, Francesca Negri</span><span class="sep">·</span>
+                    <span class="subject">Showroom visit — Pordenone</span>
+                  </div>
+                  <div class="preview">Approvati i campioni tessili per Villa Verde. Mancano i metalli, da rivedere settimana prossima.</div>
+                  <div class="meta-row"><span class="ok">● Completed</span><span>· 1h 20min</span><span>· 2 contatti</span></div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
+              </div>
+
+              <div class="tl-row">
+                <div class="time">12:18</div>
+                <div class="ic task">▢</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Task</span><span class="sep">·</span>
+                    <span class="subject">Preparare quotation campioni metalli — entro 9 Giu</span>
+                  </div>
+                  <div class="meta-row"><span class="pend">▸ Open · scadenza 9 Giu</span><span>· assigned to RM</span></div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
+              </div>
+
+              <div class="tl-row">
+                <div class="time">10:30</div>
+                <div class="ic note">▤</div>
+                <div class="content">
+                  <div class="line1">
+                    <span class="type">Voice Note</span><span class="sep">·</span>
+                    <span class="subject">3:14 — debrief showroom visit</span>
+                  </div>
+                  <div class="preview">▶ Trascrizione: "Punto chiave, Mario è disponibile ad aumentare il budget se vediamo risultati nei primi 90 giorni…"</div>
+                </div>
+                <div class="owner"><span class="ava">RM</span> Raffaella</div>
+              </div>
+            </div>
+
+            <div class="tl-day">
+              <div class="day-h"><span>Mar 28 Maggio</span><span class="num">3 attività</span></div>
+              <div class="tl-row">
+                <div class="time">09:00</div>
+                <div class="ic event">●</div>
+                <div class="content">
+                  <div class="line1"><span class="type">System Event</span><span class="sep">·</span>
+                    <span class="subject">Tenant <b style="color:var(--t1)">activated</b> — magic link inviato a Mario Rossi</span></div>
+                </div>
+                <div class="owner">· auto</div>
+              </div>
+            </div>
+
+          </div>
         </section>
 
-        <!-- STORICO — empty -->
-        <section class="section empty-only">
-          <h2>Storico</h2>
-          <div class="empty">
-            <h3>Il foglio è bianco.</h3>
-            <p>Non c'è ancora memoria con questo studio. Inizia annotando il primo incontro, la prima email, la prima telefonata.</p>
-            <a class="cta">Annota la prima attività →</a>
+        <!-- RIGHT: FOLLOW-UPS -->
+        <section class="col">
+          <div class="col-h">
+            <div class="t">Follow-Up Queue</div>
+            <a class="a">View all</a>
+          </div>
+          <div class="col-body">
+
+            <div class="fu-section overdue">
+              <div class="fu-h"><span>Overdue</span><span class="c">2</span></div>
+              <div class="fu-item">
+                <div class="what">Follow-up con Giulia Bianchi</div>
+                <div class="who">Purchasing · proposta materiali Q3</div>
+                <div class="when">Era 1 Giu · 2 giorni in ritardo</div>
+                <div class="qa"><button class="done">✓ Complete</button><button>Reschedule</button><button>Reassign</button></div>
+              </div>
+              <div class="fu-item">
+                <div class="what">Sintesi call con Luca Conti</div>
+                <div class="who">Lead Architect · onboarding</div>
+                <div class="when">Era 31 Mag · 3 giorni in ritardo</div>
+                <div class="qa"><button class="done">✓ Complete</button><button>Reschedule</button></div>
+              </div>
+            </div>
+
+            <div class="fu-section today">
+              <div class="fu-h"><span>Due today</span><span class="c">1</span></div>
+              <div class="fu-item">
+                <div class="what">Inviare brief showroom a Sara</div>
+                <div class="who">Project Architect</div>
+                <div class="when">Oggi · entro fine giornata</div>
+                <div class="qa"><button class="done">✓ Complete</button><button>Reschedule</button></div>
+              </div>
+            </div>
+
+            <div class="fu-section week">
+              <div class="fu-h"><span>This week</span><span class="c">3</span></div>
+              <div class="fu-item">
+                <div class="what">Demo Material Intelligence</div>
+                <div class="who">Mario Rossi · Founder</div>
+                <div class="when">Lun 10 Giu · 15:00</div>
+              </div>
+              <div class="fu-item">
+                <div class="what">Quotation campioni metalli</div>
+                <div class="who">Sara Pellegrini</div>
+                <div class="when">Ven 9 Giu</div>
+              </div>
+              <div class="fu-item">
+                <div class="what">Check-in mensile</div>
+                <div class="who">Elena Martinel · Co-founder</div>
+                <div class="when">Ven 9 Giu · 10:00</div>
+              </div>
+            </div>
+
+            <div class="fu-section">
+              <div class="fu-h"><span>Snoozed</span><span class="c">2</span></div>
+              <div class="fu-item">
+                <div class="what">Invitation Material Conf</div>
+                <div class="who">Mario Rossi</div>
+                <div class="when">Ripartirà 15 Giu</div>
+              </div>
+            </div>
+
           </div>
         </section>
 
       </div>
+    </div>
 
+    <!-- ===== ADVISOR WORKSPACE ===== -->
+    <div class="page v-aw">
 
-      <!-- ========== TIMELINE ========== -->
-      <div class="timeline-block">
-
-        <div class="page-eyebrow">Tenant · Martinel Interior Design · Pordenone, IT</div>
-        <h1 class="page-title">Diario</h1>
-        <p class="page-sub">La storia dello studio, giorno per giorno. Tutto ciò che è accaduto — automatico e manuale — in ordine cronologico.</p>
-
-        <div class="toolbar">
-          <div class="search">
-            <input placeholder="Cerca un evento, un nome, una data…" />
+      <div class="acct-header">
+        <div class="top">
+          <div>
+            <h1><small>My Workspace · Q2 2026</small>Buongiorno, Raffaella.</h1>
           </div>
-          <button class="affina">Affina vista +</button>
+          <div class="ctas">
+            <button>This week</button>
+            <button class="primary">+ Log activity</button>
+          </div>
         </div>
-
-        <ul class="tl-list populated">
-
-          <li class="tl-day">
-            <div class="date">03 Giu 2026<small>Mercoledì</small></div>
-            <div class="events">
-              <p>Lo studio ha aggiunto un nuovo contatto, <strong>Mario Rossi</strong>.</p>
-              <p>Raffaella ha registrato una <strong>call con Mario Rossi</strong>. <span class="meta">14:30</span></p>
-              <p>È stata inviata l'<strong>email di benvenuto</strong> a Giulia Bianchi.</p>
-              <p>Raffaella ha annotato una <strong>nota interna sull'onboarding</strong>.</p>
-            </div>
-          </li>
-
-          <li class="tl-day">
-            <div class="date">01 Giu 2026<small>Lunedì</small></div>
-            <div class="events">
-              <p>Incontro in <strong>showroom di Pordenone</strong> con Giulia Bianchi.</p>
-              <p>Approvati i campioni tessili per il progetto <strong>Villa Verde</strong>.</p>
-            </div>
-          </li>
-
-          <li class="tl-day">
-            <div class="date">28 Mag 2026<small>Venerdì</small></div>
-            <div class="events">
-              <p>Primo contatto su LinkedIn con <strong>Luca Conti</strong>, architetto.</p>
-              <p>Inviato un link di prova al suo studio di Milano.</p>
-            </div>
-          </li>
-
-          <li class="tl-day">
-            <div class="date">12 Mag 2026<small>Origine</small></div>
-            <div class="events">
-              <p>Lo studio Martinel ha completato la richiesta di registrazione.</p>
-              <p>Raffaella è stata assegnata come advisor di riferimento.</p>
-              <p>Il workspace è stato attivato.</p>
-            </div>
-          </li>
-
-        </ul>
-
-        <!-- Timeline — empty -->
-        <div class="empty empty-only">
-          <h3>Il diario è ancora bianco.</h3>
-          <p>Non si è ancora scritto nulla con questo studio. Quando annoterai la prima attività o invierai la prima email, comparirà qui.</p>
+        <div class="kpi-strip">
+          <div class="kpi"><div class="l">My Studios</div><div class="v">12</div></div>
+          <div class="kpi"><div class="l">Active Relationships</div><div class="v teal">8</div></div>
+          <div class="kpi"><div class="l">Open Follow-Ups</div><div class="v red">5 <span class="pill" style="color:var(--red);border-color:rgba(229,72,77,0.4)">2 overdue</span></div></div>
+          <div class="kpi"><div class="l">This Week Activities</div><div class="v">23</div></div>
+          <div class="kpi"><div class="l">Avg Relationship Health</div><div class="v warn">71</div></div>
+          <div class="kpi"><div class="l">Pending Introductions</div><div class="v">3</div></div>
+          <div class="kpi"><div class="l">Est. Commission Q2</div><div class="v green">€ 8.420</div></div>
         </div>
-
       </div>
 
-      <footer class="foot">
-        <button id="toggle-view">Mostra timeline →</button>
-        &nbsp; · &nbsp;
-        <button id="toggle-empty">Mostra empty state →</button>
-        &nbsp; · &nbsp;
-        <button id="toggle-mobile">Mostra mobile →</button>
-      </footer>
+      <div class="grid-2">
+
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+          <div class="card">
+            <div class="ch"><div class="t">My Studios · this quarter</div><a class="a">View all →</a></div>
+            <table>
+              <thead><tr>
+                <th>Studio</th><th>Health</th><th>Temperature</th><th>Last activity</th><th>Next action</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="name">Martinel Interior Design</td><td><span class="health h64"></span>64</td><td><span class="temp warm">Warm</span></td><td>2h fa</td><td>Demo 10 Giu</td></tr>
+                <tr><td class="name">Studio Bianchi & Co.</td><td><span class="health h41"></span>41</td><td><span class="temp hot">Hot</span></td><td>1g fa</td><td>Quote pending</td></tr>
+                <tr><td class="name">Atelier Verde Milano</td><td><span class="health h82"></span>82</td><td><span class="temp warm">Warm</span></td><td>3g fa</td><td>Check-in 9 Giu</td></tr>
+                <tr><td class="name">Conti Architetti</td><td><span class="health h95"></span>95</td><td><span class="temp warm">Warm</span></td><td>5g fa</td><td>—</td></tr>
+                <tr><td class="name">Pellegrini Studio</td><td><span class="health h64"></span>64</td><td><span class="temp cold">Cold</span></td><td>2sett fa</td><td>Re-engage</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="ch"><div class="t">Recent Activities</div><a class="a">Open log →</a></div>
+            <div style="padding:0">
+              <div class="tl-row" style="padding:0.6rem 1rem;grid-template-columns:50px 22px 1fr auto">
+                <div class="time">2h</div><div class="ic call">☎</div>
+                <div class="content">
+                  <div class="line1"><span class="type">Call</span><span class="sep">·</span><span class="person">Mario Rossi</span><span class="sep">·</span><span class="subject">Onboarding Blueprint</span></div>
+                </div>
+                <div class="owner">Martinel ID</div>
+              </div>
+              <div class="tl-row" style="padding:0.6rem 1rem;grid-template-columns:50px 22px 1fr auto">
+                <div class="time">5h</div><div class="ic email">✉</div>
+                <div class="content"><div class="line1"><span class="type">Email</span><span class="sep">·</span><span class="person">Giulia Bianchi</span></div></div>
+                <div class="owner">Martinel ID</div>
+              </div>
+              <div class="tl-row" style="padding:0.6rem 1rem;grid-template-columns:50px 22px 1fr auto">
+                <div class="time">1g</div><div class="ic meet">⊞</div>
+                <div class="content"><div class="line1"><span class="type">Meeting</span><span class="sep">·</span><span class="subject">Showroom visit Pordenone</span></div></div>
+                <div class="owner">Martinel ID</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+          <div class="card">
+            <div class="ch"><div class="t">My Follow-Ups</div><a class="a">Manage →</a></div>
+            <div class="fu-section overdue" style="padding:0">
+              <div class="fu-h"><span>Overdue</span><span class="c">2</span></div>
+              <div class="fu-item">
+                <div class="what">Follow-up Giulia Bianchi</div>
+                <div class="who">Martinel ID · 2g in ritardo</div>
+              </div>
+              <div class="fu-item">
+                <div class="what">Call Luca Conti</div>
+                <div class="who">Studio Bianchi · 3g in ritardo</div>
+              </div>
+            </div>
+            <div class="fu-section today" style="padding:0">
+              <div class="fu-h"><span>Today</span><span class="c">1</span></div>
+              <div class="fu-item">
+                <div class="what">Brief showroom Sara</div>
+                <div class="who">Martinel ID</div>
+              </div>
+            </div>
+            <div class="fu-section week" style="padding:0">
+              <div class="fu-h"><span>This week</span><span class="c">3</span></div>
+              <div class="fu-item">
+                <div class="what">Demo Material Intelligence</div>
+                <div class="who">Martinel ID · 10 Giu</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><div class="t">My Commissions · Q2</div><a class="a">Statement →</a></div>
+            <div class="com-grid">
+              <div class="com"><div class="l">Active accounts</div><div class="v">8</div></div>
+              <div class="com"><div class="l">Activated tenants</div><div class="v">2</div></div>
+              <div class="com"><div class="l">Commission %</div><div class="v">12<small>%</small></div></div>
+              <div class="com"><div class="l">Estimated</div><div class="v" style="color:var(--green)">€ 8.420</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><div class="t">Pending Introductions</div><a class="a">Inbox →</a></div>
+            <div class="fu-item">
+              <div class="what">Studio Verri Milano</div>
+              <div class="who">Submitted via V2 funnel · 1g fa</div>
+              <div class="qa"><button class="done">✓ Accept</button><button>Decline</button></div>
+            </div>
+            <div class="fu-item">
+              <div class="what">Mood Lab Roma</div>
+              <div class="who">Referred by Conti Architetti · 3g fa</div>
+            </div>
+            <div class="fu-item">
+              <div class="what">Atelier Vetro Venezia</div>
+              <div class="who">Cold lead · 5g fa</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
     </div>
+
   </main>
 
-  <script>
-    const $ = (s) => document.querySelector(s);
-    let view = 'activity'; let empty = false; let mobile = false;
-    const apply = () => {
-      document.body.classList.toggle('view-activity', view === 'activity');
-      document.body.classList.toggle('view-timeline', view === 'timeline');
-      document.body.classList.toggle('view-empty', empty);
-      document.body.classList.toggle('mobile', mobile);
-      $('#toggle-view').textContent  = view === 'activity' ? 'Mostra timeline →' : 'Mostra activity →';
-      $('#toggle-empty').textContent = empty ? 'Mostra populated →' : 'Mostra empty state →';
-      $('#toggle-mobile').textContent= mobile ? 'Mostra desktop →' : 'Mostra mobile →';
-    };
-    $('#toggle-view').onclick   = () => { view = view === 'activity' ? 'timeline' : 'activity'; apply(); };
-    $('#toggle-empty').onclick  = () => { empty = !empty; apply(); };
-    $('#toggle-mobile').onclick = () => { mobile = !mobile; apply(); };
-    // Allow URL query: ?view=timeline&empty=1&mobile=1
-    const q = new URLSearchParams(location.search);
-    if (q.get('view') === 'timeline') view = 'timeline';
-    if (q.get('empty') === '1') empty = true;
-    if (q.get('mobile') === '1') mobile = true;
-    apply();
-  </script>
+  <!-- ===== NOTIFICATION DRAWER ===== -->
+  <aside class="notif-drawer" onclick="event.stopPropagation()">
+    <div class="h">
+      <div class="t">Notifications<span class="c">12 nuove</span></div>
+      <div class="acts">
+        <a>Mark all read</a>
+        <a onclick="document.body.classList.remove('show-notif')">✕</a>
+      </div>
+    </div>
+    <div class="filters">
+      <a class="on">Tutte <span style="color:var(--t4);font-size:0.55rem">· 47</span></a>
+      <a>Non lette <span style="color:var(--t4);font-size:0.55rem">· 12</span></a>
+      <a>Menzioni</a>
+      <a>Sistema</a>
+    </div>
+    <div class="body">
 
-</body>
-</html>
+      <div class="notif unread followup">
+        <div class="ic">▲</div>
+        <div class="body-m">
+          <div class="cat">Follow-Up Overdue</div>
+          <div class="msg">Il follow-up <b>"Sintesi call con Luca Conti"</b> è in ritardo di 3 giorni.</div>
+          <div class="when">Studio Bianchi · 5 min fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread studio">
+        <div class="ic">◇</div>
+        <div class="body-m">
+          <div class="cat">New Studio Request</div>
+          <div class="msg">Nuova richiesta da <b>Studio Verri Milano</b>. Submitted via V2.</div>
+          <div class="when">22 min fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread activation">
+        <div class="ic">●</div>
+        <div class="body-m">
+          <div class="cat">Tenant Activated</div>
+          <div class="msg"><b>Atelier Verde Milano</b> ha completato l'attivazione. Magic link inviato.</div>
+          <div class="when">1h fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread activity">
+        <div class="ic">☎</div>
+        <div class="body-m">
+          <div class="cat">New Activity Added</div>
+          <div class="msg">Una nuova call con <b>Mario Rossi</b> è stata aggiunta a Martinel ID da Raffaella.</div>
+          <div class="when">2h fa</div>
+        </div>
+      </div>
+
+      <div class="notif unread contact">
+        <div class="ic">+</div>
+        <div class="body-m">
+          <div class="cat">New Contact</div>
+          <div class="msg"><b>Andrea Tasso</b> è stato aggiunto come Buyer Junior a Martinel ID.</div>
+          <div class="when">3h fa</div>
+        </div>
+      </div>
+
+      <div class="notif studio">
+        <div class="ic">◆</div>
+        <div class="body-m">
+          <div class="cat">Advisor Assignment</div>
+          <div class="msg">Sei stata assegnata come advisor di <b>Studio Verri Milano</b>.</div>
+          <div class="when">5h fa</div>
+        </div>
+      </div>
+
+      <div class="notif activity">
+        <div class="ic">✉</div>
+        <div class="body-m">
+          <div class="cat">New Activity Added</div>
+          <div class="msg">Email da <b>Giulia Bianchi</b> registrata nel timeline.</div>
+          <div class="when">Ieri · 16:40</div>
+        </div>
+      </div>
+
+      <div class="notif activation">
+        <div class="ic">◎</div>
+        <div class="body-m">
+          <div class="cat">Workspace Access</div>
+          <div class="msg"><b>Mario Rossi</b> ha effettuato il primo login sul suo workspace.</div>
+          <div class="when">Ieri · 09:00</div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div class="switcher">
+    <button id="b-rc" class="on">Relationship Center</button>
+    <button id="b-aw">Advisor Workspace</button>
+    <button id="b-notif">+ Notification Drawer</button>
+    <button id="b-mob">Mobile</button>
+  </div>
+
+  <script>
+    const body = document.body;
+    document.querySelectorAll('.tl-row').forEach(r => {
+      r.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        r.classList.toggle('expanded');
+      });
+    });
+    const setView = (v) => {
+      body.classList.remove('view-rc','view-aw');
+      body.classList.add('view-' + v);
+      document.getElementById('b-rc').classList.toggle('on', v === 'rc');
+      document.getElementById('b-aw').classList.toggle('on', v === 'aw');
+      body.classList.toggle('advisor', v === 'aw');
+    };
+    document.getElementById('b-rc').onclick = () => setView('rc');
+    document.getElementById('b-aw').onclick = () => setView('aw');
+    document.getElementById('b-notif').onclick = () => body.classList.toggle('show-notif');
+    document.getElementById('b-mob').onclick = () => body.classList.toggle('mobile');
+    document.querySelector('.notif-mask').onclick = () => body.classList.remove('show-notif');
+
+    const q = new URLSearchParams(location.search);
+    if (q.get('view') === 'aw') setView('aw');
+    if (q.get('notif') === '1') body.classList.add('show-notif');
+    if (q.get('mobile') === '1') body.classList.add('mobile');
+  </script>
+</body></html>
