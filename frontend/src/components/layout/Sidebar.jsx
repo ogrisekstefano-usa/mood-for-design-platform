@@ -338,21 +338,32 @@ const Sidebar = () => {
 
 export default Sidebar;
 
-// ── Nuovo Lead CTA (ITER183) ─────────────────────────────
+// ── Global "+ Crea" CTA (ITER-UI-REFACTOR · was: NewRelationshipCta) ─
+// Opens the Global Create Modal (config-driven). Single entry point
+// for any creation action across the platform.
 const NewRelationshipCta = ({ collapsed }) => {
-  const { open } = useNewRelationship();
+  const { t } = useBlueprint();
+  const onOpen = () => {
+    try {
+      // eslint-disable-next-line global-require
+      require('./CreateModal').openCreateModal();
+    } catch (_) { /* tolerate missing module — silently */ }
+  };
+  const label = t('create.cta.label', null, 'Crea');
   if (collapsed) {
     return (
       <button
         type="button"
-        onClick={() => open()}
-        data-testid="sidebar-new-relationship-trigger"
-        aria-label="Nuovo Lead"
-        title="Nuovo Lead"
+        onClick={onOpen}
+        data-testid="sidebar-create-trigger"
+        aria-label={label}
+        title={label}
         style={{
           margin: '10px 10px 6px', padding: '10px 0',
-          background: '#0c0e12', color: '#ffffff',
-          border: 0, borderRadius: 8, cursor: 'pointer',
+          background: 'var(--bp-surface-elevated, #0c0e12)',
+          color: 'var(--bp-text, #ffffff)',
+          border: '1px solid var(--bp-border, rgba(255,255,255,.1))',
+          borderRadius: 8, cursor: 'pointer',
           fontSize: 18, fontWeight: 400,
         }}
       >+</button>
@@ -361,21 +372,29 @@ const NewRelationshipCta = ({ collapsed }) => {
   return (
     <button
       type="button"
-      onClick={() => open()}
-      data-testid="sidebar-new-relationship-trigger"
+      onClick={onOpen}
+      data-testid="sidebar-create-trigger"
       style={{
         margin: '12px 14px 8px', padding: '10px 14px',
-        background: '#0c0e12', color: '#ffffff',
-        border: 0, borderRadius: 8, cursor: 'pointer',
+        background: 'var(--bp-surface-elevated, #0c0e12)',
+        color: 'var(--bp-text, #ffffff)',
+        border: '1px solid var(--bp-border, rgba(255,255,255,.1))',
+        borderRadius: 8, cursor: 'pointer',
         fontSize: 13, fontWeight: 500, letterSpacing: '0.01em',
         display: 'flex', alignItems: 'center', gap: 8,
-        transition: 'background 160ms ease',
+        transition: 'background 160ms ease, border-color 160ms ease',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#1f2329'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#0c0e12'; }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'var(--bp-surface-hover, #1f2329)';
+        e.currentTarget.style.borderColor = 'var(--accent-primary, #5dd9c4)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'var(--bp-surface-elevated, #0c0e12)';
+        e.currentTarget.style.borderColor = 'var(--bp-border, rgba(255,255,255,.1))';
+      }}
     >
       <span aria-hidden style={{ fontSize: 16, lineHeight: 1 }}>+</span>
-      <span>Nuovo Lead</span>
+      <span>{label}</span>
     </button>
   );
 };

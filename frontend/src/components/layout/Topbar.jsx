@@ -104,14 +104,12 @@ const Topbar = () => {
 
   return (
     <header data-testid="topbar" className="atelier-header" style={{ position: 'relative', zIndex: 50 }}>
-      {/* LEFT — workspace pill + optional page slot */}
+      {/* LEFT — page breadcrumb / slot.
+          ITER-UI-REFACTOR: WorkspaceChip ("85 MOOD for DESIGN") removed —
+          the workspace identity now lives in the sidebar logo only. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 24, minWidth: 0, flex: 1 }}>
-        <WorkspaceChip />
         {slots.left ? (
-          <>
-            <span style={{ height: 18, width: 1, background: 'var(--bp-border)', flexShrink: 0 }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>{slots.left}</div>
-          </>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>{slots.left}</div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
             <NavigableBreadcrumb compact />
@@ -126,7 +124,9 @@ const Topbar = () => {
         </div>
       )}
 
-      {/* RIGHT — actions + global controls */}
+      {/* RIGHT — actions + global controls.
+          ITER-UI-REFACTOR: PrimaryCta ("Nuovo Lead" / "Nuovo Design Journey™")
+          removed — creation is centralised in the sidebar "+ Crea" button. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
         {slots.right && (
           <>
@@ -134,8 +134,6 @@ const Topbar = () => {
             <span style={{ width: 1, height: 20, background: 'var(--bp-border)', margin: '0 2px' }} />
           </>
         )}
-
-        <PrimaryCta />
 
         <DesignerPresencePicker locale="it" compact />
         <NotificationBell locale="it" />
