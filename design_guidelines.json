@@ -1,26 +1,33 @@
 {
-  "theme": "Dark",
-  "archetype": "4 (Swiss & High-Contrast) / 5 (Luxury)",
-  "rationale": "Cinematic dark UI (Blueprint Chameleon™) using glassmorphism and editorial typography. Translates the 'PDF -> Entità -> Relazioni' narrative by moving from a raw document view to an interactive, node-like structure where users certify connections.",
+  "theme": "DARK",
+  "archetype": "Luxury",
   "typography": {
-    "headings": "Cormorant Garamond (Serif) for editorial authority",
-    "body": "Inter for readability",
-    "accents": "JetBrains Mono for tech/data-driven precision"
+    "headings": "Cormorant Garamond, Playfair Display, serif",
+    "body": "Inter, sans-serif",
+    "numbers": "JetBrains Mono, Roboto Mono, monospace"
   },
   "colors": {
-    "background": "#050505",
-    "panel": "#111111",
-    "accent": "#00e5ff",
-    "borders": "rgba(255, 255, 255, 0.08)"
+    "background": "#070707",
+    "surface": "#111111",
+    "surfaceGlass": "rgba(17, 17, 17, 0.65)",
+    "border": "rgba(255, 255, 255, 0.08)",
+    "primary": "#00e5ff",
+    "accent": "#00b4d8",
+    "text": "#ffffff",
+    "textSecondary": "#a1a1aa",
+    "textMuted": "#52525b"
   },
-  "layout": {
-    "desktop": "3-column structured grid (Nav | Viewer | AI Panel)",
-    "mobile": "Tabbed vertical stack"
-  },
+  "visual_enhancers": [
+    "Glassmorphism with heavy backdrop blur (12px+)",
+    "Cinematic dark UI (Blueprint Chameleon™)",
+    "Subtle teal/cyan accents for relations and interactions",
+    "1px delicate borders"
+  ],
   "components": {
-    "cards": "Glassmorphic backdrop-blur-xl with semi-transparent borders",
-    "buttons": "Monospace uppercase, hollow with accent borders or subtle glass fills",
-    "badges": "Active, clickable states representing pipeline stages"
+    "knowledgeStrip": "Persistent top bar, glass surface, brand metrics, live delta counters",
+    "fourColumnWorkspace": "Grid layout: Navigator (20%), Viewer (30%), Inspector (25%), Validation (25%)",
+    "entityInspector": "Deep dive card, Passport to Knowledge Graph, relationship graph preview",
+    "aiValidation": "Tri-state apply scope [Applica solo qui, Applica al catalogo, Applica all'intero brand]"
   },
-  "instructions_to_main_agent": "Ensure cinematic UI feel. Do NOT use white backgrounds. Rely heavily on typography contrast between serif and monospace to differentiate brand data from technical validation states. Every screen must include data-testid attributes for interactive elements."
+  "instructions_to_main_agent": "Output wireframes in HTML/CSS without React. Make PDF viewer visually subordinate to the Entity Inspector and AI Validation to reinforce Brand Atlas creation."
 }

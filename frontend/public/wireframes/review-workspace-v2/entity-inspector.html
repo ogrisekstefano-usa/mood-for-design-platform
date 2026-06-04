@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Entity Inspector - Focus</title>
+  <link rel="stylesheet" href="chameleon.css">
+</head>
+<body style="background: #000; display:flex; justify-content:center; align-items:center; height:100vh;">
+  <div class="col entity-inspector-col" style="width: 400px; height: 80vh; border: 1px solid var(--border);">
+    <div class="col-header">Entity Inspector (Deep Dive)</div>
+    <div class="col-content">
+      <div class="entity-card">
+        <span class="entity-tag">Product</span>
+        <h2 class="entity-name">KURA</h2>
+        <div class="entity-fact"><span class="fact-label">Designer</span><span class="fact-value">CR&S Riva1920</span></div>
+        <div class="entity-fact"><span class="fact-label">Materiali</span><span class="fact-value">Noce Canaletto, Ferro</span></div>
+        <div class="entity-fact"><span class="fact-label">Cataloghi</span><span class="fact-value">Icons 2025, Living 2024</span></div>
+        <div class="entity-fact"><span class="fact-label">Confidence</span><span class="fact-value mono text-teal">94%</span></div>
+        <div class="actions-stack">
+          <button class="btn btn-primary">Apri scheda completa</button>
+          <button class="btn">Modifica</button>
+          <button class="btn">Unisci</button>
+          <button class="btn btn-atlas">Vai nel Brand Atlas &rarr;</button>
+        </div>
+      </div>
+      <div class="graph-preview">
+        <div class="graph-title">Brand Atlas Relations</div>
+        <div class="graph-nodes">
+          <svg class="wires"><line x1="50%" y1="60px" x2="25%" y2="26px" /><line x1="50%" y1="60px" x2="75%" y2="26px" /><line x1="50%" y1="60px" x2="35%" y2="106px" /><line x1="50%" y1="60px" x2="65%" y2="106px" /></svg>
+          <div class="node node-1">CR&S</div><div class="node node-2">Noce</div><div class="node node-3">IMG</div><div class="node node-4">CAT</div>
+          <div class="node node-center serif" style="font-size:14px; border-color:var(--teal)">KURA</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-sec); margin-top:8px;" class="mono">38 RELAZIONI CONFERMATE</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

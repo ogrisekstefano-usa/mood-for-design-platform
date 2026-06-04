@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Workspace - Blueprint Chameleon™</title>
+  <link rel="stylesheet" href="chameleon.css">
+</head>
+<body>
+  <!-- Knowledge Strip -->
+  <div class="knowledge-strip" data-testid="knowledge-strip">
+    <div class="brand-name serif">Riva1920 <span class="sec" style="font-size:12px; font-family:'Inter'">Knowledge Package™</span></div>
+    <div class="metrics mono">
+      <div class="metric">PAGINE <span class="metric-val">274</span></div>
+      <div class="metric">PRODOTTI <span class="metric-val">83</span><span class="delta">+2</span></div>
+      <div class="metric">DESIGNER <span class="metric-val">17</span></div>
+      <div class="metric">MATERIALI <span class="metric-val">24</span></div>
+      <div class="metric">IMMAGINI <span class="metric-val">612</span><span class="delta">+14</span></div>
+      <div class="metric">RELAZIONI <span class="metric-val">96</span><span class="delta">+5</span></div>
+    </div>
+    <div style="display:flex; gap: 16px; align-items:center;">
+      <div class="score-badge">
+        <span class="indicator"></span>
+        <span>14 ELEMENTI DA VALIDARE</span>
+      </div>
+      <div class="score-badge" style="border-color:var(--teal); color:var(--teal)">
+        SCORE: <span class="mono">87%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workspace 4-col -->
+  <div class="workspace">
+    <!-- Col 1: Navigator -->
+    <div class="col" data-testid="document-navigator">
+      <div class="col-header">Document Navigator</div>
+      <div class="col-content">
+        <div style="font-size:12px; margin-bottom: 16px; color:var(--text-sec)">ICONS 2025 (PDF)</div>
+        <ul style="list-style:none; font-size:13px; display:flex; flex-direction:column; gap:8px;">
+          <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border)">
+            <span>Copertina</span> <span class="mono sec">01</span>
+          </li>
+          <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border)">
+            <span>Indice</span> <span class="mono sec">02-03</span>
+          </li>
+          <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); color:var(--teal)">
+            <span>Tavoli</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span style="background:rgba(250,204,21,0.2); color:#facc15; padding:2px 6px; border-radius:4px; font-size:10px;">3 WARN</span>
+              <span class="mono">04-18</span>
+            </div>
+          </li>
+          <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border)">
+            <span>Kura Table</span> <span class="mono sec">07</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Col 2: Viewer -->
+    <div class="col viewer-col" data-testid="document-viewer">
+      <div class="col-header">Source Document</div>
+      <div class="pdf-page">
+        <div class="pdf-bounding-box box-1 active"></div>
+        <div class="pdf-bounding-box box-2"></div>
+        <div style="position:absolute; bottom:20px; right:20px; font-size:10px; color:var(--text-sec); font-family:var(--font-mono)">P. 07</div>
+      </div>
+    </div>
+
+    <!-- Col 3: Inspector -->
+    <div class="col entity-inspector-col" data-testid="entity-inspector">
+      <div class="col-header">Entity Inspector</div>
+      <div class="col-content">
+        <div class="entity-card">
+          <span class="entity-tag">Product</span>
+          <h2 class="entity-name">KURA</h2>
+
+          <div class="entity-fact">
+            <span class="fact-label">Designer</span>
+            <span class="fact-value">CR&S Riva1920</span>
+          </div>
+          <div class="entity-fact">
+            <span class="fact-label">Materiali</span>
+            <span class="fact-value">Noce Canaletto, Ferro</span>
+          </div>
+          <div class="entity-fact">
+            <span class="fact-label">Cataloghi</span>
+            <span class="fact-value">Icons 2025, Living 2024</span>
+          </div>
+          <div class="entity-fact">
+            <span class="fact-label">Confidence</span>
+            <span class="fact-value mono text-teal">94%</span>
+          </div>
+
+          <div class="actions-stack">
+            <button class="btn btn-primary" data-testid="btn-open-full">Apri scheda completa</button>
+            <button class="btn" data-testid="btn-edit">Modifica</button>
+            <button class="btn" data-testid="btn-merge">Unisci</button>
+            <button class="btn btn-atlas" data-testid="btn-atlas">Vai nel Brand Atlas &rarr;</button>
+          </div>
+        </div>
+
+        <div class="graph-preview">
+          <div class="graph-title">Brand Atlas Relations</div>
+          <div class="graph-nodes">
+            <svg class="wires">
+              <line x1="50%" y1="60px" x2="25%" y2="26px" />
+              <line x1="50%" y1="60px" x2="75%" y2="26px" />
+              <line x1="50%" y1="60px" x2="35%" y2="106px" />
+              <line x1="50%" y1="60px" x2="65%" y2="106px" />
+            </svg>
+            <div class="node node-1">CR&S</div>
+            <div class="node node-2">Noce</div>
+            <div class="node node-3">IMG</div>
+            <div class="node node-4">CAT</div>
+            <div class="node node-center serif" style="font-size:14px; border-color:var(--teal)">KURA</div>
+          </div>
+          <div style="font-size:10px; color:var(--text-sec); margin-top:8px;" class="mono">38 RELAZIONI CONFERMATE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 4: AI Validation -->
+    <div class="col ai-val-col" data-testid="ai-validation">
+      <div class="col-header">AI Validation</div>
+      <div class="col-content">
+
+        <div class="val-card">
+          <div class="val-header">
+            <span class="val-type">DESIGNER AMBIGUO</span>
+            <span class="mono sec">ID: 481</span>
+          </div>
+          <h3 class="val-title serif">CR&amp;S Riva 1920 vs CR&amp;S Riva</h3>
+          <p class="val-desc">Il modello ha rilevato due nomenclature per lo stesso designer.</p>
+
+          <div class="apply-scope">
+            <div class="scope-option">
+              <span class="scope-label">Applica solo qui</span>
+              <span class="scope-impact">1 occorrenza</span>
+            </div>
+            <div class="scope-option">
+              <span class="scope-label">Applica al catalogo</span>
+              <span class="scope-impact">12 occorrenze in 1 pag</span>
+            </div>
+            <div class="scope-option" style="color:var(--teal)">
+              <span class="scope-label">Applica all'intero brand</span>
+              <span class="scope-impact">84 occorrenze in 3 cat</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="val-card">
+          <div class="val-header">
+            <span class="val-type">MATERIALE AMBIGUO</span>
+            <span class="mono sec">ID: 482</span>
+          </div>
+          <h3 class="val-title serif">Noce vs Noce Canaletto</h3>
+          <p class="val-desc">Nelle tabelle tecniche viene usato "Noce", ma nel Brand Atlas esiste "Noce Canaletto".</p>
+          <div class="apply-scope">
+            <div class="scope-option">
+              <span class="scope-label">Unisci in Noce Canaletto</span>
+              <span class="scope-impact">Massivo: 47 occorrenze</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="atlas-status-bar" data-testid="atlas-status-bar">
+    <div style="display:flex; align-items:center;">
+      <div class="status-indicator"></div>
+      BRAND ATLAS SYNC: LIVE
+    </div>
+    <div style="display:flex; gap: 16px;">
+      <span>Entità estratte: <strong class="text-main">392</strong></span>
+      <span>Nodi validati: <strong class="text-teal">104</strong> <span class="delta">+1</span></span>
+    </div>
+  </div>
+
+</body>
+</html>
