@@ -31,12 +31,12 @@ const TabBtn = ({ active, onClick, testid, label, badge }) => (
   <button
     onClick={onClick}
     data-testid={testid}
-    className={`px-5 py-3 text-sm tracking-wide transition-colors relative ${
-      active ? 'text-stone-900 border-b-2 border-black' : 'text-stone-500 hover:text-stone-900'
+    className={`px-4 py-2.5 text-[13px] transition-colors relative ${
+      active ? 'text-white border-b-2 border-black' : 'text-stone-500 hover:text-stone-900'
     }`}>
     {label}
     {typeof badge === 'number' && (
-      <span className="ml-2 text-[10px] tabular-nums text-stone-400">({badge})</span>
+      <span className="ml-1.5 text-[10px] tabular-nums text-stone-400">{badge}</span>
     )}
   </button>
 );
@@ -169,7 +169,7 @@ const TenantDetail = () => {
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-stone-400">
               <Building2 size={12} /> Tenant · {tenant.status}
             </div>
-            <h1 data-testid="tenant-name" className="text-4xl font-light tracking-tight mt-1">
+            <h1 data-testid="tenant-name" className="text-2xl tracking-tight mt-1 text-white" style={{ fontWeight: 500 }}>
               {relation?.studio_name || tenant.name}
             </h1>
             {relation && (relation.city || relation.country) && (
@@ -222,39 +222,39 @@ const TenantDetail = () => {
 
       <main className="px-8 py-8">
         {tab === 'overview' && (
-          <div data-testid="overview-pane" className="grid grid-cols-3 gap-6">
-            <div className="border border-stone-200 p-5">
+          <div data-testid="overview-pane" className="grid grid-cols-3 gap-4">
+            <div className="fl-kpi" data-testid="kpi-contacts">
               <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Contatti</div>
-              <div className="text-3xl font-light">{kpis.contacts_total}</div>
+              <div className="text-2xl tabular-nums" style={{ fontWeight: 500 }}>{kpis.contacts_total}</div>
             </div>
-            <div className="border border-stone-200 p-5">
+            <div className="fl-kpi" data-testid="kpi-activities-30d">
               <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Attività 30g</div>
-              <div className="text-3xl font-light">{kpis.activities_30d}</div>
+              <div className="text-2xl tabular-nums" style={{ fontWeight: 500 }}>{kpis.activities_30d}</div>
             </div>
-            <div className="border border-stone-200 p-5">
+            <div className="fl-kpi" data-testid="kpi-last-activity">
               <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Ultima attività</div>
-              <div className="text-sm font-light text-stone-800">
+              <div className="text-[13px] text-stone-700 tabular-nums">
                 {kpis.last_activity_at
                   ? new Date(kpis.last_activity_at).toLocaleString('it-IT')
                   : '—'}
               </div>
             </div>
-            <div className="col-span-2 border border-stone-200 p-5">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Primary contact</div>
+            <div className="col-span-2 fl-kpi">
+              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Primary contact</div>
               {primary_contact ? (
                 <div>
-                  <div className="text-lg">{primary_contact.first_name} {primary_contact.last_name}</div>
-                  <div className="text-sm text-stone-500">
+                  <div className="text-base" style={{ fontWeight: 500 }}>{primary_contact.first_name} {primary_contact.last_name}</div>
+                  <div className="text-[13px] text-stone-500">
                     {roleMap[primary_contact.role_code]?.label_it || primary_contact.role_code}
                     {primary_contact.email && <> · {primary_contact.email}</>}
                   </div>
                 </div>
               ) : <div className="text-stone-400 text-sm">Nessun primary contact impostato.</div>}
             </div>
-            <div className="border border-stone-200 p-5">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Ultime attività</div>
+            <div className="fl-kpi">
+              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Ultime attività</div>
               {recent_activities?.length ? recent_activities.slice(0, 3).map((a) => (
-                <div key={a.id} className="text-xs text-stone-700 mb-2 truncate">
+                <div key={a.id} className="text-[12px] text-stone-700 mb-1.5 truncate">
                   {a.type_label_it || a.activity_type_code} · {a.subject || '—'}
                 </div>
               )) : <div className="text-stone-400 text-sm">Nessuna attività.</div>}

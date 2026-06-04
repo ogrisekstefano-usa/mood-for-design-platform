@@ -1,0 +1,213 @@
+/* ============================================================
+ * Functional Luxury — Command Center / CRM Token Layer
+ * Approved Feb/Jun 2026.
+ *
+ * Scope:    everything rendered inside `.fl-shell` (Command Center)
+ * Strategy: do NOT rewrite component classes; instead override
+ *           Tailwind utilities (stone-*, white bg, etc.) ONLY inside
+ *           the Command Center shell. Marketing/onboarding/blueprint
+ *           remain untouched.
+ *
+ * Tokens (single source of truth, mirrored in design_guidelines.json)
+ *   Shell:           #0A0A0B
+ *   Surface:         #16161A
+ *   Surface elev:    #1D1D22
+ *   Border:          #2A2A30
+ *   Border strong:   #38383F
+ *   Text primary:    #EDEDED
+ *   Text secondary:  #A0A0A5
+ *   Text muted:      #6B6B72
+ *   Accent (MOOD):   #00C9B3
+ *   Critical:        #FF453A
+ *   Warning:         #FF9F0A
+ *   Success:         #32D74B
+ * ============================================================ */
+
+.fl-shell {
+  --fl-shell:         #0A0A0B;
+  --fl-surface:       #16161A;
+  --fl-elev:          #1D1D22;
+  --fl-elev-2:        #222226;
+  --fl-border:        #2A2A30;
+  --fl-border-strong: #38383F;
+  --fl-text:          #EDEDED;
+  --fl-text-2:        #A0A0A5;
+  --fl-text-3:        #6B6B72;
+  --fl-accent:        #00C9B3;
+  --fl-critical:      #FF453A;
+  --fl-warning:       #FF9F0A;
+  --fl-success:       #32D74B;
+
+  font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--fl-text);
+  background: var(--fl-shell);
+  letter-spacing: -0.005em;
+}
+
+.fl-shell *,
+.fl-shell *::before,
+.fl-shell *::after { font-family: inherit; }
+
+/* Geist Mono only for tabular numerals / timestamps */
+.fl-shell .tabular-nums,
+.fl-shell [class*='tabular-nums'] {
+  font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Banish Playfair from the operational shell — Playfair only survives
+ * on marketing/onboarding (which mount outside .fl-shell). */
+.fl-shell h1, .fl-shell h2, .fl-shell h3,
+.fl-shell h4, .fl-shell h5, .fl-shell h6,
+.fl-shell [style*='Playfair'] {
+  font-family: 'Geist', system-ui, sans-serif !important;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* ── Background utility overrides (white & light-stone → dark) ── */
+.fl-shell .bg-white       { background-color: var(--fl-surface) !important; }
+.fl-shell .bg-stone-50    { background-color: var(--fl-elev)    !important; }
+.fl-shell .bg-stone-100   { background-color: var(--fl-elev-2)  !important; }
+.fl-shell .bg-stone-200   { background-color: var(--fl-elev-2)  !important; }
+.fl-shell .bg-black       { background-color: var(--fl-accent)  !important; color: #0A0A0B !important; }
+
+/* Hover surfaces */
+.fl-shell .hover\:bg-stone-50:hover   { background-color: var(--fl-elev-2)   !important; }
+.fl-shell .hover\:bg-stone-100:hover  { background-color: #2A2A30            !important; }
+.fl-shell .hover\:bg-white:hover      { background-color: var(--fl-elev-2)   !important; }
+
+/* ── Border overrides ── */
+.fl-shell .border-stone-100  { border-color: rgba(255,255,255,0.04) !important; }
+.fl-shell .border-stone-200  { border-color: var(--fl-border)        !important; }
+.fl-shell .border-stone-300  { border-color: var(--fl-border-strong) !important; }
+.fl-shell .border-black      { border-color: var(--fl-accent)        !important; }
+.fl-shell .border-dashed     { border-style: dashed; }
+
+/* ── Text overrides ── */
+.fl-shell .text-stone-900,
+.fl-shell .text-black            { color: var(--fl-text)   !important; }
+.fl-shell .text-stone-800        { color: var(--fl-text)   !important; }
+.fl-shell .text-stone-700        { color: #D0D0D5          !important; }
+.fl-shell .text-stone-600        { color: var(--fl-text-2) !important; }
+.fl-shell .text-stone-500        { color: var(--fl-text-2) !important; }
+.fl-shell .text-stone-400        { color: var(--fl-text-3) !important; }
+.fl-shell .text-stone-300        { color: #4A4A52          !important; }
+.fl-shell .text-white            { color: var(--fl-text)   !important; }
+.fl-shell .hover\:text-stone-900:hover { color: var(--fl-text)   !important; }
+.fl-shell .hover\:text-stone-700:hover { color: var(--fl-text)   !important; }
+
+/* Accent text variants (red/amber/emerald) recoloured for dark contrast */
+.fl-shell .text-emerald-700 { color: var(--fl-success)  !important; }
+.fl-shell .text-amber-600   { color: var(--fl-warning)  !important; }
+.fl-shell .text-amber-500   { color: var(--fl-warning)  !important; }
+.fl-shell .text-red-600     { color: var(--fl-critical) !important; }
+.fl-shell .text-red-700     { color: var(--fl-critical) !important; }
+.fl-shell .bg-emerald-50    { background: rgba(50,215,75,0.08)   !important; }
+.fl-shell .bg-amber-50      { background: rgba(255,159,10,0.08)  !important; }
+.fl-shell .bg-red-50        { background: rgba(255,69,58,0.08)   !important; }
+.fl-shell .border-emerald-200 { border-color: rgba(50,215,75,0.35)  !important; }
+.fl-shell .border-amber-200   { border-color: rgba(255,159,10,0.35) !important; }
+.fl-shell .border-red-200     { border-color: rgba(255,69,58,0.35)  !important; }
+
+/* ── Inputs & selects ── */
+.fl-shell input[type='text'],
+.fl-shell input[type='email'],
+.fl-shell input[type='password'],
+.fl-shell input[type='search'],
+.fl-shell input:not([type]),
+.fl-shell select,
+.fl-shell textarea {
+  background: var(--fl-elev)  !important;
+  color:      var(--fl-text)  !important;
+  border-color: var(--fl-border) !important;
+}
+.fl-shell input::placeholder,
+.fl-shell textarea::placeholder { color: var(--fl-text-3) !important; }
+.fl-shell input:focus,
+.fl-shell select:focus,
+.fl-shell textarea:focus {
+  outline: none !important;
+  border-color: var(--fl-accent) !important;
+}
+
+/* ── Buttons: black-on-white CTAs become accent-on-dark ── */
+.fl-shell .bg-black.text-white,
+.fl-shell button.bg-black,
+.fl-shell .bg-black {
+  background-color: var(--fl-accent) !important;
+  color: #0A0A0B !important;
+}
+.fl-shell .bg-black.text-white:hover,
+.fl-shell button.bg-black:hover {
+  filter: brightness(1.08);
+}
+
+/* ── Tables (Tenant List, Contacts, etc.) ── */
+.fl-shell table tbody tr {
+  transition: background-color 120ms ease;
+}
+.fl-shell table thead tr {
+  background: transparent;
+}
+
+/* ── Status colored chips (already overridden, but ensure border ── */
+.fl-shell [data-testid='tenant-status-chip'] {
+  background: transparent !important;
+  border-width: 1px !important;
+  letter-spacing: 0.08em;
+}
+
+/* ── Workspace sidebar fix: prevent absolute footer from overlapping
+ *    long nav lists. Switch to flex column layout. ── */
+.fl-aside {
+  display: flex !important;
+  flex-direction: column;
+}
+.fl-aside-nav    { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
+.fl-aside-footer { flex: 0 0 auto; position: relative !important;
+                    padding-top: 0.75rem;
+                    border-top: 1px solid var(--fl-border); }
+
+/* ── Density: tighter tables, denser KPI cards ── */
+.fl-shell .fl-density-compact td,
+.fl-shell .fl-density-compact th { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+
+/* ── KPI Cards: replace square cards with subtle elevated surfaces ── */
+.fl-kpi {
+  background: var(--fl-surface);
+  border: 1px solid var(--fl-border);
+  padding: 1.1rem 1.25rem;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+.fl-kpi:hover { border-color: var(--fl-border-strong); background: var(--fl-elev); }
+
+/* Scrollbar — discreet on dark */
+.fl-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
+.fl-shell ::-webkit-scrollbar-track { background: var(--fl-shell); }
+.fl-shell ::-webkit-scrollbar-thumb { background: #2A2A30; border-radius: 4px; }
+.fl-shell ::-webkit-scrollbar-thumb:hover { background: #38383F; }
+
+/* Discrete selection */
+.fl-shell ::selection { background: rgba(0,201,179,0.22); color: #FFFFFF; }
+
+/* Active tab bottom-border accent override */
+.fl-shell .border-b-2.border-black { border-bottom-color: var(--fl-accent) !important; }
+
+/* Headings: serif fallback removed in operational area */
+.fl-shell .font-light { font-weight: 400; }
+
+/* Top-right notification bell sits on dark — give it breathing room */
+.fl-shell [data-testid='workspace-topbar-bell'] {
+  background: rgba(10,10,11,0.6);
+  backdrop-filter: blur(8px);
+  padding: 6px;
+  border-radius: 999px;
+}
+
+/* Drawer overlay: ensure dark backdrop is honoured */
+.fl-shell [data-radix-popper-content-wrapper],
+.fl-shell .drawer-content {
+  background: var(--fl-surface) !important;
+  color: var(--fl-text) !important;
+}

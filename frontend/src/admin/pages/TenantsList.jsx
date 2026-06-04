@@ -75,17 +75,19 @@ const TenantsList = () => {
   const clearFilter = (k) => setFilters({ ...filters, [k]: undefined });
 
   return (
-    <div data-testid="tenants-list-page" className="p-8 max-w-[1400px] mx-auto">
-      <header className="mb-8">
-        <h1 className="text-3xl font-light tracking-tight">Tenants</h1>
-        <p className="text-sm text-stone-500 mt-1">
-          {loading ? 'Caricamento…' : `${total} tenant attivi`}
-        </p>
+    <div data-testid="tenants-list-page" className="p-8 max-w-[1600px] mx-auto">
+      <header className="mb-6 flex items-baseline justify-between">
+        <div>
+          <h1 className="text-2xl tracking-tight" style={{ fontWeight: 500 }}>Tenants</h1>
+          <p className="text-[12px] text-stone-500 mt-1 tabular-nums">
+            {loading ? 'Caricamento…' : `${total} tenant attivi · vista lavoro`}
+          </p>
+        </div>
       </header>
 
-      <div className="flex items-center gap-3 mb-6 flex-wrap">
-        <div className="flex items-center gap-2 border border-stone-200 px-3 py-2 bg-white flex-1 min-w-[280px]">
-          <SearchIcon size={16} className="text-stone-400" />
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex items-center gap-2 border border-stone-200 px-3 py-1.5 bg-white flex-1 min-w-[280px]">
+          <SearchIcon size={14} className="text-stone-400" />
           <input
             data-testid="tenants-search-input"
             type="text"
@@ -93,73 +95,73 @@ const TenantsList = () => {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={onSearchKey}
-            className="flex-1 bg-transparent outline-none text-sm"
+            className="flex-1 bg-transparent outline-none text-[13px] border-0"
           />
           {q && (
             <button onClick={() => { setQ(''); reload(); }}
                     className="text-stone-400 hover:text-stone-700"
                     data-testid="tenants-search-clear">
-              <X size={14} />
+              <X size={13} />
             </button>
           )}
           <button onClick={reload} data-testid="tenants-search-submit"
-                  className="text-xs uppercase tracking-wide px-3 py-1 bg-black text-white">
+                  className="text-[11px] uppercase tracking-wide px-3 py-1 bg-black text-white">
             Cerca
           </button>
         </div>
         {Object.entries(filters).filter(([_,v]) => v).map(([k, v]) => (
-          <span key={k} className="inline-flex items-center gap-1 px-3 py-1 bg-stone-100 text-xs">
-            {k}: <strong>{String(v)}</strong>
-            <button onClick={() => clearFilter(k)} className="ml-1"><X size={12} /></button>
+          <span key={k} className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-100 text-[11px] border border-stone-200">
+            <span className="text-stone-400 uppercase tracking-wide">{k}:</span> <strong className="text-stone-700">{String(v)}</strong>
+            <button onClick={() => clearFilter(k)} className="ml-1 text-stone-400 hover:text-stone-700"><X size={11} /></button>
           </span>
         ))}
       </div>
 
       <div className="border border-stone-200 bg-white">
-        <table data-testid="tenants-table" className="w-full text-sm">
-          <thead className="border-b border-stone-200 text-[11px] uppercase tracking-wider text-stone-500">
+        <table data-testid="tenants-table" className="w-full text-[13px] fl-density-compact">
+          <thead className="border-b border-stone-200 text-[10px] uppercase tracking-wider text-stone-500">
             <tr>
-              <th className="text-left px-4 py-3">Studio</th>
-              <th className="text-left px-4 py-3">Geo</th>
-              <th className="text-left px-4 py-3">Advisor</th>
-              <th className="text-left px-4 py-3">Owner</th>
-              <th className="text-left px-4 py-3">Status</th>
-              <th className="text-right px-4 py-3">Contacts</th>
-              <th className="text-right px-4 py-3">Last Activity</th>
-              <th className="w-12"></th>
+              <th className="text-left px-4 py-2.5 font-medium">Studio</th>
+              <th className="text-left px-4 py-2.5 font-medium">Geo</th>
+              <th className="text-left px-4 py-2.5 font-medium">Advisor</th>
+              <th className="text-left px-4 py-2.5 font-medium">Owner</th>
+              <th className="text-left px-4 py-2.5 font-medium">Status</th>
+              <th className="text-right px-4 py-2.5 font-medium">Contacts</th>
+              <th className="text-right px-4 py-2.5 font-medium">Last Activity</th>
+              <th className="w-10"></th>
             </tr>
           </thead>
           <tbody>
             {loading && (
-              <tr><td colSpan={8} className="text-center py-12 text-stone-400">Caricamento…</td></tr>
+              <tr><td colSpan={8} className="text-center py-10 text-stone-400">Caricamento…</td></tr>
             )}
             {!loading && rows.length === 0 && (
-              <tr><td colSpan={8} className="text-center py-12 text-stone-400">Nessun tenant.</td></tr>
+              <tr><td colSpan={8} className="text-center py-10 text-stone-400">Nessun tenant.</td></tr>
             )}
             {!loading && rows.map((t) => (
               <tr key={t.id}
                   data-testid={`tenant-row-${t.id}`}
                   onClick={() => navigate(`/command-center/tenants/${t.id}`)}
                   className="border-b border-stone-100 hover:bg-stone-50 cursor-pointer transition-colors">
-                <td className="px-4 py-4">
-                  <div className="flex items-center gap-3">
-                    <Building2 size={16} className="text-stone-400" />
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2.5">
+                    <Building2 size={14} className="text-stone-400" />
                     <div>
-                      <div className="font-medium">{t.studio_name || t.name || '—'}</div>
-                      <div className="text-[11px] text-stone-400">{t.slug}</div>
+                      <div style={{ fontWeight: 500 }}>{t.studio_name || t.name || '—'}</div>
+                      <div className="text-[10px] text-stone-400 tabular-nums">{t.slug}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-4 text-stone-600">{[t.city, t.country].filter(Boolean).join(', ') || '—'}</td>
-                <td className="px-4 py-4 text-stone-600">{t.advisor_display || '—'}</td>
-                <td className="px-4 py-4 text-stone-600">{t.tenant_owner_display || '—'}</td>
-                <td className="px-4 py-4"><StatusChip status={t.status} /></td>
-                <td className="px-4 py-4 text-right tabular-nums">{t.contacts_count || 0}</td>
-                <td className="px-4 py-4 text-right text-[11px] text-stone-400">
+                <td className="px-4 py-3 text-stone-600">{[t.city, t.country].filter(Boolean).join(', ') || '—'}</td>
+                <td className="px-4 py-3 text-stone-600">{t.advisor_display || '—'}</td>
+                <td className="px-4 py-3 text-stone-600">{t.tenant_owner_display || '—'}</td>
+                <td className="px-4 py-3"><StatusChip status={t.status} /></td>
+                <td className="px-4 py-3 text-right tabular-nums">{t.contacts_count || 0}</td>
+                <td className="px-4 py-3 text-right text-[11px] text-stone-400 tabular-nums">
                   {t.last_activity_at ? new Date(t.last_activity_at).toLocaleDateString('it-IT') : '—'}
                 </td>
-                <td className="px-2 py-4 text-stone-300">
-                  <ArrowUpRight size={14} />
+                <td className="px-2 py-3 text-stone-300">
+                  <ArrowUpRight size={13} />
                 </td>
               </tr>
             ))}
