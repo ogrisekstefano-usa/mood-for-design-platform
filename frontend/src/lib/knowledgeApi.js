@@ -103,6 +103,16 @@ export const unlinkBrandFromStudio = (brandId) =>
 export const atlasDiscover = () => api.get(`${BASE}/atlas/discover`);
 export const atlasFacets = () => api.get(`${BASE}/atlas/facets`);
 
+// ─── V3.1 · Review Workspace™ (Brand Atlas → Ecosistema MOOD) ───────
+export const futureUses = (setId, entityId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities/${entityId}/future-uses`);
+export const connectedAssets = (setId, entityId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities/${entityId}/connected-assets`);
+export const projectImpact = (setId, entityId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities/${entityId}/project-impact`);
+export const applyCorrection = (setId, entityId, payload) =>
+  api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/apply-correction`, payload);
+
 export default {
   listBrands, getBrand, createBrand,
   listCatalogSets, createCatalogSet, getCatalogSet, updateCatalogSet,
@@ -118,4 +128,5 @@ export default {
   brandEmbassy, patchBrandHero, uploadBrandHero, regenerateMoodDna,
   linkBrandToStudio, unlinkBrandFromStudio,
   atlasDiscover, atlasFacets,
+  futureUses, connectedAssets, projectImpact, applyCorrection,
 };

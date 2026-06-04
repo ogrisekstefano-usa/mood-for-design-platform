@@ -159,6 +159,9 @@ api_router.include_router(_extr_jobs_router.router, prefix="/knowledge", tags=["
 
 from routers import brand_experience as _brand_exp_router  # noqa: E402
 api_router.include_router(_brand_exp_router.router, prefix="/knowledge", tags=["brand-experience"])
+# V3.1 · Review Workspace™ — Future Uses / Connected Assets / Project Impact / Knowledge Impact
+from routers import review_workspace_v3 as _rwv3_router  # noqa: E402
+api_router.include_router(_rwv3_router.router, prefix="/knowledge", tags=["review-workspace-v3"])
 # ITER204-B · Entity Navigation Layer™ — Collection/Product/Material/Designer detail
 from routers import entity_navigation as _entity_nav_router  # noqa: E402
 api_router.include_router(_entity_nav_router.router, prefix="/knowledge", tags=["entity-navigation"])

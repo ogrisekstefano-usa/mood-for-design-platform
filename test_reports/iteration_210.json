@@ -1,0 +1,38 @@
+{
+  "summary": "Review Workspace V3.1 — full end-to-end validation on Catalog Set 00e33d7f. Backend: all 6 pytest in test_review_workspace_v3.py PASS (future-uses shape + 404, connected-assets future-proof groups, project-impact placeholder, apply-correction persists + 400 on bad scope). Frontend: all 4 columns + Knowledge Strip + Atlas Sync render correctly; live metrics ARBI TEST 2026 = Pagine 1564 / Prodotti 398 / Designer 0 / Materiali 12 / Immagini 0 / Relazioni 664, Score 14%, '407 DA VALIDARE' badge. Document Navigator lists 16 PDFs, click sets is-active. Document Viewer shows 4 bounding boxes + all 4 layer toggles (products/materials/designers/images); bbox click opens Entity Inspector. AI Validation panel lists 12 validation cards with 3 scope options each; scope click flips to is-active radio; 'Approva validazione' POST /apply-correction returns 200 with scope=catalog, toast 'Validato · catalog' appears, validated counter in Atlas Sync footer increments 93→94 (real DB write confirmed). Knowledge Impact Card (rw-knowledge-impact-card) appears in Overview after approval. All 4 Inspector tabs (overview/connected/future/project) render their respective panels (rw-future-uses-panel, rw-connected-assets-network, rw-project-impact-card). Atlas Sync footer present with live counters; 'Certifica Knowledge Package' button visible. Regression OK: Upload + Extraction sections (sezione 1 & 2) still present on the same page. Zero critical console errors (only i18n missing-keys + setState dev warnings + transient 401/403 on protected resources, all pre-existing & non-blocking).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Review Workspace V3 — 4-column layout at 1920px",
+        "issues": [
+          "When Entity Inspector is in filled state (entity selected), at viewport 1920px the column header 'ENTITY INSPECTOR' visibly overlaps with the adjacent 'AI VALIDATION' column header ('ITY INSPECTOR' bleeds into 'AI VALIDATION' area in the rendered DOM). Column widths/grid template look slightly under-budgeted when Inspector content is rendered alongside 3 other columns. Cosmetic/spacing only — interactions still work; consider tightening grid-template-columns or enabling horizontal overflow handling in /app/frontend/src/components/review-workspace/review-workspace-v3.css."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_review_workspace_v3.py",
+    "/app/test_reports/pytest/iter_rwv3.xml"
+  ],
+  "action_items": [
+    "OPTIONAL — tighten .rw-v3 grid-template-columns (or min-width on .rw-inspector) so the 4-column header row doesn't visually overlap at 1920px when Entity Inspector is filled."
+  ],
+  "critical_code_review_comments": [
+    "review_workspace_v3.py router is clean: proper tenant scoping via _require_set/_require_entity, Pydantic body validation on apply-correction with explicit 400 on bad scope, defensive try/except around view lookups so empty datasets still return the future-proof zero-state shape (counts dict, all 10 group types). Good.",
+    "ReviewWorkspaceV3.jsx exposes a comprehensive data-testid surface (rw-v3-root, knowledge-strip, document-navigator, document-viewer, ai-validation, entity-inspector/-empty, atlas-sync, certify-btn, rw-tab-*, rw-bbox-*, rw-layer-*, rw-val-card-*, rw-scope-*, rw-approve-*, rw-knowledge-impact-card, rw-future-uses-panel, rw-connected-assets-network, rw-project-impact-card) — excellent testability.",
+    "apply-correction confirmed end-to-end: HTTP 200 + toast + Atlas Sync validated counter incremented from 93 to 94 in live UI = real ledger write to knowledge_impact_events, not optimistic-only.",
+    "Future-proof groups vocabulary (PRODUCT/MATERIAL/DESIGNER/IMAGE/BRAND/COLLECTION/DOCUMENT/PROJECT/MOODBOARD/JOURNEY) and project_types vocabulary (residential/hospitality/retail/office/home_staging) are returned consistently with empty arrays/zeros — UI can render skeleton without 404 chains.",
+    "value_aggregate=null is correctly enforced in project-impact response per V3.1 spec (no economic KPIs surfaced)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (6/6 pytest)", "frontend": "100% on critical V3 flows · 1 minor cosmetic column-overlap note"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin)",
+  "seed_data_creation": "None — used existing ARBI TEST 2026 catalog set 00e33d7f-bcc4-47ae-914f-617d049906a7 (16 PDF, 1564 pagine, 500 entità, status=needs_review). Apply-correction approval mutated state by +1 validated entity (93→94) — this is real ledger data and persists.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Review Workspace V3.1 fully validated. Backend pytest suite at /app/backend/tests/test_review_workspace_v3.py (6/6 PASS). Frontend testid surface is complete and reliable. Apply-correction flow confirmed E2E via Atlas Sync counter increment. Only minor visual nit: at 1920px the Entity Inspector column header overlaps the AI Validation header text when Inspector is in filled state. The transient 'Impossibile caricare il Catalog Set' toast on reload was NOT reproduced in this run.",
+  "rca of the issue": "n/a — no functional bugs. The single minor design observation (column header overlap when Inspector is filled at 1920px) is a CSS grid-template-columns or column min-width tuning issue in review-workspace-v3.css."
+}

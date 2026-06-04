@@ -14,7 +14,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import KE from '../../lib/knowledgeApi';
-import ReviewWorkspace from './ReviewWorkspace';
+import ReviewWorkspaceV3 from '../../components/review-workspace/ReviewWorkspaceV3';
 import './knowledge-engine.css';
 
 const STATUS_LABEL = {
@@ -654,42 +654,29 @@ export default function CatalogSetWorkspacePage() {
         />
       </section>
 
-      {/* ── Section 3 · Validation ─────────────────────────────────── */}
-      <section className="ke-section-block" data-testid="ke-section-validation">
-        <h2 className="ke-section-block__title">
-          <span className="ke-step-num">3</span>
-          Validazione Brand Knowledge Package™
-        </h2>
-        {(status === 'needs_review' || status === 'validated' || status === 'published') ? (
-          <ValidationPanel
+      {/* ── Section 3 · Review Workspace™ V3 (Brand Atlas → Ecosistema MOOD) ── */}
+      {(status === 'needs_review' || status === 'validated' || status === 'published') ? (
+        <section className="ke-section-block" data-testid="ke-section-review-v3"
+                 style={{ padding: 0, background: 'transparent', border: 'none' }}>
+          <ReviewWorkspaceV3
             setId={setId}
-            summary={summary}
-            entities={entities}
-            onRefresh={reloadAll}
-            onPublish={onPublish}
+            status={status}
+            setInfo={setInfo}
+            statusData={statusData}
+            onAfterPublish={reloadAll}
           />
-        ) : (
-          <div className="ke-empty" data-testid="ke-validation-not-ready">
-            La Validation Dashboard sarà disponibile al termine dell'estrazione.
-          </div>
-        )}
-      </section>
-
-      {/* ── Section 4 · Resolution + Review Workspace™ (ITER201) ──── */}
-      <section className="ke-section-block" data-testid="ke-section-review">
-        <h2 className="ke-section-block__title">
-          <span className="ke-step-num">4</span>
-          Review Workspace™ · Brand Atlas Certification
-        </h2>
-        {(status === 'needs_review' || status === 'validated' || status === 'published') ? (
-          <ReviewWorkspace setId={setId} status={status}
-                            onAfterPublish={reloadAll} />
-        ) : (
-          <div className="ke-empty" data-testid="ke-review-not-ready">
+        </section>
+      ) : (
+        <section className="ke-section-block" data-testid="ke-section-review-not-ready">
+          <h2 className="ke-section-block__title">
+            <span className="ke-step-num">3</span>
+            Review Workspace™ · Brand Atlas → Ecosistema MOOD
+          </h2>
+          <div className="ke-empty" data-testid="ke-review-v3-not-ready">
             Il Review Workspace sarà disponibile al termine dell'estrazione.
           </div>
-        )}
-      </section>
+        </section>
+      )}
     </div>
   );
 }
