@@ -92,8 +92,14 @@ const MultiCategoryPicker = ({
     onChange?.(selected.filter((x) => x !== k));
   };
 
+  // Safety: prevent the popover's pointer events from bubbling to any
+  // modal-level dismiss handler (the BrandFormModal backdrop closes on
+  // mouseDown when target===backdrop, but defensive stopPropagation
+  // protects against future click-outside wrappers and stacking quirks).
+  const stop = (e) => e.stopPropagation();
+
   return (
-    <div className="mcp" data-testid={testidPrefix}>
+    <div className="mcp" data-testid={testidPrefix} onMouseDown={stop}>
       <div className="mcp__chips">
         {selected.map((k) => {
           const c = byKey[k];
@@ -102,7 +108,7 @@ const MultiCategoryPicker = ({
               key={k}
               type="button"
               className="mcp__chip mcp__chip--selected"
-              onClick={() => remove(k)}
+              onClick={(e) => { e.stopPropagation(); remove(k); }}
               data-testid={`${testidPrefix}-chip-${k}`}
               aria-label={`Rimuovi ${labelFor(c)}`}
             >
@@ -116,7 +122,7 @@ const MultiCategoryPicker = ({
           <button
             type="button"
             className="mcp__add"
-            onClick={() => setOpen((o) => !o)}
+            onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
             data-testid={`${testidPrefix}-add`}
           >
             <Plus size={11} strokeWidth={2} />
@@ -124,7 +130,12 @@ const MultiCategoryPicker = ({
           </button>
 
           {open && (
-            <div className="mcp__popover" data-testid={`${testidPrefix}-popover`}>
+            <div
+              className="mcp__popover"
+              data-testid={`${testidPrefix}-popover`}
+              onMouseDown={stop}
+              onClick={stop}
+            >
               <div className="mcp__search">
                 <Search size={11} strokeWidth={1.6} />
                 <input
@@ -145,7 +156,13 @@ const MultiCategoryPicker = ({
                     <button
                       type="button"
                       className="mcp__row"
-                      onClick={() => add(c.key)}
+                      onMouseDown={(e) => {
+                        // Commit on mousedown so the document-level
+                        // outside-click handler can't dismiss the
+                        // popover before onClick has a chance to fire.
+                        e.stopPropagation();
+                        add(c.key);
+                      }}
                       data-testid={`${testidPrefix}-option-${c.key}`}
                     >
                       <span className="mcp__row-label">{labelFor(c)}</span>
@@ -170,7 +187,7 @@ const MultiCategoryPicker = ({
                 key={c.key}
                 type="button"
                 className="mcp__chip mcp__chip--ghost"
-                onClick={() => add(c.key)}
+                onClick={(e) => { e.stopPropagation(); add(c.key); }}
                 data-testid={`${testidPrefix}-suggest-${c.key}`}
               >
                 <Plus size={9} strokeWidth={2} />

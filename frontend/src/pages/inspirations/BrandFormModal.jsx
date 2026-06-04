@@ -177,9 +177,9 @@ const BrandFormModal = ({ open, mode = 'create', brand, onClose, onSaved, locale
   return createPortal(
     <div
       className="bf-backdrop"
-      onMouseDown={(e) => { if (e.target === e.currentTarget) onClose?.(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}
     >
-      <form className="bf-modal" data-testid="brand-form-modal" onSubmit={submit}>
+      <form className="bf-modal" data-testid="brand-form-modal" onSubmit={submit} onClick={(e) => e.stopPropagation()}>
         <header className="bf-head">
           <div>
             <p className="bf-eyebrow">{isEdit ? 'Modifica produttore' : 'Nuovo produttore'}</p>

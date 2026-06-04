@@ -116,8 +116,8 @@ const TagInput = ({
   );
 
   return (
-    <div className="tag-input" ref={wrapRef} data-testid={testidPrefix}>
-      <div className="tag-input__field">
+    <div className="tag-input" ref={wrapRef} data-testid={testidPrefix} onMouseDown={(e) => e.stopPropagation()}>
+      <div className="tag-input__field" onClick={() => setShowList(true)}>
         {(value || []).map((label, i) => (
           <span
             key={`${slugifyClient(label)}-${i}`}
@@ -127,7 +127,7 @@ const TagInput = ({
             <span>{label}</span>
             <button
               type="button"
-              onClick={() => remove(i)}
+              onClick={(e) => { e.stopPropagation(); remove(i); }}
               aria-label={`Rimuovi ${label}`}
               data-testid={`${testidPrefix}-chip-remove-${slugifyClient(label)}`}
             >
@@ -148,12 +148,13 @@ const TagInput = ({
       </div>
 
       {showList && input.trim().length > 0 && autocomplete.length > 0 && (
-        <ul className="tag-input__autocomplete" data-testid={`${testidPrefix}-autocomplete`}>
+        <ul className="tag-input__autocomplete" data-testid={`${testidPrefix}-autocomplete`} onMouseDown={(e) => e.stopPropagation()}>
           {autocomplete.map((t) => (
             <li key={t.slug}>
               <button
                 type="button"
-                onClick={() => commit(t.label)}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={(e) => { e.stopPropagation(); commit(t.label); }}
                 data-testid={`${testidPrefix}-suggest-${t.slug}`}
               >
                 <span>{t.label}</span>
@@ -170,7 +171,8 @@ const TagInput = ({
               <button
                 type="button"
                 className="tag-input__create"
-                onClick={() => commit(input)}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={(e) => { e.stopPropagation(); commit(input); }}
                 data-testid={`${testidPrefix}-create-new`}
               >
                 <Plus size={10} strokeWidth={2} />
@@ -190,7 +192,7 @@ const TagInput = ({
                 key={s.slug}
                 type="button"
                 className="tag-input__suggested-chip"
-                onClick={() => commit(s.label)}
+                onClick={(e) => { e.stopPropagation(); commit(s.label); }}
                 data-testid={`${testidPrefix}-suggested-${s.slug}`}
               >
                 <Plus size={9} strokeWidth={2} />

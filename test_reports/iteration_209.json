@@ -1,0 +1,49 @@
+{
+  "summary": "ITER209 — Retest fix HIGH bug MultiCategoryPicker (option click non creava chip / chiudeva modal). ALL 14 test cases PASS. Bug FIXED end-to-end: option click su popover crea chip, modal resta aperta, popover resta aperto, sequential adds OK, chip × remove OK, TagInput (autocomplete, Enter commit, suggested click, custom new tag, Backspace empty) OK, Submit POST 201 con payload categories+tags corretto, modal si chiude post-submit.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Login + Sidebar console", "issues": ["[i18n] Missing keys: auth.login.* (eyebrow/email_label/password_label/cta/...), nav.crm_accounts, nav.crm_follow_ups, nav.crm_archived, nav.journey_mail_workspace, nav.editorial_copy_cms, nav.admin_languages, nav.blueprint_admin, nav.section.communications, auth.access.* — non bloccante, ma sporca la console. Pre-esistente, non causato da questo fix.", "Warning React: 'Cannot update a component (LocalizationOverlay) while rendering a different component (LoginPage/Sidebar/Section)' — setState in render in LocalizationOverlay, pre-esistente."]}
+    ]
+  },
+  "verified_acceptance_criteria": [
+    "✅ /inspirations/brands/legacy → click bm-add-brand apre modal",
+    "✅ click brand-form-categories-add apre popover",
+    "✅ click brand-form-categories-option-cucine crea chip brand-form-categories-chip-cucine — modal RESTA APERTA (BUG FIX VERIFIED)",
+    "✅ Aggiunta sequenziale di 3 categorie (cucine, arredi, bagno / cucine, outdoor) — modal e popover restano aperti",
+    "✅ Le option già selezionate spariscono dal popover dopo l'aggiunta (count=0 verificato)",
+    "✅ Chip × cliccabile per rimuovere (cucine rimosso, modal resta aperta)",
+    "✅ categories=[] → striscia brand-form-categories-suggested presente",
+    "✅ Dopo primo chip aggiunto → striscia suggested scompare (count=0)",
+    "✅ TagInput digitando 'lus' → brand-form-tags-autocomplete visibile",
+    "✅ TagInput Enter → chip brand-form-tags-chip-lus creato, input ripulito",
+    "✅ TagInput tag custom 'xxxcustomtag<ts>' → chip creato, modal aperta (registry upsert lato server)",
+    "✅ TagInput suggested click (luxury) → chip aggiunto, modal aperta",
+    "✅ TagInput Backspace su input vuoto → ultimo chip rimosso",
+    "✅ Submit: POST /api/inspirations/registry/brands → 201 created:true, item.categories:['cucine','outdoor'], item.tag_slugs:['luxury']",
+    "✅ Request body verificato: {name, categories:[...], tags:[...]} come array",
+    "✅ Modal chiusa post-submit entro 4.5s",
+    "✅ Cleanup: brand di test cancellato via DELETE /api/inspirations/registry/brands/<id> → 204"
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "Opzionale (non bloccante): aggiungere i18n keys mancanti (auth.login.*, nav.*) per pulire la console.",
+    "Opzionale (non bloccante): fix warning React 'setState in render' in LocalizationOverlay (LoginPage, Sidebar, Section)."
+  ],
+  "critical_code_review_comments": [
+    "MultiCategoryPicker: il fix è corretto — option button commit su onMouseDown con e.stopPropagation() impedisce al document mousedown handler di chiudere il popover prima di onClick. Popover wrapper ha sia onMouseDown=stop che onClick=stop. Codice pulito, catalog-driven, label_it/label_en supportati.",
+    "TagInput: stopPropagation defensive su tutte le interazioni (chip remove, autocomplete, suggested, create-new). Wrapper ha onMouseDown=stop. Buona dedup client+server side via slugifyClient.",
+    "BrandFormModal: backdrop usa onClick (non onMouseDown) per chiusura sul target===currentTarget, form ha onClick=stopPropagation — pattern corretto per modal che contiene popover annidati.",
+    "Minor: BrandFormModal usa MARKETS hardcoded inline (US/IT/UK/FR/AE) — dovrebbe essere catalog-driven come categories. Coerente con il design 'registry-first UX' indicato nel commento ma implementazione hardcoded. Non bloccante per questo fix."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend only)", "frontend": "100% (14/14)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin) — funziona, login → /dashboard",
+  "seed_data_creation": "Creato 1 brand di test 'Test Brand FlowZ 1780534430' e cancellato (DELETE 204). DB pulito.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Il fix MultiCategoryPicker (onMouseDown commit + stopPropagation a tutti i livelli — chip, popover, backdrop con onClick non onMouseDown) è VERIFIED ed è il pattern consigliato per qualsiasi popover/autocomplete annidato in modali del progetto. Backend già 12/12 PASS in iter208.",
+  "rca_of_the_issue": "Pre-fix: il document-level mousedown handler in MultiCategoryPicker (onMouseDown global handler che chiudeva popover su click outside) sparava PRIMA del click sull'option, ri-renderizzando il componente e cancellando l'option button prima che il click event potesse fire. Soluzione: commit dell'option su onMouseDown invece di onClick + stopPropagation a cascata (option, popover wrapper, picker root, form). Inoltre, BrandFormModal backdrop usa onClick (non onMouseDown) per la chiusura, così se l'utente preme mouse dentro la modal e rilascia fuori, la modal non si chiude accidentalmente."
+}
