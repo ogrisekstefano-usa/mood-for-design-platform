@@ -209,7 +209,7 @@ const WorkspacePill = ({ collapsed, monogram }) => {
 };
 
 // ── Brand mark ──────────────────────────────────────────────────
-const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
+const RailBrand = ({ collapsed, onToggle, impersonating }) => (
   <button
     type="button" onClick={onToggle}
     data-testid="sidebar-brand-toggle"
@@ -217,25 +217,31 @@ const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
     style={{
       width: '100%', background: 'transparent', border: 'none',
       borderBottom: '1px solid var(--bp-border-soft)', cursor: 'pointer',
-      padding: collapsed ? '24px 0 20px' : '28px 24px 22px',
+      padding: collapsed ? '20px 0 18px' : '24px 24px 20px',
       display: 'flex', alignItems: 'center',
-      justifyContent: collapsed ? 'center' : 'flex-start',
+      justifyContent: 'center',
       gap: 12, position: 'relative',
     }}>
-    <span className="atelier-rail__brand-mark">
-      <span style={{
-        fontFamily: 'var(--atelier-serif)', fontStyle: 'italic',
-        fontWeight: 500, fontSize: 18, color: 'var(--bp-text-headline)',
-        lineHeight: 1,
-      }}>{monogram || 'M'}</span>
-    </span>
-    {!collapsed && (
+    {collapsed ? (
       <img
-        src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png"
+        src="/brand/mood-monogram-oo.png"
+        alt="MOOD"
+        draggable={false}
+        style={{
+          width: 36, height: 36, objectFit: 'contain',
+          filter: 'drop-shadow(0 0 14px color-mix(in srgb, var(--atelier-cyan, #5dd9c4) 28%, transparent))',
+          transition: 'transform 240ms cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+      />
+    ) : (
+      <img
+        src="/brand/mood-logo-full.png"
         alt="MOOD for DESIGN™"
         className="atelier-rail__brand-logo"
         draggable={false}
-        style={{ height: 64, width: 'auto', objectFit: 'contain' }}
+        style={{
+          maxWidth: '100%', height: 64, width: 'auto', objectFit: 'contain',
+        }}
       />
     )}
     {impersonating && !collapsed && (
@@ -258,7 +264,7 @@ const Sidebar = () => {
   const { isCollapsed: sectionIsCollapsed, toggle: toggleSection } = useSectionCollapse();
   const location = useLocation();
   const inAdmin = location.pathname.startsWith('/admin');
-  const width = collapsed ? 68 : 270;
+  const width = collapsed ? 68 : 284;
   const monogram = bundle?.theme?.monogram;
 
   const sectionProps = useMemo(() => ({
@@ -273,8 +279,7 @@ const Sidebar = () => {
       className="atelier-rail"
     >
       <RailBrand collapsed={collapsed} onToggle={toggle}
-                 impersonating={impersonating && !inAdmin}
-                 monogram={monogram} />
+                 impersonating={impersonating && !inAdmin} />
 
       <NewRelationshipCta collapsed={collapsed} />
 

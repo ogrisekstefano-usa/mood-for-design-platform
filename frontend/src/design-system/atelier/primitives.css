@@ -91,7 +91,7 @@
   font-weight: 500;
   font-size: 9px;
   line-height: 1;
-  letter-spacing: 0.34em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--bp-text-faint);
   padding: 0 12px;
@@ -99,6 +99,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  min-width: 0;
+}
+.atelier-rail__section-label > span:first-of-type {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .atelier-rail__section-num {
