@@ -68,11 +68,33 @@ const UserMenu = () => {
         data-testid="topbar-user-menu-trigger"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 pl-1 pr-2.5 py-[3px] rounded-full bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] transition-colors"
+        className="flex items-center gap-2.5 pl-1 pr-3 py-[3px] rounded-full transition-all"
+        style={{
+          background: 'color-mix(in srgb, var(--bp-text-primary) 4%, transparent)',
+          border: '1px solid color-mix(in srgb, var(--bp-text-primary) 10%, transparent)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent-primary, #5dd9c4) 40%, transparent)';
+          e.currentTarget.style.background = 'color-mix(in srgb, var(--accent-primary, #5dd9c4) 6%, transparent)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--bp-text-primary) 10%, transparent)';
+          e.currentTarget.style.background = 'color-mix(in srgb, var(--bp-text-primary) 4%, transparent)';
+        }}
       >
         <span
-          className="w-7 h-7 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center overflow-hidden"
+          className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
           data-testid="topbar-user-avatar"
+          style={{
+            background: 'color-mix(in srgb, var(--accent-primary, #5dd9c4) 18%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--accent-primary, #5dd9c4) 50%, transparent)',
+            boxShadow: '0 0 0 2px color-mix(in srgb, var(--accent-primary, #5dd9c4) 8%, transparent)',
+            color: 'var(--accent-primary, #5dd9c4)',
+            fontFamily: 'var(--bp-font-mono, "JetBrains Mono", monospace)',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+          }}
         >
           {avatarUrl ? (
             <img
@@ -82,7 +104,7 @@ const UserMenu = () => {
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ) : (
-            <span className="text-[var(--bp-primary)] text-[11px] font-semibold font-body">{initial}</span>
+            <span>{initial}</span>
           )}
         </span>
         <span className="text-[var(--bp-text-secondary)] text-[12px] font-body hidden sm:block max-w-[140px] truncate">

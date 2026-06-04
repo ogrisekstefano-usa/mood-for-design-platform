@@ -319,8 +319,6 @@ const Sidebar = () => {
         )}
       </nav>
 
-      <WorkspacePill collapsed={collapsed} monogram={monogram} />
-
       <button type="button" onClick={toggle}
         data-testid="sidebar-collapse-toggle"
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
