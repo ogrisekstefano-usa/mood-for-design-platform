@@ -1,0 +1,48 @@
+{
+  "summary": "M-Brand-Registry Enhancement — backend fully verified (12/12 pytest), frontend modal sections render but a UX-blocking bug prevents picking categories. Specifically: GET /registry/brand-categories returns 18 rows with label_it/label_en/is_suggested/sort_order; ?suggested_only=true returns 9 suggested entries. GET /registry/tags?type=brand&suggested_only=true returns >=13 brand tags (all is_suggested=true). Autocomplete q=lux filters on label/slug/synonyms. POST /registry/tags is idempotent (created:true→false on retry). POST /registry/brands resolves categories against catalog (drops 'unknown_xyz' silently, dedups, preserves order), slugifies+dedups tags into tag_slugs=['made-in-italy','lusso','custom-made'] and persists new entries in tag_registry. Legacy `category:'cucine'` populates categories=['cucine']. categories=[] stays empty with brand.category=null. PATCH overwrites categories+tags with resolver re-applied. PUT /brand-categories/{key} (super_admin) upserts; DELETE soft-deactivates (active=false) and the row stops appearing in active_only listings. Unauthenticated PUT correctly returns 401/403.\n\nFrontend: at /inspirations/brands/legacy the [data-testid=bm-add-brand] is present and opens the BrandFormModal with both [data-testid=bf-field-categories] and [data-testid=bf-field-tags] sections rendered. [data-testid=brand-form-categories-add] opens the [data-testid=brand-form-categories-popover] populated with category options. HOWEVER: clicking an option (e.g. [data-testid=brand-form-categories-option-cucine]) dismisses the entire modal instead of adding a chip — no [data-testid=brand-form-categories-chip-cucine] is created and subsequent locators for [data-testid=brand-form-tags-entry] time out because the modal is closed. This appears to be a click-outside / propagation bug in MultiCategoryPicker (popover click bubbling up to the modal backdrop dismiss handler). TagInput end-to-end (autocomplete, Enter→chip, suggested chips strip) could not be exercised due to the modal closing.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "MultiCategoryPicker (BrandFormModal)",
+        "issue": "Clicking a category option inside [data-testid=brand-form-categories-popover] closes the entire BrandFormModal instead of adding a chip. After click: chip-{key} is NOT created, the option remains in the popover list, and the modal is unmounted (subsequent queries for [data-testid=bf-field-tags] / [data-testid=brand-form-tags-entry] time out). Likely root cause: pointer/click event on the option (or on the popover container) bubbles up to a click-outside handler on the modal backdrop, OR the popover is rendered outside the modal's portal/stacking context and the option's onClick is intercepted by the outside-click dismiss logic. Suggested fix: stopPropagation on the popover's pointerdown/mousedown, ensure the popover portal is wrapped in the modal's click-outside ignore list (data-portal-ignore), and verify the option button uses onMouseDown (not onClick) to commit selection before the document-level outside handler fires.",
+        "selector": "[data-testid=brand-form-categories-option-cucine]",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Brand creation with categories/tags via modal",
+        "issue": "End-to-end submit could not be verified because picking a category dismisses the modal; the resulting POST /api/inspirations/registry/brands payload (categories[], tags[]) could therefore not be observed via the UI. The same payload shape IS verified at the API layer in test_brand_registry_enhancement.py.",
+        "affected_selectors": ["[data-testid=brand-form-categories-popover]", "[data-testid=brand-form-categories-option-{key}]"]
+      }
+    ],
+    "design_issues": [
+      {"screen": "Global runtime", "issues": ["Pre-existing 'Cannot update a component (LocalizationOverlay) while rendering' React warning persists — same residual from iter_207, unrelated to this scope.", "Many nav/auth.* i18n strings missing for it-IT locale — pre-existing, not introduced by this work."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_brand_registry_enhancement.py",
+    "/app/test_reports/pytest/iter208_brand_registry.xml"
+  ],
+  "action_items": [
+    "(HIGH) Fix MultiCategoryPicker option-click so it commits the chip and keeps the BrandFormModal open. Confirm the popover is mounted inside the modal's DOM (or registered as an ignore-on-outside-click portal). After fix, retest: chip should appear with [data-testid=brand-form-categories-chip-{key}] and the option should disappear from the popover.",
+    "(INFO) Once HIGH bug is fixed, also re-verify: (a) when categories=[] the [data-testid=brand-form-categories-suggested] strip appears with clickable chips that add categories; (b) TagInput: typing >0 chars opens [data-testid=brand-form-tags-autocomplete], Enter chip-ifies and clears input, Backspace on empty input removes last chip, [data-testid=brand-form-tags-create-new] creates new tag, [data-testid=brand-form-tags-suggested] populates from tag_registry.is_suggested=true; (c) submit payload includes categories:[…] and tags:[…] as arrays."
+  ],
+  "critical_code_review_comments": [
+    "_resolve_brand_categories correctly validates against brand_categories_catalog (active!=false), dedups, preserves insertion order — drops unknown keys silently per spec.",
+    "_resolve_brand_tags is idempotent on (tenant_id, type, slug) and creates approved=false tenant-scoped tags — non-blocking on insert failures (warning logged). Good defensive pattern.",
+    "Legacy back-compat in create_brand: when categories is empty but legacy category provided, it is promoted through the SAME catalog validator — meaning an invalid legacy category would be silently dropped to categories=[] but brand.category would still be persisted (because line 218 uses `body.category or (categories[0] if categories else None)`). Consider whether legacy `category` should also be validated/dropped to keep referential integrity. INFO only — current behavior preserves back-compat.",
+    "Catalog key for bagno is 'bagno' (singular) in the seed, while the legacy CATEGORIES list in the same file uses 'bagni' (plural). The two enumerations diverge — caused my initial test failure. Recommend harmonizing or documenting that brand_categories_catalog is the source of truth.",
+    "_require_super_admin (PUT/DELETE brand-categories) is correctly enforced; unauthenticated request returns 401 from auth dep before reaching role check — verified.",
+    "Routing/visibility: PATCH/DELETE on brands enforce _is_studio_private (tenant_id != NULL AND == current tenant) — curated_public brands stay read-only. Correct."
+  ],
+  "updated_files": ["/app/backend/tests/test_brand_registry_enhancement.py (new — 12 tests, ~10s wallclock)"],
+  "success_rate": {"backend": "100% (12/12)", "frontend": "50% — modal opens with correct testids and popover renders; option click closes modal (HIGH bug)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin). No non-super_admin user available in the FOUNDER ONLY DB — the 403 test for upsert by non-admin role was substituted with the unauthenticated 401/403 case (annotated INFO per request).",
+  "seed_data_creation": "Backend suite creates 5 TEST_ brand rows + a TEST_Lusso tag + a test_cat_* catalog row, all torn down (brands deleted in session fixture; catalog row soft-deactivated). No residual that would affect future runs.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression file: /app/backend/tests/test_brand_registry_enhancement.py (12 tests, ~10s). Catalog 'bagno' singular — do NOT use 'bagni' in payload tests. Frontend bug is in MultiCategoryPicker option click — most likely click-outside/portal handling in /app/frontend/src/components/registry/MultiCategoryPicker.jsx. After fix, simply rerun the playwright flow from iter208 (login → /inspirations/brands/legacy → click bm-add-brand → click brand-form-categories-add → click brand-form-categories-option-cucine → expect brand-form-categories-chip-cucine and bf-field-tags still mounted).",
+  "rca of the issue": "Frontend HIGH bug RCA: when the user clicks [data-testid=brand-form-categories-option-cucine] inside the popover, the BrandFormModal unmounts. Confirmed by (a) cucine chip count remaining 0, (b) cucine option still showing 1 in the popover, (c) the very next locator on [data-testid=brand-form-tags-entry] timing out (modal gone). The screenshot taken after the failure shows the brands atlas page WITHOUT modal overlay — consistent with modal dismissal. Most probable cause: the popover (or one of its option buttons) is not registered in the modal's outside-click ignore list, so its pointer event reaches the modal's backdrop dismiss handler. Mitigation: stopPropagation on popover container pointer events + use onMouseDown to commit selection before the document-level handler runs."
+}

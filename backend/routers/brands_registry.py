@@ -47,11 +47,85 @@ def _slugify(s: str) -> str:
     return s or "brand"
 
 
+def _resolve_brand_categories(c, candidates: Optional[List[str]]) -> List[str]:
+    """Validate category keys against catalog. Unknown keys are dropped silently.
+
+    Returns a deduped list preserving insertion order.
+    """
+    if not candidates:
+        return []
+    cleaned = [(k or "").strip() for k in candidates if k and (k or "").strip()]
+    if not cleaned:
+        return []
+    rows = (c.table("brand_categories_catalog").select("key,active")
+            .in_("key", cleaned).execute().data or [])
+    valid = {r["key"] for r in rows if r.get("active") is not False}
+    out: List[str] = []
+    seen = set()
+    for k in cleaned:
+        if k in valid and k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
+def _resolve_brand_tags(c, tenant_id: str, profile_id: Optional[str],
+                       labels: Optional[List[str]]) -> List[str]:
+    """Upsert labels into tag_registry (type='brand') and return slugs.
+
+    For each label:
+      * slugify
+      * if a tag with same (tenant_id IS NULL OR tenant_id = X) AND slug exists → reuse
+      * otherwise create a tenant-scoped tag (approved=false) with usage_count=0
+    Output is a deduped list of slugs, preserving order of first appearance.
+    """
+    if not labels:
+        return []
+    out: List[str] = []
+    seen_slugs = set()
+    for raw in labels:
+        if not raw:
+            continue
+        label = str(raw).strip()
+        if not label or len(label) > 60:
+            continue
+        slug = _slugify(label)
+        if not slug or slug in seen_slugs:
+            continue
+        existing = (c.table("tag_registry").select("slug")
+                    .eq("type", "brand")
+                    .or_(f"tenant_id.is.null,tenant_id.eq.{tenant_id}")
+                    .eq("slug", slug).limit(1).execute().data or [])
+        if not existing:
+            try:
+                c.table("tag_registry").insert({
+                    "id":           str(uuid.uuid4()),
+                    "tenant_id":    tenant_id,
+                    "slug":         slug,
+                    "label":        label,
+                    "type":         "brand",
+                    "synonyms":     [],
+                    "approved":     False,
+                    "usage_count":  0,
+                    "is_suggested": False,
+                    "created_by":   profile_id,
+                    "created_at":   _now(),
+                    "updated_at":   _now(),
+                }).execute()
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"tag_registry insert skipped slug={slug}: {e}")
+        seen_slugs.add(slug)
+        out.append(slug)
+    return out
+
+
 # ─── Models ────────────────────────────────────────────────────────────
 class BrandCreate(BaseModel):
     name:            str = Field(..., min_length=1, max_length=120)
     website:         Optional[str] = None
     category:        Optional[str] = None
+    categories:      Optional[List[str]] = None  # M-cat · multi-select
+    tags:            Optional[List[str]] = None  # M-cat · free-text labels (slugified server-side)
     country:         Optional[str] = None
     primary_markets: Optional[List[str]] = None
     positioning:     Optional[str] = None
@@ -65,6 +139,8 @@ class BrandUpdate(BaseModel):
     name:            Optional[str] = Field(None, min_length=1, max_length=120)
     website:         Optional[str] = None
     category:        Optional[str] = None
+    categories:      Optional[List[str]] = None
+    tags:            Optional[List[str]] = None
     country:         Optional[str] = None
     primary_markets: Optional[List[str]] = None
     positioning:     Optional[str] = None
@@ -127,12 +203,21 @@ def create_brand(body: BrandCreate, ctx=Depends(get_tenant_context)):
                 .eq("slug", slug).limit(1).execute().data or [])
     if existing:
         return {"item": existing[0], "created": False}
+
+    categories = _resolve_brand_categories(c, body.categories)
+    # Back-compat: if legacy `category` provided AND categories empty, promote it
+    if not categories and body.category:
+        categories = _resolve_brand_categories(c, [body.category])
+    tag_slugs = _resolve_brand_tags(c, tid, ctx.get("profile_id"), body.tags)
+
     row = {
         "id":               str(uuid.uuid4()),
         "tenant_id":        tid,
         "name":             body.name.strip(),
         "slug":             slug,
-        "category":         body.category,
+        "category":         body.category or (categories[0] if categories else None),
+        "categories":       categories,
+        "tag_slugs":        tag_slugs,
         "country":          body.country,
         "website":          body.website,
         "positioning":      body.positioning,
@@ -186,6 +271,12 @@ def update_brand(brand_id: str, body: BrandUpdate, ctx=Depends(get_tenant_contex
                              if v is not None}
     if "name" in patch:
         patch["slug"] = _slugify(patch["name"])
+    if "categories" in patch:
+        patch["categories"] = _resolve_brand_categories(c, patch["categories"])
+    if "tags" in patch:
+        patch["tag_slugs"] = _resolve_brand_tags(
+            c, tid, ctx.get("profile_id"), patch.pop("tags")
+        )
     patch["updated_at"] = _now()
 
     if not patch:
@@ -621,18 +712,25 @@ def delete_collection(collection_id: str, ctx=Depends(get_tenant_context)):
 def tag_autocomplete(
     type:  str = Query(..., regex="^(brand|atmosphere|material|style|room_type|cultural)$"),
     q:     Optional[str] = Query(None, max_length=80),
+    suggested_only: bool = Query(False),
     limit: int = Query(30, le=60),
     ctx=Depends(get_tenant_context),
 ):
-    """Autocomplete normalized tags. Approved tags first, by usage_count desc."""
+    """Autocomplete normalized tags. Approved tags first, by usage_count desc.
+
+    `suggested_only=true` filters to ``is_suggested=true`` — used by the UI
+    to render the "Tag suggeriti" chip strip below the input.
+    """
     c = db()
     tid = ctx["tenant_id"]
-    rows = (c.table("tag_registry").select("*")
-            .eq("type", type)
-            .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
-            .order("approved", desc=True)
-            .order("usage_count", desc=True)
-            .limit(200).execute().data or [])
+    q_builder = (c.table("tag_registry").select("*")
+                 .eq("type", type)
+                 .or_(f"tenant_id.is.null,tenant_id.eq.{tid}"))
+    if suggested_only:
+        q_builder = q_builder.eq("is_suggested", True)
+    rows = (q_builder.order("approved", desc=True)
+                     .order("usage_count", desc=True)
+                     .limit(200).execute().data or [])
     if q:
         ql = q.lower()
         rows = [t for t in rows
@@ -640,6 +738,119 @@ def tag_autocomplete(
                 or ql in (t.get("slug")  or "").lower()
                 or any(ql in (s or "").lower() for s in (t.get("synonyms") or []))]
     return {"items": rows[:limit]}
+
+
+class TagCreate(BaseModel):
+    label: str = Field(..., min_length=1, max_length=60)
+    type:  str = Field(..., pattern="^(brand|atmosphere|material|style|room_type|cultural)$")
+
+
+@router.post("/registry/tags", status_code=201)
+def create_tag(body: TagCreate, ctx=Depends(get_tenant_context)):
+    """Create-or-return a tenant-private tag. Idempotent on (tenant_id, type, slug).
+
+    The catalog-typed (tenant_id IS NULL) curated tags are NEVER overwritten;
+    if a curated row matches the slug we return it unchanged so the caller
+    can keep referencing the canonical slug.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    slug = _slugify(body.label)
+    if not slug:
+        raise HTTPException(400, "Etichetta non valida.")
+    existing = (c.table("tag_registry").select("*")
+                .eq("type", body.type)
+                .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
+                .eq("slug", slug).limit(1).execute().data or [])
+    if existing:
+        return {"item": existing[0], "created": False}
+    row = {
+        "id":           str(uuid.uuid4()),
+        "tenant_id":    tid,
+        "slug":         slug,
+        "label":        body.label.strip(),
+        "type":         body.type,
+        "synonyms":     [],
+        "approved":     False,
+        "usage_count":  0,
+        "is_suggested": False,
+        "created_by":   ctx.get("profile_id"),
+        "created_at":   _now(),
+        "updated_at":   _now(),
+    }
+    c.table("tag_registry").insert(row).execute()
+    return {"item": row, "created": True}
+
+
+# ─── Brand Categories Catalog (Blueprint-managed) ──────────────────────
+@router.get("/registry/brand-categories")
+def list_brand_categories(
+    active_only: bool = Query(True),
+    suggested_only: bool = Query(False),
+    ctx=Depends(get_tenant_context),
+):
+    """List the brand category catalog. DB-driven · multilingual."""
+    c = db()
+    q = c.table("brand_categories_catalog").select("*").order("sort_order")
+    if active_only:
+        q = q.eq("active", True)
+    if suggested_only:
+        q = q.eq("is_suggested", True)
+    res = q.execute()
+    return {"data": res.data or []}
+
+
+class BrandCategoryUpsert(BaseModel):
+    label_it:       str = Field(..., min_length=1, max_length=80)
+    label_en:       str = Field(..., min_length=1, max_length=80)
+    description_it: Optional[str] = None
+    description_en: Optional[str] = None
+    active:         Optional[bool] = True
+    is_suggested:   Optional[bool] = False
+    sort_order:     Optional[int] = 100
+
+
+def _require_super_admin(ctx: dict):
+    from core.permissions import is_super_admin
+    if not is_super_admin(ctx.get("role")):
+        raise HTTPException(403, "Solo super_admin può modificare il catalogo categorie.")
+
+
+@router.put("/registry/brand-categories/{key}")
+def upsert_brand_category(key: str, body: BrandCategoryUpsert,
+                          ctx=Depends(get_tenant_context)):
+    """Create or update a category in the catalog (super_admin / Blueprint)."""
+    _require_super_admin(ctx)
+    k = _slugify(key)
+    if not k:
+        raise HTTPException(400, "Chiave categoria non valida.")
+    payload = body.model_dump(exclude_none=True)
+    payload["key"] = k
+    payload["updated_at"] = _now()
+    c = db()
+    existing = (c.table("brand_categories_catalog").select("key")
+                .eq("key", k).limit(1).execute().data or [])
+    if existing:
+        c.table("brand_categories_catalog").update(payload).eq("key", k).execute()
+    else:
+        payload["created_at"] = _now()
+        c.table("brand_categories_catalog").insert(payload).execute()
+    out = (c.table("brand_categories_catalog").select("*")
+           .eq("key", k).limit(1).execute().data or [None])[0]
+    return {"item": out}
+
+
+@router.delete("/registry/brand-categories/{key}", status_code=204)
+def delete_brand_category(key: str, ctx=Depends(get_tenant_context)):
+    """Soft-deactivate a category (super_admin). Sets active=false; existing
+    brand.categories references remain — they simply stop appearing in the
+    add-picker."""
+    _require_super_admin(ctx)
+    c = db()
+    c.table("brand_categories_catalog").update({
+        "active": False, "updated_at": _now()
+    }).eq("key", key).execute()
+    return None
 
 
 # ─── Product Usage Events™ ─────────────────────────────────────────────
