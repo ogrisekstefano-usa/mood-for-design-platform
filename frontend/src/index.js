@@ -9,6 +9,8 @@ import "@/index.css";
 import "@/site/site.css";
 import "@/site/mood.css";
 import "@/pages/site/home-iter150.css";
+// MOOD Atelier overrides — apply luxury-dark aesthetic to ALL legacy modals
+import "@/components/atelier/atelier-overrides.css";
 import App from "@/App";
 import { bootstrapLanguagesFromDB } from "@/site/content/languages";
 

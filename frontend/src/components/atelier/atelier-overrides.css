@@ -1,0 +1,92 @@
+/**
+ * Atelier overrides — applica lo stile MOOD luxury dark a tutti i modal
+ * residui che usano Radix/Shadcn Dialog senza essere ancora stati
+ * riscritti col primitive AtelierModal.
+ *
+ * Strategia: target il container Radix Dialog Content + Overlay e qualunque
+ * elemento con classi/attributi noti per "bg-white" / "white surface".
+ * Niente colori hardcoded: tutto via var(--bp-*).
+ *
+ * Per opt-out: aggiungi data-no-atelier="true" sul Dialog Content.
+ */
+
+/* Radix Dialog overlay → blur + dark tint */
+[data-radix-dialog-overlay],
+[data-radix-popper-content-wrapper] > [data-radix-dialog-overlay] {
+  background: rgba(8, 9, 11, 0.66) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* Radix Dialog content (most shadcn-based modals) */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) {
+  background:
+    radial-gradient(120% 80% at 0% 0%,
+      color-mix(in srgb, var(--accent-primary, #5dd9c4) 7%, transparent) 0%,
+      transparent 55%
+    ),
+    var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, rgba(245, 242, 237, 0.92)) !important;
+  border: 1px solid color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Headings inside atelier-styled dialogs → serif */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) h1,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) h2,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) h3 {
+  font-family: var(--bp-font-heading, 'Cormorant Garamond', serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--bp-text, #f5f2ed);
+}
+
+/* Body text inside dialogs */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) p,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) label {
+  color: color-mix(in srgb, var(--bp-text, #f5f2ed) 78%, transparent);
+}
+
+/* Inputs / textareas / selects inside dialogs */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='button']),
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) textarea,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) select {
+  background: color-mix(in srgb, var(--bp-text, #f5f2ed) 3%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--bp-text, #f5f2ed) 12%, transparent) !important;
+  color: var(--bp-text, #f5f2ed) !important;
+  border-radius: 10px !important;
+}
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) input:focus,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) textarea:focus,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) select:focus {
+  border-color: color-mix(in srgb, var(--accent-primary, #5dd9c4) 50%, transparent) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-primary, #5dd9c4) 12%, transparent) !important;
+  outline: none !important;
+}
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) input::placeholder,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) textarea::placeholder {
+  color: color-mix(in srgb, var(--bp-text, #f5f2ed) 30%, transparent) !important;
+}
+
+/* Override hardcoded bg-white anywhere inside a dialog */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) .bg-white,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) [class*='bg-white'] {
+  background: color-mix(in srgb, var(--bp-text, #f5f2ed) 3%, transparent) !important;
+}
+
+/* Primary buttons inside dialogs default to MOOD pill */
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) button[type='submit'],
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) button.primary,
+[role='dialog'][data-state='open']:not([data-no-atelier]):not(.am-surface) button[data-variant='primary'] {
+  border-radius: 999px;
+}
+
+/* Generic legacy modal containers (inline-styled with bg #ffffff) */
+[style*='background: #ffffff'][role],
+[style*='background:#ffffff'][role],
+[style*='background: rgb(255, 255, 255)'][role] {
+  background: var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, #f5f2ed);
+  border-color: color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+}
