@@ -53,10 +53,10 @@ export default function NewRelationshipModal({ open, onClose, onCreated, prefill
   }, [open, prefill]);
 
   const eyebrow =
-    choice === 'lead'     ? 'CRM · Nuovo Lead' :
-    choice === 'prospect' ? 'CRM · Nuova Design Journey' :
-    choice === 'customer' ? 'CRM · Nuova Design Journey' :
-    'CRM · Nuova Relazione';
+    choice === 'lead'     ? 'Design Journey · Nuovo Lead' :
+    choice === 'prospect' ? 'Design Journey · Nuova Journey' :
+    choice === 'customer' ? 'Design Journey · Nuova Journey' :
+    'Design Journey · Nuova Relazione';
 
   const title =
     choice === 'lead'     ? 'Aggiungi un nuovo lead' :

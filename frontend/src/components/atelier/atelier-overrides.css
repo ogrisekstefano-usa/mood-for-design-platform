@@ -1,13 +1,18 @@
 /**
- * Atelier overrides — applica lo stile MOOD luxury dark a tutti i modal
- * residui che usano Radix/Shadcn Dialog senza essere ancora stati
- * riscritti col primitive AtelierModal.
+ * Atelier overrides — MOOD for DESIGN Blueprint Chameleon™ preset.
  *
- * Strategia: target il container Radix Dialog Content + Overlay e qualunque
- * elemento con classi/attributi noti per "bg-white" / "white surface".
- * Niente colori hardcoded: tutto via var(--bp-*).
+ * Estende l'estetica del Create Modal a TUTTO il sistema:
+ *   • dialog / modal (Radix · Shadcn · custom)
+ *   • sheet / drawer (lateral panels)
+ *   • popover / dropdown / select
+ *   • tooltip / hover-card
+ *   • toast / alert
  *
- * Per opt-out: aggiungi data-no-atelier="true" sul Dialog Content.
+ * Niente colori hardcoded. Tutto via var(--bp-*). Opt-out con
+ * data-no-atelier="true" su qualsiasi container.
+ *
+ * Filosofia: dark glassmorphism · serif headings · monospace eyebrow
+ * · ambient accent glow · pill buttons · 14px backdrop blur.
  */
 
 /* Radix Dialog overlay → blur + dark tint */
@@ -89,4 +94,106 @@
   background: var(--bp-surface-elevated, #111113) !important;
   color: var(--bp-text, #f5f2ed);
   border-color: color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+ * SHEET / DRAWER (lateral panels)
+ * ───────────────────────────────────────────────────────────────── */
+[data-state='open'][class*='Sheet'],
+[role='dialog'][data-state='open'][class*='sheet'],
+[data-radix-dialog-content][data-side] {
+  background:
+    radial-gradient(120% 80% at 0% 0%,
+      color-mix(in srgb, var(--accent-primary, #5dd9c4) 6%, transparent) 0%,
+      transparent 55%
+    ),
+    var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, #f5f2ed) !important;
+  border-color: color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * POPOVER / DROPDOWN MENU / SELECT CONTENT
+ * ───────────────────────────────────────────────────────────────── */
+[data-radix-popper-content-wrapper] [role='menu']:not([data-no-atelier]),
+[data-radix-popper-content-wrapper] [role='listbox']:not([data-no-atelier]),
+[data-radix-popper-content-wrapper] [data-radix-popover-content]:not([data-no-atelier]),
+[data-radix-popper-content-wrapper] [data-radix-select-content]:not([data-no-atelier]),
+[data-radix-popper-content-wrapper] [data-radix-dropdown-menu-content]:not([data-no-atelier]) {
+  background: var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, #f5f2ed) !important;
+  border: 1px solid color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+[data-radix-popper-content-wrapper] [role='menuitem']:not([data-no-atelier]),
+[data-radix-popper-content-wrapper] [role='option']:not([data-no-atelier]) {
+  color: var(--bp-text, #f5f2ed) !important;
+  border-radius: 8px !important;
+}
+[data-radix-popper-content-wrapper] [role='menuitem']:not([data-no-atelier])[data-highlighted],
+[data-radix-popper-content-wrapper] [role='option']:not([data-no-atelier])[data-highlighted] {
+  background: color-mix(in srgb, var(--accent-primary, #5dd9c4) 12%, transparent) !important;
+  color: var(--accent-primary, #5dd9c4) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * TOOLTIP / HOVER CARD
+ * ───────────────────────────────────────────────────────────────── */
+[data-radix-popper-content-wrapper] [role='tooltip']:not([data-no-atelier]),
+[data-radix-tooltip-content]:not([data-no-atelier]),
+[data-radix-hover-card-content]:not([data-no-atelier]) {
+  background: var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, #f5f2ed) !important;
+  border: 1px solid color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+  border-radius: 8px !important;
+  font-family: var(--bp-font-mono, monospace);
+  font-size: 11px !important;
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * SONNER TOAST  →  glassmorphism dark
+ * ───────────────────────────────────────────────────────────────── */
+[data-sonner-toaster] [data-sonner-toast]:not([data-no-atelier]) {
+  background: var(--bp-surface-elevated, #111113) !important;
+  color: var(--bp-text, #f5f2ed) !important;
+  border: 1px solid color-mix(in srgb, var(--bp-text, #f5f2ed) 10%, transparent) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5) !important;
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='success']:not([data-no-atelier]) {
+  border-color: color-mix(in srgb, var(--accent-primary, #5dd9c4) 36%, transparent) !important;
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='error']:not([data-no-atelier]) {
+  border-color: color-mix(in srgb, #E0A872 42%, transparent) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * NATIVE SELECT DROPDOWN OPTIONS (browser-rendered)
+ * Color-scheme hint so dark selects show dark popups on Safari/Chrome.
+ * ───────────────────────────────────────────────────────────────── */
+:root { color-scheme: dark; }
+select option { background: var(--bp-surface-elevated, #111113); color: var(--bp-text, #f5f2ed); }
+
+/* ─────────────────────────────────────────────────────────────────
+ * SCROLLBARS inside atelier-styled surfaces
+ * ───────────────────────────────────────────────────────────────── */
+.am-surface ::-webkit-scrollbar,
+[role='dialog'][data-state='open']:not([data-no-atelier]) ::-webkit-scrollbar {
+  width: 6px; height: 6px;
+}
+.am-surface ::-webkit-scrollbar-thumb,
+[role='dialog'][data-state='open']:not([data-no-atelier]) ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--bp-text, #f5f2ed) 14%, transparent);
+  border-radius: 999px;
+}
+.am-surface ::-webkit-scrollbar-track,
+[role='dialog'][data-state='open']:not([data-no-atelier]) ::-webkit-scrollbar-track {
+  background: transparent;
 }

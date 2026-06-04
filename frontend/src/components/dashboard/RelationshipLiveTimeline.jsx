@@ -207,7 +207,7 @@ const RelationshipLiveTimeline = ({ locale = 'it' }) => {
     <section className="rl-timeline" data-testid="relationship-live-timeline">
       <header className="rl-timeline__head">
         <div>
-          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'CRM · Live' : 'CRM · Live'}</p>
+          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'Design Journey · Live' : 'Design Journey · Live'}</p>
           <h3 className="rl-timeline__title">
             {locale === 'it' ? 'Attività relazionali' : 'Relationship activity'}
           </h3>
