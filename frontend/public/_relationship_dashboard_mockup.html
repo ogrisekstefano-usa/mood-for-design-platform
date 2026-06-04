@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="it-IT">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MOOD · Relationship Dashboard — M6.0 Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --shell: #0A0A0B;
+    --surface: #16161A;
+    --elev: #1D1D22;
+    --elev-2: #222226;
+    --border: #2A2A30;
+    --border-strong: #38383F;
+    --text: #EDEDED;
+    --text-2: #A0A0A5;
+    --text-3: #6B6B72;
+    --accent: #00C9B3;
+    --critical: #FF453A;
+    --warning: #FF9F0A;
+    --success: #32D74B;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--shell); color: var(--text); font-family: 'Geist', system-ui, sans-serif; font-size: 13px; line-height: 1.45; letter-spacing: -0.005em; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+  .mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); }
+
+  /* ── Shell ───────────────────────────────────────── */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 18px 12px 12px; display: flex; flex-direction: column; }
+  .sidebar .brand { font-size: 9px; letter-spacing: 0.34em; color: var(--accent); text-transform: uppercase; }
+  .sidebar .brand-title { font-size: 14px; font-weight: 500; margin-top: 4px; margin-bottom: 22px; }
+  .sidebar .nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 6px; font-size: 12.5px; color: rgba(255,255,255,0.78); transition: 0.12s; }
+  .sidebar .nav-item:hover { background: var(--elev); }
+  .sidebar .nav-item.active { color: var(--accent); background: rgba(0,201,179,0.08); }
+  .sidebar .ico { width: 14px; height: 14px; display:inline-block; opacity: 0.8; }
+  .sidebar .footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+  .sidebar .footer a { font-size: 11px; color: var(--text-3); padding: 5px 10px; }
+
+  /* ── Main ────────────────────────────────────────── */
+  .main { flex: 1; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-3); }
+  .topbar .crumb { color: var(--text-3); }
+  .topbar .crumb-sep { opacity: 0.4; }
+  .topbar .crumb-current { color: var(--text); }
+  .topbar .bell { margin-left: auto; width: 24px; height: 24px; border-radius: 999px; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; position: relative; }
+  .topbar .bell::after { content: '3'; position: absolute; top: -4px; right: -4px; min-width: 14px; padding: 0 4px; height: 14px; border-radius: 999px; background: var(--critical); color: #fff; font-family: var(--mono); font-size: 9px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; }
+
+  /* ── Tenant header (no useless KPIs) ─────────────── */
+  .tenant-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); }
+  .tenant-title-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .tenant-title { font-size: 22px; font-weight: 500; letter-spacing: -0.015em; }
+  .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--border-strong); border-radius: 999px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--success); }
+  .status-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .ops-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .ops-cell { padding: 0 14px 0 0; border-right: 1px solid var(--border); }
+  .ops-cell:last-child { border-right: none; }
+  .ops-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-bottom: 4px; }
+  .ops-value { font-size: 13px; color: var(--text); font-weight: 500; }
+  .ops-value.num { font-family: var(--mono); }
+  .ops-value.warn { color: var(--warning); }
+  .ops-value.bad  { color: var(--critical); }
+  .ops-value.ok   { color: var(--success); }
+
+  /* ── Dashboard 3-col ─────────────────────────────── */
+  .dashboard { display: grid; grid-template-columns: 300px 1fr 340px; min-height: calc(100vh - 200px); }
+  .col { border-right: 1px solid var(--border); display: flex; flex-direction: column; min-width: 0; }
+  .col:last-child { border-right: none; }
+  .col-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--shell); z-index: 2; }
+  .col-header h3 { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-2); font-weight: 500; }
+  .col-header .count { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }
+  .col-header button { background: transparent; border: 1px solid var(--border); color: var(--text-2); font-size: 10.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .col-header button.primary { background: var(--accent); color: #0A0A0B; border-color: var(--accent); font-weight: 500; }
+  .col-body { padding: 8px 12px 24px; overflow-y: auto; flex: 1; }
+
+  /* ── Col 1: Contacts ─────────────────────────────── */
+  .contact-group { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-3); margin: 14px 4px 6px; }
+  .contact-card { padding: 10px 10px 12px; border-radius: 6px; transition: background 0.12s; border: 1px solid transparent; }
+  .contact-card:hover { background: var(--surface); border-color: var(--border); }
+  .contact-card.primary { background: rgba(0,201,179,0.05); border-color: rgba(0,201,179,0.25); }
+  .contact-card .name-row { display: flex; align-items: center; gap: 8px; }
+  .contact-card .avatar { width: 26px; height: 26px; border-radius: 4px; background: var(--elev-2); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--text-2); }
+  .contact-card .name { font-size: 13px; font-weight: 500; }
+  .contact-card .role { font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
+  .contact-card .badge-primary { font-size: 9px; padding: 1px 6px; background: rgba(0,201,179,0.15); color: var(--accent); border-radius: 999px; text-transform: uppercase; letter-spacing: 0.1em; margin-left: 4px; }
+  .contact-card .meta { font-size: 11px; color: var(--text-2); margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+  .contact-card .meta span.label { color: var(--text-3); }
+  .contact-card .actions { display: flex; gap: 4px; margin-top: 8px; }
+  .contact-card .actions button { flex: 1; padding: 5px 0; font-size: 10px; background: var(--elev); border: 1px solid var(--border); color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; transition: 0.12s; }
+  .contact-card .actions button:hover { background: var(--elev-2); color: var(--text); border-color: var(--border-strong); }
+  .contact-card .actions button.accent { color: var(--accent); border-color: rgba(0,201,179,0.3); }
+
+  /* ── Col 2: Relationship Feed (Timeline + Activities unified) ── */
+  .filter-row { display: flex; gap: 6px; padding: 0 4px 8px; flex-wrap: wrap; }
+  .filter-chip { font-size: 10px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; transition: 0.12s; background: transparent; }
+  .filter-chip.active { background: var(--accent); color: #0A0A0B; border-color: var(--accent); font-weight: 500; }
+  .feed-day { font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-3); padding: 14px 4px 6px; position: sticky; top: 0; background: var(--shell); }
+  .feed-item { padding: 11px 12px; border-radius: 6px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; transition: background 0.12s; border-left: 2px solid transparent; }
+  .feed-item:hover { background: var(--surface); }
+  .feed-item.expanded { background: var(--surface); border-left-color: var(--accent); }
+  .feed-icon { flex-shrink: 0; width: 28px; height: 28px; background: var(--elev); border: 1px solid var(--border); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-2); }
+  .feed-body { flex: 1; min-width: 0; }
+  .feed-row1 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .feed-title { font-size: 13px; font-weight: 500; }
+  .feed-source { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); padding: 1px 6px; border: 1px solid var(--border); border-radius: 3px; }
+  .feed-source.activity { color: var(--accent); border-color: rgba(0,201,179,0.3); }
+  .feed-source.event    { color: var(--warning); border-color: rgba(255,159,10,0.3); }
+  .feed-source.email    { color: var(--text-2); }
+  .feed-time { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }
+  .feed-subject { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .feed-meta { font-size: 10px; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .feed-meta strong { color: var(--text-2); font-weight: 400; }
+  .feed-expanded-body { margin-top: 10px; padding: 10px 12px; background: var(--elev); border-radius: 4px; border-left: 2px solid var(--accent); font-size: 12px; color: var(--text-2); line-height: 1.6; }
+  .feed-expanded-body .field-row { display: flex; gap: 12px; margin-top: 6px; font-size: 11px; }
+  .feed-expanded-body .field-row .lbl { color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10px; min-width: 80px; }
+
+  /* ── Col 3: Next Actions ─────────────────────────── */
+  .group-header { display: flex; align-items: center; gap: 8px; padding: 12px 4px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-3); }
+  .group-header .count-badge { margin-left: auto; font-family: var(--mono); font-size: 10px; padding: 1px 6px; border-radius: 999px; }
+  .group-header.overdue { color: var(--critical); }
+  .group-header.overdue .count-badge { background: rgba(255,69,58,0.15); color: var(--critical); }
+  .group-header.today   { color: var(--warning); }
+  .group-header.today .count-badge { background: rgba(255,159,10,0.15); color: var(--warning); }
+  .group-header.week    { color: var(--text-2); }
+  .group-header.week .count-badge { background: var(--elev); color: var(--text-2); }
+  .group-header.done    { color: var(--success); }
+  .group-header.done .count-badge { background: rgba(50,215,75,0.10); color: var(--success); }
+  .action-card { padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 6px; background: var(--surface); }
+  .action-card .top { display: flex; gap: 8px; align-items: flex-start; }
+  .action-card .ico { width: 24px; height: 24px; background: var(--elev); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+  .action-card .title-line { flex: 1; min-width: 0; }
+  .action-card .title { font-size: 12.5px; font-weight: 500; }
+  .action-card .sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .action-card .due { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .action-card.overdue .due { color: var(--critical); }
+  .action-card.today   .due { color: var(--warning); }
+  .action-card .actions { display: flex; gap: 4px; margin-top: 8px; }
+  .action-card .actions button { flex: 1; padding: 5px 0; font-size: 9.5px; background: var(--elev); border: 1px solid var(--border); color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; }
+  .action-card .actions button.complete { color: var(--success); border-color: rgba(50,215,75,0.3); }
+  .action-card .actions button:hover { background: var(--elev-2); }
+  .action-card.completed { opacity: 0.55; }
+  .action-card.completed .title { text-decoration: line-through; }
+
+  /* ── Mobile ──────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .dashboard { grid-template-columns: 1fr; }
+    .col { border-right: none; border-bottom: 1px solid var(--border); }
+    .ops-strip { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .ops-cell { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 0; }
+    .ops-cell:nth-child(2n) { border-right: none; }
+    .tenant-header { padding: 14px 16px 10px; }
+    .tenant-title { font-size: 18px; }
+    .topbar { padding: 8px 14px; }
+    .mobile-tab-strip { display: flex; gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--shell); z-index: 5; }
+    .mobile-tab-strip button { flex: 1; padding: 8px 0; font-size: 11px; background: var(--elev); border: 1px solid var(--border); color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; }
+    .mobile-tab-strip button.active { background: var(--accent); color: #0A0A0B; border-color: var(--accent); }
+  }
+  @media (min-width: 901px) { .mobile-tab-strip { display: none; } }
+
+  /* SVG icon helper */
+  .icn { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">MOOD</div>
+    <div class="brand-title">Command Center</div>
+    <nav style="display:flex; flex-direction:column; gap:1px;">
+      <a class="nav-item">Overview</a>
+      <a class="nav-item active">Tenants</a>
+      <a class="nav-item">Advisors</a>
+      <a class="nav-item">Advisor Console</a>
+      <a class="nav-item">Studio Requests</a>
+      <div style="height:1px; background:var(--border); margin: 10px 6px;"></div>
+      <a class="nav-item">Pagine</a>
+      <a class="nav-item">Editorial Blocks</a>
+      <a class="nav-item">Sections</a>
+      <a class="nav-item">Media Library</a>
+      <a class="nav-item">Footer</a>
+      <a class="nav-item">SEO &amp; Indexing</a>
+      <a class="nav-item">Publishing</a>
+    </nav>
+    <div class="footer">
+      <a>View site</a>
+      <a>Clear cache</a>
+      <a style="color: rgba(255,180,162,0.7);">Logout</a>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Topbar / breadcrumbs -->
+    <div class="topbar">
+      <span class="crumb">Tenants</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-current">Martinel Interior Design</span>
+      <div class="bell">
+        <svg class="icn" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 004 0"/></svg>
+      </div>
+    </div>
+
+    <!-- Tenant Header (operational data only — NO useless KPIs) -->
+    <header class="tenant-header">
+      <div class="tenant-title-row">
+        <h1 class="tenant-title">Martinel Interior Design</h1>
+        <span class="status-pill"><span class="dot"></span> Active</span>
+        <span style="font-size: 11px; color: var(--text-3); margin-left:auto;" class="mono">PORDENONE · IT</span>
+      </div>
+
+      <div class="ops-strip">
+        <div class="ops-cell">
+          <div class="ops-label">Founder</div>
+          <div class="ops-value">Giulia Bianchi</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Advisor</div>
+          <div class="ops-value">Raffaella M.</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Owner</div>
+          <div class="ops-value">MOOD Admin</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Last Touch</div>
+          <div class="ops-value mono">2h ago</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Next Follow-up</div>
+          <div class="ops-value warn mono">Today · 16:00</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Open Activities</div>
+          <div class="ops-value num">5</div>
+        </div>
+        <div class="ops-cell">
+          <div class="ops-label">Overdue</div>
+          <div class="ops-value bad num">2</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile-only tab strip (shows one column at a time on phone) -->
+    <div class="mobile-tab-strip">
+      <button class="active">Contacts</button>
+      <button>Feed</button>
+      <button>Actions</button>
+    </div>
+
+    <!-- ── 3-COLUMN RELATIONSHIP DASHBOARD ───────────────────────── -->
+    <section class="dashboard">
+
+      <!-- COL 1 · CONTACTS (M1 reused) -->
+      <div class="col" id="col-contacts">
+        <div class="col-header">
+          <h3>Contacts <span class="count">· 3</span></h3>
+          <button>+ Add</button>
+        </div>
+        <div class="col-body">
+
+          <div class="contact-group">Founders</div>
+          <div class="contact-card primary">
+            <div class="name-row">
+              <div class="avatar">GB</div>
+              <div>
+                <div class="name">Giulia Bianchi <span class="badge-primary">Primary</span></div>
+                <div class="role">Founder · Architect</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><span class="label">Email · </span>giulia.bianchi@martinel.example</div>
+              <div><span class="label">Tel · </span><span class="mono">+39 333 9998877</span></div>
+              <div><span class="label">Owner · </span>Raffaella M.</div>
+            </div>
+            <div class="actions">
+              <button class="accent" title="Call">Call</button>
+              <button title="Email">Mail</button>
+              <button title="WhatsApp">WA</button>
+              <button title="LinkedIn">LI</button>
+              <button title="Log activity">+ Act</button>
+            </div>
+          </div>
+
+          <div class="contact-group">Architects</div>
+          <div class="contact-card">
+            <div class="name-row">
+              <div class="avatar">PT</div>
+              <div>
+                <div class="name">Paolo Titolare</div>
+                <div class="role">Senior Architect</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><span class="label">Email · </span>paolo@martinel.example</div>
+              <div><span class="label">Tel · </span>—</div>
+              <div><span class="label">Owner · </span>Raffaella M.</div>
+            </div>
+            <div class="actions">
+              <button>Call</button>
+              <button>Mail</button>
+              <button>WA</button>
+              <button>LI</button>
+              <button>+ Act</button>
+            </div>
+          </div>
+
+          <div class="contact-group">Admin</div>
+          <div class="contact-card">
+            <div class="name-row">
+              <div class="avatar">ER</div>
+              <div>
+                <div class="name">Elena Reception</div>
+                <div class="role">Office Manager</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div><span class="label">Email · </span>info@martinel.example</div>
+              <div><span class="label">Tel · </span><span class="mono">+39 0434 123456</span></div>
+              <div><span class="label">Owner · </span>MOOD Admin</div>
+            </div>
+            <div class="actions">
+              <button>Call</button>
+              <button>Mail</button>
+              <button>WA</button>
+              <button>LI</button>
+              <button>+ Act</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- COL 2 · RELATIONSHIP FEED (M2+M3 unified, inline accordion) -->
+      <div class="col" id="col-feed">
+        <div class="col-header">
+          <h3>Relationship Feed <span class="count">· 30</span></h3>
+          <button class="primary">+ Log</button>
+        </div>
+        <div class="col-body">
+          <div class="filter-row">
+            <button class="filter-chip active">All</button>
+            <button class="filter-chip">Activities</button>
+            <button class="filter-chip">Events</button>
+            <button class="filter-chip">Emails</button>
+            <button class="filter-chip" style="margin-left:auto;">Manual only</button>
+          </div>
+
+          <div class="feed-day">Today · Wednesday 4 June 2026</div>
+
+          <!-- Expanded item (accordion open) -->
+          <div class="feed-item expanded">
+            <div class="feed-icon">📞</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">Chiamata</span>
+                <span class="feed-source activity">Attività</span>
+                <span class="feed-time">14:30</span>
+              </div>
+              <div class="feed-subject">sec-check con Giulia · qualifica progetto Villa Lago</div>
+              <div class="feed-meta">Owner · <strong>Raffaella M.</strong> &nbsp;·&nbsp; Source · <strong>Manuale</strong> &nbsp;·&nbsp; Esito · <strong style="color:var(--success)">Interessato</strong></div>
+
+              <div class="feed-expanded-body">
+                Giulia conferma il budget. Ha chiesto un follow-up per giovedì alle 16:00 con preventivo dettagliato per la villa sul lago. Vuole vedere referenze materiali — proposto catalogo Boffi e Minotti.
+                <div class="field-row"><div class="lbl">Next step</div><div>Inviare preventivo + 3 moodboard reference</div></div>
+                <div class="field-row"><div class="lbl">Follow-up</div><div class="mono">Gio 5 Giu · 16:00</div></div>
+                <div class="field-row"><div class="lbl">Linked to</div><div>Giulia Bianchi (primary)</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feed-item">
+            <div class="feed-icon">✉</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">Email inviata</span>
+                <span class="feed-source email">Email</span>
+                <span class="feed-time">11:05</span>
+              </div>
+              <div class="feed-subject">Re: Riferimenti materiali Villa Lago</div>
+              <div class="feed-meta">From · <strong>Raffaella M.</strong> &nbsp;·&nbsp; To · <strong>Elena Reception</strong></div>
+            </div>
+          </div>
+
+          <div class="feed-item">
+            <div class="feed-icon">●</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">Contatto aggiunto</span>
+                <span class="feed-source event">Evento</span>
+                <span class="feed-time">09:14</span>
+              </div>
+              <div class="feed-subject">Paolo Titolare (Senior Architect) · creato da Raffaella M.</div>
+              <div class="feed-meta">Owner · <strong>Raffaella M.</strong></div>
+            </div>
+          </div>
+
+          <div class="feed-day">Yesterday · Tuesday 3 June 2026</div>
+
+          <div class="feed-item">
+            <div class="feed-icon">⊞</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">Meeting</span>
+                <span class="feed-source activity">Attività</span>
+                <span class="feed-time">16:40</span>
+              </div>
+              <div class="feed-subject">M3 first meeting · Discusso lighting + budget</div>
+              <div class="feed-meta">Owner · <strong>MOOD Admin</strong> &nbsp;·&nbsp; Esito · <strong style="color:var(--success)">Completato</strong></div>
+            </div>
+          </div>
+
+          <div class="feed-item">
+            <div class="feed-icon">in</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">LinkedIn</span>
+                <span class="feed-source activity">Attività</span>
+                <span class="feed-time">11:18</span>
+              </div>
+              <div class="feed-subject">Connect Linkedin · Connect request inviata a Giulia</div>
+              <div class="feed-meta">Owner · <strong>Raffaella M.</strong></div>
+            </div>
+          </div>
+
+          <div class="feed-day">Monday 2 June 2026</div>
+
+          <div class="feed-item">
+            <div class="feed-icon">✎</div>
+            <div class="feed-body">
+              <div class="feed-row1">
+                <span class="feed-title">Nota interna</span>
+                <span class="feed-source activity">Attività</span>
+                <span class="feed-time">17:55</span>
+              </div>
+              <div class="feed-subject">Lo studio ha 3 architetti senior e si specializza in residenziale luxury</div>
+              <div class="feed-meta">Owner · <strong>Raffaella M.</strong></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- COL 3 · NEXT ACTIONS (M3 open-followups) -->
+      <div class="col" id="col-next">
+        <div class="col-header">
+          <h3>Next Actions <span class="count">· 7</span></h3>
+          <button>Filter</button>
+        </div>
+        <div class="col-body">
+
+          <div class="group-header overdue">
+            Overdue <span class="count-badge">2</span>
+          </div>
+
+          <div class="action-card overdue">
+            <div class="top">
+              <div class="ico">📞</div>
+              <div class="title-line">
+                <div class="title">Chiamata Giulia · Villa Lago</div>
+                <div class="sub">Promesso preventivo 2g fa</div>
+              </div>
+            </div>
+            <div class="due">⚠ Overdue · <span class="mono">2 days</span></div>
+            <div class="actions">
+              <button class="complete">Complete</button>
+              <button>Reschedule</button>
+              <button>Edit</button>
+            </div>
+          </div>
+
+          <div class="action-card overdue">
+            <div class="top">
+              <div class="ico">✉</div>
+              <div class="title-line">
+                <div class="title">Email moodboard Showroom</div>
+                <div class="sub">Riferimento progetto Minotti</div>
+              </div>
+            </div>
+            <div class="due">⚠ Overdue · <span class="mono">1 day</span></div>
+            <div class="actions">
+              <button class="complete">Complete</button>
+              <button>Reschedule</button>
+              <button>Edit</button>
+            </div>
+          </div>
+
+          <div class="group-header today">
+            Today <span class="count-badge">1</span>
+          </div>
+
+          <div class="action-card today">
+            <div class="top">
+              <div class="ico">⊞</div>
+              <div class="title-line">
+                <div class="title">Meeting M3 lighting brief</div>
+                <div class="sub">Con Paolo Titolare</div>
+              </div>
+            </div>
+            <div class="due">⏱ Today · <span class="mono">16:00</span></div>
+            <div class="actions">
+              <button class="complete">Complete</button>
+              <button>Reschedule</button>
+              <button>Edit</button>
+            </div>
+          </div>
+
+          <div class="group-header week">
+            This Week <span class="count-badge">2</span>
+          </div>
+
+          <div class="action-card">
+            <div class="top">
+              <div class="ico">📞</div>
+              <div class="title-line">
+                <div class="title">F3 pending · qualifica budget</div>
+                <div class="sub">Con Elena Reception</div>
+              </div>
+            </div>
+            <div class="due">Fri · <span class="mono">10:00</span></div>
+            <div class="actions">
+              <button class="complete">Complete</button>
+              <button>Reschedule</button>
+              <button>Edit</button>
+            </div>
+          </div>
+
+          <div class="action-card">
+            <div class="top">
+              <div class="ico">in</div>
+              <div class="title-line">
+                <div class="title">LinkedIn DM check-in</div>
+                <div class="sub">Con Giulia Bianchi</div>
+              </div>
+            </div>
+            <div class="due">Sat · <span class="mono">—</span></div>
+            <div class="actions">
+              <button class="complete">Complete</button>
+              <button>Reschedule</button>
+              <button>Edit</button>
+            </div>
+          </div>
+
+          <div class="group-header done">
+            Completed Recently <span class="count-badge">2</span>
+          </div>
+
+          <div class="action-card completed">
+            <div class="top">
+              <div class="ico">✓</div>
+              <div class="title-line">
+                <div class="title">M3 first meeting</div>
+                <div class="sub">Completed by MOOD Admin · yesterday 16:40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-card completed">
+            <div class="top">
+              <div class="ico">✓</div>
+              <div class="title-line">
+                <div class="title">Connect LinkedIn</div>
+                <div class="sub">Completed by Raffaella M. · yesterday 11:18</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
