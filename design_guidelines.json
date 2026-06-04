@@ -1,65 +1,72 @@
 {
-  "project_context": "MOOD for DESIGN - Activity Feed & Timeline Redesign",
-  "design_philosophy": {
-    "archetype": "Swiss & High-Contrast mixed with Editorial Luxury",
-    "theme": "Light theme for content area, inside the existing #0A0A0B shell",
-    "core_concept": "The platform is an architectural blueprint, an editorial magazine, a professional notebook. It is NOT a dark-mode CRM. The interface must read like a curated story, eliminating technical metadata, chips, and database-like tables.",
-    "shape_language": "Sharp edges only. rounded-none everywhere. Borders are thin, structural lines (1px stone-200)."
-  },
+  "theme": "DARK",
+  "archetype": "4 (Swiss & High-Contrast - Dark luxury variant)",
   "typography": {
-    "h1_h2": "Playfair Display (Serif) - Used for Person Names, Section Headers (e.g., 'Da completare'). Provides the 'Editorial/Magazine' feel.",
-    "ui_body": "Montserrat (Sans) - Used for activity subjects, outcomes, dates, and UI chrome. Clean, architectural, highly readable.",
-    "hierarchy_rules": "Persona (text-2xl/3xl Serif) > Argomento (text-lg medium Sans) > Esito/Prossimo Passo (text-base Sans) > Data (text-xs uppercase tracking-widest stone-400)."
+    "heading_font": "Inter",
+    "body_font": "Inter",
+    "mono_font": "JetBrains Mono",
+    "scales": {
+      "h1": "text-2xl font-medium tracking-tight",
+      "h2": "text-sm font-semibold uppercase tracking-widest",
+      "body": "text-[13px] leading-relaxed",
+      "meta": "text-[11px] font-mono tracking-wider"
+    }
   },
   "colors": {
-    "shell_background": "#0A0A0B",
-    "content_background": "#FFFFFF",
-    "text_primary": "stone-900 (#1c1917)",
-    "text_secondary": "stone-500 (#78716c)",
-    "text_tertiary": "stone-400 (#a8a29e)",
-    "borders": "stone-200 (#e7e5e4)",
-    "accent": "#00C9B3",
-    "cta_background": "#000000",
-    "cta_text": "#FFFFFF",
-    "rules": "No generic grey. Use stone palette for warmth. Accent teal (#00C9B3) is used strictly for subtle indicators (e.g., a 2px left border on overdue tasks), NEVER for large backgrounds or pill containers."
+    "background": "#0A0A0B",
+    "surface": "#16161A",
+    "surface_hover": "#222226",
+    "border": "#2C2C30",
+    "text_primary": "#EDEDED",
+    "text_secondary": "#A0A0A5",
+    "brand_accent": "#00C9B3",
+    "status": {
+      "critical": "#FF453A",
+      "warning": "#FF9F0A",
+      "success": "#32D74B"
+    }
   },
-  "vocabulary_mapping": [
-    {"before": "Record / Item / Entity", "after": "Attività / Relazione"},
-    {"before": "Event Type", "after": "Natura / Argomento"},
-    {"before": "Outcome chip", "after": "Esito / Sintesi"},
-    {"before": "Filter pill", "after": "Vista / Affina"},
-    {"before": "No data available", "after": "Il foglio è bianco. Inizia una nuova attività."}
+  "layout": {
+    "spacing_scale": "dense",
+    "padding": {
+      "container": "p-4",
+      "element": "p-2",
+      "tight": "p-1"
+    },
+    "border_radius": "rounded-none",
+    "borders": "1px solid border",
+    "relationship_center_grid": "grid-cols-[280px_1fr_340px]"
+  },
+  "components": [
+    {
+      "name": "Data Row",
+      "style": "flex items-center justify-between border-b border-border py-2 px-4 hover:bg-surface_hover cursor-pointer"
+    },
+    {
+      "name": "Status Indicator",
+      "style": "text-[11px] uppercase tracking-wider flex items-center gap-1.5",
+      "rules": "No background chips. Use colored text or a 4px colored dot."
+    },
+    {
+      "name": "KPI Strip",
+      "style": "flex gap-6 border-y border-border py-3 px-4 bg-background"
+    }
   ],
-  "ux_explanation": "The redesign shifts the cognitive model from 'Data Entry' to 'Story Reading'. In traditional CRMs, the user scans columns (Type, Status, Date, Name). Here, the user reads a narrative. By removing chips and badges, we reduce visual noise. White space and typographic contrast (Serif vs Sans) do the heavy lifting of information architecture. The 'Da completare' section acts as an urgent, hero-style editorial to-do list, entirely segregated from the historical feed. The timeline groups events by day as continuous text, mimicking a logbook rather than an IT audit trail.",
-  "empty_states": {
-    "da_completare": "Nessuna attività in sospeso. Ottimo lavoro.",
-    "storico": "Nessuna attività passata. Inizia a costruire le tue relazioni.",
-    "timeline": "Il diario è vuoto."
+  "motion": {
+    "hover": "transition-colors duration-150 ease-in-out",
+    "drawer": "transition-transform duration-300 ease-out"
   },
-  "components": {
-    "filters": "Discreet text-based interaction. A minimal input line (border-b only) 'Cerca o affina vista...' or a text button 'Filtri +' that opens the existing ContactDrawer. No permanent dropdowns on the screen.",
-    "da_completare_section": "Hero-style block. Pure white background, bold Playfair heading. Items are listed with their deadline. Minimal UI, looks like a typed list.",
-    "activity_feed_item": "A narrative block. No card background (just rests on white). Separated by 1px stone-200 bottom border. Name is massive (Serif). Content flows organically.",
-    "timeline_day_group": "Left column: Sticky Date (text-xs uppercase stone-400). Right column: Stacked text lines of events. No dots or connecting lines, alignment implies sequence."
+  "accessibility": {
+    "contrast": "APCA compliant for dark mode",
+    "focus": "focus:outline-none focus:ring-1 focus:ring-brand_accent focus:border-brand_accent",
+    "data_testid_required": true
   },
-  "wireframes": {
-    "activity_feed_desktop": "DA COMPLETARE\n\nCall con Mario Rossi — Scadenza 5 giugno\nMeeting showroom — Scadenza 7 giugno\nEmail architetto — Scadenza 9 giugno\n\n--------------------------------------------------\n\nSTORICO ATTIVITÀ\n\nMario Rossi\nDiscussione onboarding Blueprint\nEsito: Interessato alla sezione Material Intelligence\nProssimo passo: Demo con responsabile acquisti\n03 GIUGNO 2026\n\n--------------------------------------------------\n\nGiulia Bianchi\nIncontro per revisione catalogo tessuti\nEsito: Campioni approvati per il progetto Villa Verde\nProssimo passo: Inviare preventivo formale\n01 GIUGNO 2026",
-    "timeline_desktop": "03 GIU 2026      Introduzione ricevuta\n                 Advisor assegnato\n                 Call con Mario Rossi\n                 Inviata proposta\n                 Demo pianificata\n\n01 GIU 2026      Email inviata a Giulia Bianchi\n                 Risposta ricevuta",
-    "mobile_activity_feed": "Mobile follows the same narrative structure. 390px viewport means padding is reduced to p-4 or p-6. Typography scales down (H1 text-xl), but the sequence remains: Name -> Topic -> Outcome -> Next Step -> Date. No horizontal scrolling, no tables."
-  },
-  "interactions": {
-    "hover_states": "Items in 'Da completare' show a 'Rispondi / Segna completata' text link in stone-900 on hover. No heavy background color changes.",
-    "click_details": "Clicking an activity row opens the existing 'ContactDrawer.jsx' on the right side for full editing, keeping the reading view clean.",
-    "lazy_loading": "Use infinite scroll with a discreet 'Caricamento...' text instead of traditional spinning loaders or heavy pagination controls."
+  "media": {
+    "image_urls": []
   },
   "instructions_to_main_agent": [
-    "Create standard .js React components. Use Shadcn primitives if needed but strip ALL rounded corners (use rounded-none).",
-    "Implement 'ActivityFeed.js' and 'TimelineLog.js'.",
-    "Ensure Playfair Display and Montserrat are loaded in the HTML or via CSS imports.",
-    "Use standard Tailwind classes. For fonts: font-serif for Playfair, font-sans for Montserrat.",
-    "Ensure responsive design: Mobile (390px) completely abandons any tabular approach.",
-    "Ensure all interactive elements have data-testid attributes (e.g., data-testid='activity-item-mario-rossi', data-testid='filter-drawer-trigger').",
-    "DO NOT use traditional CRM chips/badges for statuses. Map them to readable text ('Esito: ...').",
-    "DO NOT modify the WorkspaceShell.jsx. These components will render inside the <main>."
+    "Do NOT implement any code. This is a design audit only, as explicitly requested by the user.",
+    "Follow the principles established in COMMAND_CENTER_DESIGN_AUDIT.md and COMMAND_CENTER_VNEXT_PROPOSAL.md.",
+    "Ensure all future components adhere to the Swiss Brutalism / Dark Luxury aesthetic defined here: sharp edges, 1px borders, high density, monospaced numerals."
   ]
 }
