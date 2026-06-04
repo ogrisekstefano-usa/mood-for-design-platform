@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Future Uses Panel V3</title>
+  <link rel="stylesheet" href="chameleon.css">
+  <style>
+    body { background: #000; padding: 48px; display: flex; gap: 48px; justify-content: center; align-items: flex-start; }
+    .demo-col { width: 320px; }
+    .demo-label { color: #fff; font-family: 'Cormorant Garamond'; font-size: 20px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="demo-col">
+    <div class="demo-label">Stato A (Uso Esistente)</div>
+    <div class="future-uses-panel">
+      <div class="future-title">UTILIZZATO IN</div>
+      <div class="future-state">
+        <div class="future-item active">
+          <span class="mono" style="color:var(--teal)">4</span> Moodboard
+        </div>
+        <div class="future-item active">
+          <span class="mono" style="color:var(--teal)">2</span> Design Journey
+        </div>
+        <div class="future-item active">
+          <span class="mono" style="color:var(--teal)">1</span> Material Board
+        </div>
+        <div class="future-item">
+          <span class="mono sec">0</span> Home Staging Pack
+        </div>
+        <div class="future-item active">
+          <span class="mono" style="color:var(--teal)">3</span> Presentazioni Cliente
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-col">
+    <div class="demo-label">Stato B (Nuova Entità / Zero State)</div>
+    <div class="future-uses-panel">
+      <div class="future-title">DISPONIBILE PER</div>
+      <div style="display:flex; flex-wrap:wrap;">
+        <span class="future-item-chip">Moodboard</span>
+        <span class="future-item-chip">Design Journey</span>
+        <span class="future-item-chip">Material Board</span>
+        <span class="future-item-chip">Product Selection</span>
+        <span class="future-item-chip">Magazine</span>
+        <span class="future-item-chip">Social Story</span>
+      </div>
+      <div style="margin-top:16px; font-size:11px; color:var(--text-sec); font-style:italic;">
+        Questa entità è pronta per essere generata in nuovi asset.
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

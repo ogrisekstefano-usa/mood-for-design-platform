@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile V3 Stacked</title>
+  <link rel="stylesheet" href="chameleon.css">
+  <style>
+    body { background: var(--bg-dark); }
+  </style>
+</head>
+<body>
+  <!-- Knowledge Strip Mobile -->
+  <div class="knowledge-strip" style="padding: 0 16px;">
+    <div class="brand-name serif" style="font-size: 14px;">Riva1920</div>
+    <div class="score-badge" style="border-color:var(--teal); color:var(--teal); transform:scale(0.9);">
+      SCORE: <span class="mono">87%</span>
+    </div>
+  </div>
+
+  <div class="mobile-view">
+    <!-- Document Navigator Mini -->
+    <div style="padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg-surface);">
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-sec);">
+        <span>ICONS 2025 (PDF)</span>
+        <span class="mono">P. 07 / 274</span>
+      </div>
+    </div>
+
+    <!-- Entity Inspector Tabbed -->
+    <div style="padding: 16px; background: var(--bg-panel); border-bottom: 1px solid var(--border);">
+      <div class="entity-card" style="margin-bottom:0;">
+        <span class="entity-tag">Product</span>
+        <h2 class="entity-name" style="font-size:24px; margin-bottom:16px;">KURA</h2>
+        <div class="entity-fact"><span class="fact-label">Designer</span><span class="fact-value">CR&S</span></div>
+        <div class="entity-fact"><span class="fact-label">Confidence</span><span class="fact-value mono text-teal">94%</span></div>
+      </div>
+      
+      <!-- Mobile Tabs -->
+      <div style="display:flex; margin-top:16px; border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+        <div style="flex:1; text-align:center; padding:8px; font-size:10px; background:var(--teal-dim); color:var(--teal); border-right:1px solid var(--border);">Connected</div>
+        <div style="flex:1; text-align:center; padding:8px; font-size:10px; background:var(--bg-surface);">Future Uses</div>
+      </div>
+      
+      <!-- Future Uses Panel (Mobile Version) -->
+      <div class="future-uses-panel" style="margin-top:16px; padding:12px;">
+        <div class="future-title">UTILIZZATO IN</div>
+        <div class="future-state">
+          <div class="future-item active" style="padding:6px;"><span class="mono teal">4</span> Moodboard</div>
+          <div class="future-item active" style="padding:6px;"><span class="mono teal">2</span> Design Journey</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Validation Stacked -->
+    <div style="padding: 16px; background: var(--bg-surface);">
+      <div class="col-header" style="padding:0 0 16px 0; border:none;">AI Validation</div>
+      <div class="val-card">
+        <div class="val-header"><span class="val-type">MATERIALE AMBIGUO</span></div>
+        <h3 class="val-title serif">Noce vs Noce Canaletto</h3>
+        
+        <div class="apply-scope" style="margin-top:16px;">
+          <div class="scope-option" style="color:var(--teal); background:rgba(0,229,255,0.05); padding:8px; border-radius:4px; margin-bottom:8px;">
+            <span class="scope-label">Applica a brand</span>
+          </div>
+          
+          <div class="impact-card" style="padding:12px;">
+            <div class="impact-title" style="font-size:10px;">Impatto Ecosistema</div>
+            <ul class="impact-list" style="font-size:11px;">
+              <li><span class="delta">+12</span> prodotti</li>
+              <li><span class="delta">+7</span> moodboard future</li>
+            </ul>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:16px;">Conferma</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

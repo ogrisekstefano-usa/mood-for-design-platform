@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Entity Inspector V3</title>
+  <link rel="stylesheet" href="chameleon.css">
+</head>
+<body style="background: #000; display:flex; justify-content:center; align-items:center; height:100vh;">
+  <div class="col entity-inspector-col" style="width: 440px; height: 90vh; border: 1px solid var(--border);">
+    <div class="col-header">Entity Inspector (Connected Assets™)</div>
+    <div class="col-content" style="overflow-y:auto;">
+      
+      <!-- Base Entity -->
+      <div class="entity-card">
+        <span class="entity-tag">Product</span>
+        <h2 class="entity-name">KURA</h2>
+        <div class="actions-stack">
+          <button class="btn btn-primary">Apri scheda completa</button>
+        </div>
+      </div>
+
+      <!-- Connected Assets Network -->
+      <div class="connected-network-container">
+        <div class="future-title">CONNECTED ASSETS™</div>
+        <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+          <!-- Lines to top-left (Products) -->
+          <line x1="50%" y1="50%" x2="25%" y2="25%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <line x1="50%" y1="50%" x2="35%" y2="15%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <line x1="50%" y1="50%" x2="15%" y2="35%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <!-- Lines to top-right (Designers) -->
+          <line x1="50%" y1="50%" x2="75%" y2="25%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <!-- Lines to bottom-left (Materials) -->
+          <line x1="50%" y1="50%" x2="25%" y2="75%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <line x1="50%" y1="50%" x2="35%" y2="85%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <!-- Lines to bottom-right (Images) -->
+          <line x1="50%" y1="50%" x2="75%" y2="75%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <line x1="50%" y1="50%" x2="85%" y2="65%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+          <line x1="50%" y1="50%" x2="65%" y2="85%" stroke="rgba(0,229,255,0.3)" stroke-dasharray="4"/>
+        </svg>
+
+        <!-- Center Node -->
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:64px; height:64px; background:var(--teal-dim); border:1px solid var(--teal); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond'; font-size:14px;">KURA</div>
+
+        <!-- Quadrant Labels -->
+        <div style="position:absolute; top:8px; left:8px; font-size:9px; color:var(--text-sec);">PRODOTTI</div>
+        <div style="position:absolute; top:8px; right:8px; font-size:9px; color:var(--text-sec);">DESIGNER</div>
+        <div style="position:absolute; bottom:32px; left:8px; font-size:9px; color:var(--text-sec);">MATERIALI</div>
+        <div style="position:absolute; bottom:32px; right:8px; font-size:9px; color:var(--text-sec);">IMMAGINI</div>
+
+        <!-- Nodes -->
+        <div style="position:absolute; top:25%; left:25%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+        <div style="position:absolute; top:15%; left:35%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+        <div style="position:absolute; top:35%; left:15%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+        
+        <div style="position:absolute; top:25%; left:75%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:32px; height:32px; background:#333; border-radius:50%; border:1px solid var(--teal); display:flex; align-items:center; justify-content:center; font-size:8px;">CR&S</div></div>
+
+        <div style="position:absolute; top:75%; left:25%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#4e3822; border-radius:50%; border:1px solid var(--border);"></div></div>
+        <div style="position:absolute; top:85%; left:35%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#555; border-radius:50%; border:1px solid var(--border);"></div></div>
+
+        <div style="position:absolute; top:75%; left:75%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+        <div style="position:absolute; top:65%; left:85%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+        <div style="position:absolute; top:85%; left:65%; transform:translate(-50%,-50%);" class="node-img-container"><div style="width:24px; height:24px; background:#222; border-radius:50%; border:1px solid var(--border);"></div></div>
+
+        <div class="network-stats mono">Prodotti 8 · Materiali 2 · Designer 1 · Immagini 24 · Tot relazioni 38</div>
+      </div>
+
+      <!-- Future Uses Panel -->
+      <div class="future-uses-panel">
+        <div class="future-title">UTILIZZATO IN (FUTURE USES™)</div>
+        <div class="future-state">
+          <div class="future-item active">
+            <span class="mono" style="color:var(--teal)">4</span> Moodboard
+          </div>
+          <div class="future-item active">
+            <span class="mono" style="color:var(--teal)">2</span> Design Journey
+          </div>
+          <div class="future-item active">
+            <span class="mono" style="color:var(--teal)">1</span> Material Board
+          </div>
+          <div class="future-item">
+            <span class="mono sec">0</span> Home Staging Pack
+          </div>
+          <div class="future-item active">
+            <span class="mono" style="color:var(--teal)">3</span> Presentazioni Cliente
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

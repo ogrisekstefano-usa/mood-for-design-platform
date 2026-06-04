@@ -1,33 +1,56 @@
 {
-  "theme": "DARK",
-  "archetype": "Luxury",
+  "theme": {
+    "mode": "dark",
+    "archetype": "Swiss & High-Contrast",
+    "description": "Blueprint Chameleon™: cinematic dark UI, glassmorphism, NO white backgrounds.",
+    "colors": {
+      "primary": "#00e5ff",
+      "secondary": "#00b4d8",
+      "background": {
+        "dark": "#040404",
+        "surface": "#0a0a0a",
+        "panel": "#111111",
+        "glass": "rgba(17, 17, 17, 0.7)"
+      },
+      "text": {
+        "main": "#ededed",
+        "secondary": "#a1a1aa",
+        "muted": "#52525b"
+      },
+      "border": {
+        "default": "rgba(255, 255, 255, 0.1)",
+        "light": "rgba(255, 255, 255, 0.15)"
+      }
+    }
+  },
   "typography": {
-    "headings": "Cormorant Garamond, Playfair Display, serif",
-    "body": "Inter, sans-serif",
-    "numbers": "JetBrains Mono, Roboto Mono, monospace"
+    "headings": {
+      "family": "Cormorant Garamond, serif",
+      "weight": "400",
+      "styles": "cinematic, elegant, distinctive"
+    },
+    "body": {
+      "family": "Inter, sans-serif",
+      "weight": "300, 400, 500",
+      "styles": "clean, modern, neutral"
+    },
+    "data_metrics": {
+      "family": "JetBrains Mono, monospace",
+      "weight": "300, 400",
+      "styles": "tech-oriented, precise"
+    }
   },
-  "colors": {
-    "background": "#070707",
-    "surface": "#111111",
-    "surfaceGlass": "rgba(17, 17, 17, 0.65)",
-    "border": "rgba(255, 255, 255, 0.08)",
-    "primary": "#00e5ff",
-    "accent": "#00b4d8",
-    "text": "#ffffff",
-    "textSecondary": "#a1a1aa",
-    "textMuted": "#52525b"
+  "layout": {
+    "strategy": "dense, 4-column cockpit",
+    "spacing": "tight to generous depending on component",
+    "grids": "asymmetrical and bento style when possible"
   },
-  "visual_enhancers": [
-    "Glassmorphism with heavy backdrop blur (12px+)",
-    "Cinematic dark UI (Blueprint Chameleon™)",
-    "Subtle teal/cyan accents for relations and interactions",
-    "1px delicate borders"
-  ],
   "components": {
-    "knowledgeStrip": "Persistent top bar, glass surface, brand metrics, live delta counters",
-    "fourColumnWorkspace": "Grid layout: Navigator (20%), Viewer (30%), Inspector (25%), Validation (25%)",
-    "entityInspector": "Deep dive card, Passport to Knowledge Graph, relationship graph preview",
-    "aiValidation": "Tri-state apply scope [Applica solo qui, Applica al catalogo, Applica all'intero brand]"
+    "knowledge_strip": "Sticky top bar, blur backdrop, key metrics.",
+    "future_uses_panel": "Highlights ecosystem availability. State A (existing uses) active glow, State B (available uses) discrete chips.",
+    "knowledge_impact_card": "AI Validation ROI module. Cyan glow delta animations.",
+    "connected_assets_network": "SVG 4-quadrant mini-graph replacing static lists. Thumbnails on nodes.",
+    "post_certification_launch": "Hero large tiles, directional arrows, runway layout."
   },
-  "instructions_to_main_agent": "Output wireframes in HTML/CSS without React. Make PDF viewer visually subordinate to the Entity Inspector and AI Validation to reinforce Brand Atlas creation."
+  "instructions_to_main_agent": "Ensure HTML layout is built without generic white backgrounds. Embrace the glassmorphism and cyan glows as specified in v2 and v3. Implement animations for AI Validation impact and Future Uses states."
 }

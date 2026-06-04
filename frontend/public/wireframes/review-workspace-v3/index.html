@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>V3 Concept: Il Motore Ecosistema MOOD</title>
+  <link rel="stylesheet" href="chameleon.css">
+  <style>
+    body { padding: 48px; background: #040404; color: #ededed; font-family: 'Inter', sans-serif; overflow-y: auto; }
+    .gallery { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 64px; }
+    h1 { font-size: 48px; margin-bottom: 16px; font-family: 'Cormorant Garamond', serif; }
+    p.lead { font-size: 18px; color: var(--text-sec); margin-bottom: 48px; line-height: 1.6; }
+    .screen-block { border: 1px solid var(--border); background: #0a0a0a; border-radius: 12px; overflow: hidden; }
+    .screen-header { padding: 24px; border-bottom: 1px solid var(--border); background: #111; }
+    .screen-title { font-size: 24px; font-family: 'Cormorant Garamond', serif; margin: 0 0 8px 0; color: var(--teal); }
+    .screen-desc { font-size: 14px; color: var(--text-sec); line-height: 1.5; margin: 0; }
+    .screen-frame { padding: 0; height: 600px; border: none; width: 100%; display: block; }
+    .rationale-list { margin-top: 48px; padding: 32px; background: rgba(0,229,255,0.05); border-radius: 8px; border: 1px solid var(--teal-dim); }
+    .rationale-list h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--teal); margin-top: 0; }
+    .rationale-list ul { padding-left: 20px; line-height: 1.8; color: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="gallery">
+    <div>
+      <h1>V3: Da Catalogo a Motore (Ecosistema MOOD)</h1>
+      <p class="lead">Questa iterazione sposta la narrativa dalla pura digitalizzazione (PDF correction) alla creazione di valore immediato (Future Uses, Knowledge Impact). L'utente capisce dal primo istante che sta alimentando un ecosistema vivo.</p>
+      
+      <div class="rationale-list">
+        <h3>Razionale V3 (Il Motore del Brand)</h3>
+        <ul>
+          <li><strong>Focus sull'uso futuro:</strong> Il pannello FUTURE USES™ mostra immediatamente dove il dato verrà impiegato (Moodboard, Design Journey), trasformando un compito noioso in un'attività strategica.</li>
+          <li><strong>Network visivo (Connected Assets™):</strong> Sostituisce i semplici elenchi con un mini-grafo interattivo, comunicando la densità e la ricchezza del patrimonio che si sta costruendo.</li>
+          <li><strong>Knowledge Impact quantificabile:</strong> Ogni validazione non restituisce un semplice "ok", ma un delta di valore sull'intero ecosistema (es. +7 moodboard future disponibili), evidenziando il ROI del lavoro.</li>
+          <li><strong>Post-Certification come rampa di lancio:</strong> La conclusione del lavoro non è una fine, ma un decollo. Le CTA sovradimensionate invitano alla generazione di nuovi asset commerciali (Showroom Mode).</li>
+          <li><strong>Direzionalità visiva:</strong> Frecce, gradienti orientati e interfacce a tunnel rinforzano la sensazione che il dato sta fluendo verso la pubblicazione, non venendo archiviato.</li>
+          <li><strong>Zero-State proattivo:</strong> I contatori dell'ecosistema partono da zero ma con etichette chiare, stimolando l'utente a riempire quegli "spazi vuoti" generando nuovi output.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="screen-block">
+      <div class="screen-header">
+        <h2 class="screen-title">1. Desktop Workspace (4-Col)</h2>
+        <p class="screen-desc">La vista principale aggiornata. Mantiene l'impronta V2 ma introduce le metriche di ecosistema nel footer, il pannello Future Uses nell'Entity Inspector e il Knowledge Impact dopo le validazioni. L'utente ha sempre il polso del valore che sta creando.</p>
+      </div>
+      <iframe class="screen-frame" src="desktop.html"></iframe>
+    </div>
+
+    <div class="screen-block">
+      <div class="screen-header">
+        <h2 class="screen-title">2. Entity Inspector Focus</h2>
+        <p class="screen-desc">Inrandimento sull'Entity Inspector con il nuovo grafo Connected Assets™ a quadranti. Al centro il prodotto KURA, attorno le sue connessioni esplose visivamente, e il pannello Future Uses (Stato A vs B) per evidenziare la disponibilità trasversale dell'entità.</p>
+      </div>
+      <iframe class="screen-frame" src="entity-inspector.html" style="height: 800px;"></iframe>
+    </div>
+
+    <div class="screen-block">
+      <div class="screen-header">
+        <h2 class="screen-title">3. AI Validation & Impact</h2>
+        <p class="screen-desc">Il momento chiave della validazione. Dopo la scelta "Applica all'intero brand", non si chiude solo il task, ma si accende il Knowledge Impact: "+12 prodotti migliorati, +7 moodboard future". Questo è il feedback del ROI dell'operazione.</p>
+      </div>
+      <iframe class="screen-frame" src="ai-validation.html" style="height: 500px;"></iframe>
+    </div>
+
+    <div class="screen-block">
+      <div class="screen-header">
+        <h2 class="screen-title">4. Post Certification (Launch Ramp)</h2>
+        <p class="screen-desc">Schermata di completamento completamente ridisegnata come piattaforma di lancio spaziale. Grandi tile "Crea Moodboard", "Crea Design Journey" e metriche live dell'ecosistema per spingere l'utente all'azione successiva (Showroom Mode).</p>
+      </div>
+      <iframe class="screen-frame" src="post-certification.html" style="height: 700px;"></iframe>
+    </div>
+
+    <div class="screen-block">
+      <div class="screen-header">
+        <h2 class="screen-title">5. Showroom Mode Preview</h2>
+        <p class="screen-desc">Come fluisce il prodotto KURA validato? Una narrativa visuale a tunnel: dal Brand Atlas alla Moodboard, al Design Journey fino alla Presentazione Cliente. Un singolo dato, infinite superfici. "Senza re-import".</p>
+      </div>
+      <iframe class="screen-frame" src="showroom-mode.html" style="height: 500px;"></iframe>
+    </div>
+
+  </div>
+</body>
+</html>
