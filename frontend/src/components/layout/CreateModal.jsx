@@ -149,9 +149,9 @@ function CreateModalInner({ options, close, t, activeJourney }) {
   };
 
   const words = [
-    t('create.word.vision', null, 'Vision'),
-    t('create.word.legacy', null, 'Legacy'),
-    t('create.word.masterpiece', null, 'Masterpiece'),
+    t('create.word.vision', null, 'Visione'),
+    t('create.word.legacy', null, 'Eredità'),
+    t('create.word.masterpiece', null, 'Capolavoro'),
     t('create.word.journey', null, 'Journey')
   ];
 
@@ -225,7 +225,7 @@ function CreateModalInner({ options, close, t, activeJourney }) {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
                 className="block text-[var(--cm-text-muted,rgba(255,255,255,0.55))] mb-2"
               >
-                Begin a new
+                {t('create.modal.hero_prefix', null, 'Inizia una nuova')}
               </motion.span>
               <RotatingText words={words} />
             </div>
@@ -234,7 +234,7 @@ function CreateModalInner({ options, close, t, activeJourney }) {
           {/* Bottom Context */}
           <div className="relative z-10">
             <p className="text-sm text-[var(--cm-text-muted,rgba(255,255,255,0.55))] mb-6 max-w-xs leading-relaxed">
-              Select an entity to add to your studio's library. All creations are automatically organized in your workspace.
+              {t('create.modal.hero_caption', null, "Seleziona un'entità da aggiungere alla libreria del tuo studio. Tutto viene organizzato automaticamente nel tuo workspace.")}
             </p>
             {activeJourney && (
               <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
@@ -266,10 +266,10 @@ function CreateModalInner({ options, close, t, activeJourney }) {
 
           <div className="md:hidden mb-10 mt-4 px-2">
             <h2 className="text-3xl tracking-tight mb-2" style={{ color: 'var(--cm-text)', fontFamily: 'var(--bp-font-heading, serif)' }}>
-              Create new
+              {t('create.modal.title_mobile', null, 'Crea nuovo')}
             </h2>
             <p className="text-sm text-[var(--cm-text-muted,rgba(255,255,255,0.55))]">
-              Select an entity to add to your studio's library.
+              {t('create.modal.hero_caption_short', null, "Seleziona un'entità da aggiungere alla libreria.")}
             </p>
           </div>
 
