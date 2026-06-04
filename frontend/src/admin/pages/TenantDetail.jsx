@@ -51,26 +51,38 @@ const TenantDetail = () => {
   const [contacts, setContacts] = useState([]);
   const [activities, setActivities] = useState([]);
   const [eligibleOwners, setEligibleOwners] = useState([]);
+  const [loadError, setLoadError] = useState(null);
   const [drawerContact, setDrawerContact] = useState(null);
   const [activityDrawerId, setActivityDrawerId] = useState(null);   // 'new' | uuid
   const roles = useCatalog('contact-roles');
   const roleMap = Object.fromEntries(roles.map((r) => [r.code, r]));
 
   const loadAll = useCallback(async () => {
-    try {
-      const [ov, cs, acts, ows] = await Promise.all([
-        axios.get(`${BACKEND}/api/admin/tenants/${tid}/overview`, { headers: headers() }),
-        axios.get(`${BACKEND}/api/admin/tenants/${tid}/contacts`, { headers: headers() }),
-        axios.get(`${BACKEND}/api/admin/tenants/${tid}/activities?limit=10`, { headers: headers() }),
-        axios.get(`${BACKEND}/api/admin/users/eligible-owners?limit=100`, { headers: headers() }),
-      ]);
-      setOverview(ov.data);
-      setContacts(cs.data || []);
-      setActivities(acts.data || []);
-      setEligibleOwners(ows.data || []);
-    } catch (e) {
-      console.error('overview load error', e);
+    setLoadError(null);
+    // Use allSettled so a non-critical endpoint failure (eg eligible-owners,
+    // activities, contacts) cannot leave the page stuck on an infinite spinner.
+    // Only the /overview endpoint is critical for first render.
+    const [ovR, csR, actsR, owsR] = await Promise.allSettled([
+      axios.get(`${BACKEND}/api/admin/tenants/${tid}/overview`,         { headers: headers() }),
+      axios.get(`${BACKEND}/api/admin/tenants/${tid}/contacts`,         { headers: headers() }),
+      axios.get(`${BACKEND}/api/admin/tenants/${tid}/activities?limit=10`, { headers: headers() }),
+      axios.get(`${BACKEND}/api/admin/users/eligible-owners?limit=100`, { headers: headers() }),
+    ]);
+    if (ovR.status === 'fulfilled') {
+      setOverview(ovR.value.data);
+    } else {
+      const e = ovR.reason;
+      const code = e?.response?.status;
+      const detail = e?.response?.data?.detail || e?.message || 'Errore sconosciuto';
+      console.error('tenant overview load error', e);
+      setLoadError({ code, detail });
     }
+    setContacts(csR.status === 'fulfilled' ? (csR.value.data || []) : []);
+    setActivities(actsR.status === 'fulfilled' ? (actsR.value.data || []) : []);
+    setEligibleOwners(owsR.status === 'fulfilled' ? (owsR.value.data || []) : []);
+    if (csR.status === 'rejected')   console.warn('contacts load failed',         csR.reason);
+    if (actsR.status === 'rejected') console.warn('activities load failed',       actsR.reason);
+    if (owsR.status === 'rejected')  console.warn('eligible-owners load failed',  owsR.reason);
   }, [tid]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
@@ -103,6 +115,33 @@ const TenantDetail = () => {
   };
 
   if (!overview) {
+    if (loadError) {
+      return (
+        <div className="p-8 max-w-[1400px] mx-auto" data-testid="tenant-detail-error">
+          <button onClick={() => navigate('/command-center/tenants')}
+                  data-testid="tenant-back-btn"
+                  className="text-stone-400 hover:text-stone-900 inline-flex items-center gap-1 text-sm mb-6">
+            <ChevronLeft size={16} /> Tenants
+          </button>
+          <div className="border border-red-200 bg-red-50 p-6 text-stone-800">
+            <div className="text-[10px] uppercase tracking-wider text-red-600 mb-2">
+              Errore di caricamento
+            </div>
+            <div className="text-lg font-light mb-1">
+              Impossibile caricare il tenant
+            </div>
+            <div className="text-sm text-stone-600 mb-4">
+              {loadError.code ? `HTTP ${loadError.code} · ` : ''}{loadError.detail}
+            </div>
+            <button onClick={loadAll}
+                    data-testid="tenant-detail-retry"
+                    className="text-xs px-3 py-1.5 border border-stone-300 hover:bg-white">
+              Riprova
+            </button>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="p-8 max-w-[1400px] mx-auto" data-testid="tenant-detail-loading">
         <div className="text-stone-400">Caricamento…</div>
