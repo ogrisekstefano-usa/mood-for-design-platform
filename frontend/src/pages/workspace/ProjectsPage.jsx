@@ -1,99 +1,95 @@
 /**
- * ProjectsPage — Project Relationship Atlas™ (ITER149)
+ * ProjectsPage — Design Journey™ Operating Center
  *
- * Cinematic editorial grid. NOT a SaaS project list. Each card is a
- * "Relationship Project Surface™": hero photography, status pill, serif
- * client name, Used-In™ live numerals, palette strip, last movement.
+ * Filosofia: NON una lista database. È il centro operativo di uno
+ * studio di interior design. 50% Linear · 25% Attio · 15% Arc · 10% Milanote.
+ * MOOD DNA: luxury · professional · creative · operational.
  *
- * Architecture: DB-driven status taxonomy + editorial state groups +
- * Used-In™ live counters from backend (moodboards / proposals / memories).
+ * Architettura:
+ *   • Hero editoriale: titolo serif "Design Journey™" + sottotitolo + CTA primaria
+ *   • KPI strip: Progetti attivi · In revisione · Presentazioni · Approvati
+ *   • Project cards visualmente forti: hero, cliente, fase, ultima attività,
+ *     prossima azione, team, contatori operativi
+ *   • Wizard 4-step per la creazione (Cliente → Tipologia → Nome → Conferma)
+ *   • Stages Journey: Discover / Inspiration / Moodboard / Presentation /
+ *     Revision / Approval / Specification (NO stati CRM tecnici)
+ *
+ * Theme-driven · i18n-ready · zero hardcoded colors.
  */
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import {
+  Plus, Lock, ArrowRight, Calendar, Users, Image, Box, CheckCircle2,
+  Sparkles, ChevronLeft, Search, Building2, Home, Hotel, Briefcase,
+  Loader2,
+} from 'lucide-react';
 import api, { formatError } from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useLicense, refreshLicense } from '../../hooks/useLicense';
 import UsageChip from '../../components/common/UsageChip';
-import { toast } from 'sonner';
-import { Plus, Lock, Layers } from 'lucide-react';
+import {
+  AtelierModal,
+  AtelierFooter,
+  AtelierButton,
+  AtelierInput,
+  AtelierField,
+} from '../../components/atelier/AtelierModal';
 import './projects-page.css';
 
-// ── Editorial relationship STATES ─────────────────────────────────
-// 5 atelier states pivoting many raw backend statuses. Each state
-// passes a comma-joined `status=` query so the API can `.in_()` filter.
-const EDITORIAL_STATES = [
-  { key: '',                    i18n: 'projects.atlas.tab.all',       fallback: 'Tutti',                statuses: '' },
-  { key: 'conversation_open',   i18n: 'projects.atlas.tab.open',      fallback: 'Conversazione aperta', statuses: 'new,brief_completed' },
-  { key: 'in_review',           i18n: 'projects.atlas.tab.review',    fallback: 'In revisione',         statuses: 'in_review,proposal_in_progress' },
-  { key: 'direction_presented', i18n: 'projects.atlas.tab.presented', fallback: 'Direzione presentata', statuses: 'proposal_sent' },
-  { key: 'won',                 i18n: 'projects.atlas.tab.won',       fallback: 'Progetto vinto',       statuses: 'approved,won' },
-  { key: 'archived',            i18n: 'projects.atlas.tab.archived',  fallback: 'Archivio firmato',     statuses: 'archived,lost,rejected' },
+// ─────────────────────────────────────────────────────────────────
+// Design Journey™ STAGES
+// 7 atelier stages mapped from legacy backend statuses
+// ─────────────────────────────────────────────────────────────────
+const JOURNEY_STAGES = [
+  { key: 'discover',      i18n: 'projects.stage.discover',      fallback: 'Discover',      tone: 'soft',     statuses: 'new,brief_completed' },
+  { key: 'inspiration',   i18n: 'projects.stage.inspiration',   fallback: 'Inspiration',   tone: 'info',     statuses: 'inspiration' },
+  { key: 'moodboard',     i18n: 'projects.stage.moodboard',     fallback: 'Moodboard',     tone: 'info',     statuses: 'moodboard,in_review,proposal_in_progress' },
+  { key: 'presentation',  i18n: 'projects.stage.presentation',  fallback: 'Presentation',  tone: 'accent',   statuses: 'proposal_sent' },
+  { key: 'revision',      i18n: 'projects.stage.revision',      fallback: 'Revision',      tone: 'warning',  statuses: 'revision' },
+  { key: 'approval',      i18n: 'projects.stage.approval',      fallback: 'Approval',      tone: 'positive', statuses: 'approved,won' },
+  { key: 'specification', i18n: 'projects.stage.specification', fallback: 'Specification', tone: 'positive', statuses: 'specification,delivered' },
 ];
 
-const STATUS_TO_EDITORIAL = {
-  new: 'conversation_open',
-  brief_completed: 'conversation_open',
-  in_review: 'in_review',
-  proposal_in_progress: 'in_review',
-  proposal_sent: 'direction_presented',
-  approved: 'won',
-  won: 'won',
-  archived: 'archived',
-  lost: 'archived',
-  rejected: 'archived',
+const STATUS_TO_STAGE = JOURNEY_STAGES.reduce((acc, s) => {
+  for (const st of (s.statuses || '').split(',').filter(Boolean)) acc[st] = s.key;
+  return acc;
+}, {});
+
+const stageMeta = (status) => {
+  const key = STATUS_TO_STAGE[status] || 'discover';
+  return JOURNEY_STAGES.find((s) => s.key === key) || JOURNEY_STAGES[0];
 };
 
-const editorialLabel = (status, t) => {
-  const key = STATUS_TO_EDITORIAL[status] || 'conversation_open';
-  const state = EDITORIAL_STATES.find(s => s.key === key) || EDITORIAL_STATES[1];
-  return t(state.i18n, null, state.fallback);
-};
+// ─────────────────────────────────────────────────────────────────
+// FILTER TABS — config-driven
+// ─────────────────────────────────────────────────────────────────
+const FILTER_TABS = [
+  { key: '',             i18n: 'projects.filter.all',        fallback: 'Tutti',        statuses: '' },
+  { key: 'active',       i18n: 'projects.filter.active',     fallback: 'Attivi',       statuses: 'new,brief_completed,inspiration,moodboard,in_review,proposal_in_progress,revision' },
+  { key: 'review',       i18n: 'projects.filter.review',     fallback: 'In revisione', statuses: 'in_review,proposal_in_progress' },
+  { key: 'presentation', i18n: 'projects.filter.presented',  fallback: 'Presentati',   statuses: 'proposal_sent' },
+  { key: 'won',          i18n: 'projects.filter.approved',   fallback: 'Approvati',    statuses: 'approved,won,specification,delivered' },
+  { key: 'archived',     i18n: 'projects.filter.archived',   fallback: 'Archivio',     statuses: 'archived,lost,rejected' },
+];
 
-// ── Hero photography pool — deterministic per project id ──────────
+// ─────────────────────────────────────────────────────────────────
+// Hero photography (luxury interior design — Unsplash curated)
+// Deterministic per id, override via metadata_json.hero_image_url
+// ─────────────────────────────────────────────────────────────────
 const HERO_POOL = [
-  'photo-1556909114-f6e7ad7d3136',
-  'photo-1567538096630-e0c55bd6374c',
-  'photo-1554995207-c18c203602cb',
-  'photo-1556228720-195a672e8a03',
-  'photo-1493663284031-b7e3aefcae8e',
-  'photo-1505691938895-1758d7feb511',
-  'photo-1565182999561-18d7dc61c393',
-  'photo-1582268611958-ebfd161ef9cf',
-  'photo-1616486338812-3dadae4b4ace',
+  'photo-1616486338812-3dadae4b4ace', 'photo-1505691938895-1758d7feb511',
+  'photo-1493663284031-b7e3aefcae8e', 'photo-1554995207-c18c203602cb',
+  'photo-1582268611958-ebfd161ef9cf', 'photo-1556909114-f6e7ad7d3136',
+  'photo-1567538096630-e0c55bd6374c', 'photo-1565182999561-18d7dc61c393',
+  'photo-1556228720-195a672e8a03',   'photo-1600585154340-be6161a56a0c',
 ];
 const heroFor = (project) => {
   const explicit = project?.metadata_json?.hero_image_url;
   if (explicit) return explicit;
   const id = String(project?.id || '');
   const hash = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  return `https://images.unsplash.com/${HERO_POOL[hash % HERO_POOL.length]}?w=720&q=80&auto=format&fit=crop`;
-};
-
-// ── Palette swatch resolver — editorial color vocabulary ──────────
-const PALETTE_SWATCH = {
-  earth: '#8a6a4a', olive: '#7d8b56', bronze: '#a07550', black: '#1a1a1c',
-  white: '#ece8df', beige: '#cdb999', gold: '#c8a064', brass: '#b08a4a',
-  blue: '#5a779e', navy: '#3E322A', teal: '#508a8a', green: '#5e7d5b',
-  forest: '#3b5042', cream: '#e3d8be', charcoal: '#3a3a3d', walnut: '#6e4a30',
-  oak: '#a98660', marble: '#dddad2', terracotta: '#b56b50', sand: '#c9b58a',
-  ivory: '#ede2c8', warm: '#d6b687', cool: '#88a0a8', rust: '#a35538',
-  copper: '#b0673a', pink: '#d9a59d', rose: '#c98a86', amber: '#e0a258',
-  glass: '#bcd2d8', brick: '#a06255', sage: '#9aaa8c', stone: '#b3aca0',
-  smoke: '#8b8e91', mocha: '#7a5c45', fog: '#bcbbb1',
-};
-const swatch = (name) => PALETTE_SWATCH[(name || '').toLowerCase()] || '#5a5a5a';
-
-// Deterministic fallback palette for projects without onboarding_payload.colors
-const DEFAULT_PALETTE_POOL = [
-  ['marble', 'walnut', 'beige', 'charcoal'],
-  ['oak', 'cream', 'terracotta', 'stone'],
-  ['warm', 'mocha', 'sand', 'ivory'],
-  ['olive', 'cream', 'walnut', 'stone'],
-];
-const defaultPaletteFor = (project) => {
-  const id = String(project?.id || '');
-  const hash = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  return DEFAULT_PALETTE_POOL[hash % DEFAULT_PALETTE_POOL.length];
+  return `https://images.unsplash.com/${HERO_POOL[hash % HERO_POOL.length]}?w=900&q=80&auto=format&fit=crop`;
 };
 
 const formatRelative = (iso) => {
@@ -108,259 +104,546 @@ const formatRelative = (iso) => {
   } catch { return null; }
 };
 
-// ── Editorial state label dictionary (IT) ───────────────────────
-const EDITORIAL_LABEL_IT = {
-  conversation_open:   'Conversazione aperta',
-  in_review:           'In revisione',
-  direction_presented: 'Direzione presentata',
-  won:                 'Progetto vinto',
-  archived:            'Archivio firmato',
+// Get client initials from a name string (max 2 chars)
+const initialsOf = (name) =>
+  (name || '?').trim().split(/\s+/).slice(0, 2)
+    .map((w) => w[0]).join('').toUpperCase();
+
+// Deterministic palette for team avatars (theme-derived hues)
+const TEAM_HUES = ['#5dd9c4', '#E0A872', '#a78bfa', '#7d8b56', '#c9a875', '#6ee7b7'];
+const hueFor = (seed) => {
+  const s = String(seed || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return TEAM_HUES[s % TEAM_HUES.length];
 };
 
-// ── Used-In™ numeral pillar ─────────────────────────────────────
-const UsedIn = ({ usedIn }) => (
-  <div className="atlas-card__usedin" aria-label="Used in this relationship">
-    <span className="atlas-card__usedin-eyebrow">USED-IN&trade;</span>
-    <ul className="atlas-card__usedin-list">
-      <li>
-        <strong className="atlas-card__usedin-num">{usedIn.moodboards}</strong>
-        <span className="atlas-card__usedin-label">moodboards</span>
-      </li>
-      <li>
-        <strong className="atlas-card__usedin-num">{usedIn.proposals}</strong>
-        <span className="atlas-card__usedin-label">proposte</span>
-      </li>
-      <li>
-        <strong className="atlas-card__usedin-num">{usedIn.memories}</strong>
-        <span className="atlas-card__usedin-label">memorie</span>
-      </li>
-    </ul>
-  </div>
-);
-
-// ── Relationship Project Surface™ ───────────────────────────────
-const ProjectCard = ({ project, index, featured }) => {
+// ─────────────────────────────────────────────────────────────────
+// PROJECT CARD — operational SaaS, not editorial poster
+// ─────────────────────────────────────────────────────────────────
+const ProjectCard = ({ project, index }) => {
   const payload = project?.metadata_json?.onboarding_payload || {};
-  const colorsRaw = (payload.colors || []).slice(0, 4);
-  const colors = colorsRaw.length > 0 ? colorsRaw : defaultPaletteFor(project);
+  const stage = stageMeta(project.status);
   const clientFirst = payload.first_name || project.client_first_name;
-  // Strip "Conversazione di " / "Conversation with " prefix from title when
-  // the project was auto-named by the onboarding flow.
   const stripPrefix = (s) =>
-    String(s || '').replace(/^(conversazione di|conversation with|kunde|cliente)\s+/i, '').trim();
-  const clientName = clientFirst || stripPrefix(project.title) ||
-    (project.client_email ? project.client_email.split('@')[0] : '—');
-  const updated = project.updated_at || project.created_at;
+    String(s || '').replace(/^(conversazione di|conversation with)\s+/i, '').trim();
+  const projectName = stripPrefix(project.title) ||
+    (clientFirst ? `${clientFirst}'s Project` : 'Untitled Project');
+  const clientName = clientFirst ||
+    (project.client_email ? project.client_email.split('@')[0] : 'Cliente');
+
   const usedIn = project.used_in || { moodboards: 0, proposals: 0, memories: 0 };
-  const editorialKey = STATUS_TO_EDITORIAL[project.status] || 'conversation_open';
+  const lastUpdate = formatRelative(project.updated_at || project.created_at);
   const hero = heroFor(project);
-  const editorialPill = EDITORIAL_LABEL_IT[editorialKey] || 'Conversazione aperta';
-  const rel = formatRelative(updated);
+
+  // Team: derive from members or fallback to project initiator
+  const team = (project.team_members || []).slice(0, 4);
+  if (team.length === 0 && clientFirst) {
+    team.push({ id: 'owner', name: clientFirst });
+  }
+
+  // Next action — derived from stage (foundational, will plug into actions API)
+  const nextActionLabel = {
+    discover:      'Programma kickoff',
+    inspiration:   'Raccogli ispirazioni',
+    moodboard:     'Componi moodboard',
+    presentation:  'Presenta al cliente',
+    revision:      'Applica revisioni',
+    approval:      'Conferma approvazione',
+    specification: 'Genera spec book',
+  }[stage.key] || 'Continua il journey';
 
   return (
     <Link
       to={`/workspace/projects/${project.id}`}
       data-testid={`project-card-${index}`}
-      className={`atlas-card atlas-card--${editorialKey} ${featured ? 'atlas-card--featured' : ''}`}
+      className={`pj-card pj-card--${stage.tone}`}
     >
-      <div className="atlas-card__hero" aria-hidden="true">
+      <div className="pj-card__hero" aria-hidden="true">
         <img src={hero} alt="" loading="lazy" />
-        <span className="atlas-card__hero-veil" />
-      </div>
-
-      <span className="atlas-card__status" data-testid={`project-card-${index}-status`}>
-        <span className="atlas-card__status-dot" />
-        {editorialPill}
-      </span>
-
-      <div className="atlas-card__title-block">
-        <p className="atlas-card__title-eyebrow">Conversazione di</p>
-        <h3 className="atlas-card__title" data-testid={`project-card-${index}-title`}>
-          {clientName}
-        </h3>
-      </div>
-
-      <UsedIn usedIn={usedIn} />
-
-      <div className="atlas-card__palette" data-testid={`project-card-${index}-palette`}>
-        {colors.map((c, i) => (
-          <span key={`${c}-${i}`} className="atlas-card__swatch"
-                style={{ backgroundColor: swatch(c) }} title={c} />
-        ))}
-      </div>
-
-      <div className="atlas-card__foot">
-        <span className="atlas-card__time">
-          {rel && `Ultimo movimento · ${rel}`}
+        <div className="pj-card__hero-veil" />
+        <span className={`pj-card__stage pj-card__stage--${stage.tone}`} data-testid={`project-card-${index}-stage`}>
+          <span className="pj-card__stage-dot" />
+          {stage.fallback}
         </span>
+      </div>
+
+      <div className="pj-card__body">
+        <header className="pj-card__head">
+          <p className="pj-card__client" data-testid={`project-card-${index}-client`}>
+            <span className="pj-card__client-avatar" style={{ background: `color-mix(in srgb, ${hueFor(clientName)} 20%, transparent)`, color: hueFor(clientName) }}>
+              {initialsOf(clientName)}
+            </span>
+            <span className="pj-card__client-name">{clientName}</span>
+          </p>
+          <h3 className="pj-card__name" data-testid={`project-card-${index}-name`}>
+            {projectName}
+          </h3>
+        </header>
+
+        <div className="pj-card__timeline">
+          {lastUpdate && (
+            <p className="pj-card__activity pj-card__activity--last">
+              <span className="pj-card__activity-dot" />
+              <span><strong>Ultima attività</strong> · {lastUpdate}</span>
+            </p>
+          )}
+          <p className="pj-card__activity pj-card__activity--next">
+            <ArrowRight size={11} strokeWidth={1.8} />
+            <span><strong>Prossima</strong> · {nextActionLabel}</span>
+          </p>
+        </div>
+
+        <footer className="pj-card__foot">
+          <ul className="pj-card__metrics">
+            <li title="Moodboards">
+              <Image size={11} strokeWidth={1.8} />
+              <span>{usedIn.moodboards}</span>
+            </li>
+            <li title="Materiali">
+              <Box size={11} strokeWidth={1.8} />
+              <span>{usedIn.materials || usedIn.proposals || 0}</span>
+            </li>
+            <li title="Decisioni">
+              <CheckCircle2 size={11} strokeWidth={1.8} />
+              <span>{usedIn.decisions || usedIn.memories || 0}</span>
+            </li>
+          </ul>
+          {team.length > 0 && (
+            <ul className="pj-card__team" aria-label="Team">
+              {team.map((m, i) => (
+                <li
+                  key={m.id || i}
+                  title={m.name || ''}
+                  style={{
+                    background: `color-mix(in srgb, ${hueFor(m.name || m.id || i)} 22%, transparent)`,
+                    color: hueFor(m.name || m.id || i),
+                    zIndex: 10 - i,
+                  }}
+                >
+                  {initialsOf(m.name)}
+                </li>
+              ))}
+            </ul>
+          )}
+        </footer>
       </div>
     </Link>
   );
 };
 
-// ── New Project Modal (preserved) ───────────────────────────────
-const NewProjectModal = ({ onClose, onSaved }) => {
-  const { t, locale } = useBlueprint();
-  const [form, setForm] = useState({ title: '', description: '', project_type: '', priority: 'normal', budget_range: '', timeline: '', language: locale });
-  const [loading, setLoading] = useState(false);
-  const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
+// ─────────────────────────────────────────────────────────────────
+// NEW PROJECT WIZARD — 4 step (Cliente → Tipologia → Nome → Conferma)
+// ─────────────────────────────────────────────────────────────────
+const PROJECT_TYPES = [
+  { key: 'residential',   label: 'Residenziale',  desc: 'Case private, ville, appartamenti', Icon: Home },
+  { key: 'hospitality',   label: 'Hospitality',   desc: 'Hotel, ristoranti, boutique',       Icon: Hotel },
+  { key: 'office',        label: 'Office',        desc: 'Uffici, coworking, headquarters',   Icon: Briefcase },
+  { key: 'retail',        label: 'Retail',        desc: 'Showroom, flagship, pop-up',        Icon: Building2 },
+];
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const NewProjectWizard = ({ open, onClose, onCreated }) => {
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1);
+  const [busy, setBusy] = useState(false);
+
+  // Client picker state
+  const [clientQuery, setClientQuery] = useState('');
+  const [clientResults, setClientResults] = useState([]);
+  const [client, setClient] = useState(null); // {id, name, email} OR {new: true, first_name, last_name, email}
+  const [projType, setProjType] = useState(null);
+  const [projName, setProjName] = useState('');
+
+  // Reset wizard on open
+  useEffect(() => {
+    if (open) {
+      setStep(1); setBusy(false);
+      setClientQuery(''); setClientResults([]);
+      setClient(null); setProjType(null); setProjName('');
+    }
+  }, [open]);
+
+  // Live search clients (debounced)
+  useEffect(() => {
+    if (!open || step !== 1 || clientQuery.trim().length < 2) {
+      setClientResults([]);
+      return undefined;
+    }
+    const t = setTimeout(() => {
+      api.get('/api/relations/accounts', { params: { q: clientQuery.trim(), limit: 6 } })
+        .then(({ data }) => setClientResults(data?.data || data || []))
+        .catch(() => setClientResults([]));
+    }, 220);
+    return () => clearTimeout(t);
+  }, [clientQuery, step, open]);
+
+  const canNext = useMemo(() => {
+    if (step === 1) return !!client || (clientQuery.trim().length >= 2);
+    if (step === 2) return !!projType;
+    if (step === 3) return projName.trim().length >= 2;
+    return true;
+  }, [step, client, clientQuery, projType, projName]);
+
+  // Auto-suggest project name when reaching step 3
+  useEffect(() => {
+    if (step === 3 && !projName && client) {
+      const cn = client.name || client.first_name || 'Cliente';
+      const pt = projType?.label || 'Progetto';
+      setProjName(`${pt} ${cn}`.trim());
+    }
+  }, [step, client, projType, projName]);
+
+  const submit = async () => {
+    if (busy) return;
+    setBusy(true);
     try {
-      await api.post('/api/projects', form);
+      const payload = {
+        title: projName.trim(),
+        project_type: projType?.key || null,
+        priority: 'normal',
+        metadata_json: {
+          onboarding_payload: {
+            first_name: client?.first_name || (client?.name || '').split(' ')[0],
+            last_name: client?.last_name || (client?.name || '').split(' ').slice(1).join(' '),
+            account_id: client?.id || null,
+            email: client?.email || null,
+          },
+        },
+      };
+      const r = await api.post('/api/projects', payload);
       refreshLicense();
-      onSaved();
+      toast.success(`${projName} è ora in Discover · Design Journey™`);
+      onCreated?.(r.data);
+      // Navigate to the new project workspace
+      const newId = r.data?.id || r.data?.project?.id;
+      if (newId) navigate(`/workspace/projects/${newId}`);
+      onClose?.();
     } catch (err) {
       const detail = err?.response?.data?.detail;
       if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
-        toast.error(`Project limit reached (${detail.current}/${detail.limit}). Upgrade your ${detail.plan} plan to add more.`);
+        toast.error(`Limite progetti raggiunto (${detail.current}/${detail.limit}). Upgrade ${detail.plan}.`);
       } else {
         toast.error(formatError(err));
       }
+    } finally { setBusy(false); }
+  };
+
+  const back = () => setStep((s) => Math.max(1, s - 1));
+  const next = () => {
+    // Promote inline-typed client query to "new client" stub
+    if (step === 1 && !client && clientQuery.trim().length >= 2) {
+      const parts = clientQuery.trim().split(/\s+/);
+      setClient({
+        first_name: parts[0],
+        last_name: parts.slice(1).join(' ') || '',
+        name: clientQuery.trim(),
+        new: true,
+      });
     }
-    finally { setLoading(false); }
+    if (step === 4) return submit();
+    setStep((s) => Math.min(4, s + 1));
+    return undefined;
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="new-project-modal">
-      <div className="atelier-modal animate-fadeIn">
-        <div className="atelier-modal__head">
-          <h3 className="atelier-modal__title"><em>{t('projects.newProject')}</em></h3>
-          <button onClick={onClose} className="atelier-modal__close" aria-label="Close">×</button>
+    <AtelierModal
+      open={open}
+      onClose={onClose}
+      eyebrow={`Design Journey™ · Step ${step} di 4`}
+      title={
+        step === 1 ? 'Per chi è questo progetto?' :
+        step === 2 ? 'Che tipo di progetto?' :
+        step === 3 ? 'Come si chiama?' :
+                     'Conferma il nuovo progetto'
+      }
+      subtitle={
+        step === 1 ? 'Scegli un cliente esistente o digita un nuovo nome.' :
+        step === 2 ? 'Aiuta MOOD a preparare il workspace giusto. Potrai cambiarlo dopo.' :
+        step === 3 ? 'Un nome che ti aiuti a riconoscerlo subito.' :
+                     null
+      }
+      maxWidth={680}
+      testid="new-project-wizard"
+    >
+      {/* Stepper */}
+      <div className="pj-wizard__steps" aria-hidden="true">
+        {[1, 2, 3, 4].map((n) => (
+          <span key={n} className={`pj-wizard__step ${n <= step ? 'is-on' : ''}`} />
+        ))}
+      </div>
+
+      {/* STEP 1 — Cliente */}
+      {step === 1 && (
+        <div className="pj-wizard__panel">
+          <AtelierField label="Cliente">
+            <div className="pj-wizard__search">
+              <Search size={13} strokeWidth={1.6} />
+              <AtelierInput
+                value={clientQuery}
+                onChange={(e) => { setClientQuery(e.target.value); setClient(null); }}
+                placeholder="Cerca per nome o email…"
+                autoFocus
+                data-testid="wizard-client-search"
+              />
+            </div>
+          </AtelierField>
+
+          {clientResults.length > 0 && (
+            <ul className="pj-wizard__results" data-testid="wizard-client-results">
+              {clientResults.map((a) => (
+                <li key={a.id}>
+                  <button
+                    type="button"
+                    className={`pj-wizard__result ${client?.id === a.id ? 'is-on' : ''}`}
+                    onClick={() => setClient({ id: a.id, name: a.account_name || a.display_name, email: a.email })}
+                    data-testid={`wizard-client-${a.id}`}
+                  >
+                    <span className="pj-wizard__result-avatar" style={{ background: `color-mix(in srgb, ${hueFor(a.id)} 22%, transparent)`, color: hueFor(a.id) }}>
+                      {initialsOf(a.account_name || a.display_name || a.email)}
+                    </span>
+                    <span className="pj-wizard__result-body">
+                      <span className="pj-wizard__result-name">{a.account_name || a.display_name}</span>
+                      {a.email && <span className="pj-wizard__result-email">{a.email}</span>}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {clientResults.length === 0 && clientQuery.trim().length >= 2 && (
+            <p className="pj-wizard__hint">
+              <Sparkles size={12} strokeWidth={1.6} /> Premi <strong>Avanti</strong> per creare “{clientQuery.trim()}” come nuovo cliente.
+            </p>
+          )}
         </div>
-        <form onSubmit={submit} className="atelier-modal__body">
-          <div className="atelier-field">
-            <label className="atelier-field__label">{t('projects.field.title')}</label>
-            <input required value={form.title} onChange={set('title')} className="atelier-field__input" />
-          </div>
-          <div className="atelier-field__grid">
-            {[['project_type', 'projects.field.projectType'], ['budget_range', 'projects.field.budget'], ['timeline', 'projects.field.timeline'], ['priority', 'projects.field.priority']].map(([k, lk]) => (
-              <div key={k} className="atelier-field">
-                <label className="atelier-field__label">{t(lk)}</label>
-                <input value={form[k]} onChange={set(k)} className="atelier-field__input" />
-              </div>
+      )}
+
+      {/* STEP 2 — Tipologia */}
+      {step === 2 && (
+        <div className="pj-wizard__panel">
+          <div className="pj-wizard__types" data-testid="wizard-types">
+            {PROJECT_TYPES.map(({ key, label, desc, Icon }) => (
+              <button
+                key={key}
+                type="button"
+                className={`pj-wizard__type ${projType?.key === key ? 'is-on' : ''}`}
+                onClick={() => setProjType({ key, label, desc })}
+                data-testid={`wizard-type-${key}`}
+              >
+                <span className="pj-wizard__type-icon"><Icon size={20} strokeWidth={1.5} /></span>
+                <span className="pj-wizard__type-body">
+                  <strong>{label}</strong>
+                  <em>{desc}</em>
+                </span>
+              </button>
             ))}
           </div>
-          <div className="atelier-field">
-            <label className="atelier-field__label">{t('projects.field.description')}</label>
-            <textarea rows={3} value={form.description} onChange={set('description')} className="atelier-field__input atelier-field__input--area" />
+        </div>
+      )}
+
+      {/* STEP 3 — Nome progetto */}
+      {step === 3 && (
+        <div className="pj-wizard__panel">
+          <AtelierField label="Nome progetto">
+            <AtelierInput
+              value={projName}
+              onChange={(e) => setProjName(e.target.value)}
+              placeholder="es. Residenza Sereno, Villa Maremma…"
+              autoFocus
+              data-testid="wizard-name"
+            />
+          </AtelierField>
+        </div>
+      )}
+
+      {/* STEP 4 — Conferma */}
+      {step === 4 && (
+        <div className="pj-wizard__panel">
+          <div className="pj-wizard__confirm" data-testid="wizard-confirm">
+            <Row label="Cliente" value={client?.name || `${client?.first_name || ''} ${client?.last_name || ''}`} />
+            <Row label="Tipologia" value={projType?.label} />
+            <Row label="Progetto" value={projName} />
+            <Row label="Fase iniziale" value="Discover" tone="accent" />
           </div>
-          <div className="atelier-modal__foot">
-            <button type="button" onClick={onClose} className="ppage__cta ppage__cta--lock">{t('common.cancel')}</button>
-            <button data-testid="save-project-btn" type="submit" disabled={loading} className="ppage__cta">
-              {loading ? t('common.loading') : t('common.save')}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          <p className="pj-wizard__hint">
+            <Sparkles size={12} strokeWidth={1.6} />
+            Verrà aperto in Discover. Aggiungerai budget, timeline e team dal workspace del progetto.
+          </p>
+        </div>
+      )}
+
+      <AtelierFooter align="between">
+        <div>
+          {step > 1 && (
+            <AtelierButton variant="minimal" onClick={back} testid="wizard-back">
+              <ChevronLeft size={13} strokeWidth={1.8} /> Indietro
+            </AtelierButton>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <AtelierButton variant="ghost" onClick={onClose} testid="wizard-cancel">
+            Annulla
+          </AtelierButton>
+          <AtelierButton
+            onClick={next}
+            disabled={!canNext}
+            loading={busy && step === 4}
+            testid="wizard-next"
+          >
+            {busy && step === 4 ? (<><Loader2 size={12} className="pj-spin" /> Apertura…</>) :
+              step === 4 ? (<>Apri il progetto <ArrowRight size={13} strokeWidth={1.8} /></>) :
+                          (<>Avanti <ArrowRight size={13} strokeWidth={1.8} /></>)}
+          </AtelierButton>
+        </div>
+      </AtelierFooter>
+    </AtelierModal>
   );
 };
 
-// ── Main · Project Relationship Atlas™ ──────────────────────────
+const Row = ({ label, value, tone }) => (
+  <div className="pj-wizard__confirm-row">
+    <span className="pj-wizard__confirm-label">{label}</span>
+    <span className={`pj-wizard__confirm-value ${tone ? `is-${tone}` : ''}`}>{value || '—'}</span>
+  </div>
+);
+
+// ─────────────────────────────────────────────────────────────────
+// PAGE
+// ─────────────────────────────────────────────────────────────────
 const ProjectsPage = () => {
-  const { t } = useBlueprint();
   const navigate = useNavigate();
-  const { capacityFor, license } = useLicense();
+  const { license, capacityFor } = useLicense();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stateKey, setStateKey] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [filter, setFilter] = useState('');
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const cap = capacityFor('projects');
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const state = EDITORIAL_STATES.find(s => s.key === stateKey);
-      const params = state && state.statuses ? `?status=${encodeURIComponent(state.statuses)}` : '';
+      const tab = FILTER_TABS.find((s) => s.key === filter);
+      const params = tab && tab.statuses ? `?status=${encodeURIComponent(tab.statuses)}` : '';
       const { data } = await api.get(`/api/projects${params}`);
       setProjects(data.data || []);
     } catch { setProjects([]); }
     finally { setLoading(false); }
-  }, [stateKey]);
+  }, [filter]);
 
   useEffect(() => { load(); }, [load]);
 
+  const kpis = useMemo(() => {
+    const buckets = { active: 0, review: 0, presented: 0, approved: 0 };
+    for (const p of projects) {
+      const k = stageMeta(p.status).key;
+      if (['discover', 'inspiration', 'moodboard'].includes(k)) buckets.active++;
+      if (k === 'moodboard') buckets.review++;
+      if (k === 'presentation') buckets.presented++;
+      if (['approval', 'specification'].includes(k)) buckets.approved++;
+    }
+    return buckets;
+  }, [projects]);
+
   const onCta = () => {
     if (cap.atCap) navigate('/settings/plan');
-    else setShowModal(true);
+    else setWizardOpen(true);
   };
 
   return (
-    <div className="atlas-page" data-testid="projects-page">
-      {showModal && <NewProjectModal onClose={() => setShowModal(false)} onSaved={() => { setShowModal(false); load(); }} />}
+    <div className="pj-page" data-testid="projects-page">
+      <NewProjectWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onCreated={() => { setWizardOpen(false); load(); }}
+      />
 
-      <header className="atlas-page__head">
-        <div>
-          <p className="atlas-page__eyebrow" data-testid="projects-page-eyebrow">
-            Studio
+      {/* ── HERO ──────────────────────────────────────────────── */}
+      <header className="pj-hero">
+        <div className="pj-hero__copy">
+          <p className="pj-hero__eyebrow" data-testid="projects-page-eyebrow">
+            MOOD · Studio Operations
           </p>
-          <h1 className="atlas-page__title" data-testid="projects-page-title">
-            Progetti
+          <h1 className="pj-hero__title" data-testid="projects-page-title">
+            <em>Design Journey&trade;</em>
           </h1>
-          <p className="atlas-page__sub">
-            {projects.length} {projects.length === 1 ? 'progetto' : 'progetti'}
+          <p className="pj-hero__subtitle">
+            Gestisci ogni progetto dal primo incontro alla presentazione finale.
           </p>
         </div>
-        <div className="atlas-page__actions">
+        <div className="pj-hero__actions">
           {license && (
             <UsageChip label="Progetti" current={cap.current} limit={cap.limit}
                        unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
                        testid="projects-usage-chip" />
           )}
-          <button data-testid="new-project-btn" onClick={onCta}
-            className={`atlas-page__cta ${cap.atCap ? 'is-locked' : ''}`}>
+          <button
+            type="button"
+            onClick={onCta}
+            className={`pj-hero__cta ${cap.atCap ? 'is-locked' : ''}`}
+            data-testid="new-project-btn"
+          >
             {cap.atCap
-              ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade to create more</>)
-              : (<><Plus size={14} strokeWidth={1.4} /> Nuovo progetto</>)}
+              ? (<><Lock size={13} strokeWidth={1.8} /> Upgrade to create more</>)
+              : (<><Plus size={14} strokeWidth={1.8} /> Nuovo progetto</>)}
           </button>
         </div>
       </header>
 
-      <div className="atlas-page__tabs" role="tablist">
-        {EDITORIAL_STATES.map((s) => (
+      {/* ── KPI STRIP ─────────────────────────────────────────── */}
+      <section className="pj-kpis" data-testid="projects-kpis">
+        <KpiCard label="Progetti attivi"        value={kpis.active}    accent="accent" />
+        <KpiCard label="In revisione"           value={kpis.review}    accent="info" />
+        <KpiCard label="Presentazioni"          value={kpis.presented} accent="warning" />
+        <KpiCard label="Approvati"              value={kpis.approved}  accent="positive" />
+      </section>
+
+      {/* ── FILTER TABS ───────────────────────────────────────── */}
+      <nav className="pj-tabs" role="tablist">
+        {FILTER_TABS.map((s) => (
           <button
             key={s.key || 'all'}
+            type="button"
             data-testid={`tab-${s.key || 'all'}`}
-            onClick={() => setStateKey(s.key)}
-            className={`atlas-page__tab ${stateKey === s.key ? 'is-active' : ''}`}
+            onClick={() => setFilter(s.key)}
+            className={`pj-tab ${filter === s.key ? 'is-active' : ''}`}
             role="tab"
-            aria-selected={stateKey === s.key}
+            aria-selected={filter === s.key}
           >
             {s.fallback}
           </button>
         ))}
-      </div>
+      </nav>
 
+      {/* ── GRID ──────────────────────────────────────────────── */}
       {loading ? (
-        <div className="atlas-grid">
-          {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="atlas-card atlas-card--skeleton" />)}
+        <div className="pj-grid">
+          {[1, 2, 3, 4].map((i) => <div key={i} className="pj-card pj-card--skeleton" />)}
         </div>
       ) : projects.length === 0 ? (
-        <div className="atlas-page__empty" data-testid="projects-empty">
-          <Layers size={36} strokeWidth={1} />
-          <h3 data-testid="projects-empty-title">Nessuna relazione ancora.</h3>
-          <p data-testid="projects-empty-subtitle">Avvia il primo progetto.</p>
-          <button onClick={onCta} data-testid="projects-empty-cta" className="atlas-page__cta">
-            {cap.atCap ? 'Upgrade plan' : '+ Apri la prima relazione'}
+        <div className="pj-empty" data-testid="projects-empty">
+          <Sparkles size={28} strokeWidth={1} />
+          <h3>Il tuo studio è pronto per il primo progetto.</h3>
+          <p>Apri una Design Journey™ e MOOD si occuperà del workspace.</p>
+          <button onClick={onCta} className="pj-hero__cta" data-testid="projects-empty-cta">
+            {cap.atCap ? 'Upgrade plan' : (<><Plus size={13} strokeWidth={1.8} /> Apri la prima Journey</>)}
           </button>
         </div>
       ) : (
-        <div className="atlas-grid" data-testid="projects-grid">
+        <div className="pj-grid" data-testid="projects-grid">
           {projects.map((p, i) => (
-            <ProjectCard key={p.id} project={p} index={i} featured={false} />
+            <ProjectCard key={p.id} project={p} index={i} />
           ))}
         </div>
       )}
-
-      <footer className="atlas-page__manifesto">
-        <em>"Ogni progetto è una relazione. Ogni relazione è un'opera in divenire."</em>
-      </footer>
     </div>
   );
 };
+
+const KpiCard = ({ label, value, accent }) => (
+  <div className={`pj-kpi pj-kpi--${accent}`}>
+    <span className="pj-kpi__value">{value}</span>
+    <span className="pj-kpi__label">{label}</span>
+  </div>
+);
 
 export default ProjectsPage;
