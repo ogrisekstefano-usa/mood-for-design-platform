@@ -26,12 +26,13 @@ Superhuman. Function before aesthetic.
 * ITER204 · Studio Library Bridge (saved entities across types)
 * ITER204-B/205 · Entity Navigation Layer (Collection/Product/Material/Designer detail pages)
 * Relationship OS™ architecture deliverable + HTML wireframes
-* **M4 · Internal Notification Center (04 Jun 2026)** ← see `M4_IMPLEMENTATION_REPORT.md`
-  * DB-driven catalog of 9 categories + preferences foundation
-  * Bell + drawer + tabs + deep-link nav + archive + HIGH-priority badge
-  * APScheduler cron at 08:00 Europe/Rome for `followup_overdue`
-  * Strict RBAC on `recipient_user_id`, no cross-user access
-  * 20/20 pytest pass · Playwright smoke pass
+* **M4 · Internal Notification Center (04 Jun 2026)** — see `M4_IMPLEMENTATION_REPORT.md`
+* **Brand Registry Enhancement™ (04 Jun 2026)** — multi-categories + Tag system foundation (Knowledge Graph ready). See `BRAND_REGISTRY_ENHANCEMENT_REPORT.md`
+  * Multi-select Categorie pill-style, catalog DB-driven (18 categorie, 9 suggested)
+  * TagInput riusabile con autocomplete + suggested + crea-on-Enter
+  * Resolver server-side con dedup + slugify; tag_registry.is_suggested
+  * Frontend 100% theme-token driven (zero hardcoded colors)
+  * 12/12 backend pytest · 14/14 frontend Playwright PASS
 
 ## Backlog (priority)
 
