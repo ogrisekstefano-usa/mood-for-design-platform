@@ -1,155 +1,41 @@
 {
-  "project_name": "MOOD for DESIGN™",
-  "theme": "dark",
-  "archetype": "Archetype 5: Jewel & Luxury (with Swiss/Minimalist structural influence)",
-  "emotional_tone": "Refined, elite, organized, tactile, warm, cinematic",
-  "color_palette": {
-    "background": {
-      "base": "#0A0A0B",
-      "surface": "#141416",
-      "elevated": "#1C1C1F",
-      "glass": "rgba(10, 10, 11, 0.6)"
-    },
-    "text": {
-      "primary": "#EFEBE4",
-      "secondary": "#A19D98",
-      "tertiary": "#6B6863",
-      "inverse": "#0A0A0B"
-    },
-    "brand_accents": {
-      "gold_primary": "#D4AF37",
-      "gold_light": "#E2C365",
-      "amber_dark": "#B8974D"
-    },
-    "ui_elements": {
-      "border_subtle": "rgba(255, 255, 255, 0.08)",
-      "border_hover": "rgba(255, 255, 255, 0.15)",
-      "success": "#4CAF50",
-      "warning": "#D4AF37",
-      "danger": "#F44336"
-    }
+  "theme": "DARK",
+  "archetype": "5 (Luxury)",
+  "vibe": "Expensive, cinematic, moody, editorial.",
+  "reasoning": "The application targets elite interior design studios operating with luxury brands. It needs a premium, 'Godly' website feel with deep contrast, glassmorphism, and elegant typography.",
+  "colors": {
+    "background": "Deep charcoal/black var(--cm-surface, #0f0f11)",
+    "text_primary": "var(--cm-text, rgba(255,255,255,0.92))",
+    "text_muted": "var(--cm-text-muted, rgba(255,255,255,0.55))",
+    "border": "var(--cm-border, rgba(255,255,255,0.06))",
+    "card_bg": "var(--cm-surface-card, rgba(255,255,255,0.03))",
+    "card_bg_hover": "var(--cm-surface-card-hover, rgba(255,255,255,0.06))"
   },
   "typography": {
-    "fonts": {
-      "heading": "Cormorant Garamond, serif",
-      "body": "Manrope, sans-serif",
-      "mono": "JetBrains Mono, monospace"
-    },
-    "hierarchy": {
-      "h1": "text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-[#EFEBE4]",
-      "h2": "text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight text-[#EFEBE4]",
-      "h3": "text-xl sm:text-2xl font-medium tracking-tight text-[#EFEBE4]",
-      "h4": "text-lg sm:text-xl font-medium text-[#EFEBE4]",
-      "body": "text-base leading-relaxed text-[#A19D98]",
-      "small": "text-sm text-[#A19D98]",
-      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]"
-    }
+    "headings": "var(--bp-font-heading, 'Cormorant Garamond', serif) - used for the main hero text and individual options.",
+    "body": "var(--bp-font-body, system-ui, sans-serif)",
+    "accent": "Monospace used for numbering '01', '02' and small uppercase labels to provide technical contrast."
   },
-  "spacing_and_layout": {
-    "philosophy": "Generous Spacing Philosophy. Massive negative space. 'Airy' but dark.",
-    "containers": "max-w-7xl mx-auto px-6 sm:px-12 lg:px-24",
-    "grids": {
-      "bento_analytics": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6",
-      "tetris_marketing": "grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8 to gap-12"
-    },
-    "padding": {
-      "section": "py-24 sm:py-32",
-      "card": "p-6 sm:p-8"
-    }
+  "layout": {
+    "structure": "Split-pane cinematic modal. Left pane (40%) is a brand statement/hero with a rotating text block. Right pane (60%) is a curated vertical atelier index.",
+    "spacing": "Generous paddings (p-14), items have large gaps, reflecting luxury."
   },
-  "components": {
-    "buttons": {
-      "primary": "bg-[#D4AF37] text-[#0A0A0B] hover:bg-[#E2C365] transition-colors rounded-sm px-6 py-3 font-medium",
-      "secondary": "bg-transparent border border-white/15 text-[#EFEBE4] hover:bg-white/5 transition-colors rounded-sm px-6 py-3",
-      "ghost": "bg-transparent text-[#A19D98] hover:text-[#EFEBE4] hover:bg-white/5 transition-colors rounded-sm px-4 py-2"
-    },
-    "cards": {
-      "default": "bg-[#141416] border border-white/5 rounded-md shadow-[0_4px_24px_rgba(0,0,0,0.4)]",
-      "hover": "hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_8px_32px_rgba(0,0,0,0.6)] transition-all duration-300"
-    },
-    "inputs": {
-      "default": "bg-[#0A0A0B] border border-white/10 rounded-sm text-[#EFEBE4] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all"
-    },
-    "navigation_sidebar": {
-      "style": "bg-[#0A0A0B] border-r border-white/5 w-64 flex-shrink-0 flex flex-col",
-      "item": "flex items-center gap-3 px-4 py-2 rounded-sm text-[#A19D98] hover:text-[#EFEBE4] hover:bg-white/5 transition-colors",
-      "active_item": "bg-[#141416] text-[#D4AF37] border-l-2 border-[#D4AF37]"
-    },
-    "glass_header": "bg-[#0A0A0B]/60 backdrop-blur-xl border-b border-white/5 z-50"
-  },
-  "motion_and_interactions": {
-    "hover_states": "All interactive elements must have explicit hover states altering background opacity or text color.",
-    "transitions": "Use 'transition-all duration-300 ease-in-out' for smooth, luxurious feel.",
-    "micro_animations": "Cards lift slightly on hover ('-translate-y-1'). Borders glow slightly by increasing opacity."
-  },
-  "testing_attributes": {
-    "requirement": "CRITICAL: All interactive and key informational elements MUST include a 'data-testid' attribute (kebab-case, role-based).",
-    "examples": ["data-testid='login-submit-button'", "data-testid='project-card-1'", "data-testid='sidebar-nav-moodboards'"]
+  "interactions": {
+    "hover": "Row hover triggers an ambient glow on the left pane matching the hovered item's accent color. The hovered row subtly brightens and adds a subtle internal gradient.",
+    "entrance": "Staggered Framer Motion entrance. Backdrop blurs smoothly, modal scales up and fades in."
   },
   "media": {
-    "icons_library": "lucide-react",
-    "images": {
-      "hero_landing": {
-        "url": "https://images.unsplash.com/photo-1776935359455-94263068537c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMGRhcmslMjBtb2Rlcm58ZW58MHx8fHwxNzc4NTgwOTAxfDA&ixlib=rb-4.1.0&q=85",
-        "description": "Modern dark interior with architectural lighting",
-        "usage": "Public landing page hero background (needs dark overlay bg-black/50)"
-      },
-      "projects": [
-        {
-          "url": "https://images.unsplash.com/photo-1749766878223-6ceae855b28b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwyfHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMGRhcmslMjBtb2Rlcm58ZW58MHx8fHwxNzc4NTgwOTAxfDA&ixlib=rb-4.1.0&q=85",
-          "description": "Elegant dark bathroom",
-          "usage": "Project cover / Moodboard inspiration"
-        },
-        {
-          "url": "https://images.unsplash.com/photo-1777604602765-1d5114114891?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMGRhcmslMjBtb2Rlcm58ZW58MHx8fHwxNzc4NTgwOTAxfDA&ixlib=rb-4.1.0&q=85",
-          "description": "Black leather sofa setting",
-          "usage": "Project cover / Moodboard inspiration"
-        },
-        {
-          "url": "https://images.unsplash.com/photo-1765767056681-9583b29007cf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMGRhcmslMjBtb2Rlcm58ZW58MHx8fHwxNzc4NTgwOTAxfDA&ixlib=rb-4.1.0&q=85",
-          "description": "Modern living room dark decor",
-          "usage": "Project cover / Moodboard inspiration"
-        }
-      ],
-      "materials": [
-        {
-          "url": "https://images.unsplash.com/photo-1760385737098-0b555a75b2ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHw0fHxkYXJrJTIwbWFyYmxlJTIwbHV4dXJ5JTIwdGV4dHVyZXxlbnwwfHx8fDE3Nzg1ODA5MDZ8MA&ixlib=rb-4.1.0&q=85",
-          "description": "Elegant double doors with ornate gold trim",
-          "usage": "Material reference / CMS Article image"
-        },
-        {
-          "url": "https://images.unsplash.com/photo-1700822715338-3ed8b72fdb5a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxkYXJrJTIwbWFyYmxlJTIwbHV4dXJ5JTIwdGV4dHVyZXxlbnwwfHx8fDE3Nzg1ODA5MDZ8MA&ixlib=rb-4.1.0&q=85",
-          "description": "Dark stone texture",
-          "usage": "Material reference / Moodboard block"
-        }
-      ],
-      "avatars": [
-        {
-          "url": "https://images.unsplash.com/photo-1600896997793-b8ed3459a17f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMGFyY2hpdGVjdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3ODU4MDkwNnww&ixlib=rb-4.1.0&q=85",
-          "description": "Architect portrait 1",
-          "usage": "Team member / User profile placeholder"
-        },
-        {
-          "url": "https://images.unsplash.com/photo-1609371497456-3a55a205d5eb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMGFyY2hpdGVjdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3ODU4MDkwNnww&ixlib=rb-4.1.0&q=85",
-          "description": "Architect portrait 2",
-          "usage": "Team member / User profile placeholder"
-        }
-      ],
-      "tenant_logo": {
-        "url": "https://images.unsplash.com/photo-1637008336770-b95d637fd5fa?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBhcmNoaXRlY3R1cmUlMjBzdHVkaW8lMjBsb2dvJTIwZGFya3xlbnwwfHx8fDE3Nzg1ODA5MDZ8MA&ixlib=rb-4.1.0&q=85",
-        "description": "Minimalist black and white logo placeholder",
-        "usage": "Tenant workspace top-left logo / Settings preview"
+    "image_urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1526289034009-0240ddb68ce3?auto=format&fit=crop&w=1200&q=80",
+        "category": "hero_background",
+        "description": "Abstract minimalist dark architecture to serve as a low-opacity background texture for the left pane hero section."
       }
-    }
+    ]
   },
-  "instructions_to_main_agent": [
-    "CRITICAL: Always use dark mode. There is no light mode. Force dark styles by default.",
-    "CRITICAL: Include data-testid attributes on all interactive elements.",
-    "Use Shadcn UI components but override their backgrounds and borders to match the dark luxury palette (#0A0A0B base, #141416 surface).",
-    "Replace generic fonts. Configure tailwind.config.js to load 'Cormorant Garamond' (serif) for marketing/editorial headers and 'Manrope' (sans) for UI/Dashboard interfaces.",
-    "Use lucide-react for all icons, keeping stroke widths delicate (1.5px or 1px).",
-    "Implement the Layout Grids strictly: Use CSS Grid with generous gaps (gap-6 or gap-8) to ensure the interface breathes.",
-    "Ensure the Tenant Dashboard sidebar mimics the Vercel/Linear feel but with warm dark tones.",
-    "DO NOT use raw HTML components for interactive logic (dropdowns, dialogs, tabs). ALWAYS rely on Shadcn/Radix components styled appropriately."
-  ]
+  "component_path": [
+    "/app/frontend/src/components/layout/CreateModal.jsx",
+    "/app/frontend/src/components/layout/create-modal.css"
+  ],
+  "instructions_to_main_agent": "The Create Modal is redesigned as a 'WOW' signature brand moment. It uses framer-motion. All data-testids are preserved. The Blueprint theme logic handles all colors. Do not alter the configuration logic in buildCreationOptions()."
 }
