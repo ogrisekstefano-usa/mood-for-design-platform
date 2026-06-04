@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Workspace™ - Gallery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#050505', panel: '#111111', accent: '#00e5ff' }, fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], mono: ['"JetBrains Mono"', 'monospace'], sans: ['"Inter"', 'sans-serif'] } } } }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities { .glass { @apply bg-white/[0.03] border border-white/[0.08] backdrop-blur-md; } }
+    body { @apply bg-darkbg text-gray-300 font-sans p-8 md:p-16 min-h-screen flex items-center justify-center; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  
+  <div class="max-w-4xl w-full mx-auto space-y-12">
+    <div>
+      <h1 class="font-serif text-5xl md:text-6xl text-white mb-3 tracking-tight">Review Workspace™</h1>
+      <p class="font-mono text-sm text-accent tracking-widest uppercase">Blueprint Chameleon™ UI Prototypes</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <a href="desktop.html" data-testid="link-desktop" class="glass p-8 rounded-xl hover:bg-white/[0.06] transition group block border-accent/20">
+        <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-accent transition">1. Desktop Workspace</h2>
+        <p class="text-sm text-gray-400">3-column layout: Nav | Viewer | AI Panel.</p>
+      </a>
+
+      <a href="mobile.html" data-testid="link-mobile" class="glass p-8 rounded-xl hover:bg-white/[0.06] transition group block">
+        <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-accent transition">2. Mobile Workspace</h2>
+        <p class="text-sm text-gray-400">Tabbed/stacked adaptation for mobile view.</p>
+      </a>
+
+      <a href="dashboard.html" data-testid="link-dashboard" class="glass p-8 rounded-xl hover:bg-white/[0.06] transition group block">
+        <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-accent transition">3. Validation Dashboard</h2>
+        <p class="text-sm text-gray-400">Top KPI block and brand metrics overview.</p>
+      </a>
+
+      <a href="catalog-row.html" data-testid="link-catalog" class="glass p-8 rounded-xl hover:bg-white/[0.06] transition group block">
+        <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-accent transition">4. Catalog Set Details</h2>
+        <p class="text-sm text-gray-400">Active rows with action buttons replacing passive badges.</p>
+      </a>
+
+      <a href="certification.html" data-testid="link-certification" class="glass p-8 rounded-xl hover:bg-white/[0.06] transition group block md:col-span-2">
+        <h2 class="font-serif text-2xl text-white mb-2 group-hover:text-accent transition">5. Certification Flow</h2>
+        <p class="text-sm text-gray-400">Multi-step wizard: In estrazione → Review → Errore → Certificato.</p>
+      </a>
+
+    </div>
+  </div>
+</body>
+</html>

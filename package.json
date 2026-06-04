@@ -1,5 +1,21 @@
 {
   "dependencies": {
-    "framer-motion": "^12.40.0"
-  }
+    "express": "^5.2.1",
+    "framer-motion": "^12.40.0",
+    "puppeteer": "^24.43.1"
+  },
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "screenshot.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

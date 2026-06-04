@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Workspace™ - Mobile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#0a0a0a', panel: '#111111', accent: '#00e5ff' }, fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], mono: ['"JetBrains Mono"', 'monospace'], sans: ['"Inter"', 'sans-serif'] } } } }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities { .glass { @apply bg-white/[0.03] border border-white/[0.08] backdrop-blur-md; } .text-glow { text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); } }
+    body { @apply bg-darkbg text-gray-300 font-sans h-[100dvh] overflow-hidden flex flex-col; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="p-4 border-b border-white/[0.08] flex flex-col gap-2 bg-darkbg z-10 relative">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-accent text-glow"></div>
+        <h1 class="font-serif text-lg text-white">WORKSPACE™</h1>
+      </div>
+      <button data-testid="mobile-certify-btn" class="text-[10px] font-mono uppercase px-3 py-1 bg-accent/10 text-accent border border-accent/20 rounded">
+        Certifica
+      </button>
+    </div>
+    <div class="font-mono text-[10px] text-gray-500">RIVA1920_ICONS2025-1</div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="flex border-b border-white/5 font-mono text-xs uppercase shrink-0">
+    <button data-testid="tab-viewer" class="flex-1 py-3 text-white border-b-2 border-accent bg-white/5">Viewer</button>
+    <button data-testid="tab-issues" class="flex-1 py-3 text-gray-500 hover:text-white">Issues (4)</button>
+    <button data-testid="tab-nav" class="flex-1 py-3 text-gray-500 hover:text-white">Nav</button>
+  </div>
+
+  <main class="flex-1 overflow-auto bg-[#080808] relative">
+    
+    <!-- Viewer Content -->
+    <div class="p-4 flex flex-col items-center space-y-4 pb-32">
+      
+      <!-- Mock PDF -->
+      <div class="w-full aspect-[1/1.4] bg-[#e6e4df] shadow-xl relative mt-4">
+        <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover opacity-80 mix-blend-multiply grayscale" alt="PDF Background">
+        
+        <div class="absolute top-[20%] left-[10%] border-2 border-accent bg-accent/10 p-1 backdrop-blur-sm cursor-pointer">
+          <span class="bg-accent text-black text-[8px] font-mono px-1 font-bold">Product</span>
+        </div>
+        <div class="absolute bottom-[20%] right-[10%] border-2 border-pink-400 bg-pink-400/10 p-1 cursor-pointer animate-pulse">
+          <span class="bg-pink-400 text-black text-[8px] font-mono px-1 font-bold">Designer</span>
+        </div>
+      </div>
+
+      <div class="glass px-4 py-2 rounded-full flex gap-4 items-center font-mono text-xs mt-4">
+        <button><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+        <span>Pag 43 / 274</span>
+        <button><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+      </div>
+
+      <!-- Quick Action Floating Panel -->
+      <div class="fixed bottom-6 left-4 right-4 glass p-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-pink-500/30 z-20">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2 text-pink-400">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span class="font-mono text-[10px] uppercase font-bold">Ambiguità Corrente</span>
+          </div>
+          <span class="text-xs text-gray-500 font-mono">1/4</span>
+        </div>
+        <p class="text-xs text-gray-300 mb-3">Input: <span class="text-white font-mono bg-white/10 px-1 py-0.5 rounded">"CR&S Riva"</span></p>
+        <button data-testid="mobile-resolve-issue" class="w-full py-2 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded font-mono text-xs uppercase transition active:bg-pink-500/40">Risolvi Issue</button>
+      </div>
+
+    </div>
+  </main>
+  
+  <script>lucide.createIcons();</script>
+</body>
+</html>

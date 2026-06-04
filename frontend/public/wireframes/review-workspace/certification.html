@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Certification Flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#050505', panel: '#111111', accent: '#00e5ff' }, fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], mono: ['"JetBrains Mono"', 'monospace'], sans: ['"Inter"', 'sans-serif'] } } } }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities { .glass { @apply bg-white/[0.03] border border-white/[0.08] backdrop-blur-md; } }
+    body { @apply bg-darkbg text-gray-300 font-sans p-6 md:p-12 flex justify-center items-center min-h-screen; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  
+  <div class="w-full max-w-4xl glass p-8 md:p-12 rounded-2xl relative overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-64 h-64 bg-accent/5 rounded-full blur-[80px]"></div>
+    
+    <h2 class="font-serif text-3xl text-white mb-16 text-center relative z-10">Lifecycle del Brand Package</h2>
+    
+    <div class="relative flex flex-col md:flex-row justify-between items-center md:items-start gap-12 md:gap-0">
+      
+      <!-- Connecting Line Desktop -->
+      <div class="hidden md:block absolute top-6 left-16 right-16 h-[2px] bg-white/10 z-0">
+        <div class="h-full bg-gradient-to-r from-accent via-amber-500 to-transparent w-[50%]"></div>
+      </div>
+      
+      <!-- Connecting Line Mobile -->
+      <div class="block md:hidden absolute top-6 bottom-6 left-6 w-[2px] bg-white/10 z-0">
+        <div class="w-full bg-gradient-to-b from-accent via-amber-500 to-transparent h-[50%]"></div>
+      </div>
+      
+      <!-- Step 1 -->
+      <div class="relative z-10 flex flex-row md:flex-col items-center md:text-center gap-4 w-full md:w-48">
+        <div class="w-12 h-12 shrink-0 rounded-full bg-darkbg border-2 border-accent flex items-center justify-center text-accent shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+          <i data-lucide="cpu" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-mono text-sm text-white uppercase">In Estrazione</h4>
+          <p class="text-xs text-gray-500 mt-2">Vision & NLP pipeline analizzano i PDF. Generazione entità.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="relative z-10 flex flex-row md:flex-col items-center md:text-center gap-4 w-full md:w-48">
+        <div class="w-12 h-12 shrink-0 rounded-full bg-darkbg border-2 border-amber-500 flex items-center justify-center text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+          <i data-lucide="eye" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-mono text-sm text-white uppercase">Review</h4>
+          <p class="text-xs text-gray-500 mt-2">Intervento umano tramite Workspace per risolvere le ambiguità.</p>
+        </div>
+      </div>
+
+      <!-- Step 3 (Error Branch Indicator) -->
+      <div class="hidden md:flex relative z-10 flex-col items-center gap-4 w-48 mt-24 opacity-50 absolute left-1/2 -ml-24">
+        <div class="absolute -top-24 left-1/2 w-[2px] h-24 bg-gradient-to-b from-amber-500/30 to-red-500/30"></div>
+        <div class="w-12 h-12 rounded-full bg-darkbg border-2 border-red-500 flex items-center justify-center text-red-500">
+          <i data-lucide="alert-octagon" class="w-5 h-5"></i>
+        </div>
+        <div class="text-center">
+          <h4 class="font-mono text-sm text-white uppercase">Errore</h4>
+          <p class="text-xs text-gray-500 mt-2">Estrazione fallita. Richiesto re-processing.</p>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="relative z-10 flex flex-row md:flex-col items-center md:text-center gap-4 w-full md:w-48">
+        <div class="w-12 h-12 shrink-0 rounded-full bg-darkbg border-2 border-white/20 flex items-center justify-center text-gray-500">
+          <i data-lucide="award" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-mono text-sm text-gray-500 uppercase">Certificato</h4>
+          <p class="text-xs text-gray-600 mt-2">Dati congelati nel Brand Atlas™ pronti per l'uso in chat.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
