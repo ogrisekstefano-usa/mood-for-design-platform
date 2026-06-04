@@ -68,14 +68,16 @@
 /* ─── 4-column Layout ─────────────────────────────────────────────── */
 .rw-v3 .rw-workspace {
   display: grid;
-  grid-template-columns: 240px 1fr 360px 380px;
+  grid-template-columns: 220px minmax(0, 1fr) minmax(320px, 360px) minmax(340px, 380px);
   min-height: calc(100vh - 84px); /* strip + status bar */
 }
 .rw-v3 .rw-col {
   border-right: 1px solid var(--rw-border);
   background: var(--rw-bg-surface);
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: calc(100vh - 84px);
+  min-width: 0;
 }
 .rw-v3 .rw-col:last-child { border-right: none; }
 .rw-v3 .rw-col__header {
@@ -85,6 +87,7 @@
   border-bottom: 1px solid var(--rw-border);
   font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
   color: var(--rw-text-sec);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .rw-v3 .rw-col__body { padding: 16px; }
 
