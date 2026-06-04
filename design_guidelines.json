@@ -1,41 +1,88 @@
 {
-  "theme": "DARK",
-  "archetype": "5 (Luxury)",
-  "vibe": "Expensive, cinematic, moody, editorial.",
-  "reasoning": "The application targets elite interior design studios operating with luxury brands. It needs a premium, 'Godly' website feel with deep contrast, glassmorphism, and elegant typography.",
-  "colors": {
-    "background": "Deep charcoal/black var(--cm-surface, #0f0f11)",
-    "text_primary": "var(--cm-text, rgba(255,255,255,0.92))",
-    "text_muted": "var(--cm-text-muted, rgba(255,255,255,0.55))",
-    "border": "var(--cm-border, rgba(255,255,255,0.06))",
-    "card_bg": "var(--cm-surface-card, rgba(255,255,255,0.03))",
-    "card_bg_hover": "var(--cm-surface-card-hover, rgba(255,255,255,0.06))"
-  },
+  "project_name": "Knowledge Engine - MOOD for DESIGN Blueprint Chameleon™",
+  "theme": "dark",
+  "archetype": "5 (Luxury) with Swiss/Brutalist Technical Accents",
   "typography": {
-    "headings": "var(--bp-font-heading, 'Cormorant Garamond', serif) - used for the main hero text and individual options.",
-    "body": "var(--bp-font-body, system-ui, sans-serif)",
-    "accent": "Monospace used for numbering '01', '02' and small uppercase labels to provide technical contrast."
+    "primary_heading": {
+      "family": "var(--bp-font-heading, 'Cormorant Garamond', serif)",
+      "style": "font-light tracking-tight",
+      "usage": "Page Titles, Brand Names, Feature Headlines, Empty State messages"
+    },
+    "eyebrow_and_meta": {
+      "family": "var(--bp-font-mono, 'JetBrains Mono', monospace)",
+      "style": "uppercase tracking-[0.22em] text-[11px] or text-xs",
+      "usage": "Overlines (MOOD AI · KNOWLEDGE ENGINE™), Labels, Meta Stats (Category, Country, Pages, %)"
+    },
+    "body": {
+      "family": "var(--bp-font-sans, 'Inter', sans-serif)",
+      "style": "font-normal leading-relaxed text-secondary",
+      "usage": "Long descriptions, standard form inputs"
+    }
   },
-  "layout": {
-    "structure": "Split-pane cinematic modal. Left pane (40%) is a brand statement/hero with a rotating text block. Right pane (60%) is a curated vertical atelier index.",
-    "spacing": "Generous paddings (p-14), items have large gaps, reflecting luxury."
+  "color_palette": {
+    "surface_main": "var(--bp-surface-elevated, #111113)",
+    "text_primary": "var(--bp-text-primary, #ffffff)",
+    "text_secondary": "var(--bp-text-secondary, #a1a1aa)",
+    "text_muted": "var(--bp-text-muted, #71717a)",
+    "border_default": "var(--bp-border, #27272a)",
+    "border_soft": "var(--bp-border-soft, #18181b)",
+    "accent": "var(--accent-primary, #5dd9c4)",
+    "accent_glow": "color-mix(in srgb, var(--accent-primary) 15%, transparent)",
+    "status_tones": {
+      "info": "var(--accent-primary)",
+      "warning": "#E0A872",
+      "positive": "#34d399",
+      "neutral": "var(--bp-text-muted)"
+    }
   },
-  "interactions": {
-    "hover": "Row hover triggers an ambient glow on the left pane matching the hovered item's accent color. The hovered row subtly brightens and adds a subtle internal gradient.",
-    "entrance": "Staggered Framer Motion entrance. Backdrop blurs smoothly, modal scales up and fades in."
+  "components": {
+    "PageHeader": {
+      "layout": "Editorial hero structure",
+      "visuals": "Ambient corner glow (radial gradient from top-left using accent_glow)",
+      "eyebrow": "Monospace uppercase 'MOOD AI · KNOWLEDGE ENGINE™'",
+      "title": "Serif, text-4xl to text-5xl",
+      "description": "max-width 60ch, muted/secondary text"
+    },
+    "Toolbar": {
+      "layout": "Flex row, aligned center, gap-4",
+      "search": "Dark input with Search icon. On focus: glow cyan (ring/border accent)",
+      "button": "Pill-shaped 'Atelier' button (.am-btn or equivalent) for 'Aggiorna'",
+      "counter": "Monospace text, faint/muted"
+    },
+    "NewBrandCard": {
+      "concept": "Atelier Doorway",
+      "closed_state": "Dark card with subtle accent glow, inviting interaction",
+      "open_state": "Expands into an elegant form. Monospace uppercase labels. am-input styling. Footer with Atelier pill CTA"
+    },
+    "BrandGroup": {
+      "concept": "Editorial Section",
+      "header": "Flex row, Serif Brand Name (22-26px), Monospace meta (Category · Country). Hairline divider below.",
+      "toggle": "Chevron with 180deg animated rotation",
+      "counter": "Right-aligned monospace catalog set count"
+    },
+    "CatalogSetRow": {
+      "concept": "Doorway Item (AtelierCard pattern)",
+      "layout": "Flex row, PDF icon, Serif title for the catalog, Meta details in Monospace (Pages, % extracted).",
+      "interaction": "Hover: translate-x by 4px, background transition to soft border color, accent color on title or icon.",
+      "status_badge": "Atelier-pill format. Semantic text color and 10-15% opacity background via color-mix. Replace generic tone classes."
+    },
+    "States": {
+      "empty": "Large centered layout, stylized minimal icon, elegant Serif phrase, 'Crea il primo brand' Atelier pill CTA",
+      "loading": "Dark skeleton block with fluid shimmer effect (no plain 'Loading...' text)"
+    }
   },
-  "media": {
-    "image_urls": [
-      {
-        "url": "https://images.unsplash.com/photo-1526289034009-0240ddb68ce3?auto=format&fit=crop&w=1200&q=80",
-        "category": "hero_background",
-        "description": "Abstract minimalist dark architecture to serve as a low-opacity background texture for the left pane hero section."
-      }
-    ]
+  "animations": {
+    "global": "All transitions 250ms ease",
+    "lists": "Staggered fade-in (e.g., animation-delay step 50ms) for catalog sets",
+    "hover_effects": "Subtle transform (translate-x 4px) + glow manifestation on rows"
   },
-  "component_path": [
-    "/app/frontend/src/components/layout/CreateModal.jsx",
-    "/app/frontend/src/components/layout/create-modal.css"
-  ],
-  "instructions_to_main_agent": "The Create Modal is redesigned as a 'WOW' signature brand moment. It uses framer-motion. All data-testids are preserved. The Blueprint theme logic handles all colors. Do not alter the configuration logic in buildCreationOptions()."
+  "instructions_to_main_agent": [
+    "REWRITE /app/frontend/src/pages/inspirations/KnowledgeEnginePage.jsx completely.",
+    "REWRITE /app/frontend/src/pages/inspirations/knowledge-engine.css completely (update/replace .ke- classes with new design language).",
+    "MANDATORY: Preserve ALL existing `data-testid` attributes exactly as they are.",
+    "MANDATORY: Preserve ALL API integration (KE.listBrands, KE.createBrand, KE.listCatalogSets, KE.createCatalogSet) and their logic states.",
+    "MANDATORY: Preserve Routing - click on CatalogSetRow must navigate to /inspirations/knowledge-engine/catalog-sets/${setId}.",
+    "MANDATORY: Implement the exact visual language defined in the 'MOOD for DESIGN Blueprint Chameleon™' - Serif headings, monospace eyebrows, dark luxury surface, cyan ambient glow.",
+    "RECOMMENDATION: Create local helper sub-components in the file if needed to keep the JSX clean (e.g., <AtelierStatBadge>, <AtelierSection>)."
+  ]
 }
