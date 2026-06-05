@@ -166,6 +166,8 @@ export default function NextActionsPanel({ apiBase, onEdit, onActionDone }) {
   const totalOpen = open.length;
 
   const handleComplete = async (a) => {
+    // Optimistic: remove from open list immediately
+    setOpen((prev) => prev.filter((x) => x.id !== a.id));
     try {
       await axios.post(`${apiBase}/activities/${a.id}/complete`,
                        {}, { headers: headers() });
@@ -180,6 +182,8 @@ export default function NextActionsPanel({ apiBase, onEdit, onActionDone }) {
         await refresh();
         if (onActionDone) onActionDone();
       } catch (e2) {
+        // restore on failure
+        setOpen((prev) => [a, ...prev]);
         window.alert('Impossibile completare l\'attività.');
       }
     }

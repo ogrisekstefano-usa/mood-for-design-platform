@@ -16,7 +16,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  ChevronLeft, Building2, MapPin, AlertTriangle, Clock as ClockIcon, CalendarDays,
+  ChevronLeft, MapPin,
 } from 'lucide-react';
 
 import ContactDrawer from '../components/ContactDrawer';
@@ -351,8 +351,3 @@ const TenantDetail = () => {
 };
 
 export default TenantDetail;
-
-// Unused import guard (Building2/AlertTriangle/ClockIcon/CalendarDays may be
-// referenced in mobile fallback or future enhancements — keep them imported
-// to avoid churn when re-introducing icon-rich states).
-void Building2; void AlertTriangle; void ClockIcon; void CalendarDays;

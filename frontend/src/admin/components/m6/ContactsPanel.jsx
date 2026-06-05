@@ -27,16 +27,16 @@ const QuickActions = ({ contact, onLogActivity }) => {
     <div className="flex gap-1 mt-2">
       {tel
         ? <a href={`tel:${tel}`} className={cls} data-testid={`contact-call-${contact.id}`} title={`Chiama ${tel}`}><Phone size={11} className="inline" /></a>
-        : <span className={disabled}><Phone size={11} className="inline" /></span>}
+        : <span className={disabled} data-testid={`contact-call-${contact.id}`} aria-disabled="true" title="Telefono non disponibile"><Phone size={11} className="inline" /></span>}
       {contact.email
         ? <a href={`mailto:${contact.email}`} className={cls} data-testid={`contact-mail-${contact.id}`} title={`Email ${contact.email}`}><Mail size={11} className="inline" /></a>
-        : <span className={disabled}><Mail size={11} className="inline" /></span>}
+        : <span className={disabled} data-testid={`contact-mail-${contact.id}`} aria-disabled="true" title="Email non disponibile"><Mail size={11} className="inline" /></span>}
       {wa
         ? <a href={wa} target="_blank" rel="noreferrer" className={cls} data-testid={`contact-wa-${contact.id}`} title="WhatsApp"><MessageCircle size={11} className="inline" /></a>
-        : <span className={disabled}><MessageCircle size={11} className="inline" /></span>}
+        : <span className={disabled} data-testid={`contact-wa-${contact.id}`} aria-disabled="true" title="WhatsApp non disponibile"><MessageCircle size={11} className="inline" /></span>}
       {li
         ? <a href={li} target="_blank" rel="noreferrer" className={cls} data-testid={`contact-li-${contact.id}`} title="LinkedIn"><Linkedin size={11} className="inline" /></a>
-        : <span className={disabled}><Linkedin size={11} className="inline" /></span>}
+        : <span className={disabled} data-testid={`contact-li-${contact.id}`} aria-disabled="true" title="LinkedIn non disponibile"><Linkedin size={11} className="inline" /></span>}
       <button onClick={() => onLogActivity(contact)} className={cls + ' bg-black text-white border-black'} data-testid={`contact-logact-${contact.id}`} title="Logga attività">
         <Plus size={11} className="inline" />
       </button>

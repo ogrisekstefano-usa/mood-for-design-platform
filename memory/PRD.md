@@ -1,106 +1,206 @@
-# PRD — MOOD for DESIGN B2B Platform
+# MOOD for DESIGN — Product Requirements Document
 
-## Stato corrente (2 Giu 2026)
-🟢 **READY_TO_INVITE_FIRST_REAL_TENANT** — pipeline Visitor → V2 Submit
-→ Advisor Review → Activation → Magic Link → Founder Workspace
-certificata end-to-end con scenario reale (Martinel Interior Design,
-Pordenone IT → US·GB·AE).
+> Master document for the MOOD for DESIGN B2B platform. Last refresh: **5 June 2026 (M6 Relationship Center · CRM FREEZE)**.
 
-## Original problem statement
-B2B platform multi-tenant. Studio designer si registrano via Studio V2
-funnel, advisor del MOOD curano i lead, super-admin attivano i tenant,
-i founder accedono al loro Blueprint workspace via magic-link.
+---
 
-## P0 acquisitionm pipeline (DONE)
-- Studio V2 funnel `/studio` (5 step, archetype/markets/HQ/contact/help)
-- Persistenza in `studio_requests` con `studio_name`, geo, target countries
-- Email layer Resend hardenizzato (load_dotenv override + health check + sandbox retry)
-- Lifecycle automation: status `qualified → activated` orchestra tenant + membership + magic-link
-- AUTH: JWT + Magic Link senza fuga `raw_token`, 4 recovery flow (password reset, magic link, reinvio invito, workspace recovery)
-- Tenant Isolation: founder bloccato su pipeline/studio_requests/manifest cross-tenant
-- Role-based routing: admin → command-center, founder → /welcome, advisor → /advisor-console
-- Logout completo (5 chiavi localStorage cleared)
+## 1. Original problem statement (verbatim from user)
 
-## P0 fix applicati 2 Giu 2026 (GO-LIVE DRY-RUN)
-1. `AccessContinuityPage.jsx` — password login scriveva solo `mood_jwt` invece di `mood_auth_token`. Helper `_persistSession()` ora scrive tutte le 6 chiavi.
-2. `admin_site.py` — `/api/admin/site/whoami` rifiutava `role=owner`. Guard inline che accetta {admin, editor, advisor, owner}, isolation altrove preservata.
-3. `adminApi.js` — `adminAuth.clear()` non puliva le chiavi legacy → token zombie. Fix esteso `clear()`.
+> MOOD for DESIGN deve diventare la **piattaforma più desiderabile del settore design**.
+> Costruire un **Relationship Operating System** (non un CRUD admin) che supporti:
+> - Founder · Team MOOD · Collaboratori · Advisor commerciali (per le operations)
+> - **Studio members** (founder + team) — i clienti finali per cui esiste la piattaforma
+> Il CRM è uno strumento operativo interno. Il vero prodotto sono i moduli **Blueprint, Design Journey™, Moodboard™, Brand Atlas™, Material Discovery™, Inspiration Packages™, AI Assistant™, Client Portal™** — il motore commerciale per acquisire studi, showroom e licenze.
 
-## P1 backlog (FROZEN by user)
-- **Relationship OS™ M1 Contact CRM** — 🟢 **M1_COMPLETED_READY_FOR_M2** (2 Giu 2026). Migration 032 (`tenant_relationship_owner_*`), 24 endpoint API (admin + founder mirror D4), 4 pagine UI (TenantsList, TenantDetail 5-tab, BlueprintOverview, ContactDrawer con 5 Quick Actions), 16/16 security checks PASS, 0 regression. Catalog DB-driven (11 ruoli + 8 sources + 8 activity types). Report: `/app/memory/M1_CONTACT_CRM_IMPLEMENTATION_REPORT.md`. Performance gap noto (~1.7s/query) per latenza Supabase, da risolvere in M2 con connection pooling.
-- **Relationship OS™ M0** — 🟢 **M0_COMPLETED_READY_FOR_M1**. Migration 031 + 4 catalog seeds. Report: `/app/memory/RELATIONSHIP_OS_M0_EXECUTION_REPORT.md`.
-- Tenant Launch Pack M1 (Schema 031 + CMS seed)
-- Advisor Digest (`advisor_new_lead` digest pool)
-- Studio Requests UI: chip markets/languages/experiences
-- V2 funnel: capture `languages` array
+---
 
-## P2 backlog
-- CRM, Notification Center
-- Tenant Launch Pack M2-M5 (Health Score, Advisor rules)
-- Command Center UI per platform_languages/markets/project_types
-- Corporate Footer `MERCATO` i18n mismatch (P1 in pausa)
-- Newline letterale nel template Founder Welcome firma
-- `<a> nested` nel footer logo
-- Console warnings CMS `block_heading/block_text Unknown section type`
+## 2. Architettura attuale
 
-## Architettura
-- Backend: FastAPI + SQLAlchemy async (Supabase Postgres)
-- Frontend: React 18 + react-router + axios
-- Email: Resend (`mail.moodfordesign.com` verified)
-- Geocoding: Mapbox
+```
+/app/
+├── backend/   (FastAPI + Supabase PG, strict tenant isolation + RBAC)
+│   ├── db/migrations/                  (up to 035_notification_center)
+│   ├── routers/
+│   │   ├── admin_crm.py                (tenants list + overview + contacts)
+│   │   ├── admin_timeline.py           (M2 — unified timeline)
+│   │   ├── admin_activities.py         (M3 — activities CRUD + open-followups)
+│   │   ├── notifications.py            (M4 — internal notification center)
+│   │   └── auth.py
+│   ├── services/
+│   │   ├── relationship_activities.py  (M3 service)
+│   │   ├── notifications.py            (M4 service)
+│   │   ├── tenant_contacts.py          (M1)
+│   │   └── studio_activation.py
+│   └── jobs/scheduler.py               (APScheduler · Europe/Rome cron)
+├── frontend/  (React + Tailwind + shadcn, Functional Luxury dark theme)
+│   ├── src/admin/
+│   │   ├── pages/
+│   │   │   ├── TenantsList.jsx         (M6 — Studio · Owner · Advisor · Open FU · Last Touch · Status)
+│   │   │   ├── TenantDetail.jsx        (M6 — 3-col Relationship Dashboard, NO MORE TABS)
+│   │   │   ├── AdvisorConsole.jsx
+│   │   │   └── …
+│   │   ├── components/
+│   │   │   ├── m6/                     (NEW)
+│   │   │   │   ├── ContactsPanel.jsx
+│   │   │   │   ├── RelationshipFeedPanel.jsx
+│   │   │   │   └── NextActionsPanel.jsx
+│   │   │   ├── ContactDrawer.jsx       (M1)
+│   │   │   ├── ActivityDrawer.jsx      (M3)
+│   │   │   ├── ActivityFeed.jsx        (M3 — no longer mounted in TenantDetail)
+│   │   │   └── TimelineFeed.jsx        (M2 — no longer mounted in TenantDetail)
+│   │   └── shared/
+│   │       ├── WorkspaceShell.jsx      (responsive: 248px desktop / 56px icon-rail mobile)
+│   │       └── functional-luxury.css   (token layer: shell #0A0A0B etc.)
+│   └── public/
+│       ├── _mood_mockup.html
+│       └── _relationship_dashboard_mockup.html
+└── memory/
+    ├── PRD.md                          (this file)
+    ├── CHANGELOG.md                    (append-only)
+    ├── test_credentials.md
+    ├── COMMAND_CENTER_DESIGN_AUDIT.md
+    ├── COMMAND_CENTER_VNEXT_PROPOSAL.md
+    ├── FUNCTIONAL_LUXURY_PHASE2_REVIEW.md
+    ├── M6_RELATIONSHIP_DASHBOARD_FOUNDATION.md
+    └── screenshots/
+        ├── phase2_final/
+        └── m6_final/
+```
 
-## Endpoint chiave
-- `POST /api/studio/v2/submit` — funnel V2 submit
-- `POST /api/auth/login` — JWT password login
-- `POST /api/auth/magic-link/request` — magic link issue (no raw_token)
-- `POST /api/auth/magic-link/consume` — JWT + redirect_url
-- `POST /api/auth/password-reset/request` — recovery (no raw_token)
-- `POST /api/admin/studio/requests/{id}/activate` — orchestrazione tenant
-- `GET  /api/admin/tenant-activation/pipeline` — kanban admin
-- `GET  /api/admin/site/whoami` — session check permissivo (admin/editor/advisor/owner)
-- `GET  /api/health/email` — health check (sandbox/api/domain)
+---
 
-## Documenti chiave
-- `/app/memory/FIRST_REAL_TENANT_CERTIFICATION_REPORT.md` — dry-run 02/06/2026
-- `/app/memory/TENANT_ACTIVATION_COMPLETION_REPORT.md`
-- `/app/memory/EMAIL_DELIVERY_HARDENING_REPORT.md`
-- `/app/memory/TENANT_ISOLATION_FIX_REPORT.md`
-- `/app/memory/RELATIONSHIP_OS_M0_EXECUTION_REPORT.md` — M0 DB foundation (02/06/2026)
-- `/app/memory/M1_CONTACT_CRM_IMPLEMENTATION_REPORT.md` — M1 Contact CRM (02/06/2026)
-- `/app/memory/M1_REAL_USAGE_VALIDATION_REPORT.md` — M1 real usage validation (02/06/2026)
-- `/app/memory/M1_0_1_HOTFIX_REPORT.md` — M1.0.1 hotfix ARCH-1+ARCH-2 (02/06/2026) 🟢
-- `/app/memory/M2_RELATIONSHIP_TIMELINE_FINAL_EXECUTION_PLAN.md` — piano M2 con 4 decisioni utente recepite
-- `/app/memory/M2_IMPLEMENTATION_KICKOFF_REPORT.md` — readiness M2 (02/06/2026)
-- `/app/memory/M2_IMPLEMENTATION_REPORT.md` — M2 implementation report (02/06/2026) 🟢
-- `/app/memory/M3_ACTIVITY_LOG_ADVANCED_EXECUTION_PLAN.md` — piano M3 v0 (superato)
-- `/app/memory/M3_FINAL_EXECUTION_PLAN.md` — piano M3 definitivo (D1-D7 recepite, 02/06/2026)
-- `/app/memory/M3_IMPLEMENTATION_REPORT.md` — M3 implementation report (03/06/2026) 🟢
+## 3. Milestones — stato
 
-## Stato Relationship OS™ (03/06/2026)
-- ✅ **M0** DB foundation (view `v_relationship_timeline`, indici, catalog) — VALIDATED
-- ✅ **M1** Contact CRM (CRUD + Org Owner + Founder mirror + RBAC) — VALIDATED
-- ✅ **M1.0.1** Hotfix (`catalogs/languages` 200 · `preferred_language` normalize) — VALIDATED
-- ✅ **M2** Relationship Timeline + Health Hooks — COMPLETED (121/121 PASS)
-- ✅ **M3** Activity Log Advanced™ · Relationship Memory Layer — **COMPLETED** (153/153 PASS · 32/32 acceptance)
-- ✅ **M2/M3 UI Alignment** — `ActivityFeed.jsx` + `TimelineFeed.jsx` allineati ai token Command Center (03/06/2026). Report: `/app/memory/ACTIVITY_TIMELINE_UI_ALIGNMENT_REPORT.md` 🟢
-- 🔄 **M2/M3 UI direction rifocata** (03/06/2026) — l'utente ha rifiutato l'orientamento editoriale ("CRM dark mode") e ha riapprovato il modello SaaS-prima (Salesforce/Hubspot/Linear/Notion/Attio). Architettura Relationship OS ridisegnata in `/app/memory/RELATIONSHIP_OS_ARCHITECTURE_DELIVERABLE.md`. M6 (Relationship Center 3-colonne) postposto dopo M4+M5.
-- ✅ **M4** Internal Notification Center — **COMPLETED** (03/06/2026)
-   * Backend 100% (19/19 PASS): migration 035 (catalog 9 categorie + preferences in_app/email/push + 6 FK strutturate)
-   * Service `notifications.py` con `notify()` idempotente · `unread_count` con `has_critical` · RBAC strict
-   * Router REST 7 endpoint (list, unread-count, mark-read, archive, categories, preferences GET+PATCH)
-   * Hook in 5 servizi (studio_v2, activation, activities, contacts, magic-link consume)
-   * Cron `followup_overdue_scan` Europe/Rome 08:00 via APScheduler
-   * Frontend ~85%: Bell numerico sobrio (teal/red dinamico, NO `!`) + Drawer 380px con sezione "Critiche" separata + 6 filtri (Tutte/Non lette/Critiche/Attività/Tenant/Advisor) + polling 60s/10min visibility-aware
-   * Deliverable: `/app/memory/M4_PHASE2_CHECKIN_REPORT.md` + `/app/memory/M4_IMPLEMENTATION_REPORT.md`
-- ⏸️ **M5** Advisor Workspace — pianificato (architettura in deliverable Relationship OS · `/workspace/*` namespace)
-- ⏸️ **M5** Advisor Workspace + KPI — pianificato
-- ⏸️ **M1.1** Performance Hardening (connection pool) — task separato
-- ⏸️ **M2.1** Cosmetic fix header "Untitled studio" — backlog
+| Milestone | Scope | Stato |
+|---|---|---|
+| **M0** | CRM Foundation, multi-tenant, RBAC | ✅ Done |
+| **M1** | Contact CRM (CRUD, roles, primary, owner) | ✅ Done |
+| **M2** | Unified Timeline (events + activities + emails on one endpoint) | ✅ Done |
+| **M3** | Activity Log (CRUD, open-followups, complete, reopen, types & outcomes) | ✅ Done |
+| **M4** | Internal Notification Center (bell, drawer, mark-read, APScheduler cron) | ✅ Done |
+| **FASE 1 stabilization** | Tenant Detail spinner RCA + fix (`Promise.allSettled` + error branch) | ✅ Done |
+| **FASE 2 Functional Luxury** | Token CSS layer dark, Geist, sidebar fix, density compact | ✅ Done |
+| **M6 Relationship Center** | 3-col permanent dashboard, ops strip, inline accordion, Open FU on list, mobile icon-rail | ✅ Done · CRM FREEZE |
+| **M5 Advisor Workspace v1** | My Day cross-tenant | ⏸️ Frozen — postponed indefinitely |
+| **M3.1** | Voice Notes foundation | ⏸️ Frozen |
+| **M3.2** | Email integration foundation | ⏸️ Frozen |
+| **WOW EXPERIENCE stream** | Blueprint · Design Journey™ · Moodboard™ · Brand Atlas™ · Material Discovery™ · Inspiration Packages™ · AI Assistant™ · Client Portal™ | 🔥 **NEW priority — next stream** |
 
-## Test
-- `/app/backend/scripts/first_real_tenant_audit.py` — audit E2E (47 checks)
-- `/app/backend/scripts/dry_run_fresh_lead.py` — generatore lead/magic-link per UI tests
-- `/app/backend/scripts/auth_finalization_test.py` — auth UX (21 checks)
-- `/app/backend/scripts/email_e2e_real_test.py` — email layer
+---
 
-## Credenziali test → `/app/memory/test_credentials.md`
+## 4. M6 Relationship Center · what shipped (5 Jun 2026)
+
+### 4.1 Tenant Detail — `/command-center/tenants/{tid}`
+- **5 legacy tabs eliminated**: Overview, Contatti, Attività, Timeline, Notifiche
+- **3-column permanent dashboard** (`data-testid="m6-dashboard"`):
+  - **Left (220px)** `ContactsPanel` — M1 reused, role-grouped (Founders/Architects/Designers/Admin), primary highlighted, **5 Quick Actions always visible**: Call (`tel:`) · Mail (`mailto:`) · WA (`wa.me`) · LI (linkedin url) · +Act (opens M3 ActivityDrawer)
+  - **Center (fluid)** `RelationshipFeedPanel` — fetches M2 `/timeline` (already unifies events+activities+emails), **inline accordion** (state `expanded: Set<key>`), filter chips All/Activities/Events/Emails + Manual-only toggle, sticky day headers
+  - **Right (320px)** `NextActionsPanel` — fetches M3 `/activities/open-followups` + `/activities/v2?status=completed&limit=5`, client-side groups: OVERDUE / TODAY / THIS WEEK / LATER / COMPLETED RECENTLY, **3 Quick Actions always visible**: Complete (`POST /activities/{id}/complete` with optimistic update) · Reschedule (PATCH next_step_due_at via prompt) · Edit (opens ActivityDrawer)
+- **Operational header strip** (`tenant-ops-strip`, 7 cells, NO useless KPIs):
+  Founder (clickable → ContactDrawer · person-first) · Advisor (clickable → `/command-center/advisors?focus=`) · Owner · Last Touch (relative time) · Next Follow-up (color-coded: red overdue / amber today / neutral later) · Open · Overdue (red if >0)
+- **Mobile responsive**:
+  - Sidebar `.fl-aside-responsive` collapses to **56px icon-rail** at viewport ≤900px (icons + tooltips only)
+  - Dashboard switches to single column with sticky tab-strip `[Contacts][Feed][Actions]`
+  - Ops strip 7-col → 2-col grid
+
+### 4.2 Tenant List — `/command-center/tenants`
+- **New columns**: Studio · Owner · Advisor · **Open FU** · Last Touch · Status (removed: Geo column, Contacts count column)
+- Open FU shows `overdue_followups_count` in red bold if >0, else `open_followups_count` normal, else `0` muted
+- Backend payload extension (`admin_crm.py`):
+  - `open_followups_count` — subquery: `relationship_activities WHERE next_step_due_at IS NOT NULL AND completed_at IS NULL AND archived_at IS NULL`
+  - `overdue_followups_count` — same + `next_step_due_at < NOW()`
+- **Zero new endpoints** · Zero new tables · Zero new services
+
+### 4.3 Tested at 5 Jun 2026
+- Backend: 8/8 pytest passed (`/app/backend/tests/test_m6_relationship_center.py`)
+- Frontend: 12/14 spec checks passed (iteration_8.json); remaining 2 issues fixed in post-test pass:
+  - ✅ Optimistic update on Complete action (immediate removal from list)
+  - ✅ `contact-li-{id}` testid present even when disabled
+  - ✅ Dead imports cleanup in TenantDetail
+- Tenant `c64659f6` validated: 6 open FU, 0 overdue, 40 timeline items, 2 contacts
+
+---
+
+## 5. Functional Luxury · design tokens (FROZEN)
+
+```
+Shell           #0A0A0B
+Surface         #16161A
+Surface elev    #1D1D22
+Border          #2A2A30
+Accent (MOOD)   #00C9B3
+Critical        #FF453A
+Warning         #FF9F0A
+Success         #32D74B
+
+Typography      Geist 300/400/500/600/700 + Geist Mono (tabular-nums)
+                Playfair BANNED from operational UI (allowed only on marketing/landing/onboarding/blueprint storytelling)
+```
+
+Token CSS layer: `/app/frontend/src/admin/shared/functional-luxury.css`
+Scoped via root class `.fl-shell` on `WorkspaceShell`.
+
+---
+
+## 6. CRM FREEZE — what is OFF the table
+
+Effective **5 June 2026**, the following streams are frozen:
+
+- ❌ Nuove feature CRM
+- ❌ Nuovo redesign Command Center
+- ❌ M5 Advisor Workspace v1
+- ❌ M3.1 Voice Notes
+- ❌ M3.2 Email integration foundation
+- ❌ M1.1 Performance hardening (acceptable for current scale)
+- ❌ Cmd+K palette, Saved Views, Bulk Actions, Health Score
+
+These can resurface ONLY after the WOW Experience stream ships its first module.
+
+---
+
+## 7. NEXT PRIORITY — WOW Experience stream
+
+This is the **real product**. The CRM is plumbing; this is the value.
+
+### 7.1 Backlog priority order (proposed — to be ratified by user)
+| P | Module | One-liner | Status |
+|---|---|---|---|
+| **P0** | **Blueprint v2** | Studio's living public profile + materials/projects catalog | Existing M3, needs WOW rethink |
+| **P0** | **Design Journey™** | Visual narrative of a project from briefing → delivery, sharable with end-client | Not started |
+| **P1** | **Moodboard™** | Collaborative mood-boarding tool with material library | Not started |
+| **P1** | **Brand Atlas™** | Studio's brand identity / portfolio canon | Not started |
+| **P2** | **Material Discovery™** | Showroom-grade material exploration | Not started |
+| **P2** | **Inspiration Packages™** | Curated bundles for studios to send to clients | Not started |
+| **P3** | **AI Assistant™** | Studio-facing AI for content, drafting, material suggestions | Not started |
+| **P3** | **Client Portal™** | End-client view, sign-off, comments on a Design Journey | Not started |
+
+### 7.2 Strategic shifts
+- Audience pivot: from "Admin/Advisor operativi" → **"Studio members + end-clients"**
+- Visual pivot: dark Functional Luxury stays for back-office; **WOW modules need a bright, editorial, hospitality-grade aesthetic** (separate design tokens)
+- Commercial pivot: every WOW module must answer "Why would a studio pay for this every month?"
+
+### 7.3 Cosa serve da utente per partire
+1. Pick the first WOW module to scope (P0 candidates: Blueprint v2 vs Design Journey™)
+2. Define the primary user persona for that module (founder · senior designer · junior · end-client)
+3. Define one canonical "wow moment" per module — the specific 5-second experience that makes someone say "I need this"
+
+---
+
+## 8. Operational notes
+
+### 8.1 Auth & test credentials
+See `/app/memory/test_credentials.md`. Admin: `admin@moodfordesign.com / MoodAdmin2026!`.
+
+### 8.2 Production
+Deployed at https://moodfordesign.com. Preview environment URL: `REACT_APP_BACKEND_URL` from frontend/.env.
+
+### 8.3 Known cosmetic gaps (acceptable as-shipped)
+- `<select>` "Org. Owner" in tenant header still uses native HTML chrome. Functional, dark-themed via CSS override.
+- Subqueries in `/api/admin/tenants` run per-tenant per-request — fine ≤200 tenants.
+- "Untitled studio" fallback shown when `relation.studio_name IS NULL` — dirty data, not bug.
+
+### 8.4 RCA reports archive
+- `/app/memory/TENANT_DETAIL_SPINNER_RCA_REPORT.md` (FASE 1)
+- `/app/memory/FUNCTIONAL_LUXURY_PHASE2_REVIEW.md` (FASE 2)
+- `/app/memory/M6_RELATIONSHIP_DASHBOARD_FOUNDATION.md` (M6 plan)
+- `/app/test_reports/iteration_8.json` (M6 test report)
