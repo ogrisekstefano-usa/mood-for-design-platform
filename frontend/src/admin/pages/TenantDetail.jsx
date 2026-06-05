@@ -1,93 +1,138 @@
 /**
- * TenantDetail — Command Center M1.
- * 5 tabs: Overview / Contacts / Activities (preview) / Timeline (placeholder M2) /
- *         Notifications (placeholder M4).
+ * TenantDetail — M6 Relationship Center.
+ *
+ * 3-column permanent layout:
+ *   Left:   ContactsPanel             (M1 data)
+ *   Center: RelationshipFeedPanel     (M2 timeline = events+activities+emails unified)
+ *   Right:  NextActionsPanel          (M3 open-followups + recent completed)
+ *
+ * Operational header strip (no useless KPIs):
+ *   Founder · Advisor · Owner · Last Touch · Next Follow-Up · Open · Overdue
+ *
+ * Person-first: Founder clickable → ContactDrawer; Advisor clickable → /command-center/advisors.
+ * Mobile: tab-strip [Contacts][Feed][Actions], single column.
  */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  ChevronLeft, Building2, UserPlus, Star, Trash2, MapPin,
-  Phone, Mail, MessageCircle, Linkedin, StickyNote, Clock, Bell, Activity as ActivityIcon,
+  ChevronLeft, Building2, MapPin, AlertTriangle, Clock as ClockIcon, CalendarDays,
 } from 'lucide-react';
+
 import ContactDrawer from '../components/ContactDrawer';
 import ActivityDrawer from '../components/ActivityDrawer';
-import ActivityFeed from '../components/ActivityFeed';
-import TimelineFeed from '../components/TimelineFeed';
+import ContactsPanel from '../components/m6/ContactsPanel';
+import RelationshipFeedPanel from '../components/m6/RelationshipFeedPanel';
+import NextActionsPanel from '../components/m6/NextActionsPanel';
 import useCatalog from '../../lib/useCatalog';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
-
-const ACTIVITY_ICON = {
-  call: Phone, email: Mail, whatsapp: MessageCircle, linkedin: Linkedin,
-  internal_note: StickyNote,
-};
 
 const headers = () => ({
   Authorization: `Bearer ${localStorage.getItem('mood_auth_token') || ''}`,
 });
 
-const TabBtn = ({ active, onClick, testid, label, badge }) => (
-  <button
-    onClick={onClick}
-    data-testid={testid}
-    className={`px-4 py-2.5 text-[13px] transition-colors relative ${
-      active ? 'text-white border-b-2 border-black' : 'text-stone-500 hover:text-stone-900'
-    }`}>
-    {label}
-    {typeof badge === 'number' && (
-      <span className="ml-1.5 text-[10px] tabular-nums text-stone-400">{badge}</span>
-    )}
-  </button>
-);
+const fmtRelative = (iso) => {
+  if (!iso) return '—';
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60)       return 'just now';
+  if (diff < 3600)     return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400)    return `${Math.floor(diff/3600)}h ago`;
+  if (diff < 86400*7)  return `${Math.floor(diff/86400)}d ago`;
+  return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+};
+const fmtNextFollowUp = (iso) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  const now = new Date();
+  const startToday = new Date(); startToday.setHours(0,0,0,0);
+  const startTomorrow = new Date(startToday); startTomorrow.setDate(startTomorrow.getDate()+1);
+  if (d < now)          return { label: 'Overdue · ' + d.toLocaleDateString('it-IT', { day:'2-digit', month:'short' }), tone: 'bad' };
+  if (d < startTomorrow) return { label: 'Today · '   + d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' }), tone: 'warn' };
+  return { label: d.toLocaleDateString('it-IT', { weekday:'short', day:'2-digit', month:'short' }) + ' · ' + d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' }), tone: 'normal' };
+};
+
+const OpsCell = ({ label, value, tone, onClick, testid }) => {
+  const colorMap = { bad: '#FF453A', warn: '#FF9F0A', ok: '#32D74B' };
+  const color = colorMap[tone] || '#EDEDED';
+  return (
+    <div className="px-4 py-2 border-r border-stone-200 last:border-r-0 min-w-0" data-testid={testid}>
+      <div className="text-[9.5px] uppercase tracking-[0.14em] text-stone-400 mb-1">{label}</div>
+      <div
+        className={`text-[12.5px] truncate ${onClick ? 'cursor-pointer hover:underline' : ''}`}
+        style={{ color, fontWeight: 500 }}
+        onClick={onClick}
+      >
+        {value || '—'}
+      </div>
+    </div>
+  );
+};
+
+const MOBILE_TABS = [
+  { key: 'contacts', label: 'Contacts' },
+  { key: 'feed',     label: 'Feed' },
+  { key: 'actions',  label: 'Actions' },
+];
 
 const TenantDetail = () => {
   const { tid } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get('tab') || 'overview';
 
   const [overview, setOverview] = useState(null);
   const [contacts, setContacts] = useState([]);
-  const [activities, setActivities] = useState([]);
   const [eligibleOwners, setEligibleOwners] = useState([]);
+  const [nextFollowUp, setNextFollowUp] = useState(null);
+  const [followUpCounts, setFollowUpCounts] = useState({ open: 0, overdue: 0 });
   const [loadError, setLoadError] = useState(null);
   const [drawerContact, setDrawerContact] = useState(null);
-  const [activityDrawerId, setActivityDrawerId] = useState(null);   // 'new' | uuid
+  const [activityDrawerId, setActivityDrawerId] = useState(null);
+
+  const [mobileTab, setMobileTab] = useState('feed');
+
   const roles = useCatalog('contact-roles');
-  const roleMap = Object.fromEntries(roles.map((r) => [r.code, r]));
+  const roleMap = useMemo(() =>
+    Object.fromEntries(roles.map((r) => [r.code, r])), [roles]);
+
+  const apiBase = `${BACKEND}/api/admin/tenants/${tid}`;
 
   const loadAll = useCallback(async () => {
     setLoadError(null);
-    // Use allSettled so a non-critical endpoint failure (eg eligible-owners,
-    // activities, contacts) cannot leave the page stuck on an infinite spinner.
-    // Only the /overview endpoint is critical for first render.
-    const [ovR, csR, actsR, owsR] = await Promise.allSettled([
-      axios.get(`${BACKEND}/api/admin/tenants/${tid}/overview`,         { headers: headers() }),
-      axios.get(`${BACKEND}/api/admin/tenants/${tid}/contacts`,         { headers: headers() }),
-      axios.get(`${BACKEND}/api/admin/tenants/${tid}/activities?limit=10`, { headers: headers() }),
+    const [ovR, csR, owsR, fuR] = await Promise.allSettled([
+      axios.get(`${apiBase}/overview`, { headers: headers() }),
+      axios.get(`${apiBase}/contacts`, { headers: headers() }),
       axios.get(`${BACKEND}/api/admin/users/eligible-owners?limit=100`, { headers: headers() }),
+      axios.get(`${apiBase}/activities/open-followups`, { headers: headers(), params: { limit: 100 } }),
     ]);
-    if (ovR.status === 'fulfilled') {
-      setOverview(ovR.value.data);
-    } else {
-      const e = ovR.reason;
-      const code = e?.response?.status;
-      const detail = e?.response?.data?.detail || e?.message || 'Errore sconosciuto';
-      console.error('tenant overview load error', e);
-      setLoadError({ code, detail });
-    }
+
+    if (ovR.status === 'fulfilled') setOverview(ovR.value.data);
+    else setLoadError({
+      code:   ovR.reason?.response?.status,
+      detail: ovR.reason?.response?.data?.detail || ovR.reason?.message || 'Errore sconosciuto',
+    });
+
     setContacts(csR.status === 'fulfilled' ? (csR.value.data || []) : []);
-    setActivities(actsR.status === 'fulfilled' ? (actsR.value.data || []) : []);
     setEligibleOwners(owsR.status === 'fulfilled' ? (owsR.value.data || []) : []);
-    if (csR.status === 'rejected')   console.warn('contacts load failed',         csR.reason);
-    if (actsR.status === 'rejected') console.warn('activities load failed',       actsR.reason);
-    if (owsR.status === 'rejected')  console.warn('eligible-owners load failed',  owsR.reason);
-  }, [tid]);
+
+    if (fuR.status === 'fulfilled') {
+      const items = fuR.value.data.items || [];
+      const now = new Date();
+      const overdue = items.filter((a) => a.next_step_due_at && new Date(a.next_step_due_at) < now).length;
+      const upcoming = items
+        .filter((a) => a.next_step_due_at && new Date(a.next_step_due_at) >= now)
+        .sort((a, b) => new Date(a.next_step_due_at) - new Date(b.next_step_due_at));
+      setNextFollowUp(upcoming[0]?.next_step_due_at || null);
+      setFollowUpCounts({ open: items.length, overdue });
+    } else {
+      setNextFollowUp(null);
+      setFollowUpCounts({ open: 0, overdue: 0 });
+    }
+  }, [apiBase, tid]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
-  // Open contact deep-link
+  // contact deep-link
   useEffect(() => {
     const cid = searchParams.get('contact');
     if (cid && contacts.length) {
@@ -96,19 +141,8 @@ const TenantDetail = () => {
     }
   }, [searchParams, contacts]);
 
-  const onSetPrimary = async (cid) => {
-    await axios.post(`${BACKEND}/api/admin/tenants/${tid}/contacts/${cid}/set-primary`,
-                     {}, { headers: headers() });
-    loadAll();
-  };
-  const onArchive = async (cid) => {
-    if (!window.confirm('Archiviare questo contatto?')) return;
-    await axios.delete(`${BACKEND}/api/admin/tenants/${tid}/contacts/${cid}`,
-                       { headers: headers() });
-    loadAll();
-  };
   const onAssignTenantOwner = async (newOwner) => {
-    await axios.post(`${BACKEND}/api/admin/tenants/${tid}/assign-owner`,
+    await axios.post(`${apiBase}/assign-owner`,
                      { tenant_relationship_owner_user_id: newOwner || null },
                      { headers: headers() });
     loadAll();
@@ -119,17 +153,13 @@ const TenantDetail = () => {
       return (
         <div className="p-8 max-w-[1400px] mx-auto" data-testid="tenant-detail-error">
           <button onClick={() => navigate('/command-center/tenants')}
-                  data-testid="tenant-back-btn"
-                  className="text-stone-400 hover:text-stone-900 inline-flex items-center gap-1 text-sm mb-6">
+                  className="text-stone-400 hover:text-white inline-flex items-center gap-1 text-sm mb-6"
+                  data-testid="tenant-back-btn">
             <ChevronLeft size={16} /> Tenants
           </button>
-          <div className="border border-red-200 bg-red-50 p-6 text-stone-800">
-            <div className="text-[10px] uppercase tracking-wider text-red-600 mb-2">
-              Errore di caricamento
-            </div>
-            <div className="text-lg font-light mb-1">
-              Impossibile caricare il tenant
-            </div>
+          <div className="border border-red-200 bg-red-50 p-6">
+            <div className="text-[10px] uppercase tracking-wider text-red-600 mb-2">Errore di caricamento</div>
+            <div className="text-lg mb-1">Impossibile caricare il tenant</div>
             <div className="text-sm text-stone-600 mb-4">
               {loadError.code ? `HTTP ${loadError.code} · ` : ''}{loadError.detail}
             </div>
@@ -143,247 +173,175 @@ const TenantDetail = () => {
       );
     }
     return (
-      <div className="p-8 max-w-[1400px] mx-auto" data-testid="tenant-detail-loading">
+      <div className="p-8" data-testid="tenant-detail-loading">
         <div className="text-stone-400">Caricamento…</div>
       </div>
     );
   }
 
-  const { tenant, relation, primary_contact, kpis, recent_activities } = overview;
+  const { tenant, relation, primary_contact, kpis } = overview;
+  const nextFu = fmtNextFollowUp(nextFollowUp);
+  const selfUserId = (() => {
+    try { return JSON.parse(localStorage.getItem('mood_user') || '{}').id; } catch { return null; }
+  })();
+
+  const founderName = primary_contact
+    ? `${primary_contact.first_name} ${primary_contact.last_name || ''}`.trim()
+    : null;
 
   return (
-    <div data-testid="tenant-detail-page" className="max-w-[1400px] mx-auto">
-      {/* Top bar */}
-      <div className="flex items-center gap-3 px-8 pt-6 pb-4">
+    <div data-testid="tenant-detail-page" className="flex flex-col min-h-screen">
+
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 px-6 pt-4 pb-2 text-[12px] text-stone-400 border-b border-stone-100">
         <button onClick={() => navigate('/command-center/tenants')}
                 data-testid="tenant-back-btn"
-                className="text-stone-400 hover:text-stone-900 inline-flex items-center gap-1 text-sm">
-          <ChevronLeft size={16} /> Tenants
+                className="hover:text-white inline-flex items-center gap-1">
+          <ChevronLeft size={13} /> Tenants
         </button>
+        <span className="opacity-40">/</span>
+        <span className="text-white" data-testid="tenant-name-crumb">
+          {relation?.studio_name || tenant.name}
+        </span>
       </div>
 
-      {/* Header */}
-      <header className="px-8 pb-6 border-b border-stone-200">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-stone-400">
-              <Building2 size={12} /> Tenant · {tenant.status}
-            </div>
-            <h1 data-testid="tenant-name" className="text-2xl tracking-tight mt-1 text-white" style={{ fontWeight: 500 }}>
-              {relation?.studio_name || tenant.name}
-            </h1>
-            {relation && (relation.city || relation.country) && (
-              <div className="text-sm text-stone-500 mt-2 inline-flex items-center gap-1">
-                <MapPin size={12} /> {[relation.city, relation.country].filter(Boolean).join(', ')}
-              </div>
-            )}
-          </div>
-          <div className="text-right text-xs text-stone-500 space-y-1">
-            <div><span className="text-stone-400">Founder · </span>
-              <strong className="text-stone-900">
-                {primary_contact ? `${primary_contact.first_name} ${primary_contact.last_name || ''}` : '—'}
-              </strong>
-            </div>
-            <div><span className="text-stone-400">Advisor · </span>
-              <strong className="text-stone-900">{relation?.advisor_display || '—'}</strong>
-            </div>
-            <div className="flex items-center gap-2 justify-end">
-              <span className="text-stone-400">Org. Owner · </span>
-              <select data-testid="tenant-owner-select"
-                      className="text-xs border border-stone-200 px-2 py-1 bg-white"
-                      value={tenant.tenant_relationship_owner_user_id || ''}
-                      onChange={(e) => onAssignTenantOwner(e.target.value)}>
-                <option value="">— Nessuno —</option>
-                {eligibleOwners.map((u) => (
-                  <option key={u.id} value={u.id}>{u.display}</option>
-                ))}
-              </select>
-            </div>
-            <div className="text-stone-400">
-              Created · {new Date(tenant.created_at).toLocaleDateString('it-IT')}
-            </div>
-          </div>
+      {/* Title + Status pill */}
+      <header className="px-6 py-4 border-b border-stone-200">
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 data-testid="tenant-name" className="text-[22px] tracking-tight" style={{ fontWeight: 500 }}>
+            {relation?.studio_name || tenant.name}
+          </h1>
+          <span data-testid="tenant-status-pill"
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] uppercase tracking-wider border border-stone-300 rounded-full"
+                style={{ color: '#32D74B' }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#32D74B' }} />
+            {tenant.status}
+          </span>
+          {(relation?.city || relation?.country) && (
+            <span className="ml-auto text-[11px] uppercase tracking-wider text-stone-400 inline-flex items-center gap-1 tabular-nums">
+              <MapPin size={11} /> {[relation.city, relation.country].filter(Boolean).join(' · ')}
+            </span>
+          )}
         </div>
+
+        {/* Operational strip — no useless KPIs */}
+        <div data-testid="tenant-ops-strip"
+             className="mt-3 pt-3 border-t border-stone-200 grid grid-cols-2 md:grid-cols-7 gap-0">
+          <OpsCell label="Founder"
+                   value={founderName}
+                   onClick={primary_contact ? () => setDrawerContact(primary_contact) : null}
+                   testid="ops-founder" />
+          <OpsCell label="Advisor"
+                   value={relation?.advisor_display}
+                   onClick={relation?.owner_advisor_id ? () => navigate(`/command-center/advisors?focus=${relation.owner_advisor_id}`) : null}
+                   testid="ops-advisor" />
+          <OpsCell label="Owner"
+                   value={tenant.tenant_owner_display}
+                   testid="ops-owner" />
+          <OpsCell label="Last Touch"
+                   value={kpis.last_activity_at ? fmtRelative(kpis.last_activity_at) : '—'}
+                   testid="ops-last-touch" />
+          <OpsCell label="Next Follow-up"
+                   value={nextFu?.label || '—'}
+                   tone={nextFu?.tone}
+                   testid="ops-next-fu" />
+          <OpsCell label="Open"
+                   value={String(followUpCounts.open)}
+                   testid="ops-open" />
+          <OpsCell label="Overdue"
+                   value={String(followUpCounts.overdue)}
+                   tone={followUpCounts.overdue > 0 ? 'bad' : null}
+                   testid="ops-overdue" />
+        </div>
+
+        {/* Owner assign — small, discreet */}
+        {eligibleOwners.length > 0 && (
+          <div className="mt-2 text-[10.5px] text-stone-400 flex items-center gap-2">
+            <span className="uppercase tracking-wider">Org. Owner ·</span>
+            <select data-testid="tenant-owner-select"
+                    className="text-[11px] border border-stone-300 px-2 py-1 bg-stone-50"
+                    value={tenant.tenant_relationship_owner_user_id || ''}
+                    onChange={(e) => onAssignTenantOwner(e.target.value)}>
+              <option value="">— Nessuno —</option>
+              {eligibleOwners.map((u) => (
+                <option key={u.id} value={u.id}>{u.display}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </header>
 
-      {/* Tabs */}
-      <nav className="px-6 border-b border-stone-200">
-        <TabBtn label="Overview"      active={tab==='overview'}      testid="tab-overview"
-                onClick={() => setSearchParams({ tab: 'overview' })} />
-        <TabBtn label="Contatti"      active={tab==='contacts'}      testid="tab-contacts"
-                onClick={() => setSearchParams({ tab: 'contacts' })} badge={kpis.contacts_total} />
-        <TabBtn label="Attività"      active={tab==='activities'}    testid="tab-activities"
-                onClick={() => setSearchParams({ tab: 'activities' })} badge={kpis.activities_30d} />
-        <TabBtn label="Timeline"      active={tab==='timeline'}      testid="tab-timeline"
-                onClick={() => setSearchParams({ tab: 'timeline' })} />
-        <TabBtn label="Notifiche"     active={tab==='notifications'} testid="tab-notifications"
-                onClick={() => setSearchParams({ tab: 'notifications' })} />
-      </nav>
+      {/* Mobile tab-strip */}
+      <div className="md:hidden flex border-b border-stone-200 sticky top-0 bg-[#0A0A0B] z-10">
+        {MOBILE_TABS.map((t) => (
+          <button key={t.key}
+                  data-testid={`m6-mobile-tab-${t.key}`}
+                  onClick={() => setMobileTab(t.key)}
+                  className={`flex-1 py-2.5 text-[11px] uppercase tracking-wider ${
+                    mobileTab === t.key
+                      ? 'border-b-2 border-[#00C9B3] text-white'
+                      : 'text-stone-400'
+                  }`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
 
-      <main className="px-8 py-8">
-        {tab === 'overview' && (
-          <div data-testid="overview-pane" className="grid grid-cols-3 gap-4">
-            <div className="fl-kpi" data-testid="kpi-contacts">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Contatti</div>
-              <div className="text-2xl tabular-nums" style={{ fontWeight: 500 }}>{kpis.contacts_total}</div>
-            </div>
-            <div className="fl-kpi" data-testid="kpi-activities-30d">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Attività 30g</div>
-              <div className="text-2xl tabular-nums" style={{ fontWeight: 500 }}>{kpis.activities_30d}</div>
-            </div>
-            <div className="fl-kpi" data-testid="kpi-last-activity">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-1">Ultima attività</div>
-              <div className="text-[13px] text-stone-700 tabular-nums">
-                {kpis.last_activity_at
-                  ? new Date(kpis.last_activity_at).toLocaleString('it-IT')
-                  : '—'}
-              </div>
-            </div>
-            <div className="col-span-2 fl-kpi">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Primary contact</div>
-              {primary_contact ? (
-                <div>
-                  <div className="text-base" style={{ fontWeight: 500 }}>{primary_contact.first_name} {primary_contact.last_name}</div>
-                  <div className="text-[13px] text-stone-500">
-                    {roleMap[primary_contact.role_code]?.label_it || primary_contact.role_code}
-                    {primary_contact.email && <> · {primary_contact.email}</>}
-                  </div>
-                </div>
-              ) : <div className="text-stone-400 text-sm">Nessun primary contact impostato.</div>}
-            </div>
-            <div className="fl-kpi">
-              <div className="text-[10px] uppercase tracking-wider text-stone-400 mb-2">Ultime attività</div>
-              {recent_activities?.length ? recent_activities.slice(0, 3).map((a) => (
-                <div key={a.id} className="text-[12px] text-stone-700 mb-1.5 truncate">
-                  {a.type_label_it || a.activity_type_code} · {a.subject || '—'}
-                </div>
-              )) : <div className="text-stone-400 text-sm">Nessuna attività.</div>}
-            </div>
-          </div>
-        )}
-
-        {tab === 'contacts' && (
-          <div data-testid="contacts-pane">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg">Contatti ({contacts.length})</h2>
-              <button data-testid="new-contact-btn"
-                      onClick={() => setDrawerContact({})}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-black text-white">
-                <UserPlus size={14} /> Nuovo contatto
-              </button>
-            </div>
-            <div className="border border-stone-200 bg-white">
-              <table data-testid="contacts-table" className="w-full text-sm">
-                <thead className="border-b border-stone-200 text-[11px] uppercase tracking-wider text-stone-500">
-                  <tr>
-                    <th className="text-left px-4 py-3">Nome</th>
-                    <th className="text-left px-4 py-3">Ruolo</th>
-                    <th className="text-left px-4 py-3">Email</th>
-                    <th className="text-left px-4 py-3">Telefono</th>
-                    <th className="text-left px-4 py-3">Owner</th>
-                    <th className="text-left px-4 py-3">Source</th>
-                    <th className="text-right px-4 py-3">Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contacts.length === 0 && (
-                    <tr><td colSpan={7} className="text-center py-10 text-stone-400">
-                      Ancora nessun contatto. Clicca <strong>Nuovo contatto</strong> per iniziare.
-                    </td></tr>
-                  )}
-                  {contacts.map((c) => (
-                    <tr key={c.id} data-testid={`contact-row-${c.id}`}
-                        className="border-b border-stone-100 hover:bg-stone-50">
-                      <td className="px-4 py-3">
-                        <button onClick={() => setDrawerContact(c)}
-                                data-testid={`contact-name-${c.id}`}
-                                className="font-medium hover:underline">
-                          {c.first_name} {c.last_name}
-                        </button>
-                        {c.is_primary && (
-                          <Star size={12} className="inline ml-2 text-amber-500 fill-amber-400" />
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-stone-700">
-                        {roleMap[c.role_code]?.label_it || c.role_code}
-                      </td>
-                      <td className="px-4 py-3 text-stone-700">{c.email || '—'}</td>
-                      <td className="px-4 py-3 text-stone-700">
-                        {c.phone_prefix && c.phone_number ? `${c.phone_prefix} ${c.phone_number}` : '—'}
-                      </td>
-                      <td className="px-4 py-3 text-stone-700">{c.owner_display || '—'}</td>
-                      <td className="px-4 py-3 text-stone-500 text-xs">{c.source_code || '—'}</td>
-                      <td className="px-4 py-3 text-right space-x-2">
-                        {!c.is_primary && (
-                          <button data-testid={`set-primary-${c.id}`}
-                                  onClick={() => onSetPrimary(c.id)}
-                                  className="text-xs text-stone-500 hover:text-amber-600">
-                            <Star size={14} className="inline" /> Primary
-                          </button>
-                        )}
-                        <button data-testid={`archive-${c.id}`}
-                                onClick={() => onArchive(c.id)}
-                                className="text-xs text-stone-400 hover:text-red-600">
-                          <Trash2 size={14} className="inline" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {tab === 'activities' && (
-          <div data-testid="activities-pane">
-            <ActivityFeed
-              apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
-              scope="admin"
-              onCreate={() => setActivityDrawerId('new')}
-              onEdit={(a) => setActivityDrawerId(a.id)}
-            />
-          </div>
-        )}
-
-        {tab === 'timeline' && (
-          <TimelineFeed
-            apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
-            scope="admin"
+      {/* 3-Column Dashboard */}
+      <section data-testid="m6-dashboard"
+               className="flex-1 grid md:grid-cols-[220px_1fr_320px] min-h-0">
+        {/* Col 1 — Contacts */}
+        <div className={`border-r border-stone-200 min-h-0 ${mobileTab === 'contacts' ? '' : 'hidden md:flex'} flex-col`}>
+          <ContactsPanel
+            contacts={contacts}
+            roleMap={roleMap}
+            onOpen={(c) => setDrawerContact(c)}
+            onLogActivity={(c) => {
+              setActivityDrawerId('new');
+              // ActivityDrawer reads contacts from prop; the user picks the contact in the form.
+              // Optional improvement: pre-fill via state — keep simple for now.
+              void c;
+            }}
+            onAddContact={() => setDrawerContact({})}
           />
-        )}
+        </div>
 
-        {tab === 'notifications' && (
-          <div data-testid="notifications-placeholder"
-               className="border border-dashed border-stone-300 px-10 py-20 text-center">
-            <Bell size={32} className="text-stone-300 mx-auto mb-3" />
-            <h3 className="text-lg mb-2">Notification Center</h3>
-            <p className="text-sm text-stone-500 max-w-md mx-auto">
-              Disponibile in M4. Notifiche interne con badge 🔔 in topbar e
-              trigger automatici per lead in attesa, primo login, attività in scadenza.
-            </p>
-          </div>
-        )}
-      </main>
+        {/* Col 2 — Relationship Feed */}
+        <div className={`border-r border-stone-200 min-h-0 ${mobileTab === 'feed' ? '' : 'hidden md:flex'} flex-col`}>
+          <RelationshipFeedPanel
+            apiBase={apiBase}
+            onLogActivity={() => setActivityDrawerId('new')}
+          />
+        </div>
 
+        {/* Col 3 — Next Actions */}
+        <div className={`min-h-0 ${mobileTab === 'actions' ? '' : 'hidden md:flex'} flex-col`}>
+          <NextActionsPanel
+            apiBase={apiBase}
+            onEdit={(a) => setActivityDrawerId(a.id)}
+            onActionDone={loadAll}
+          />
+        </div>
+      </section>
+
+      {/* Drawers (preserved from M1/M3) */}
       {drawerContact !== null && (
         <ContactDrawer
           tenantId={tid}
           contact={drawerContact}
-          onClose={() => { setDrawerContact(null); setSearchParams({ tab }); }}
+          onClose={() => { setDrawerContact(null); setSearchParams({}); }}
           onSaved={loadAll}
           adminMode={true}
         />
       )}
-
       {activityDrawerId && (
         <ActivityDrawer
-          apiBase={`${BACKEND}/api/admin/tenants/${tid}`}
+          apiBase={apiBase}
           scope="admin"
           activityId={activityDrawerId === 'new' ? null : activityDrawerId}
           contacts={contacts}
           users={eligibleOwners}
-          selfUserId={JSON.parse(localStorage.getItem('mood_user') || '{}').id}
+          selfUserId={selfUserId}
           onClose={() => setActivityDrawerId(null)}
           onSaved={() => { setActivityDrawerId(null); loadAll(); }}
         />
@@ -393,3 +351,8 @@ const TenantDetail = () => {
 };
 
 export default TenantDetail;
+
+// Unused import guard (Building2/AlertTriangle/ClockIcon/CalendarDays may be
+// referenced in mobile fallback or future enhancements — keep them imported
+// to avoid churn when re-introducing icon-rich states).
+void Building2; void AlertTriangle; void ClockIcon; void CalendarDays;

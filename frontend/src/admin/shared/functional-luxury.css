@@ -169,6 +169,33 @@
                     padding-top: 0.75rem;
                     border-top: 1px solid var(--fl-border); }
 
+/* Responsive sidebar: desktop 248px, mobile collapses to icon-rail (56px).
+ * Labels are hidden, hover shows tooltip via browser title attr. */
+.fl-aside-responsive { width: 248px; }
+@media (max-width: 900px) {
+  .fl-aside-responsive { width: 56px; padding-left: 0.4rem !important; padding-right: 0.4rem !important; }
+  .fl-aside-responsive .workspace-nav-item { padding: 0.55rem 0.4rem !important; justify-content: center; }
+  .fl-aside-responsive .workspace-nav-item span,
+  .fl-aside-responsive [data-testid='workspace-eyebrow'],
+  .fl-aside-responsive [data-testid='workspace-title'],
+  .fl-aside-responsive .workspace-nav-item:not([class*='active'])::after,
+  .fl-aside-responsive .fl-aside-footer a,
+  .fl-aside-responsive .fl-aside-footer button { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Hide text on mobile, keep only icons */
+  .fl-aside-responsive .workspace-nav-item { font-size: 0 !important; }
+  .fl-aside-responsive .workspace-nav-item svg { font-size: 14px !important; }
+  .fl-aside-responsive [data-testid='workspace-eyebrow'],
+  .fl-aside-responsive [data-testid='workspace-title'],
+  .fl-aside-responsive [data-testid='workspace-brand-logo'] { display: none; }
+  .fl-aside-responsive .fl-aside-footer a,
+  .fl-aside-responsive .fl-aside-footer button {
+    font-size: 0 !important;
+    padding: 0.45rem !important;
+    justify-content: center;
+  }
+  .fl-aside-responsive .fl-aside-footer svg { font-size: 13px !important; }
+}
+
 /* ── Density: tighter tables, denser KPI cards ── */
 .fl-shell .fl-density-compact td,
 .fl-shell .fl-density-compact th { padding-top: 0.55rem; padding-bottom: 0.55rem; }

@@ -91,6 +91,17 @@ async def list_tenants(
                coalesce(au.full_name, au.email) AS advisor_display,
                (SELECT count(*) FROM tenant_contacts c
                  WHERE c.tenant_id = t.id AND c.status='active')      AS contacts_count,
+               (SELECT count(*) FROM relationship_activities a
+                 WHERE a.tenant_id = t.id
+                   AND a.next_step_due_at IS NOT NULL
+                   AND a.completed_at   IS NULL
+                   AND a.archived_at    IS NULL)                      AS open_followups_count,
+               (SELECT count(*) FROM relationship_activities a
+                 WHERE a.tenant_id = t.id
+                   AND a.next_step_due_at IS NOT NULL
+                   AND a.next_step_due_at < NOW()
+                   AND a.completed_at   IS NULL
+                   AND a.archived_at    IS NULL)                      AS overdue_followups_count,
                sr.last_activity_at,
                t.tenant_relationship_owner_user_id,
                coalesce(ou.full_name, ou.email)   AS tenant_owner_display

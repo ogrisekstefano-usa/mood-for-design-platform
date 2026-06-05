@@ -1,0 +1,57 @@
+{
+  "summary": "M6 Relationship Center full E2E test (backend + frontend). 8/8 backend pytest tests PASSED. Frontend dashboard renders 3-column layout perfectly: contacts, feed (with inline accordion — NO drawer/modal as required), and next actions. Legacy 5-tab layout is gone. Tenants list shows new columns Studio|Owner|Advisor|Open FU|Last Touch|Status with correct open_followups_count from backend (target tenant c64659f6 shows '6'). Operational header strip shows all 7 cells with real values. Mobile sidebar collapses to 56px icon-rail and tab-strip switches columns correctly. Two minor issues found: (1) Complete button on a next-action did not remove the item from the list after click + 3s wait, (2) LI quick-action testid `contact-li-{id}` is dropped when contact has no linkedin_url (rendered as disabled <span> placeholder without testid).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "NextActionsPanel",
+        "issue": "Clicking m6-action-complete-{id} on an open follow-up does NOT remove the item from the list after 3s. Either POST /activities/{id}/complete is failing silently, the PATCH fallback isn't firing, or onActionDone refresh is not being triggered. Need to verify via DevTools/network. Items remained in 'LATER' group after click.",
+        "selector": "[data-testid^='m6-action-complete-']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "ContactsPanel QuickActions",
+        "issue": "LI (LinkedIn) quick action is rendered as a disabled <span> (no data-testid) when contact.linkedin_url is empty. Spec requires testid `contact-li-{id}` to be ALWAYS present. Other 4 actions follow the same disabled-fallback pattern (Call/Mail/WA) but only Call/Mail/WA happened to have data — same code path drops the testid when value is missing.",
+        "selector": "[data-testid^='contact-li-']",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Complete follow-up → list refresh",
+        "issue": "Click on complete button does not remove the item; possible POST /activities/{id}/complete failure or missing await for loadAll().",
+        "affected_selectors": ["[data-testid^='m6-action-complete-']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_m6_relationship_center.py",
+    "/app/test_reports/pytest/iter8_m6.xml"
+  ],
+  "action_items": [
+    "Investigate NextActionsPanel.completeAction: verify the POST /activities/{id}/complete (with PATCH fallback) actually fires and that onActionDone() / local list update is invoked. Reproduction: open /command-center/tenants/c64659f6-5a76-41dd-8d8d-b901d29862af, click any Complete button under LATER group — item should disappear but does not.",
+    "ContactsPanel: emit data-testid `contact-li-{id}` even on the disabled <span> placeholder (same for call/mail/wa to be consistent), so QA automation can assert 'always visible' per spec."
+  ],
+  "critical_code_review_comments": [
+    "TenantDetail.jsx imports Building2/AlertTriangle/ClockIcon/CalendarDays then 'void's them — dead imports. Remove to avoid lint noise.",
+    "TenantsList.jsx onSearchKey reload() ignores updated `q` state if user clears and types quickly (no debounce, but minor).",
+    "Subqueries in /api/admin/tenants for open_followups_count/overdue_followups_count run per-tenant per-request — fine for <200 tenants but if list grows consider a single LATERAL JOIN or materialized view."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_m6_relationship_center.py (new pytest file)"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 pytest tests passed)",
+    "frontend": "~90% (12/14 spec checks passed — Complete-refresh and LI-testid are the only misses)"
+  },
+  "test_credentials": "admin@moodfordesign.com / MoodAdmin2026! — verified working",
+  "seed_data_creation": "None. Used existing tenant c64659f6-5a76-41dd-8d8d-b901d29862af which already has 2 contacts, 40 timeline items, 6 open follow-ups.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend payload (open_followups_count / overdue_followups_count) is correct and matches problem statement (target tenant=6 open / 0 overdue). 3-column M6 dashboard is fully wired and persistent — no tabs. Inline accordion in RelationshipFeedPanel works as intended (no drawer / modal opens on feed click). Mobile rail = 56px. Two follow-ups for main agent: (a) Complete-button refresh broken — likely a small JS/await fix in NextActionsPanel; (b) LI testid missing in disabled state — one-line testid attribute add. Test file `/app/backend/tests/test_m6_relationship_center.py` is reusable as regression suite.",
+  "rca of the issue": "Complete-button bug RCA TBD by main agent: check NextActionsPanel.jsx — verify (1) the POST /activities/{id}/complete returns 200, (2) the catch block doesn't swallow a 404/405 silently, (3) the PATCH fallback hits the right route (PATCH /activities/{id} with completed_at=NOW), (4) onActionDone()/local state mutation is awaited so the list re-renders. Reproduction: login as admin, open /command-center/tenants/c64659f6-5a76-41dd-8d8d-b901d29862af → click any green COMPLETE button under LATER → item stays. Network tab will reveal the failing call."
+}

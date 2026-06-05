@@ -122,21 +122,20 @@ const TenantsList = () => {
           <thead className="border-b border-stone-200 text-[10px] uppercase tracking-wider text-stone-500">
             <tr>
               <th className="text-left px-4 py-2.5 font-medium">Studio</th>
-              <th className="text-left px-4 py-2.5 font-medium">Geo</th>
-              <th className="text-left px-4 py-2.5 font-medium">Advisor</th>
               <th className="text-left px-4 py-2.5 font-medium">Owner</th>
+              <th className="text-left px-4 py-2.5 font-medium">Advisor</th>
+              <th className="text-right px-4 py-2.5 font-medium">Open FU</th>
+              <th className="text-right px-4 py-2.5 font-medium">Last Touch</th>
               <th className="text-left px-4 py-2.5 font-medium">Status</th>
-              <th className="text-right px-4 py-2.5 font-medium">Contacts</th>
-              <th className="text-right px-4 py-2.5 font-medium">Last Activity</th>
               <th className="w-10"></th>
             </tr>
           </thead>
           <tbody>
             {loading && (
-              <tr><td colSpan={8} className="text-center py-10 text-stone-400">Caricamento…</td></tr>
+              <tr><td colSpan={7} className="text-center py-10 text-stone-400">Caricamento…</td></tr>
             )}
             {!loading && rows.length === 0 && (
-              <tr><td colSpan={8} className="text-center py-10 text-stone-400">Nessun tenant.</td></tr>
+              <tr><td colSpan={7} className="text-center py-10 text-stone-400">Nessun tenant.</td></tr>
             )}
             {!loading && rows.map((t) => (
               <tr key={t.id}
@@ -148,18 +147,27 @@ const TenantsList = () => {
                     <Building2 size={14} className="text-stone-400" />
                     <div>
                       <div style={{ fontWeight: 500 }}>{t.studio_name || t.name || '—'}</div>
-                      <div className="text-[10px] text-stone-400 tabular-nums">{t.slug}</div>
+                      <div className="text-[10px] text-stone-400 tabular-nums">
+                        {[t.city, t.country].filter(Boolean).join(', ') || t.slug}
+                      </div>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-stone-600">{[t.city, t.country].filter(Boolean).join(', ') || '—'}</td>
-                <td className="px-4 py-3 text-stone-600">{t.advisor_display || '—'}</td>
                 <td className="px-4 py-3 text-stone-600">{t.tenant_owner_display || '—'}</td>
-                <td className="px-4 py-3"><StatusChip status={t.status} /></td>
-                <td className="px-4 py-3 text-right tabular-nums">{t.contacts_count || 0}</td>
+                <td className="px-4 py-3 text-stone-600">{t.advisor_display || '—'}</td>
+                <td className="px-4 py-3 text-right tabular-nums" data-testid={`tenant-open-fu-${t.id}`}>
+                  {(t.overdue_followups_count > 0) ? (
+                    <span className="text-[#FF453A]" style={{ fontWeight: 500 }}>{t.overdue_followups_count} overdue</span>
+                  ) : (t.open_followups_count > 0) ? (
+                    <span className="text-stone-700">{t.open_followups_count}</span>
+                  ) : (
+                    <span className="text-stone-400">0</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-right text-[11px] text-stone-400 tabular-nums">
                   {t.last_activity_at ? new Date(t.last_activity_at).toLocaleDateString('it-IT') : '—'}
                 </td>
+                <td className="px-4 py-3"><StatusChip status={t.status} /></td>
                 <td className="px-2 py-3 text-stone-300">
                   <ArrowUpRight size={13} />
                 </td>

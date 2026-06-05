@@ -61,8 +61,8 @@ const WorkspaceShell = ({
 
   return (
     <div className="fl-shell" style={{ display: 'flex', minHeight: '100vh', background: '#0A0A0B', color: '#EDEDED' }}>
-      <aside className="fl-aside" style={{
-        width: 248, padding: '1.4rem 0.85rem 1rem', borderRight: '1px solid #2A2A30',
+      <aside className="fl-aside fl-aside-responsive" style={{
+        padding: '1.4rem 0.85rem 1rem', borderRight: '1px solid #2A2A30',
         position: 'sticky', top: 0, height: '100vh', background: '#0A0A0B',
       }}>
         <div style={{ padding: '0 0.5rem 1.1rem', borderBottom: '1px solid #2A2A30' }}>
