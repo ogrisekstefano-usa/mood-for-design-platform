@@ -230,6 +230,102 @@ def knowledge_audit(set_id: str, ctx=Depends(get_tenant_context)):
     return resolver.compute_knowledge_audit(set_id)
 
 
+@router.get("/catalog-sets/{set_id}/worker-status")
+def worker_status(set_id: str, ctx=Depends(get_tenant_context)):
+    """KE-002 · semantic worker state for the Control Room status bar.
+
+    Returns one of 7 states (`idle`, `active`, `stalled`, `stalled_recovery`,
+    `failed`, `review_required`, `certified`) along with the active job
+    snapshot, queue counts, ETA and warnings total.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    cset = _require_set_ownership(c, tid, set_id)
+    set_status = cset.get("status")
+
+    # Pull most recent job (any status)
+    jobs = (c.table("extraction_jobs")
+            .select("id,status,worker_id,current_document_name,current_page,"
+                     "total_pages,processed_pages,current_stage,current_stage_label,"
+                     "current_vision_current,current_vision_total,"
+                     "heartbeat_at,last_seen_at,last_activity_at,stalled_at,"
+                     "retry_count,progress_pct,estimated_remaining_seconds,"
+                     "documents_total,documents_completed,documents_failed,"
+                     "error_message,started_at,completed_at,created_at")
+            .eq("tenant_id", tid).eq("catalog_set_id", set_id)
+            .order("created_at", desc=True).limit(1)
+            .execute().data or [])
+    active_job = jobs[0] if jobs else None
+
+    # Document queue counts
+    counts = {"pending": 0, "extracting": 0, "review": 0, "failed": 0,
+              "validated": 0}
+    try:
+        docs = (c.table("brand_catalog_documents")
+                .select("extraction_status")
+                .eq("catalog_set_id", set_id).execute().data or [])
+        for d in docs:
+            s = d.get("extraction_status") or "pending"
+            counts[s] = counts.get(s, 0) + 1
+    except Exception:
+        pass
+
+    # Warnings total = entities flagged needs_review/demoted
+    warnings_total = 0
+    try:
+        wq = (c.table("brand_detected_entities")
+              .select("id", count="exact").limit(0)
+              .eq("catalog_set_id", set_id)
+              .or_("status.eq.needs_review,entity_type.like.demoted_%")
+              .execute())
+        warnings_total = int(getattr(wq, "count", 0) or 0)
+    except Exception:
+        pass
+
+    # Heartbeat age (seconds)
+    hb_age = None
+    if active_job and active_job.get("heartbeat_at"):
+        try:
+            from datetime import datetime, timezone
+            t = datetime.fromisoformat(active_job["heartbeat_at"].replace("Z", "+00:00"))
+            if t.tzinfo is None:
+                t = t.replace(tzinfo=timezone.utc)
+            hb_age = max(0, int((datetime.now(timezone.utc) - t).total_seconds()))
+        except Exception:
+            pass
+
+    # Semantic state resolution (7 states)
+    state = "idle"
+    if set_status == "published":
+        state = "certified"
+    elif active_job and active_job["status"] == "running":
+        if hb_age is not None and hb_age > 30:
+            state = "stalled"
+        else:
+            state = "active"
+    elif active_job and active_job["status"] == "stalled":
+        state = "stalled_recovery"
+    elif active_job and active_job["status"] == "queued":
+        state = "active"
+    elif active_job and active_job["status"] == "failed":
+        state = "failed" if (counts.get("failed", 0) + counts.get("pending", 0)) > 0 else "review_required"
+    elif set_status == "needs_review" or warnings_total > 0 or counts["failed"] > 0:
+        state = "review_required"
+    elif set_status == "draft" and counts["pending"] == 0:
+        state = "idle"
+    elif set_status == "needs_review":
+        state = "review_required"
+
+    return {
+        "state": state,
+        "set_status": set_status,
+        "job": active_job,
+        "heartbeat_age_seconds": hb_age,
+        "queue": counts,
+        "warnings_total": warnings_total,
+        "eta_seconds": (active_job or {}).get("estimated_remaining_seconds"),
+    }
+
+
 from fastapi import Query
 
 # ─── KE-001 · Review Workspace deep-link foundation ───────────────────

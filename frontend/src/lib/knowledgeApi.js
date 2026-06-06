@@ -113,6 +113,25 @@ export const projectImpact = (setId, entityId) =>
 export const applyCorrection = (setId, entityId, payload) =>
   api.post(`${BASE}/catalog-sets/${setId}/entities/${entityId}/apply-correction`, payload);
 
+// ─── KE-002 · Control Room™ ─────────────────────────────────────────
+export const workerStatus = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/worker-status`);
+export const listEvents = (setId, params = {}) =>
+  api.get(`${BASE}/catalog-sets/${setId}/events`, { params });
+export const documentPreview = (setId, docId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}`);
+export const documentReviewContext = (setId, docId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/review-context`);
+export const retryFailed = (setId, payload = {}) =>
+  api.post(`${BASE}/catalog-sets/${setId}/retry-failed`, payload);
+export const retryDocument = (setId, docId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/documents/${docId}/retry`);
+export const extractionJobsHistory = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/extraction-jobs`);
+export const needsReviewByType = (setId, type, includeFirst = true) =>
+  api.get(`${BASE}/catalog-sets/${setId}/needs-review`,
+          { params: { type, include_first: includeFirst } });
+
 export default {
   listBrands, getBrand, createBrand,
   listCatalogSets, createCatalogSet, getCatalogSet, updateCatalogSet,
@@ -129,4 +148,6 @@ export default {
   linkBrandToStudio, unlinkBrandFromStudio,
   atlasDiscover, atlasFacets,
   futureUses, connectedAssets, projectImpact, applyCorrection,
+  workerStatus, listEvents, documentPreview, documentReviewContext,
+  retryFailed, retryDocument, extractionJobsHistory, needsReviewByType,
 };

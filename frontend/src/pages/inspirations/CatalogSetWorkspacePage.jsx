@@ -15,6 +15,7 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import KE from '../../lib/knowledgeApi';
 import ReviewWorkspaceV3 from '../../components/review-workspace/ReviewWorkspaceV3';
+import ControlRoomPanel from '../../components/control-room/ControlRoomPanel';
 import './knowledge-engine.css';
 
 const STATUS_LABEL = {
@@ -639,18 +640,33 @@ export default function CatalogSetWorkspacePage() {
         />
       </section>
 
-      {/* ── Section 2 · Extraction ─────────────────────────────────── */}
-      <section className="ke-section-block" data-testid="ke-section-extraction">
-        <h2 className="ke-section-block__title">
+      {/* ── Section 2 · Knowledge Engine Control Room™ (KE-002) ───── */}
+      <section className="ke-section-block" data-testid="ke-section-extraction"
+               style={{ padding: 0, background: 'transparent', border: 'none' }}>
+        <h2 className="ke-section-block__title" style={{ padding: '0 0 12px' }}>
           <span className="ke-step-num">2</span>
-          Estrazione e indicizzazione
+          Knowledge Engine Control Room™
+          {status === 'draft' && (
+            <button
+              onClick={onTriggerExtract}
+              disabled={extracting}
+              data-testid="ke-cr-trigger-extract"
+              style={{
+                marginLeft: 16, padding: '6px 14px',
+                background: 'rgba(0,229,255,0.12)', color: '#00e5ff',
+                border: '1px solid #00e5ff', borderRadius: 4, cursor: 'pointer',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.5,
+              }}
+            >
+              {extracting ? 'Avvio…' : '▶ Trigger Estrazione'}
+            </button>
+          )}
         </h2>
-        <ExtractionPanel
+        <ControlRoomPanel
           setId={setId}
-          status={status}
-          statusData={statusData}
-          onTrigger={onTriggerExtract}
-          busy={extracting}
+          documents={(setInfo?.documents) || []}
+          onAfterAction={reloadAll}
         />
       </section>
 
