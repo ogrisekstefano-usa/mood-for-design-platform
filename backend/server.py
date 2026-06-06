@@ -162,6 +162,9 @@ api_router.include_router(_brand_exp_router.router, prefix="/knowledge", tags=["
 # V3.1 · Review Workspace™ — Future Uses / Connected Assets / Project Impact / Knowledge Impact
 from routers import review_workspace_v3 as _rwv3_router  # noqa: E402
 api_router.include_router(_rwv3_router.router, prefix="/knowledge", tags=["review-workspace-v3"])
+# KE-005B · Knowledge-Native Surfaces™ — attach/detach + entity search
+from routers import knowledge_surfaces as _ke005b_router  # noqa: E402
+api_router.include_router(_ke005b_router.router, tags=["knowledge-surfaces"])
 # ITER204-B · Entity Navigation Layer™ — Collection/Product/Material/Designer detail
 from routers import entity_navigation as _entity_nav_router  # noqa: E402
 api_router.include_router(_entity_nav_router.router, prefix="/knowledge", tags=["entity-navigation"])
