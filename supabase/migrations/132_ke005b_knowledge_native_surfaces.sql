@@ -102,6 +102,15 @@ ALTER TABLE entity_operational_usage
   ));
 
 
+-- §3d · moodboards.journey_id · relax NOT NULL constraint ────────────
+-- Bug pre-esistente: la migration originale aveva impostato NOT NULL
+-- ma il router POST /moodboards non valorizza journey_id, causando
+-- 500 sulla creazione moodboard. Le moodboard stand-alone (non legate
+-- a un design journey) sono un caso d'uso valido (studio library).
+ALTER TABLE moodboards
+  ALTER COLUMN journey_id DROP NOT NULL;
+
+
 -- §4 · entity_usage_lookup_v · view di convenienza ───────────────────
 -- Risposta veloce a "questo (surface_type, surface_id) usa quali entità?"
 -- letto dal grafo Connected Assets. Per il render dell'Entity Context
