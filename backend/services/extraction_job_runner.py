@@ -571,6 +571,20 @@ def _execute_job_sync(job_id: str) -> None:
                           "images":   int((result.get("metrics") or {}).get("images_count") or 0)},
             )
 
+            # KE-002.1 · Emit semantic FOUND events so the Live Activity
+            # Stream communicates VALUE (Prodotti, Designer, Materiali,
+            # Immagini) instead of just pipeline log.
+            try:
+                from services.knowledge_kpi import emit_semantic_events_for_document
+                emit_semantic_events_for_document(
+                    tenant_id=tenant_id, catalog_set_id=set_id,
+                    catalog_document_id=bcd_id,
+                    source_document_id=src_doc_id, job_id=job_id,
+                    document_name=d.get("display_name") or d.get("original_filename"),
+                )
+            except Exception as ex:
+                logger.warning(f"semantic events emit failed for doc {bcd_id}: {ex}")
+
         except Exception as e:
             logger.exception(f"job {job_id} doc {bcd_id} failed: {e}")
             try:

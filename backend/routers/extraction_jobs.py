@@ -19,6 +19,7 @@ Plus:
          - Vision Layer 2 timeout config active
 """
 from __future__ import annotations
+import json
 import logging
 import os
 from datetime import datetime, timezone, timedelta
@@ -206,6 +207,18 @@ def retry_document(set_id: str, doc_id: str, ctx=Depends(get_tenant_context)):
     return {"ok": True, "retried_document": doc.get("display_name"), **out}
 
 
+# ─── KE-002.1 · Semantic event backfill ──────────────────────────────
+@router.post("/catalog-sets/{set_id}/backfill-semantic-events")
+def backfill_semantic_events_api(set_id: str, ctx=Depends(get_tenant_context)):
+    """One-shot backfill for sets whose extraction completed before
+    KE-002.1 (i.e. no PRODUCT_FOUND / DESIGNER_FOUND / MATERIAL_FOUND /
+    IMAGE_FOUND events in the stream). Idempotent."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    from services.knowledge_kpi import backfill_semantic_events
+    return backfill_semantic_events(set_id)
+
+
 # ─── ITER199 · Entity Resolution + Knowledge Audit ────────────────────
 from services import entity_resolution_service as resolver  # noqa: E402
 
@@ -371,6 +384,13 @@ def list_needs_review(
             payload["first_anomaly"] = docs[0]["id"] if docs else None
         return payload
 
+    # KE-002.1 · Condition-based filters that work even when
+    # `brand_detected_entities` is empty (catalogs where the resolver
+    # hasn't run yet but products / pages already exist).
+    if type in ("product_unclassified", "low_confidence", "image_orphan",
+                 "designer_ambiguous", "material_ambiguous", "brand_duplicate"):
+        return _condition_based_warning(c, set_id, type, include_first)
+
     DEFAULT_TYPES = ["collection", "demoted_collection", "designer",
                       "demoted_designer", "finish", "demoted_finish"]
     q = (c.table("brand_detected_entities")
@@ -396,6 +416,147 @@ def list_needs_review(
     out = {"entities": rows, "count": len(rows), "filter": type}
     if include_first:
         out["first_anomaly"] = rows[0]["id"] if rows else None
+    return out
+
+
+def _condition_based_warning(c, set_id: str, ftype: str, include_first: bool):
+    """KE-002.1 · Real-data warnings derived from `products` + pages
+    + brand_detected_entities (when populated). Returns the SAME shape
+    as the legacy entities response so the frontend works unchanged."""
+    src_ids = []
+    docs = (c.table("brand_catalog_documents").select("source_document_id")
+            .eq("catalog_set_id", set_id).execute().data or [])
+    src_ids = [d["source_document_id"] for d in docs if d.get("source_document_id")]
+
+    # 1) Pull products once, branch by filter
+    prods = []
+    if src_ids:
+        prods = (c.table("products")
+                 .select("id,product_name,designer_name,materials,finishes,"
+                          "category_label,canonical_collection_id,"
+                          "canonical_designer_id,confidence_score,source_pages,"
+                          "metadata_json")
+                 .in_("source_document_id", src_ids).limit(5000)
+                 .execute().data or [])
+
+    # Also pull entities so canonical conflicts still count
+    ents = (c.table("brand_detected_entities")
+            .select("id,entity_type,display_name,aliases,mention_count,"
+                     "confidence_score,status")
+            .eq("catalog_set_id", set_id).limit(5000).execute().data or [])
+
+    matches: list = []
+
+    def _as_anomaly(kind: str, ref_id: str, title: str, detail: str,
+                     score: float = 0.0):
+        return {"id": ref_id, "kind": kind, "display_name": title,
+                "detail": detail, "confidence_score": score}
+
+    if ftype == "low_confidence":
+        # Products with conf < 0.6
+        for p in prods:
+            cs = float(p.get("confidence_score") or 0)
+            if cs < 0.6:
+                matches.append(_as_anomaly("product", p["id"],
+                    p.get("product_name") or "(senza nome)",
+                    f"confidence {cs:.2f}", cs))
+        # Entities with conf < 0.6
+        for e in ents:
+            cs = float(e.get("confidence_score") or 0)
+            if cs < 0.6:
+                matches.append(_as_anomaly(e["entity_type"], e["id"],
+                    e.get("display_name") or "(senza nome)",
+                    f"confidence {cs:.2f}", cs))
+
+    elif ftype == "product_unclassified":
+        # Products with no canonical_collection_id OR no category_label
+        for p in prods:
+            cid = p.get("canonical_collection_id")
+            cat = p.get("category_label")
+            if not cid or not cat or cat == "unclassified":
+                matches.append(_as_anomaly("product", p["id"],
+                    p.get("product_name") or "(senza nome)",
+                    "nessuna collezione canonica" if not cid else f"categoria '{cat or '—'}'",
+                    float(p.get("confidence_score") or 0)))
+
+    elif ftype == "designer_ambiguous":
+        # Products with designer_name set but NOT linked to canonical_designer_id
+        unmatched: Dict[str, list] = {}
+        for p in prods:
+            dn = (p.get("designer_name") or "").strip()
+            if dn and not p.get("canonical_designer_id"):
+                unmatched.setdefault(dn.lower(), []).append(p)
+        for name, group in unmatched.items():
+            top = group[0]
+            matches.append(_as_anomaly("designer", top["id"],
+                top.get("designer_name") or name,
+                f"{len(group)} prodotti senza designer canonico",
+                float(top.get("confidence_score") or 0)))
+        # Also include canonical entity-level ambiguities
+        for e in ents:
+            if e["entity_type"] in ("designer", "demoted_designer") and \
+                e.get("status") == "needs_review":
+                matches.append(_as_anomaly(e["entity_type"], e["id"],
+                    e.get("display_name") or "—",
+                    f"{e.get('mention_count') or 0} menzioni",
+                    float(e.get("confidence_score") or 0)))
+
+    elif ftype == "material_ambiguous":
+        # Products with materials but field_confidence.materials < 0.7
+        for p in prods:
+            md = p.get("metadata_json") or {}
+            if isinstance(md, str):
+                try:    md = json.loads(md)
+                except: md = {}
+            fc = (md.get("field_confidence") or {})
+            mc = float(fc.get("materials") or 0)
+            if (p.get("materials") or []) and mc and mc < 0.7:
+                matches.append(_as_anomaly("product", p["id"],
+                    p.get("product_name") or "(senza nome)",
+                    f"materials field_confidence {mc:.2f}", mc))
+        for e in ents:
+            if e["entity_type"] in ("material", "demoted_material", "finish", "demoted_finish") and \
+                e.get("status") == "needs_review":
+                matches.append(_as_anomaly(e["entity_type"], e["id"],
+                    e.get("display_name") or "—", "needs_review", 0.0))
+
+    elif ftype == "brand_duplicate":
+        # Multiple alias entities for the same brand
+        for e in ents:
+            if e["entity_type"] in ("brand_alias", "brand") and \
+                e.get("status") in ("needs_review", "pending"):
+                matches.append(_as_anomaly(e["entity_type"], e["id"],
+                    e.get("display_name") or "—",
+                    f"{e.get('mention_count') or 0} menzioni",
+                    float(e.get("confidence_score") or 0)))
+
+    elif ftype == "image_orphan":
+        # Pages with asset_refs but no inline_entities linkage
+        try:
+            pages = (c.table("brand_catalog_pages")
+                     .select("id,catalog_document_id,page_number,asset_refs,inline_entities")
+                     .eq("catalog_set_id", set_id).limit(10000).execute().data or [])
+        except Exception:
+            pages = []
+        for pg in pages:
+            ar = pg.get("asset_refs")
+            ie = pg.get("inline_entities")
+            try:    ar = json.loads(ar) if isinstance(ar, str) else ar
+            except: ar = []
+            try:    ie = json.loads(ie) if isinstance(ie, str) else ie
+            except: ie = []
+            if isinstance(ar, list) and len(ar) > 0 and (not isinstance(ie, list) or len(ie) == 0):
+                matches.append(_as_anomaly("page", pg["id"],
+                    f"pag. {pg.get('page_number')}",
+                    f"{len(ar)} immagini senza inline entity", 0.0))
+
+    out = {
+        "entities": matches[:500],
+        "count":    len(matches),
+        "filter":   ftype,
+    }
+    if include_first:
+        out["first_anomaly"] = matches[0]["id"] if matches else None
     return out
 
 

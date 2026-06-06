@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** 04 Jun 2026
-> **Status:** Review Workspace™ V3.1 closed · ready for M5/M6/M7
+> **Last update:** 06 Jun 2026
+> **Status:** KE-002 + KE-002.1 closed · Control Room communicates real value · ready for KE-003
 
 ## Original problem statement
 
@@ -35,13 +35,15 @@ Superhuman. Function before aesthetic.
   * 4 endpoints: future-uses · connected-assets · project-impact · apply-correction
   * React components: KnowledgeStrip · DocumentNavigator · DocumentViewer · EntityInspector (tabs Overview/Connected/Future/Project) · AIValidation (tri-scope) · KnowledgeImpactCard · PostCertificationLaunchpad
   * 6/6 backend pytest PASS · 100% testing agent PASS · SSoT audit clean
+* **KE-001 · Knowledge Engine Production Reliability (05 Jun 2026)** — persistent `extraction_jobs`, `extraction_event_log`, 60s orphan recovery scheduler, document-level retry. Migration 131 applied. AC17 passed on RIVA1920.
+* **KE-002 · Knowledge Engine Control Room™ (06 Jun 2026)** — 5-component Mission Control panel (Worker Status pill 7 stati · KPI strip · Live Activity Stream · Warning Center 7 categorie · Document Queue OPEN/REVIEW/RETRY). See `KE002_CONTROL_ROOM_IMPLEMENTATION_REPORT.md` + `KE002_VISUAL_REVIEW_REPORT.md`.
+* **KE-002.1 · Value Wiring (06 Jun 2026)** — chiusura 3 P0 percettivi: KPI strip su counts reali (333 prodotti/26 designer/12 materiali per RIVA1920) · semantic event stream (PRODUCT_FOUND / DESIGNER_FOUND / MATERIAL_FOUND / IMAGE_FOUND) · 6 condition-based warning filters. New file `services/knowledge_kpi.py`. Backfill endpoint `/catalog-sets/{id}/backfill-semantic-events`. See `KE002_1_VALUE_WIRING_REPORT.md`. Classification: 🟢 READY_FOR_KE003.
 
 ## Backlog (priority)
 
 ### P0
-* **KE-002 · Knowledge Engine Control Room™** — Worker Status pill (7 stati) + Live Activity Stream (consuma `extraction_event_log`) + KPI engine deltas + Warning Center 7 categorie cliccabili + Document Queue actions [OPEN/REVIEW/RETRY] + CTA `Apri Review Workspace™`. Backend foundation ready.
-* **KE-003 · Review Workspace™ V3.1 deep-link wiring** — UI cablaggio del query param `?type=&focus=` da Warning Center → Entity Inspector. Backend endpoint `/needs-review?type=&include_first=true` già pronto.
-* **CRM / Client Relations Refactor** — CREA unique global entry, Studio Intelligence™ section (Memory + Voice Notes), Rollback Modal Atelier rebuild
+* **KE-003 · Review Workspace™ V3.1 polish & deep-link wiring** — UI cablaggio del query param `?type=&focus=` da Warning Center → Entity Inspector. Smoothness della transizione Control Room → Review Workspace. Risolvere il quirk UX "review on failed documents". Backend endpoint `/needs-review?type=&include_first=true` già pronto (con 6 filtri condition-based KE-002.1).
+* **CRM / Client Relations Refactor** — CREA unique global entry, Studio Intelligence™ section (Memory + Voice Notes), Rollback Modal Atelier rebuild · **ON HOLD by user**
 * **Project Detail Page** — premium SaaS design coherent with new Projects index
 
 ### P1

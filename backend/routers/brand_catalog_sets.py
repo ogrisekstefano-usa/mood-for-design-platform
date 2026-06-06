@@ -1124,6 +1124,17 @@ def validation_summary(set_id: str, ctx=Depends(get_tenant_context)):
                        .eq("catalog_set_id", set_id)
                        .eq("review_status", "validated").execute().count or 0)
 
+    # KE-002.1 · Flat KPI counts for the Control Room strip.
+    # Pulled from the REAL data sources (products / pages / relations /
+    # entities) so we never show zero on a set with 300+ products.
+    try:
+        from services.knowledge_kpi import compute_kpi
+        kpi = compute_kpi(set_id)
+    except Exception:
+        kpi = {"products": 0, "designers": 0, "materials": 0,
+               "finishes": 0, "images": 0, "relations": 0,
+               "aliases": 0, "collections": 0}
+
     return {
         "catalog_set": _slim(cset),
         "brand": {
@@ -1140,6 +1151,15 @@ def validation_summary(set_id: str, ctx=Depends(get_tenant_context)):
             "total":         pages_pending + pages_needs_review + pages_validated,
         },
         "index_summary": cset.get("index_summary") or {},
+        # KE-002.1 · Flat counters for Control Room (also mirrored in
+        # `product_count`, `designer_count`, etc. for legacy clients).
+        "kpi": kpi,
+        "product_count":  kpi["products"],
+        "designer_count": kpi["designers"],
+        "material_count": kpi["materials"],
+        "image_count":    kpi["images"],
+        "relations_count": kpi["relations"],
+        "alias_count":    kpi["aliases"],
     }
 
 
