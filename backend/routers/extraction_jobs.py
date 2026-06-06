@@ -1242,6 +1242,75 @@ def get_document_review_context(set_id: str, doc_id: str,
     }
 
 
+@router.get("/catalog-sets/{set_id}/documents/{doc_id}/failure-context")
+def get_document_failure_context(set_id: str, doc_id: str,
+                                  ctx=Depends(get_tenant_context)):
+    """KE-003 · P0-5 · Failed Document Experience.
+
+    Returns rich context so the user never sees a blank "review" page
+    on a failed document. Includes:
+      - error_message (latest from extraction_event_log + error_logs)
+      - failed_at timestamp
+      - retry availability flag
+      - related_documents (same set, success or in review) for navigation
+    """
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    doc_rows = (c.table("brand_catalog_documents")
+                .select("id,display_name,original_filename,extraction_status,"
+                        "extraction_started_at,extraction_completed_at,"
+                        "updated_at,error_logs,source_document_id")
+                .eq("id", doc_id).eq("catalog_set_id", set_id)
+                .limit(1).execute().data or [])
+    if not doc_rows:
+        raise HTTPException(404, "Documento non trovato")
+    doc = doc_rows[0]
+
+    # Latest failed event for this document (richer error message)
+    err_msg = None
+    failed_at = doc.get("extraction_completed_at") or doc.get("updated_at")
+    try:
+        ev = (c.table("extraction_event_log")
+              .select("kind,message,details,ts")
+              .eq("catalog_document_id", doc_id)
+              .in_("kind", ["JOB_FAILED", "DOCUMENT_FAILED", "ERROR"])
+              .order("ts", desc=True).limit(1).execute().data or [])
+        if ev:
+            err_msg = ev[0].get("message")
+            failed_at = ev[0].get("ts") or failed_at
+    except Exception:
+        pass
+    if not err_msg:
+        # Fall back to error_logs (last entry)
+        logs = doc.get("error_logs") or []
+        if isinstance(logs, list) and logs:
+            last = logs[-1]
+            err_msg = last.get("message") if isinstance(last, dict) else str(last)
+    if not err_msg:
+        err_msg = "Estrazione interrotta · causa non specificata"
+
+    # Related documents (same set) for navigation away from the dead end
+    related = (c.table("brand_catalog_documents")
+               .select("id,display_name,original_filename,extraction_status")
+               .eq("catalog_set_id", set_id)
+               .neq("id", doc_id).limit(50).execute().data or [])
+    related_compact = [{
+        "id": r["id"],
+        "name": r.get("display_name") or r.get("original_filename"),
+        "status": r.get("extraction_status"),
+    } for r in related]
+
+    return {
+        "document_id": doc_id,
+        "name": doc.get("display_name") or doc.get("original_filename"),
+        "status": doc.get("extraction_status"),
+        "error_message": err_msg,
+        "failed_at": failed_at,
+        "retry_available": doc.get("extraction_status") in ("failed", "stalled"),
+        "related_documents": related_compact,
+    }
+
+
 class RetryFailedBody(BaseModel):
     dry_run: bool = False
 

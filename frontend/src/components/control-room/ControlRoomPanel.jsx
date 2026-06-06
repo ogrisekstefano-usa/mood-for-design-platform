@@ -333,7 +333,7 @@ function DocumentQueue({ documents, onOpen, onReview, onRetry, onRetryFailed, re
 
 
 // ─── Main panel ─────────────────────────────────────────────────────
-export default function ControlRoomPanel({ setId, documents = [], onAfterAction }) {
+export default function ControlRoomPanel({ setId, documents = [], onAfterAction, onDeepLink, onFailedReview }) {
   const navigate = useNavigate();
   const [status, setStatus] = useState(null);
   const [events, setEvents] = useState([]);
@@ -433,21 +433,29 @@ export default function ControlRoomPanel({ setId, documents = [], onAfterAction 
     });
   };
   const handleReview = async (doc) => {
+    // KE-003 · P0-5 · Failed Document Experience
+    if (doc.extraction_status === 'failed') {
+      try {
+        const { data } = await KE.documentFailureContext(setId, doc.id);
+        onFailedReview?.(data);
+      } catch (err) {
+        toast.error(`Failure context: ${err?.response?.data?.detail || err.message}`);
+      }
+      return;
+    }
     try {
       const { data } = await KE.documentReviewContext(setId, doc.id);
-      const el = document.querySelector(`[data-testid="rw-v3-root"]`);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      // KE-003 · P0-1 · Deep-link via URL params (focus first anomaly)
       if (data?.first_anomaly) {
+        onDeepLink?.({ docId: doc.id, focus: data.first_anomaly });
         toast.success(`Review: ${data.count} entità da risolvere su "${doc.display_name || doc.original_filename}"`);
-      } else if (data) {
-        toast.info(`Nessuna ambiguità rilevata su "${doc.display_name || doc.original_filename}" · doc status: ${doc.extraction_status}`);
       } else {
-        toast.warning('Review context non disponibile');
+        toast.info(`Nessuna ambiguità rilevata su "${doc.display_name || doc.original_filename}"`);
+        const el = document.querySelector(`[data-testid="rw-v3-root"]`);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
     } catch (err) {
-      const status = err?.response?.status;
-      const detail = err?.response?.data?.detail || err.message;
-      toast.error(`Review context: ${status ? `${status} · ` : ''}${detail}`);
+      toast.error(`Review context: ${err?.response?.data?.detail || err.message}`);
     }
   };
   const handleRetry = async (doc) => {
@@ -476,8 +484,13 @@ export default function ControlRoomPanel({ setId, documents = [], onAfterAction 
   const handleWarningCategory = async (type) => {
     try {
       const { data } = await KE.needsReviewByType(setId, type, true);
-      const el = document.querySelector(`[data-testid="rw-v3-root"]`);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      // KE-003 · P0-1 · Deep-link via URL params with type + focus
+      if (data.first_anomaly) {
+        onDeepLink?.({ type, focus: data.first_anomaly });
+      } else {
+        const el = document.querySelector(`[data-testid="rw-v3-root"]`);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
       toast(`Warning: ${data.count || 0} elementi in "${type}"`, {
         description: data.first_anomaly ? `Apertura prima anomalia: ${data.first_anomaly.slice(0, 8)}…` : 'Nessuna anomalia',
       });
@@ -486,8 +499,7 @@ export default function ControlRoomPanel({ setId, documents = [], onAfterAction 
     }
   };
   const handleOpenReview = () => {
-    const el = document.querySelector(`[data-testid="rw-v3-root"]`);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    onDeepLink?.({});
   };
 
   return (

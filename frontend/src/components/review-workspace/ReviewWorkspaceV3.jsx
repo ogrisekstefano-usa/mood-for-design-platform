@@ -169,17 +169,25 @@ function DocumentViewer({ document: doc, entities = [], onEntityClick, layers, o
 
 
 // ─── Entity Inspector (Col 3) ───────────────────────────────────────
-function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
+function EntityInspector({ setId, entity, onAfterCorrection, lastImpact, onAfterAction }) {
   const [tab, setTab] = useState('overview');
   const [futureUses, setFutureUses] = useState(null);
   const [connected, setConnected] = useState(null);
   const [projectImpact, setProjectImpact] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [scope, setScope] = useState('only_here');
+  const [busy, setBusy] = useState(null);   // 'approve' | 'reject' | 'merge' | 'modify'
+  const [mergeTarget, setMergeTarget] = useState('');
+  const [editName, setEditName] = useState('');
+  const [editMode, setEditMode] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!entity?.id) return;
     setLoading(true);
+    setEditName(entity.display_name || '');
+    setEditMode(false);
+    setMergeTarget('');
     Promise.all([
       KE.futureUses(setId, entity.id).catch(() => ({ data: null })),
       KE.connectedAssets(setId, entity.id).catch(() => ({ data: null })),
@@ -189,7 +197,7 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
       setConnected(ca.data);
       setProjectImpact(pi.data);
     }).finally(() => setLoading(false));
-  }, [setId, entity?.id]);
+  }, [setId, entity?.id, entity?.display_name]);
 
   if (!entity) {
     return (
@@ -203,6 +211,72 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
   }
 
   const confidence = Math.round(((entity.confidence_score || 0)) * 100);
+  const docCount = (entity.source_document_ids || []).length;
+
+  // KE-003 · P0-2/P0-3/P0-4 · 4 certification CTAs with tri-scope
+  const handleApprove = async () => {
+    setBusy('approve');
+    try {
+      // Backend computes real impact when zeros are passed
+      const { data } = await KE.applyCorrection(setId, entity.id, {
+        scope, source_input: entity.entity_key, canonical_target: entity.display_name,
+        occurrences_corrected: 0, products_improved: 0, images_linked: 0,
+        future_moodboards_unlocked: 0, materials_consolidated: 0, designers_consolidated: 0,
+      });
+      try { await KE.approveEntity(setId, entity.id); } catch (_) { /* tolerate */ }
+      toast.success(`Certificato · scope ${scope}`);
+      onAfterCorrection?.(entity, data);
+      onAfterAction?.();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Certificazione fallita');
+    } finally { setBusy(null); }
+  };
+  const handleReject = async () => {
+    if (!window.confirm(`Rifiutare "${entity.display_name}"? L'entità sarà rimossa dal Knowledge Package.`)) return;
+    setBusy('reject');
+    try {
+      await KE.rejectEntity(setId, entity.id);
+      toast.success(`Entità rifiutata`);
+      onAfterAction?.();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Rifiuto fallito');
+    } finally { setBusy(null); }
+  };
+  const handleMerge = async () => {
+    if (!mergeTarget || mergeTarget === entity.id) {
+      toast.error('Indica l\'entity_id canonica di destinazione');
+      return;
+    }
+    setBusy('merge');
+    try {
+      await KE.mergeEntity(setId, entity.id, mergeTarget);
+      toast.success(`Unite · "${entity.display_name}" → ${mergeTarget.slice(0, 8)}…`);
+      onAfterAction?.();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Merge fallito');
+    } finally { setBusy(null); }
+  };
+  const handleModify = async () => {
+    if (!editName || editName === entity.display_name) {
+      setEditMode(false);
+      return;
+    }
+    setBusy('modify');
+    try {
+      await KE.patchEntity(setId, entity.id, { display_name: editName });
+      toast.success('Entità aggiornata');
+      onAfterAction?.();
+      setEditMode(false);
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Modifica fallita');
+    } finally { setBusy(null); }
+  };
+
+  const SCOPE_OPTIONS = [
+    { key: 'only_here', label: 'Solo qui' },
+    { key: 'catalog', label: 'Questo catalogo' },
+    { key: 'brand', label: 'Intero Brand Knowledge Package™' },
+  ];
 
   return (
     <section className="rw-col rw-inspector" data-testid="rw-v3-entity-inspector">
@@ -210,7 +284,17 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
       <div className="rw-col__body">
         <div className="rw-entity-card">
           <span className="rw-entity-tag">{(entity.entity_type || 'entity').toUpperCase()}</span>
-          <h2 className="rw-entity-name">{entity.display_name}</h2>
+          {!editMode ? (
+            <h2 className="rw-entity-name" data-testid="rw-entity-name">{entity.display_name}</h2>
+          ) : (
+            <input
+              className="rw-entity-name-input"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              autoFocus
+              data-testid="rw-entity-name-input"
+            />
+          )}
 
           <div className="rw-tabs">
             {['overview', 'connected', 'future', 'project'].map((t) => (
@@ -240,7 +324,7 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
               </div>
               <div className="rw-entity-fact">
                 <span className="rw-entity-fact__label">Documenti</span>
-                <span className="rw-entity-fact__value">{(entity.source_document_ids || []).length}</span>
+                <span className="rw-entity-fact__value">{docCount}</span>
               </div>
               <div className="rw-entity-fact">
                 <span className="rw-entity-fact__label">Confidence</span>
@@ -250,10 +334,111 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact }) {
                 <span className="rw-entity-fact__label">Status</span>
                 <span className="rw-entity-fact__value">{entity.status}</span>
               </div>
+              {(entity.aliases || []).length > 0 && (
+                <div className="rw-entity-fact">
+                  <span className="rw-entity-fact__label">Alias</span>
+                  <span className="rw-entity-fact__value">{(entity.aliases || []).slice(0, 3).join(' · ')}</span>
+                </div>
+              )}
 
-              <div className="rw-actions">
+              {/* KE-003 · P0-3 · Scope selector for all decisions */}
+              <div className="rw-cert-scope" data-testid="rw-cert-scope">
+                <div className="rw-cert-scope__label">Ambito della decisione</div>
+                {SCOPE_OPTIONS.map((s) => (
+                  <label
+                    key={s.key}
+                    className={`rw-cert-scope__row ${scope === s.key ? 'is-active' : ''}`}
+                    data-testid={`rw-cert-scope-${s.key}`}
+                  >
+                    <input
+                      type="radio"
+                      name="rw-cert-scope"
+                      checked={scope === s.key}
+                      onChange={() => setScope(s.key)}
+                    />
+                    <span>{s.label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* KE-003 · P0-2 · 4 CTAs (APPROVA · RIFIUTA · UNISCI · MODIFICA) */}
+              <div className="rw-cert-actions" data-testid="rw-cert-actions">
                 <button
-                  className="rw-btn rw-btn--primary"
+                  className="rw-cert-btn rw-cert-btn--approve"
+                  onClick={handleApprove}
+                  disabled={!!busy}
+                  data-testid="rw-cert-approve"
+                >
+                  {busy === 'approve' ? 'Certifico…' : '✓ APPROVA'}
+                </button>
+                <button
+                  className="rw-cert-btn rw-cert-btn--reject"
+                  onClick={handleReject}
+                  disabled={!!busy}
+                  data-testid="rw-cert-reject"
+                >
+                  {busy === 'reject' ? 'Rifiuto…' : '✕ RIFIUTA'}
+                </button>
+                <button
+                  className="rw-cert-btn"
+                  onClick={() => { setEditMode(false); setMergeTarget(mergeTarget || ''); document.querySelector('[data-testid="rw-merge-input"]')?.focus(); }}
+                  data-testid="rw-cert-merge-toggle"
+                >
+                  ⤚ UNISCI
+                </button>
+                <button
+                  className="rw-cert-btn"
+                  onClick={() => { setEditMode(true); }}
+                  data-testid="rw-cert-modify-toggle"
+                >
+                  ✎ MODIFICA
+                </button>
+              </div>
+
+              {/* Merge inline form */}
+              <div className="rw-cert-merge" data-testid="rw-cert-merge-form">
+                <input
+                  type="text"
+                  placeholder="entity_id canonica di destinazione"
+                  value={mergeTarget}
+                  onChange={(e) => setMergeTarget(e.target.value)}
+                  className="rw-cert-input"
+                  data-testid="rw-merge-input"
+                />
+                <button
+                  className="rw-cert-btn rw-cert-btn--small"
+                  onClick={handleMerge}
+                  disabled={!mergeTarget || !!busy}
+                  data-testid="rw-cert-merge-submit"
+                >
+                  {busy === 'merge' ? 'Unisco…' : 'Unisci →'}
+                </button>
+              </div>
+
+              {/* Modify save button (inline) */}
+              {editMode && (
+                <div className="rw-cert-merge" data-testid="rw-cert-modify-form">
+                  <button
+                    className="rw-cert-btn rw-cert-btn--small"
+                    onClick={handleModify}
+                    disabled={!editName || !!busy}
+                    data-testid="rw-cert-modify-save"
+                  >
+                    {busy === 'modify' ? 'Salvo…' : 'Salva nuovo nome'}
+                  </button>
+                  <button
+                    className="rw-cert-btn rw-cert-btn--small"
+                    onClick={() => { setEditMode(false); setEditName(entity.display_name); }}
+                    data-testid="rw-cert-modify-cancel"
+                  >
+                    Annulla
+                  </button>
+                </div>
+              )}
+
+              <div className="rw-actions" style={{ marginTop: 14 }}>
+                <button
+                  className="rw-btn"
                   onClick={() => navigate(`/inspirations/knowledge-engine/entities/${entity.entity_type}/${entity.canonical_ref_id || entity.id}`)}
                   data-testid="rw-action-open-detail"
                 >
@@ -477,7 +662,10 @@ function PostCertificationLaunchpad({ brandName }) {
 
 
 // ─── Main Workspace ─────────────────────────────────────────────────
-export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, onAfterPublish }) {
+export default function ReviewWorkspaceV3({
+  setId, status, setInfo, statusData, onAfterPublish,
+  focusEntity, focusType, focusDocId, onClearFocus,
+}) {
   const [entities, setEntities] = useState([]);
   const [needsReview, setNeedsReview] = useState([]);
   const [reviewSummary, setReviewSummary] = useState(null);
@@ -489,6 +677,7 @@ export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, 
   const [lastImpact, setLastImpact] = useState(null);
   const [publishing, setPublishing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const focusAppliedRef = React.useRef(null);   // KE-003 · P0-1
 
   const refreshAll = useCallback(async () => {
     setLoading(true);
@@ -513,6 +702,21 @@ export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, 
   }, [setId]);
 
   useEffect(() => { refreshAll(); }, [refreshAll]);
+
+  // KE-003 · P0-1 · Deep-link · auto-select focusEntity once entities load
+  useEffect(() => {
+    if (!focusEntity || focusAppliedRef.current === focusEntity) return;
+    const all = [...entities, ...needsReview];
+    const found = all.find((x) => x.id === focusEntity);
+    if (found) {
+      setSelectedEntity(found);
+      focusAppliedRef.current = focusEntity;
+      // Smooth scroll happens at the page level; here we just toast a hint.
+      toast.success(`Anomalia aperta: ${found.display_name || found.id.slice(0, 8)}`, {
+        description: focusType ? `Categoria: ${focusType}` : undefined,
+      });
+    }
+  }, [focusEntity, focusType, entities, needsReview]);
 
   // ── Aggregate metrics for Knowledge Strip ──
   const strip = useMemo(() => {
@@ -558,7 +762,16 @@ export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, 
     setPublishing(true);
     try {
       await KE.publishSet(setId);
-      toast.success('Brand Knowledge Package certificato');
+      // KE-003 · P0-7 · Celebratory toast 3-5s with real counts
+      const k = validationSummary?.kpi || {};
+      const parts = [];
+      if (k.products)  parts.push(`${k.products} prodotti`);
+      if (k.designers) parts.push(`${k.designers} designer`);
+      if (k.materials) parts.push(`${k.materials} materiali`);
+      const desc = parts.length
+        ? `${parts.join(' · ')} · ora disponibili nel Brand Atlas™`
+        : 'Patrimonio digitale ora disponibile nel Brand Atlas™';
+      toast.success('🚀 Knowledge Package Certified', { description: desc, duration: 5000 });
       onAfterPublish?.();
       refreshAll();
     } catch (err) {
@@ -600,6 +813,8 @@ export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, 
             setId={setId}
             entity={selectedEntity}
             lastImpact={lastImpact}
+            onAfterCorrection={onApply}
+            onAfterAction={refreshAll}
           />
           <AIValidationPanel
             setId={setId}
@@ -629,11 +844,10 @@ export default function ReviewWorkspaceV3({ setId, status, setInfo, statusData, 
                 ? <button
                     onClick={onPublishCertify}
                     disabled={publishing}
-                    className="rw-btn rw-btn--atlas"
+                    className="rw-btn rw-btn--certify"
                     data-testid="rw-v3-certify-btn"
-                    style={{ padding: '4px 12px', fontSize: 11 }}
                   >
-                    {publishing ? 'Certifico…' : 'Certifica Knowledge Package'}
+                    {publishing ? 'Certifico…' : '✓ Certify Knowledge Package™'}
                   </button>
                 : 'Risolvi le ambiguità per certificare il Knowledge Package')
           }

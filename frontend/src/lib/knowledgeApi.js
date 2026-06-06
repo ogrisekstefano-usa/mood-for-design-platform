@@ -122,6 +122,10 @@ export const documentPreview = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}`);
 export const documentReviewContext = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/review-context`);
+export const documentFailureContext = (setId, docId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/failure-context`);
+export const backfillSemanticEvents = (setId) =>
+  api.post(`${BASE}/catalog-sets/${setId}/backfill-semantic-events`);
 export const retryFailed = (setId, payload = {}) =>
   api.post(`${BASE}/catalog-sets/${setId}/retry-failed`, payload);
 export const retryDocument = (setId, docId) =>
@@ -149,5 +153,6 @@ export default {
   atlasDiscover, atlasFacets,
   futureUses, connectedAssets, projectImpact, applyCorrection,
   workerStatus, listEvents, documentPreview, documentReviewContext,
+  documentFailureContext, backfillSemanticEvents,
   retryFailed, retryDocument, extractionJobsHistory, needsReviewByType,
 };

@@ -10,12 +10,13 @@
  * Path: /inspirations/knowledge-engine/catalog-sets/:setId
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import KE from '../../lib/knowledgeApi';
 import ReviewWorkspaceV3 from '../../components/review-workspace/ReviewWorkspaceV3';
 import ControlRoomPanel from '../../components/control-room/ControlRoomPanel';
+import FailedDocumentModal from '../../components/review-workspace/FailedDocumentModal';
 import './knowledge-engine.css';
 
 const STATUS_LABEL = {
@@ -498,12 +499,32 @@ function ValidationPanel({ setId, summary, entities, onRefresh, onPublish }) {
 export default function CatalogSetWorkspacePage() {
   const { setId } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [setInfo, setSetInfo] = useState(null);
   const [statusData, setStatusData] = useState(null);
   const [summary, setSummary] = useState(null);
   const [entities, setEntities] = useState([]);
   const [extracting, setExtractingBusy] = useState(false);
+  const [failedDoc, setFailedDoc] = useState(null);   // KE-003 · P0-5
   const pollRef = useRef(null);
+
+  // KE-003 · P0-1 · Deep-link state derived from URL params
+  const focusType   = searchParams.get('type');
+  const focusEntity = searchParams.get('focus');
+  const focusDocId  = searchParams.get('doc');
+
+  const handleDeepLink = useCallback(({ type, focus, docId } = {}) => {
+    const next = new URLSearchParams(searchParams);
+    if (type)   next.set('type', type);    else next.delete('type');
+    if (focus)  next.set('focus', focus);  else next.delete('focus');
+    if (docId)  next.set('doc', docId);    else next.delete('doc');
+    setSearchParams(next, { replace: true });
+    // Smooth scroll to Review Workspace after URL is updated
+    setTimeout(() => {
+      const el = document.querySelector('[data-testid="rw-v3-root"]');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }, [searchParams, setSearchParams]);
 
   const reloadAll = useCallback(async () => {
     try {
@@ -667,8 +688,20 @@ export default function CatalogSetWorkspacePage() {
           setId={setId}
           documents={(setInfo?.documents) || []}
           onAfterAction={reloadAll}
+          onDeepLink={handleDeepLink}
+          onFailedReview={setFailedDoc}
         />
       </section>
+
+      {/* KE-003 · P0-5 · Failed Document Modal */}
+      {failedDoc && (
+        <FailedDocumentModal
+          ctx={failedDoc}
+          setId={setId}
+          onClose={() => setFailedDoc(null)}
+          onRetryDone={() => { setFailedDoc(null); reloadAll(); }}
+        />
+      )}
 
       {/* ── Section 3 · Review Workspace™ V3 (Brand Atlas → Ecosistema MOOD) ── */}
       {(status === 'needs_review' || status === 'validated' || status === 'published') ? (
@@ -680,6 +713,10 @@ export default function CatalogSetWorkspacePage() {
             setInfo={setInfo}
             statusData={statusData}
             onAfterPublish={reloadAll}
+            focusEntity={focusEntity}
+            focusType={focusType}
+            focusDocId={focusDocId}
+            onClearFocus={() => handleDeepLink({})}
           />
         </section>
       ) : (

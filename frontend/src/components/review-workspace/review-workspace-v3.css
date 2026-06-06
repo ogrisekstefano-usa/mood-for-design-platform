@@ -253,3 +253,123 @@
   .rw-v3 .rw-launch__title { font-size: 36px; }
   .rw-v3 .rw-launch__primary { grid-template-columns: 1fr; }
 }
+
+/* ═══ KE-003 · Certification CTAs in Entity Inspector ════════════════ */
+.rw-v3 .rw-entity-name-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 3px;
+  color: #f0f3f8;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 500;
+  padding: 6px 10px;
+  margin-bottom: 12px;
+  outline: none;
+}
+.rw-v3 .rw-entity-name-input:focus { border-color: var(--rw-teal); }
+
+.rw-v3 .rw-cert-scope {
+  margin: 16px 0 12px;
+  padding: 10px 12px;
+  background: rgba(0, 229, 255, 0.04);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 4px;
+}
+.rw-v3 .rw-cert-scope__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 8px;
+}
+.rw-v3 .rw-cert-scope__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--rw-text-sec);
+  transition: background 100ms;
+}
+.rw-v3 .rw-cert-scope__row:hover { background: rgba(255, 255, 255, 0.03); }
+.rw-v3 .rw-cert-scope__row.is-active {
+  background: rgba(0, 229, 255, 0.10);
+  color: var(--rw-teal);
+}
+.rw-v3 .rw-cert-scope__row input { accent-color: var(--rw-teal); }
+
+.rw-v3 .rw-cert-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.rw-v3 .rw-cert-btn {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  color: var(--rw-text-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms;
+}
+.rw-v3 .rw-cert-btn:hover { background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.20); }
+.rw-v3 .rw-cert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.rw-v3 .rw-cert-btn--approve {
+  background: rgba(0, 229, 255, 0.14);
+  border-color: rgba(0, 229, 255, 0.50);
+  color: #6df2ff;
+}
+.rw-v3 .rw-cert-btn--approve:hover { background: rgba(0, 229, 255, 0.22); }
+.rw-v3 .rw-cert-btn--reject {
+  background: rgba(255, 80, 80, 0.10);
+  border-color: rgba(255, 80, 80, 0.40);
+  color: #ff9999;
+}
+.rw-v3 .rw-cert-btn--reject:hover { background: rgba(255, 80, 80, 0.18); }
+.rw-v3 .rw-cert-btn--small { padding: 6px 10px; font-size: 10px; }
+
+.rw-v3 .rw-cert-merge {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: stretch;
+}
+.rw-v3 .rw-cert-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  color: var(--rw-text-main);
+  padding: 7px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  outline: none;
+}
+.rw-v3 .rw-cert-input:focus { border-color: var(--rw-teal); }
+
+/* ═══ KE-003 · Big Certify button in footer ═══════════════════════════ */
+.rw-v3 .rw-atlas-sync .rw-btn--certify {
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.20), rgba(0, 229, 255, 0.08));
+  border: 1px solid rgba(0, 229, 255, 0.55);
+  color: #6df2ff;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  padding: 6px 16px !important;
+  font-size: 11px !important;
+  animation: rw-pulse-glow 2.4s ease-in-out infinite;
+}
+@keyframes rw-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+  50%      { box-shadow: 0 0 14px 2px rgba(0, 229, 255, 0.32); }
+}

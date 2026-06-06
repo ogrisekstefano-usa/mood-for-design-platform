@@ -1,0 +1,48 @@
+{
+  "summary": "Sprint KE-003 backend regression executed via new /app/backend/tests/test_ke003_certification_workspace.py — 4/6 PASS, 1 FAIL (needs-review missing 'first_anomaly' field), 1 SKIP (review-entities endpoint not exposed). UI Playwright test could not complete past login: form filled correctly but POST /api/auth/login flow ended back at /auth/login with 401s — likely a Playwright-side cookie/session persistence issue rather than a real auth bug (manual login + previous iterations 210/211 verified login works). Therefore P0-1..P0-10 UI flows were NOT re-validated in this iteration and should be re-run by main agent or next testing pass. Backend KE-003 endpoints are mostly healthy: validation-summary kpi block has all 8 required keys for both RIVA1920 and ARBI; RIVA KPI is non-zero (regression OK for KE-002); failure-context returns full 7-key shape on a real failed RIVA doc; backfill-semantic-events returns {ok, documents_processed, documents_skipped, totals} and is idempotent across 2 sequential POSTs. ONE BACKEND CONTRACT BUG: GET /api/knowledge/catalog-sets/{id}/needs-review?type=designer_ambiguous returns ['entities','count','filter'] but the documented contract requires 'first_anomaly' — confirmed on BOTH RIVA (count=26) and ARBI (count=14). This affects P0-1 deep-link flow because handleDeepLink relies on focus=first_anomaly_id from the API.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/knowledge/catalog-sets/{set_id}/needs-review?type=...", "issue": "Response is missing the 'first_anomaly' field documented in KE-003 contract. Verified on RIVA (a1b8cfac, designer_ambiguous, count=26) and ARBI (00e33d7f, designer_ambiguous, count=14) — both return {entities, count, filter} only. Frontend P0-1 deep-link toast 'Apertura prima anomalia: <id>' depends on this field; without it, focus query-param falls back to first entities[0].id or null.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/knowledge/catalog-sets/{set_id}/review-entities", "issue": "Endpoint not exposed (404/missing) — caused TestApplyCorrectionImpact to skip. apply-correction itself was not directly verifiable in this run; iteration 210 verified it works end-to-end via the UI 'Approva validazione' flow."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Playwright login on /login route", "issue": "Navigation to /login redirects to /auth/login, form fields fill, submit click does not transition to /inspirations; URL stays at /auth/login with multiple 401/403 console errors during the flow. Manual login via curl POST /api/auth/login works (returns session.access_token). Investigate cookie/CSRF handling in Playwright context — possibly httpOnly cookie not surviving across the post-submit redirect chain in headless context.", "affected_selectors": ["input[type='email']", "input[type='password']", "button[type='submit']"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_ke003_certification_workspace.py",
+    "/app/test_reports/pytest/iter212_ke003.xml"
+  ],
+  "action_items": [
+    "Backend: Add 'first_anomaly' to needs-review response in /app/backend/routers/extraction_jobs.py (the endpoint already computes entities; just expose entities[0] -- or the entity with highest priority -- under key 'first_anomaly'). Spec'd contract: {entities, count, filter, first_anomaly} where first_anomaly is {id, kind, display_name, detail} or null when count=0.",
+    "Backend (minor): expose or document GET /api/knowledge/catalog-sets/{id}/review-entities so apply-correction can be tested headlessly without the UI.",
+    "Re-test P0-1..P0-10 UI flows: deep-link warning click, Entity Inspector with 4 CTAs (rw-cert-approve/reject/merge-toggle/modify-toggle + UNISCI inline form), scope persistence across actions, KnowledgeImpactCard appearance after APPROVA on catalog scope, FailedDocumentModal open/close via ke-cr-doc-action-review-* on a failed doc, MODIFICA save → PATCH /entities/{id}, UNISCI submit → POST /merge, RIFIUTA confirm() → POST /reject. Main agent can self-test in browser (login works manually) or trigger another testing pass with a fresh Playwright context.",
+    "Validate P0-7 toast logic by visual code review of ReviewWorkspaceV3.jsx::onPublishCertify (do not actually publish)."
+  ],
+  "critical_code_review_comments": [
+    "needs-review response is missing first_anomaly — contract drift. Cheapest fix: in router after computing entities list, return first_anomaly = entities[0] if entities else None.",
+    "ReviewWorkspaceV3.jsx (per problem statement at L171/368/549/630) intentionally keeps BOTH legacy AIValidation rw-approve-{entity_id} buttons AND the new in-Inspector rw-cert-* CTAs — this is documented but creates a duplicated certification surface; long-term consider hiding the legacy approve from val-cards to enforce the single inspector flow and reduce cognitive load.",
+    "P0-9 UNISCI takes a raw entity_id from a text input — no entity search / suggestions UI. Recommend a typeahead lookup against existing entities of the same kind to avoid users guessing UUIDs.",
+    "P0-10 RIFIUTA uses window.confirm() — not stylable, breaks the Blueprint Chameleon aesthetic. Replace with an in-app confirmation modal that matches the dark glassmorphism design language.",
+    "Knowledge Impact computation: apply-correction request body sends impact={all zeros} and trusts backend to compute real values — good separation. Ensure _compute_real_impact in /app/backend/routers/review_workspace_v3.py covers scope='brand' (cross-catalog impact across the brand's other catalog sets) — that's the most complex case and is the easiest to regress."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ke003_certification_workspace.py (new — 6 KE-003 backend regression tests)"
+  ],
+  "success_rate": {
+    "backend": "67% (4/6 PASS, 1 FAIL on needs-review contract, 1 SKIP on review-entities missing endpoint). Critical endpoints (validation-summary, failure-context, backfill) are 100% green.",
+    "frontend": "Not measurable this iteration (login flow blocked in Playwright). Iterations 210/211 baseline still applies for ReviewWorkspaceV3 + Control Room scaffolding; new KE-003 CTAs (rw-cert-*) and FailedDocumentModal need fresh UI validation."
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin · POST /api/auth/login → session.access_token; backend auth verified via curl in this iteration)",
+  "seed_data_creation": "None. Backfill-semantic-events POST on ARBI was a no-op-style idempotency call (2nd call confirmed totals consistent). No mutations to catalog sets.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest suite for KE-003 is at /app/backend/tests/test_ke003_certification_workspace.py — run with `REACT_APP_BACKEND_URL=<url> pytest <file> -v` (the env var MUST be exported in the pytest process; the conftest used by previous iterations does not auto-load frontend/.env). Once main agent fixes needs-review to include first_anomaly, that test will flip green. The Playwright login issue is likely environmental — try navigating directly to /auth/login (not /login) and add `await page.wait_for_url('**/inspirations/**', timeout=20000)` after submit click; manual auth via curl works perfectly. For P0-1..P0-10 UI re-test, focus on the new selectors: rw-cert-approve, rw-cert-reject, rw-cert-merge-toggle, rw-cert-modify-toggle, rw-cert-scope-{only_here|catalog|brand}, rw-cert-merge-form, rw-merge-input, rw-cert-merge-submit, rw-entity-name-input, rw-cert-modify-save/cancel, ke-failed-doc-modal/backdrop/close/retry/related-*. Use force=True clicks on .rw-val-card__title (stopPropagation on the radio area).",
+  "rca of the issue": "needs-review missing first_anomaly RCA: The backend computes the entities[] list correctly (verified count=26 on RIVA designer_ambiguous, count=14 on ARBI) but the serializer in extraction_jobs.py returns only {entities, count, filter}. The KE-003 spec requires {entities, count, filter, first_anomaly} where first_anomaly = entities[0] (or highest-priority entity) to power the deep-link focus query param (?focus=<entity_id>). One-line fix in the route handler: `return {..., 'first_anomaly': entities[0] if entities else None}`. This also affects the toast 'Apertura prima anomalia: <id>' which currently must derive the id from entities[0] client-side, masking the contract drift."
+}
