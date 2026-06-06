@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 06 Jun 2026
-> **Status:** KE-003 Knowledge Certification Workspace™ closed · ready for KE-004
+> **Status:** KE-004 Future Uses™ + Connected Assets™ closed · ecosystem observable · ready for KE-005 or higher-order sprints
 
 ## Original problem statement
 
@@ -38,13 +38,14 @@ Superhuman. Function before aesthetic.
 * **KE-001 · Knowledge Engine Production Reliability (05 Jun 2026)** — persistent `extraction_jobs`, `extraction_event_log`, 60s orphan recovery scheduler, document-level retry. Migration 131 applied. AC17 passed on RIVA1920.
 * **KE-002 · Knowledge Engine Control Room™ (06 Jun 2026)** — 5-component Mission Control panel (Worker Status pill 7 stati · KPI strip · Live Activity Stream · Warning Center 7 categorie · Document Queue OPEN/REVIEW/RETRY). See `KE002_CONTROL_ROOM_IMPLEMENTATION_REPORT.md` + `KE002_VISUAL_REVIEW_REPORT.md`.
 * **KE-002.1 · Value Wiring (06 Jun 2026)** — chiusura 3 P0 percettivi: KPI strip su counts reali (333 prodotti/26 designer/12 materiali per RIVA1920) · semantic event stream (PRODUCT_FOUND / DESIGNER_FOUND / MATERIAL_FOUND / IMAGE_FOUND) · 6 condition-based warning filters. New file `services/knowledge_kpi.py`. Backfill endpoint `/catalog-sets/{id}/backfill-semantic-events`. See `KE002_1_VALUE_WIRING_REPORT.md`. Classification: 🟢 READY_FOR_KE003.
-* **KE-003 · Knowledge Certification Workspace™ (06 Jun 2026)** — 7 P0 chiusi: Warning Deep-Link (`?type=&focus=`), Entity Inspector V3.1 (4 CTAs APPROVA/RIFIUTA/UNISCI/MODIFICA × 3 scope), Scope Correction propagazione, Real Knowledge Impact da entity.mention_count + scope, Failed Document Modal (glass-dark con error/retry/related), Certification Flow gated, Post-Certification toast 5s con KPI reali. New files: `FailedDocumentModal.jsx`+`.css`. Backend endpoint `/documents/{id}/failure-context`. Contract fix: `needs-review` ora ritorna sempre `first_anomaly`. See `KE003_KNOWLEDGE_CERTIFICATION_WORKSPACE_REPORT.md`. Classification: 🟢 KNOWLEDGE_CERTIFICATION_READY.
+* **KE-003 · Knowledge Certification Workspace™ (06 Jun 2026)** — 7 P0 chiusi: Warning Deep-Link (`?type=&focus=`), Entity Inspector V3.1 (4 CTAs APPROVA/RIFIUTA/UNISCI/MODIFICA × 3 scope), Scope Correction propagazione, Real Knowledge Impact da entity.mention_count + scope, Failed Document Modal (glass-dark con error/retry/related), Certification Flow gated, Post-Certification toast 5s con KPI reali. New files: `FailedDocumentModal.jsx`+`.css`. Backend endpoint `/documents/{id}/failure-context` + `/documents/{id}/pages` (Doc Viewer P0-5b · contenuto reale per pagina). Contract fix: `needs-review` ora ritorna sempre `first_anomaly`. See `KE003_KNOWLEDGE_CERTIFICATION_WORKSPACE_REPORT.md`. Classification: 🟢 KNOWLEDGE_CERTIFICATION_READY.
+* **KE-004 · Future Uses™ + Connected Assets™ (06 Jun 2026)** — 5 P0 chiusi: Future Uses con sezione duale UTILIZZATO IN / DISPONIBILE PER (8 surfaces mappate) · Connected Assets™ hub-and-spoke (10 tipologie nodo da 682 brand_entity_relations) · Knowledge Impact History timeline da `knowledge_impact_events` (8 eventi reali · scope color-coded) · Certification Metrics nel Knowledge Strip (DECISIONI · PROPAGATE · TEMPO CERT) · Operational Readiness 5 surfaces (Moodboard / Design Journey / Material Board / Client Presentation / Brand Atlas) con regole server-side. 3 nuovi endpoint backend: `impact-history`, `certification-metrics`, `operational-readiness`. New files: `OperationalReadinessPanel.jsx`, `ImpactHistoryTimeline.jsx`. See `KE004_FUTURE_USES_CONNECTED_ASSETS_REPORT.md`. Classification: 🟢 ECOSYSTEM_READY.
 
 ## Backlog (priority)
 
 ### P0
-* **KE-004 · Future Uses™ + Knowledge Impact™ wiring** — autowrite di `entity_operational_usage` da moodboard/journey/material_board insertion paths · sfrutta i counts reali già disponibili da KE-002.1 e il ledger `knowledge_impact_events` già popolato da KE-003.
-* **KE-003.1 (follow-up, non-blocking)** — replace `window.confirm()` per RIFIUTA con modale glass-dark · typeahead lookup per UNISCI entity_id input · estendere `_compute_real_impact` scope=brand con query cross-catalog-sets · auto-select su `product_id` quando `brand_detected_entities` è vuoto
+* **KE-005 · TBD** — eventuale sprint successivo: Designer Journey UI o Moodboard Engine o Page Visual (PDF rendering) o cross-catalog Brand Atlas — in attesa di direttiva utente
+* **KE-003.1 (follow-up, non-blocking)** — replace `window.confirm()` per RIFIUTA con modale glass-dark · typeahead lookup per UNISCI · estendere `_compute_real_impact` scope=brand con query cross-catalog-sets · auto-select su `product_id` quando `brand_detected_entities` è vuoto
 * **CRM / Client Relations Refactor** — **ON HOLD by user**
 * **Project Detail Page** — premium SaaS design coherent with new Projects index
 

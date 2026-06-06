@@ -303,6 +303,144 @@ class ApplyCorrectionBody(BaseModel):
     designers_consolidated: int = 0
 
 
+# ─── KE-004 · KNOWLEDGE IMPACT HISTORY + METRICS + READINESS ────────
+@router.get("/catalog-sets/{set_id}/impact-history")
+def catalog_impact_history(set_id: str, limit: int = 100,
+                            ctx=Depends(get_tenant_context)):
+    """KE-004 · P0-3 · Timeline reale dal ledger `knowledge_impact_events`."""
+    c = db()
+    tid = ctx["tenant_id"]
+    _require_set(c, tid, set_id)
+    rows = (c.table("knowledge_impact_events")
+            .select("id,created_at,scope,entity_type,entity_id,"
+                     "source_input,canonical_target,occurrences_corrected,"
+                     "products_improved,images_linked,"
+                     "future_moodboards_unlocked,materials_consolidated,"
+                     "designers_consolidated")
+            .eq("catalog_set_id", set_id)
+            .eq("tenant_id", tid)
+            .order("created_at", desc=True)
+            .limit(min(max(limit, 1), 500))
+            .execute().data or [])
+    return {"events": rows, "count": len(rows), "catalog_set_id": set_id}
+
+
+@router.get("/catalog-sets/{set_id}/certification-metrics")
+def catalog_certification_metrics(set_id: str,
+                                   ctx=Depends(get_tenant_context)):
+    """KE-004 · P0-4 · Certification Metrics per il Knowledge Strip."""
+    c = db()
+    tid = ctx["tenant_id"]
+    _require_set(c, tid, set_id)
+    rows = (c.table("knowledge_impact_events")
+            .select("created_at,scope,occurrences_corrected,"
+                     "products_improved,images_linked")
+            .eq("catalog_set_id", set_id)
+            .eq("tenant_id", tid)
+            .order("created_at").execute().data or [])
+    if not rows:
+        return {
+            "decisions_count": 0, "propagated_count": 0,
+            "products_improved": 0, "images_linked": 0,
+            "certification_seconds": 0, "last_decision_at": None,
+            "scope_breakdown": {"only_here": 0, "catalog": 0, "brand": 0},
+        }
+    propagated = sum(int(r.get("occurrences_corrected") or 0) for r in rows)
+    products   = sum(int(r.get("products_improved")      or 0) for r in rows)
+    images     = sum(int(r.get("images_linked")          or 0) for r in rows)
+    scope_b = {"only_here": 0, "catalog": 0, "brand": 0}
+    for r in rows:
+        s = (r.get("scope") or "").lower()
+        if s in scope_b:
+            scope_b[s] += 1
+    first_at = rows[0].get("created_at")
+    last_at  = rows[-1].get("created_at")
+    cert_seconds = 0
+    try:
+        from datetime import datetime
+        if first_at and last_at:
+            t0 = datetime.fromisoformat(str(first_at).replace("Z", "+00:00"))
+            t1 = datetime.fromisoformat(str(last_at).replace("Z", "+00:00"))
+            cert_seconds = max(0, int((t1 - t0).total_seconds()))
+    except Exception:
+        pass
+    return {
+        "decisions_count":       len(rows),
+        "propagated_count":      propagated,
+        "products_improved":     products,
+        "images_linked":         images,
+        "certification_seconds": cert_seconds,
+        "last_decision_at":      last_at,
+        "scope_breakdown":       scope_b,
+    }
+
+
+@router.get("/catalog-sets/{set_id}/entities/{entity_id}/operational-readiness")
+def entity_operational_readiness(set_id: str, entity_id: str,
+                                  ctx=Depends(get_tenant_context)):
+    """KE-004 · P0-5 · READY FOR / NOT READY per ogni surface."""
+    c = db()
+    tid = ctx["tenant_id"]
+    _require_set(c, tid, set_id)
+    ent = _require_entity(c, set_id, entity_id)
+
+    status = (ent.get("status") or "").lower()
+    cs = float(ent.get("confidence_score") or 0)
+    etype = ent.get("entity_type") or ""
+    is_demoted = etype.startswith("demoted_")
+    has_canon = bool(ent.get("canonical_ref_id") or ent.get("id"))
+    n_aliases = len(ent.get("aliases") or [])
+    mc = int(ent.get("mention_count") or 0)
+    ndocs = len(ent.get("source_document_ids") or [])
+
+    surfaces = []
+    def _add(key, label, ready, reason=None):
+        surfaces.append({"key": key, "label": label,
+                          "ready": bool(ready), "reason": reason})
+
+    _add("moodboard", "Moodboard",
+         status == "validated" and has_canon and not is_demoted,
+         None if (status == "validated" and has_canon and not is_demoted)
+         else ("entità ancora da certificare" if status != "validated"
+               else ("entità demoted · non utilizzabile come canonica" if is_demoted
+                     else "nessun canonical_ref")))
+
+    _add("design_journey", "Design Journey",
+         status == "validated" and ndocs >= 1,
+         None if (status == "validated" and ndocs >= 1)
+         else ("nessun documento collegato" if ndocs < 1
+               else "entità ancora da certificare"))
+
+    is_material = etype in ("material", "finish")
+    _add("material_board", "Material Board",
+         is_material and status == "validated",
+         None if (is_material and status == "validated")
+         else ("riservato a materiali / finiture" if not is_material
+               else "entità ancora da certificare"))
+
+    _add("client_presentation", "Client Presentation",
+         status == "validated" and cs >= 0.7,
+         None if (status == "validated" and cs >= 0.7)
+         else ("confidence troppo bassa" if cs < 0.7
+               else "entità ancora da certificare"))
+
+    _add("brand_atlas", "Brand Atlas",
+         status == "validated" and (n_aliases >= 1 or mc >= 3),
+         None if (status == "validated" and (n_aliases >= 1 or mc >= 3))
+         else ("pochi segnali · serve almeno 1 alias o 3 menzioni"
+               if status == "validated" else "entità ancora da certificare"))
+
+    ready_count = sum(1 for s in surfaces if s["ready"])
+    return {
+        "entity_id": entity_id, "entity_type": etype,
+        "display_name": ent.get("display_name"),
+        "status": status, "confidence": cs,
+        "surfaces": surfaces, "ready_count": ready_count,
+        "total_surfaces": len(surfaces),
+        "operational": ready_count == len(surfaces),
+    }
+
+
 @router.post("/catalog-sets/{set_id}/entities/{entity_id}/apply-correction")
 def entity_apply_correction(set_id: str, entity_id: str,
                              body: ApplyCorrectionBody,

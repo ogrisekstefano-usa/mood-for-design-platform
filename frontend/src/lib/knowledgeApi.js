@@ -128,6 +128,14 @@ export const documentPages = (setId, docId, { pageNumber, limit = 200 } = {}) =>
   });
 export const documentFailureContext = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/failure-context`);
+
+// ─── KE-004 · Future Uses + Connected Assets + Impact History + Readiness ──
+export const impactHistory = (setId, limit = 100) =>
+  api.get(`${BASE}/catalog-sets/${setId}/impact-history`, { params: { limit } });
+export const certificationMetrics = (setId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/certification-metrics`);
+export const operationalReadiness = (setId, entityId) =>
+  api.get(`${BASE}/catalog-sets/${setId}/entities/${entityId}/operational-readiness`);
 export const backfillSemanticEvents = (setId) =>
   api.post(`${BASE}/catalog-sets/${setId}/backfill-semantic-events`);
 export const retryFailed = (setId, payload = {}) =>
@@ -158,5 +166,6 @@ export default {
   futureUses, connectedAssets, projectImpact, applyCorrection,
   workerStatus, listEvents, documentPreview, documentReviewContext,
   documentPages, documentFailureContext, backfillSemanticEvents,
+  impactHistory, certificationMetrics, operationalReadiness,
   retryFailed, retryDocument, extractionJobsHistory, needsReviewByType,
 };

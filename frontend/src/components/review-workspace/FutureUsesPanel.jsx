@@ -1,7 +1,9 @@
 /**
- * Future Uses™ Panel — V3.
- * Renders "Utilizzato in" (state A) when total_uses > 0, otherwise
- * "Disponibile per" (state B). Real DB data only.
+ * KE-004 · P0-1 · Future Uses™ Panel (dual section)
+ *
+ * Mostra SIA "UTILIZZATO IN" (counts reali per surface) SIA
+ * "DISPONIBILE PER" (surfaces che ancora non hanno usage).
+ * Dati reali dal backend `/future-uses` — niente placeholder.
  */
 import React from 'react';
 
@@ -9,7 +11,7 @@ const LABELS = {
   moodboard: 'Moodboard',
   design_journey: 'Design Journey',
   material_board: 'Material Board',
-  client_presentation: 'Presentazione Cliente',
+  client_presentation: 'Client Presentation',
   product_selection: 'Selezione Cliente',
   magazine: 'Magazine',
   social_story: 'Social Story',
@@ -29,44 +31,65 @@ export default function FutureUsesPanel({ data, loading = false }) {
   }
   if (!data) return null;
 
-  const isUsed = (data.state === 'in_use');
   const used = data.used_in || {};
-  const available = data.available_for || [];
+  const usedEntries = Object.entries(used).filter(([, n]) => n > 0)
+    .sort(([, a], [, b]) => b - a);
+  const unusedKeys = Object.keys(used).filter((k) => (used[k] || 0) === 0);
 
   return (
     <div className="rw-future" data-testid="rw-future-uses-panel">
       <div className="rw-future__title">Future Uses™</div>
-      <div className="rw-future__state-label">
-        {isUsed ? 'UTILIZZATO IN' : 'DISPONIBILE PER'}
-      </div>
-      {isUsed ? (
-        <ul className="rw-future__list">
-          {Object.entries(used)
-            .sort(([, a], [, b]) => b - a)
-            .map(([key, count]) => (
+
+      <div className="rw-future__section" data-testid="rw-future-used-in">
+        <div className="rw-future__state-label">
+          UTILIZZATO IN · {usedEntries.length}
+        </div>
+        {usedEntries.length > 0 ? (
+          <ul className="rw-future__list">
+            {usedEntries.map(([key, count]) => (
               <li
                 key={key}
-                className={`rw-future__row ${count > 0 ? 'is-used' : ''}`}
+                className="rw-future__row is-used"
                 data-testid={`rw-future-${key}`}
               >
                 <span>{LABELS[key] || key}</span>
                 <span className="rw-future__count">{count}</span>
               </li>
             ))}
-        </ul>
-      ) : (
-        <div className="rw-future__chips">
-          {available.map((s) => (
-            <span
-              key={s}
-              className="rw-future__chip"
-              data-testid={`rw-future-chip-${s}`}
-            >
-              {LABELS[s] || s}
-            </span>
-          ))}
+          </ul>
+        ) : (
+          <div
+            className="rw-future__empty"
+            data-testid="rw-future-used-empty"
+          >
+            Entità non ancora collegata a moodboard, design journey o
+            presentazione cliente.
+          </div>
+        )}
+      </div>
+
+      <div className="rw-future__section" data-testid="rw-future-available">
+        <div className="rw-future__state-label">
+          DISPONIBILE PER · {unusedKeys.length}
         </div>
-      )}
+        {unusedKeys.length > 0 ? (
+          <div className="rw-future__chips">
+            {unusedKeys.map((key) => (
+              <span
+                key={key}
+                className="rw-future__chip"
+                data-testid={`rw-future-chip-${key}`}
+              >
+                {LABELS[key] || key}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div className="rw-future__empty">
+            L'entità è già utilizzata in tutte le surface disponibili.
+          </div>
+        )}
+      </div>
     </div>
   );
 }

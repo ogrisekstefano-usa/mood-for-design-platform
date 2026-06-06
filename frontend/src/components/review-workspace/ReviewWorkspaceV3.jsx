@@ -24,6 +24,8 @@ import FutureUsesPanel from './FutureUsesPanel';
 import ConnectedAssetsNetwork from './ConnectedAssetsNetwork';
 import KnowledgeImpactCard from './KnowledgeImpactCard';
 import ProjectImpactCard from './ProjectImpactCard';
+import OperationalReadinessPanel from './OperationalReadinessPanel';
+import ImpactHistoryTimeline from './ImpactHistoryTimeline';
 import './review-workspace-v3.css';
 
 
@@ -586,6 +588,9 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact, onAfter
                 </button>
               </div>
 
+              {/* KE-004 · P0-5 · Operational Readiness inline on Overview */}
+              <OperationalReadinessPanel setId={setId} entityId={entity.id} />
+
               {lastImpact && (
                 <KnowledgeImpactCard
                   impact={lastImpact.impact}
@@ -804,6 +809,7 @@ export default function ReviewWorkspaceV3({
   const [reviewSummary, setReviewSummary] = useState(null);
   const [validationSummary, setValidationSummary] = useState(null);
   const [gate, setGate] = useState(null);
+  const [certMetrics, setCertMetrics] = useState(null);   // KE-004 · P0-4
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedDocId, setSelectedDocId] = useState(null);
   const [layers, setLayers] = useState({ products: true, materials: true, designers: true, images: false });
@@ -815,18 +821,20 @@ export default function ReviewWorkspaceV3({
   const refreshAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [e, nr, rs, vs, g] = await Promise.all([
+      const [e, nr, rs, vs, g, cm] = await Promise.all([
         KE.listEntities(setId, { limit: 500 }).catch(() => ({ data: { entities: [] } })),
         KE.listNeedsReview(setId).catch(() => ({ data: { entities: [] } })),
         KE.reviewSummary(setId).catch(() => ({ data: null })),
         KE.validationSummary(setId).catch(() => ({ data: null })),
         KE.publishGate(setId).catch(() => ({ data: null })),
+        KE.certificationMetrics(setId).catch(() => ({ data: null })),
       ]);
       setEntities(e.data?.entities || []);
       setNeedsReview(nr.data?.entities || nr.data || []);
       setReviewSummary(rs.data);
       setValidationSummary(vs.data);
       setGate(g.data);
+      setCertMetrics(cm.data);
     } catch (err) {
       toast.error('Caricamento Review Workspace fallito');
     } finally {
@@ -924,6 +932,7 @@ export default function ReviewWorkspaceV3({
         metrics={strip.counters}
         score={strip.score}
         needsValidation={strip.validate}
+        certMetrics={certMetrics}
       />
 
       {!isCertified ? (
@@ -960,6 +969,11 @@ export default function ReviewWorkspaceV3({
         </div>
       ) : (
         <PostCertificationLaunchpad brandName={brandName} />
+      )}
+
+      {/* KE-004 · P0-3 · Knowledge Impact History timeline */}
+      {!isCertified && (
+        <ImpactHistoryTimeline setId={setId} />
       )}
 
       <footer className="rw-atlas-sync" data-testid="rw-v3-atlas-sync">
