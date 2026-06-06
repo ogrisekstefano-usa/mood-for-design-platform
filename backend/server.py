@@ -132,6 +132,8 @@ app.include_router(blueprint_activities_router)
 # M4 — Internal Notification Center
 from routers.notifications import router as notifications_router  # /api/notifications/*
 app.include_router(notifications_router)
+from routers.transcribe import router as transcribe_router
+app.include_router(transcribe_router, prefix="/api")
 
 # M4 — Background scheduler (follow-up overdue, etc.)
 from jobs.scheduler import start_scheduler as _start_m4_scheduler, stop_scheduler as _stop_m4_scheduler

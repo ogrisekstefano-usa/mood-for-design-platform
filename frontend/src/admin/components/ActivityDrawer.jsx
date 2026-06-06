@@ -9,6 +9,7 @@ import axios from 'axios';
 import * as Icons from 'lucide-react';
 import { X, Save, CheckCircle2, RotateCcw, Trash2, Clock } from 'lucide-react';
 import useCatalog from '../../lib/useCatalog';
+import VoiceNoteButton from './VoiceNoteButton';
 
 const headers = () => ({
   Authorization: `Bearer ${localStorage.getItem('mood_auth_token') || ''}`,
@@ -240,14 +241,24 @@ export default function ActivityDrawer({
 
           {/* MEMORY */}
           <section>
-            <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Memory layer</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] uppercase tracking-wider text-stone-400">Memory layer</h3>
+              <VoiceNoteButton
+                testIdRoot="activity-notes"
+                language="it"
+                onTranscript={(t) => setForm((f) => ({
+                  ...f,
+                  notes: (f.notes ? f.notes.trimEnd() + '\n' : '') + t,
+                }))}
+              />
+            </div>
             <input data-testid="activity-drawer-subject" type="text"
                    placeholder="Soggetto · es. Demo Master Deck"
                    className="w-full border border-stone-300 px-3 py-2 text-sm mb-3"
                    value={form.subject}
                    onChange={(e) => set('subject', e.target.value)} />
             <textarea data-testid="activity-drawer-notes" rows={4}
-                      placeholder="Note · cosa è emerso, perché conta, eventuali rischi…"
+                      placeholder="Note · cosa è emerso, perché conta, eventuali rischi… (puoi anche registrare una nota vocale)"
                       className="w-full border border-stone-300 px-3 py-2 text-sm"
                       value={form.notes}
                       onChange={(e) => set('notes', e.target.value)} />
@@ -255,7 +266,17 @@ export default function ActivityDrawer({
 
           {/* OUTCOME */}
           <section>
-            <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Esito</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] uppercase tracking-wider text-stone-400">Esito</h3>
+              <VoiceNoteButton
+                testIdRoot="activity-outcome"
+                language="it"
+                onTranscript={(t) => setForm((f) => ({
+                  ...f,
+                  outcome: (f.outcome ? f.outcome.trimEnd() + '\n' : '') + t,
+                }))}
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <select data-testid="activity-drawer-outcome-code"
                       className="border border-stone-300 px-3 py-2 text-sm"
@@ -281,7 +302,17 @@ export default function ActivityDrawer({
 
           {/* NEXT */}
           <section>
-            <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Prossimo passo</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] uppercase tracking-wider text-stone-400">Prossimo passo</h3>
+              <VoiceNoteButton
+                testIdRoot="activity-next-step"
+                language="it"
+                onTranscript={(t) => setForm((f) => ({
+                  ...f,
+                  next_step: f.next_step ? f.next_step + ' ' + t : t,
+                }))}
+              />
+            </div>
             <input data-testid="activity-drawer-next-step" type="text"
                    placeholder="Es. Inviare proposta v2"
                    className="w-full border border-stone-300 px-3 py-2 text-sm mb-3"

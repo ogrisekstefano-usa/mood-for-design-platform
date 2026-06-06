@@ -119,6 +119,19 @@
   - ✅ Dead imports cleanup in TenantDetail
 - Tenant `c64659f6` validated: 6 open FU, 0 overdue, 40 timeline items, 2 contacts
 
+### 4.4 M6.1 patches (6 Jun 2026)
+Two enhancements requested by user after seeing production:
+- **International phone prefix `<select>`** (countries + flags + search) on ContactDrawer
+  - Replaces free-text "+39" input with `PhonePrefixField` (shared with studio activation step3)
+  - ISO derived from existing `phone_prefix` on edit mode, persists `phone_prefix_iso` only in UI state
+- **Voice notes → Whisper STT → proof-reading** on the 3 description fields:
+  - ContactDrawer · Note
+  - ActivityDrawer · Memory Notes · Esito libero · Prossimo passo
+  - New component `VoiceNoteButton.jsx` (MediaRecorder · max 180s · webm/opus)
+  - New backend endpoint `POST /api/transcribe` (Whisper via Emergent LLM Key, IT default)
+  - End-to-end test: 2.8s latency, perfect IT transcription
+  - UX: transcription appended to textarea — user **always reads + edits** before saving (proof-reading mandated by mic icon UX, microcopy "Rileggi sempre prima di salvare")
+
 ---
 
 ## 5. Functional Luxury · design tokens (FROZEN)

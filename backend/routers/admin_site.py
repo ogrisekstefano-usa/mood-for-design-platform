@@ -742,10 +742,22 @@ async def get_media_usages(
     tenant: dict = Depends(require_admin_tenant),
 ):
     """
-    Returns a map of {media_id: [{page_key, section_type, slot}, ...]}
-    so the MediaPicker can display "used in Home Hero" etc.
+    Returns a map of {media_id: [{source, ...}]} listing every place inside
+    THIS tenant where a media asset is used. The MediaPicker / Library uses
+    this to render "Used in …" labels and to compute the "orphan" filter.
+
+    Sources covered:
+      • cms_sections.settings.media  → CMS Site (Pages/Sections)
+      • product_assets.asset_id      → Blueprint Brand Catalog
+      • media_asset_usage            → Generic usage tracker (if populated)
+
+    All queries are scoped to the active tenant_id. There is NO cross-tenant
+    leakage: media without tenant_id match or marked archived are skipped.
     """
     async with AsyncSessionLocal() as session:
+        usages: dict[str, list[dict]] = {}
+
+        # ── 1) CMS Sections (Pages / Site) ────────────────────────────
         rows = (await session.execute(
             text("""
                 SELECT s.id AS section_id, s.section_type, s.settings, p.page_key
@@ -755,8 +767,6 @@ async def get_media_usages(
             """),
             {"tid": tenant['id']},
         )).mappings().all()
-
-        usages: dict[str, list[dict]] = {}
         for r in rows:
             settings = r['settings'] or {}
             media_map = settings.get('media') or {}
@@ -766,10 +776,53 @@ async def get_media_usages(
                 if not isinstance(mid, str):
                     continue
                 usages.setdefault(mid, []).append({
+                    "source":       "cms",
                     "page_key":     r['page_key'],
                     "section_type": r['section_type'],
                     "slot":         slot,
                 })
+
+        # ── 2) Blueprint Brand Catalog (product_assets.asset_id) ──────
+        cat_rows = (await session.execute(
+            text("""
+                SELECT pa.asset_id::text AS mid,
+                       COALESCE(p.product_name, p.slug, p.id::text) AS product_label
+                FROM product_assets pa
+                JOIN products p ON p.id = pa.product_id
+                WHERE p.tenant_id = :tid AND pa.asset_id IS NOT NULL
+            """),
+            {"tid": tenant['id']},
+        )).mappings().all()
+        for r in cat_rows:
+            if not r['mid']:
+                continue
+            usages.setdefault(r['mid'], []).append({
+                "source":  "blueprint_catalog",
+                "product": r['product_label'],
+            })
+
+        # ── 3) Generic usage tracker (media_asset_usage) ──────────────
+        try:
+            mu_rows = (await session.execute(
+                text("""
+                    SELECT asset_id::text AS mid, entity_type, entity_id::text AS entity_id, usage_role
+                    FROM media_asset_usage
+                    WHERE tenant_id = :tid AND asset_id IS NOT NULL
+                """),
+                {"tid": tenant['id']},
+            )).mappings().all()
+            for r in mu_rows:
+                if not r['mid']:
+                    continue
+                usages.setdefault(r['mid'], []).append({
+                    "source":      "tracker",
+                    "entity_type": r['entity_type'],
+                    "entity_id":   r['entity_id'],
+                    "usage_role":  r['usage_role'],
+                })
+        except Exception:
+            pass
+
         return {"usages": usages}
 
 

@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { X, Save, Phone, Mail, MessageCircle, Linkedin, StickyNote } from 'lucide-react';
 import useCatalog from '../../lib/useCatalog';
+import { useCountries } from '../../corporate/pages/studio_v2/hooks/useCountries';
+import PhonePrefixField from '../../corporate/pages/studio_v2/components/PhonePrefixField';
+import VoiceNoteButton from './VoiceNoteButton';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -30,6 +33,7 @@ const ContactDrawer = ({ tenantId, contact, onClose, onSaved, adminMode = true, 
     role_code:  contact?.role_code  || 'founder',
     email:      contact?.email      || '',
     phone_prefix: contact?.phone_prefix || '+39',
+    phone_prefix_iso: contact?.phone_prefix_iso || 'IT',
     phone_number: contact?.phone_number || '',
     linkedin_url: contact?.linkedin_url || '',
     preferred_language: contact?.preferred_language || 'it-IT',
@@ -39,6 +43,18 @@ const ContactDrawer = ({ tenantId, contact, onClose, onSaved, adminMode = true, 
     source_reference: contact?.source_reference || '',
     relationship_owner_user_id: contact?.relationship_owner_user_id || null,
   }));
+  const { items: countries } = useCountries('it-IT');
+
+  // Derive prefix ISO from the stored "+39" once countries arrive (edit mode).
+  useEffect(() => {
+    if (!countries?.length) return;
+    if (form.phone_prefix_iso && form.phone_prefix_iso !== 'IT') return;
+    const fromPrefix = countries.find((c) => c.dial_code === form.phone_prefix);
+    if (fromPrefix && fromPrefix.iso2 !== form.phone_prefix_iso) {
+      setForm((f) => ({ ...f, phone_prefix_iso: fromPrefix.iso2 }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countries]);
   const [eligibleOwners, setEligibleOwners] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -64,15 +80,16 @@ const ContactDrawer = ({ tenantId, contact, onClose, onSaved, adminMode = true, 
     setSaving(true);
     setError(null);
     try {
+      const payload = { ...form };
+      delete payload.phone_prefix_iso;   // UI-only, not persisted
       if (isNew) {
-        const payload = { ...form };
         if (!adminMode) {
           delete payload.relationship_owner_user_id;
         }
         const r = await axios.post(base + '/contacts', payload, { headers: headers() });
         onSaved && onSaved(r.data);
       } else {
-        const r = await axios.patch(`${base}/contacts/${contact.id}`, form,
+        const r = await axios.patch(`${base}/contacts/${contact.id}`, payload,
                                      { headers: headers() });
         onSaved && onSaved(r.data);
       }
@@ -160,14 +177,26 @@ const ContactDrawer = ({ tenantId, contact, onClose, onSaved, adminMode = true, 
           {/* CONTATTI */}
           <section>
             <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Contatti</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <input data-testid="contact-email" placeholder="Email" className="col-span-2 border border-stone-300 px-3 py-2 text-sm"
+            <div className="grid grid-cols-1 gap-3">
+              <input data-testid="contact-email" placeholder="Email" className="border border-stone-300 px-3 py-2 text-sm"
                      value={form.email} onChange={(e) => set('email', e.target.value)} />
-              <input data-testid="contact-phone-prefix" placeholder="+39" className="border border-stone-300 px-3 py-2 text-sm"
-                     value={form.phone_prefix} onChange={(e) => set('phone_prefix', e.target.value)} />
-              <input data-testid="contact-phone-number" placeholder="Telefono" className="border border-stone-300 px-3 py-2 text-sm"
-                     value={form.phone_number} onChange={(e) => set('phone_number', e.target.value)} />
-              <input data-testid="contact-linkedin" placeholder="LinkedIn URL" className="col-span-2 border border-stone-300 px-3 py-2 text-sm"
+              <PhonePrefixField
+                countries={countries}
+                prefixIso={form.phone_prefix_iso}
+                onPrefixIso={(iso) => {
+                  const c = (countries || []).find((x) => x.iso2 === iso);
+                  setForm((f) => ({
+                    ...f,
+                    phone_prefix_iso: iso,
+                    phone_prefix: c?.dial_code || f.phone_prefix,
+                  }));
+                }}
+                number={form.phone_number}
+                onNumber={(n) => set('phone_number', n)}
+                testIdRoot="contact-phone"
+                searchPlaceholder="Cerca paese o prefisso…"
+              />
+              <input data-testid="contact-linkedin" placeholder="LinkedIn URL" className="border border-stone-300 px-3 py-2 text-sm"
                      value={form.linkedin_url} onChange={(e) => set('linkedin_url', e.target.value)} />
             </div>
           </section>
@@ -201,11 +230,25 @@ const ContactDrawer = ({ tenantId, contact, onClose, onSaved, adminMode = true, 
 
           {/* NOTE */}
           <section>
-            <h3 className="text-[10px] uppercase tracking-wider text-stone-400 mb-3">Note</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] uppercase tracking-wider text-stone-400">Note</h3>
+              <VoiceNoteButton
+                testIdRoot="contact-notes"
+                language="it"
+                onTranscript={(t) => setForm((f) => ({
+                  ...f,
+                  notes: (f.notes ? f.notes.trimEnd() + '\n' : '') + t,
+                }))}
+              />
+            </div>
             <textarea data-testid="contact-notes"
-                      rows={3}
+                      rows={4}
+                      placeholder="Scrivi o registra una nota vocale (verrà trascritta dall'AI per la revisione)…"
                       className="w-full border border-stone-300 px-3 py-2 text-sm"
                       value={form.notes} onChange={(e) => set('notes', e.target.value)} />
+            <p className="text-[10px] text-stone-400 mt-1">
+              Le note vocali vengono trascritte automaticamente. Rileggi sempre prima di salvare.
+            </p>
           </section>
 
           {/* QUICK ACTIONS (only for existing contact) */}
