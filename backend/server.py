@@ -372,6 +372,46 @@ async def _iter197_recover_orphan_extraction_jobs():
         logger.exception(f"[ITER197] orphan recovery failed: {e}")
 
 
+# ─── KE-001 · 60s recovery scheduler (running while backend lives) ────
+_KE001_RECOVERY_TASK = None
+
+@app.on_event("startup")
+async def _ke001_start_recovery_scheduler():
+    """KE-001 · Periodically (60s) invoke recover_orphan_jobs.
+
+    Guarantees the production-reliability invariant: no catalog set can
+    stay in 'extracting' for longer than ~8 minutes without an active
+    worker. Combined with the startup hook, this self-heals all crash
+    scenarios.
+    """
+    import asyncio as _asyncio
+    global _KE001_RECOVERY_TASK
+
+    async def _loop():
+        from services import extraction_job_runner
+        while True:
+            try:
+                await _asyncio.sleep(60)
+                touched = await _asyncio.to_thread(extraction_job_runner.recover_orphan_jobs)
+                if touched:
+                    logger.info(f"[KE-001] recovery scan: touched {touched}")
+            except _asyncio.CancelledError:
+                logger.info("[KE-001] recovery scheduler cancelled")
+                return
+            except Exception as e:
+                logger.warning(f"[KE-001] recovery scan error: {e}")
+
+    _KE001_RECOVERY_TASK = _asyncio.create_task(_loop(), name="ke001-recovery")
+    logger.info("[KE-001] recovery scheduler started (60s interval)")
+
+
+@app.on_event("shutdown")
+async def _ke001_stop_recovery_scheduler():
+    global _KE001_RECOVERY_TASK
+    if _KE001_RECOVERY_TASK and not _KE001_RECOVERY_TASK.done():
+        _KE001_RECOVERY_TASK.cancel()
+
+
 # ─── M4 · Notification Cron — 08:00 Europe/Rome daily ──────────────────
 @app.on_event("startup")
 async def _m4_start_notification_scheduler():

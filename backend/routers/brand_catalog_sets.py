@@ -819,6 +819,13 @@ def _run_set_extraction(set_id: str, tenant_id: str,
 def trigger_extraction(set_id: str, body: ExtractBody,
                         background_tasks: BackgroundTasks,
                         ctx=Depends(get_tenant_context)):
+    """KE-001 · Delegates to persistent extraction_job_runner.
+
+    The legacy in-process BackgroundTasks path (`_DEPRECATED_run_set_extraction`)
+    is kept for reference only. Every trigger now creates a row in
+    `extraction_jobs` so crashes / restarts are auto-recovered by
+    `recover_orphan_jobs`.
+    """
     c = db()
     tid = ctx["tenant_id"]
     cset = _require_set(c, tid, set_id)
@@ -826,10 +833,33 @@ def trigger_extraction(set_id: str, body: ExtractBody,
         raise HTTPException(409, "Estrazione già in corso")
     if (cset.get("document_count") or 0) == 0:
         raise HTTPException(400, "Nessun documento caricato in questo set")
-    background_tasks.add_task(_run_set_extraction, set_id, tid,
-                               body.max_candidates_per_doc or 600,
-                               bool(body.rebuild_index))
-    return {"status": "queued", "catalog_set_id": set_id}
+    # Persistent path · ITER197 runner
+    from services import extraction_job_runner as runner
+    try:
+        out = runner.enqueue_job(
+            tenant_id=tid, catalog_set_id=set_id,
+            brand_id=cset.get("brand_id"),
+            config={
+                "max_candidates_per_doc": body.max_candidates_per_doc or 600,
+                "rebuild_index": bool(body.rebuild_index),
+            },
+            created_by=ctx.get("profile_id"),
+        )
+    except ValueError as e:
+        if str(e) == "active_job_exists":
+            raise HTTPException(409, "Job già attivo per questo set")
+        raise HTTPException(500, str(e))
+    return {"status": "queued", "catalog_set_id": set_id, **out}
+
+
+def _DEPRECATED_run_set_extraction(set_id: str, tenant_id: str,
+                                    max_candidates: int = 600,
+                                    rebuild_index: bool = True) -> None:
+    """[KE-001 · DEPRECATED] Legacy in-process pipeline. Kept here as a
+    reference only — the persistent extraction_job_runner now drives all
+    extraction. DO NOT call this function from new code.
+    """
+    return _run_set_extraction(set_id, tenant_id, max_candidates, rebuild_index)
 
 
 @router.get("/catalog-sets/{set_id}/extraction-status")

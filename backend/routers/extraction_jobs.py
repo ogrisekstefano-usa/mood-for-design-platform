@@ -230,27 +230,77 @@ def knowledge_audit(set_id: str, ctx=Depends(get_tenant_context)):
     return resolver.compute_knowledge_audit(set_id)
 
 
+from fastapi import Query
+
+# ─── KE-001 · Review Workspace deep-link foundation ───────────────────
+NEEDS_REVIEW_FILTERS = {
+    "designer_ambiguous": {"entity_type": ["designer", "demoted_designer"]},
+    "material_ambiguous": {"entity_type": ["material", "demoted_material",
+                                            "finish", "demoted_finish"]},
+    "brand_duplicate":    {"entity_type": ["brand_alias", "brand"]},
+    "product_unclassified": {"entity_type": ["product", "demoted_product"],
+                              "confidence_lt": 0.6},
+    "image_orphan":       {"entity_type": ["image_orphan", "media_orphan"]},
+    "low_confidence":     {"confidence_lt": 0.6},
+    "failed_document":    {"_meta": "document_level"},
+}
+
+
 # ─── ITER200 · Review Actions API ─────────────────────────────────────
 @router.get("/catalog-sets/{set_id}/needs-review")
-def list_needs_review(set_id: str, ctx=Depends(get_tenant_context)):
+def list_needs_review(
+    set_id: str,
+    type: Optional[str] = Query(None, description="KE-001 filter: designer_ambiguous|material_ambiguous|brand_duplicate|product_unclassified|image_orphan|low_confidence|failed_document"),
+    include_first: bool = Query(False, description="KE-001 · include first_anomaly entity_id for deep-link"),
+    ctx=Depends(get_tenant_context),
+):
     """Return entities flagged as `needs_review` plus the post-resolution
-    `demoted_*` types so the operator can audit cleanup decisions."""
+    `demoted_*` types so the operator can audit cleanup decisions.
+
+    KE-001 · supports `?type=…` filter for Review Workspace deep-link.
+    """
     c = db(); tid = ctx["tenant_id"]
     _require_set_ownership(c, tid, set_id)
-    REVIEW_TYPES = ["collection", "demoted_collection", "designer",
-                    "demoted_designer", "finish", "demoted_finish"]
-    rows = (c.table("brand_detected_entities")
-            .select("id,entity_type,display_name,aliases,mention_count,"
-                    "confidence_score,status,canonical_ref_id,"
-                    "source_document_ids,attributes")
-            .eq("catalog_set_id", set_id)
-            .in_("entity_type", REVIEW_TYPES)
-            .or_("status.eq.needs_review,entity_type.like.demoted_%")
-            .order("entity_type")
-            .order("mention_count", desc=True)
-            .limit(500)
-            .execute().data or [])
-    return {"entities": rows, "count": len(rows)}
+
+    if type and type == "failed_document":
+        # Document-level breakdown for the Warning Center
+        docs = (c.table("brand_catalog_documents")
+                 .select("id,display_name,extraction_status,page_count,pages_processed,error_logs")
+                 .eq("catalog_set_id", set_id)
+                 .eq("extraction_status", "failed")
+                 .execute().data or [])
+        payload = {"failed_documents": docs, "count": len(docs),
+                    "filter": type}
+        if include_first:
+            payload["first_anomaly"] = docs[0]["id"] if docs else None
+        return payload
+
+    DEFAULT_TYPES = ["collection", "demoted_collection", "designer",
+                      "demoted_designer", "finish", "demoted_finish"]
+    q = (c.table("brand_detected_entities")
+         .select("id,entity_type,display_name,aliases,mention_count,"
+                  "confidence_score,status,canonical_ref_id,"
+                  "source_document_ids,attributes"))
+    q = q.eq("catalog_set_id", set_id)
+
+    spec = NEEDS_REVIEW_FILTERS.get(type) if type else None
+    if spec:
+        if spec.get("entity_type"):
+            q = q.in_("entity_type", spec["entity_type"])
+        if "confidence_lt" in spec:
+            q = q.lt("confidence_score", spec["confidence_lt"])
+        q = q.or_("status.eq.needs_review,entity_type.like.demoted_%")
+    else:
+        q = q.in_("entity_type", DEFAULT_TYPES)
+        q = q.or_("status.eq.needs_review,entity_type.like.demoted_%")
+
+    rows = (q.order("entity_type").order("mention_count", desc=True)
+             .limit(500).execute().data or [])
+
+    out = {"entities": rows, "count": len(rows), "filter": type}
+    if include_first:
+        out["first_anomaly"] = rows[0]["id"] if rows else None
+    return out
 
 
 @router.post("/catalog-sets/{set_id}/entities/{entity_id}/approve")
@@ -857,3 +907,205 @@ def publish_gate(set_id: str, ctx=Depends(get_tenant_context)):
         },
         "blockers": [c["label"] for c in criteria if not c["ok"]],
     }
+
+
+# ═════════════════════════════════════════════════════════════════════
+# KE-001 · Document-level recovery + extraction events
+# ═════════════════════════════════════════════════════════════════════
+
+@router.get("/catalog-sets/{set_id}/documents/{doc_id}")
+def get_document_preview(set_id: str, doc_id: str,
+                          ctx=Depends(get_tenant_context)):
+    """KE-001 · OPEN action · read-only document state for the Control
+    Room. Returns extraction stage, pages_processed, last metrics, and
+    error_logs if any."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    rows = (c.table("brand_catalog_documents")
+            .select("id,catalog_set_id,source_document_id,display_name,"
+                    "original_filename,extraction_status,page_count,"
+                    "pages_processed,extraction_started_at,"
+                    "extraction_completed_at,metrics,error_logs,storage_path,"
+                    "sort_order,updated_at,created_at")
+            .eq("id", doc_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Documento non trovato")
+    d = rows[0]
+    # Asset counters · best-effort
+    asset_count = 0
+    try:
+        # media_library.metadata_json->source_document_id
+        sd = d.get("source_document_id")
+        if sd:
+            res = (c.table("media_library").select("id", count="exact")
+                   .eq("tenant_id", tid).limit(0)
+                   .filter("metadata_json->>source_document_id", "eq", sd)
+                   .execute())
+            asset_count = int(getattr(res, "count", 0) or 0)
+    except Exception:
+        pass
+    return {
+        "document": d,
+        "stats": {"asset_count": asset_count},
+    }
+
+
+@router.get("/catalog-sets/{set_id}/documents/{doc_id}/review-context")
+def get_document_review_context(set_id: str, doc_id: str,
+                                 ctx=Depends(get_tenant_context)):
+    """KE-001 · REVIEW deep-link · entities flagged for review that
+    originate from this document. Returns `first_anomaly` so the UI can
+    auto-open the first one in the Review Workspace™ V3."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    doc = (c.table("brand_catalog_documents")
+            .select("id,source_document_id")
+            .eq("id", doc_id).eq("catalog_set_id", set_id)
+            .limit(1).execute().data or [])
+    if not doc:
+        raise HTTPException(404, "Documento non trovato")
+    sd = doc[0].get("source_document_id")
+    if not sd:
+        return {"entities": [], "count": 0, "first_anomaly": None}
+    rows = (c.table("brand_detected_entities")
+            .select("id,entity_type,display_name,confidence_score,status,"
+                    "source_document_ids,mention_count")
+            .eq("catalog_set_id", set_id)
+            .filter("source_document_ids", "cs", f'["{sd}"]')
+            .or_("status.eq.needs_review,entity_type.like.demoted_%")
+            .order("confidence_score").limit(200)
+            .execute().data or [])
+    return {
+        "document_id": doc_id,
+        "source_document_id": sd,
+        "entities": rows,
+        "count": len(rows),
+        "first_anomaly": (rows[0]["id"] if rows else None),
+    }
+
+
+class RetryFailedBody(BaseModel):
+    dry_run: bool = False
+
+
+@router.post("/catalog-sets/{set_id}/retry-failed")
+def retry_failed_documents(set_id: str, body: RetryFailedBody = RetryFailedBody(),
+                            ctx=Depends(get_tenant_context)):
+    """KE-001 · Bulk retry of all `failed` documents in the set.
+    Does NOT touch documents in `review`/`validated`/`pending`. Enqueues
+    a single new job after resetting the failed docs to `pending`.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    cset = _require_set_ownership(c, tid, set_id)
+    failed = (c.table("brand_catalog_documents")
+               .select("id,source_document_id,display_name")
+               .eq("catalog_set_id", set_id)
+               .eq("extraction_status", "failed")
+               .execute().data or [])
+    if not failed:
+        return {"ok": True, "reset": 0, "job_id": None,
+                "dry_run": body.dry_run, "message": "Nessun documento failed"}
+
+    if body.dry_run:
+        return {"ok": True, "reset": len(failed),
+                "documents": [{"id": d["id"], "name": d.get("display_name")} for d in failed],
+                "dry_run": True}
+
+    for d in failed:
+        c.table("brand_catalog_documents").update({
+            "extraction_status": "pending",
+            "extraction_started_at": None,
+            "extraction_completed_at": None,
+            "pages_processed": 0,
+            "error_logs": [],
+            "metrics": {},
+            "updated_at": runner._now(),
+        }).eq("id", d["id"]).execute()
+        if d.get("source_document_id"):
+            try:
+                c.table("source_documents").update({
+                    "extraction_status": "pending",
+                    "updated_at": runner._now(),
+                }).eq("id", d["source_document_id"]).execute()
+            except Exception:
+                pass
+
+    # Flip the set so enqueue_job doesn't conflict
+    if cset.get("status") == "extracting":
+        c.table("brand_catalog_sets").update({
+            "status": "needs_review", "updated_at": runner._now(),
+        }).eq("id", set_id).execute()
+
+    try:
+        out = runner.enqueue_job(
+            tenant_id=tid, catalog_set_id=set_id,
+            brand_id=cset.get("brand_id"),
+            config={"max_candidates_per_doc": 600, "rebuild_index": True},
+            created_by=ctx.get("profile_id"),
+        )
+    except ValueError as e:
+        if str(e) == "active_job_exists":
+            raise HTTPException(409, "Job già attivo per questo set")
+        raise HTTPException(500, str(e))
+
+    # Emit DOCUMENT_RETRIED for each doc (best-effort)
+    try:
+        from services import extraction_event_publisher as _ev
+        for d in failed:
+            _ev.emit(tenant_id=tid, catalog_set_id=set_id,
+                     catalog_document_id=d["id"],
+                     kind=_ev.DOCUMENT_RETRIED,
+                     message=f"Document retried via /retry-failed: {d.get('display_name')}",
+                     payload={"job_id": out.get("job_id")})
+    except Exception:
+        pass
+
+    return {"ok": True, "reset": len(failed), **out, "dry_run": False}
+
+
+@router.get("/catalog-sets/{set_id}/extraction-jobs")
+def list_extraction_jobs_for_set(set_id: str,
+                                   limit: int = Query(50, ge=1, le=200),
+                                   ctx=Depends(get_tenant_context)):
+    """KE-001 · history of extraction_jobs rows for this set."""
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    rows = (c.table("extraction_jobs")
+            .select("id,status,started_at,completed_at,heartbeat_at,"
+                    "last_seen_at,last_activity_at,stalled_at,worker_id,"
+                    "retry_count,parent_job_id,progress_pct,"
+                    "documents_total,documents_completed,documents_failed,"
+                    "total_pages,processed_pages,current_document_name,"
+                    "current_page,current_stage,current_stage_label,"
+                    "estimated_remaining_seconds,error_message,"
+                    "pause_requested,cancel_requested,created_at,updated_at")
+            .eq("tenant_id", tid).eq("catalog_set_id", set_id)
+            .order("created_at", desc=True).limit(limit)
+            .execute().data or [])
+    return {"jobs": rows, "count": len(rows)}
+
+
+@router.get("/catalog-sets/{set_id}/events")
+def list_extraction_events(set_id: str,
+                            since: Optional[str] = Query(None,
+                                description="ISO timestamp for incremental polling"),
+                            kind: Optional[str] = Query(None),
+                            limit: int = Query(100, ge=1, le=500),
+                            ctx=Depends(get_tenant_context)):
+    """KE-001 · paged event stream for the catalog set. Foundation for
+    KE-002 Live Activity Stream / Worker Status / Warning Center / KPI.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    q = (c.table("extraction_event_log")
+         .select("id,ts,kind,message,catalog_document_id,job_id,entity_id,payload")
+         .eq("tenant_id", tid).eq("catalog_set_id", set_id)
+         .order("ts", desc=True).limit(limit))
+    if since:
+        q = q.gt("ts", since)
+    if kind:
+        q = q.eq("kind", kind)
+    rows = q.execute().data or []
+    next_since = rows[0]["ts"] if rows else since
+    return {"events": rows, "count": len(rows), "next_since": next_since}

@@ -39,16 +39,19 @@ Superhuman. Function before aesthetic.
 ## Backlog (priority)
 
 ### P0
-* **M5 · Relationship Center** — 3-col (Summary / Timeline / Follow-up Queue)
+* **KE-002 · Knowledge Engine Control Room™** — Worker Status pill (7 stati) + Live Activity Stream (consuma `extraction_event_log`) + KPI engine deltas + Warning Center 7 categorie cliccabili + Document Queue actions [OPEN/REVIEW/RETRY] + CTA `Apri Review Workspace™`. Backend foundation ready.
+* **KE-003 · Review Workspace™ V3.1 deep-link wiring** — UI cablaggio del query param `?type=&focus=` da Warning Center → Entity Inspector. Backend endpoint `/needs-review?type=&include_first=true` già pronto.
 * **CRM / Client Relations Refactor** — CREA unique global entry, Studio Intelligence™ section (Memory + Voice Notes), Rollback Modal Atelier rebuild
 * **Project Detail Page** — premium SaaS design coherent with new Projects index
 
 ### P1
+* **KE-004 · Future Uses™ + Knowledge Impact™ wiring** — autowrite di `entity_operational_usage` da moodboard/journey/material_board insertion paths
+* **KE-005 · Designer Journey Integration™** — entity → moodboard/journey single click
 * **M6 · Advisor Workspace** — sidebar + KPI + panels (SaaS-style)
 * M3.1 · Voice Notes foundation (audio capture + waveform, no STT)
 * M3.2 · Email Activity foundation (counters only, no Gmail OAuth)
-* Theme Engine fix & i18n audit (remove residual hardcoded backgrounds)
 * PDF viewer real (react-pdf) inside Document Viewer column
+* Theme Engine fix & i18n audit (remove residual hardcoded backgrounds)
 
 ### P2
 * **M7 · Project Impact™** — wire real economic KPIs into the placeholder schema
@@ -58,7 +61,7 @@ Superhuman. Function before aesthetic.
 * Persistent Entity Resolution Jobs
 * AI-suggested next-best-action per follow-up
 * Mobile push notifications
-* Wire `entity_operational_usage` automatic writes from moodboard / journey / material_board insertion paths (currently SSoT exists, applicative writes pending)
+* TTL cron purge on `extraction_event_log` (view `extraction_event_log_to_purge` ready)
 
 ## Key files (current)
 

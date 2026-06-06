@@ -29,6 +29,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Any, Callable, Dict, List, Optional
 
 from database import db, get_admin_client
+from services import extraction_event_publisher as events
 
 logger = logging.getLogger("extraction_jobs")
 
@@ -156,41 +157,188 @@ def cancel_job(job_id: str) -> bool:
     return len(r) > 0
 
 
-# ─── Orphan recovery (called on FastAPI startup) ────────────────────────
+# ─── Orphan recovery (called on FastAPI startup + every 60s scheduler) ─
 def recover_orphan_jobs() -> int:
-    """Find 'running' jobs whose heartbeat is older than 2 minutes
-    (= the worker process died) and mark them as queued, then re-spawn.
+    """KE-001 · 3-phase orphan recovery.
 
-    Returns the number of jobs recovered.
+    Phase A · running with stale heartbeat (> HEARTBEAT_STALE_AFTER_S)
+             → demote to 'stalled' (sets stalled_at). Emits JOB_STALLED.
+    Phase B · stalled with retry_count < MAX_RETRY_COUNT
+             → re-queue (retry_count++) + spawn. Emits JOB_RECOVERED.
+    Phase C · stalled with retry_count >= MAX_RETRY_COUNT
+             → terminal 'failed' + reconcile brand_catalog_sets status.
+               Emits JOB_FAILED with cause=max_retries.
+
+    Additionally · safety net for catalog_sets in 'extracting' without
+    any active job (legacy orphans, never persisted).
+
+    Returns total jobs touched (demoted + requeued + terminated +
+    safety-net catalog_sets reconciled).
     """
     c = db()
-    threshold = (datetime.now(timezone.utc) - timedelta(seconds=HEARTBEAT_STALE_AFTER_S)).isoformat()
-    orphans = (c.table("extraction_jobs").select("id,catalog_set_id,heartbeat_at,retry_count")
-               .eq("status", "running").lt("heartbeat_at", threshold)
-               .execute().data or [])
-    n = 0
-    for j in orphans:
-        if (j.get("retry_count") or 0) >= MAX_RETRY_COUNT:
+    threshold = (datetime.now(timezone.utc)
+                 - timedelta(seconds=HEARTBEAT_STALE_AFTER_S)).isoformat()
+    touched = 0
+
+    # ── Phase A · running → stalled ──────────────────────────────────
+    try:
+        running_stale = (c.table("extraction_jobs")
+                          .select("id,catalog_set_id,tenant_id,heartbeat_at")
+                          .eq("status", "running")
+                          .lt("heartbeat_at", threshold)
+                          .execute().data or [])
+    except Exception as ex:
+        logger.warning(f"phase A query failed: {ex}")
+        running_stale = []
+
+    for j in running_stale:
+        try:
             c.table("extraction_jobs").update({
-                "status": "failed",
-                "error_message": f"Orphan job exceeded {MAX_RETRY_COUNT} restarts.",
-                "last_error_at": _now(), "updated_at": _now(),
+                "status": "stalled",
+                "stalled_at": _now(),
+                "updated_at": _now(),
             }).eq("id", j["id"]).execute()
-            logger.warning(f"orphan job {j['id']} max retries reached → failed")
+            events.emit(
+                tenant_id=j["tenant_id"], catalog_set_id=j["catalog_set_id"],
+                job_id=j["id"], kind=events.JOB_STALLED,
+                message=f"Job demoted to stalled · last heartbeat {j['heartbeat_at']}",
+                payload={"last_heartbeat_at": j["heartbeat_at"]},
+            )
+            logger.warning(f"phase A · job {j['id']} → stalled (last hb {j['heartbeat_at']})")
+            touched += 1
+        except Exception as ex:
+            logger.warning(f"phase A · job {j['id']} demote failed: {ex}")
+
+    # ── Phase B · stalled → queued (re-spawn) ────────────────────────
+    try:
+        stalled = (c.table("extraction_jobs")
+                    .select("id,catalog_set_id,tenant_id,retry_count,heartbeat_at")
+                    .eq("status", "stalled")
+                    .execute().data or [])
+    except Exception as ex:
+        logger.warning(f"phase B query failed: {ex}")
+        stalled = []
+
+    for j in stalled:
+        rc = int(j.get("retry_count") or 0)
+        if rc >= MAX_RETRY_COUNT:
+            # ── Phase C · max retries → terminal failed ──────────────
+            try:
+                c.table("extraction_jobs").update({
+                    "status": "failed",
+                    "error_message": f"Auto-terminate: exceeded {MAX_RETRY_COUNT} recovery attempts.",
+                    "last_error_at": _now(),
+                    "completed_at": _now(),
+                    "updated_at": _now(),
+                }).eq("id", j["id"]).execute()
+                events.emit(
+                    tenant_id=j["tenant_id"], catalog_set_id=j["catalog_set_id"],
+                    job_id=j["id"], kind=events.JOB_FAILED,
+                    message=f"Job auto-terminated after {MAX_RETRY_COUNT} retries.",
+                    payload={"cause": "max_retries", "retry_count": rc},
+                )
+                # Reconcile brand_catalog_sets
+                _reconcile_set_after_failure(c, j["catalog_set_id"], j["tenant_id"])
+                logger.warning(f"phase C · job {j['id']} → failed (retries exceeded)")
+                touched += 1
+            except Exception as ex:
+                logger.warning(f"phase C · job {j['id']} terminate failed: {ex}")
             continue
-        c.table("extraction_jobs").update({
-            "status": "queued",
-            "retry_count": (j.get("retry_count") or 0) + 1,
-            "pause_requested": False,
-            "cancel_requested": False,
-            "updated_at": _now(),
-        }).eq("id", j["id"]).execute()
-        _spawn_job(j["id"])
-        n += 1
-        logger.warning(f"orphan job {j['id']} recovered (stale since {j['heartbeat_at']})")
-    if n:
-        logger.warning(f"recover_orphan_jobs: {n} job(s) re-queued")
-    return n
+
+        # Re-queue + spawn
+        try:
+            c.table("extraction_jobs").update({
+                "status": "queued",
+                "retry_count": rc + 1,
+                "pause_requested": False,
+                "cancel_requested": False,
+                "error_message": None,
+                "heartbeat_at": _now(),
+                "updated_at": _now(),
+            }).eq("id", j["id"]).execute()
+            _spawn_job(j["id"])
+            events.emit(
+                tenant_id=j["tenant_id"], catalog_set_id=j["catalog_set_id"],
+                job_id=j["id"], kind=events.JOB_RECOVERED,
+                message=f"Job auto-recovered (retry {rc + 1}/{MAX_RETRY_COUNT}).",
+                payload={"retry_count": rc + 1, "max_retries": MAX_RETRY_COUNT},
+            )
+            logger.warning(f"phase B · job {j['id']} requeued (retry {rc + 1})")
+            touched += 1
+        except Exception as ex:
+            logger.warning(f"phase B · job {j['id']} requeue failed: {ex}")
+
+    # ── Safety net · catalog_sets stuck in 'extracting' with NO job ──
+    # (legacy orphans from pre-KE-001 trigger or hard crashes that lost
+    # the extraction_jobs row entirely)
+    try:
+        # Local import as a defensive measure against hot-reload races
+        # where module-level `events` import may briefly disappear.
+        from services import extraction_event_publisher as _ev
+        five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+        stuck_sets = (c.table("brand_catalog_sets")
+                       .select("id,tenant_id,documents_extracted,documents_failed,document_count,updated_at")
+                       .eq("status", "extracting")
+                       .lt("updated_at", five_min_ago)
+                       .execute().data or [])
+        for cs in stuck_sets:
+            # Has it an ACTIVE job?
+            active = (c.table("extraction_jobs")
+                       .select("id,status")
+                       .eq("catalog_set_id", cs["id"])
+                       .in_("status", ["queued", "running", "paused", "stalled"])
+                       .limit(1).execute().data or [])
+            if active:
+                continue   # legitimate, will be handled by phases A/B/C
+            # No active job → orphan catalog_set. Reconcile.
+            _reconcile_set_after_failure(c, cs["id"], cs["tenant_id"])
+            _ev.emit(
+                tenant_id=cs["tenant_id"], catalog_set_id=cs["id"],
+                kind=_ev.JOB_RECOVERED,
+                message="Orphan catalog set reconciled · no active job, status reset.",
+                payload={"safety_net": True,
+                          "documents_extracted": cs.get("documents_extracted"),
+                          "documents_failed": cs.get("documents_failed"),
+                          "document_count": cs.get("document_count")},
+            )
+            logger.warning(f"safety net · catalog_set {cs['id']} reconciled")
+            touched += 1
+    except Exception as ex:
+        logger.warning(f"safety net failed: {ex}")
+
+    if touched:
+        logger.warning(f"recover_orphan_jobs: touched {touched} job(s)/set(s)")
+    return touched
+
+
+def _reconcile_set_after_failure(c, set_id: str, tenant_id: str) -> None:
+    """Transition a stuck 'extracting' catalog set to a sane terminal-ish
+    state based on its progress."""
+    cset = (c.table("brand_catalog_sets")
+            .select("status,documents_extracted,documents_failed,document_count,pages_processed")
+            .eq("id", set_id).eq("tenant_id", tenant_id)
+            .limit(1).execute().data or [])
+    if not cset:
+        return
+    s = cset[0]
+    if s["status"] != "extracting":
+        return  # already moved on
+    de = int(s.get("documents_extracted") or 0)
+    target = "needs_review" if de > 0 else "draft"
+    c.table("brand_catalog_sets").update({
+        "status": target,
+        "extraction_completed_at": _now(),
+        "updated_at": _now(),
+    }).eq("id", set_id).execute()
+    # Documents stuck in 'extracting' → mark them 'failed' so the retry
+    # endpoint can pick them up.
+    c.table("brand_catalog_documents").update({
+        "extraction_status": "failed",
+        "extraction_completed_at": _now(),
+        "error_logs": [{"error": "Reconciled after worker crash · KE-001 safety net",
+                         "at": _now()}],
+        "updated_at": _now(),
+    }).eq("catalog_set_id", set_id).eq("extraction_status", "extracting").execute()
 
 
 # ─── Job execution ──────────────────────────────────────────────────────
@@ -232,6 +380,10 @@ async def _execute_job_async(job_id: str) -> None:
     except Exception as e:
         logger.exception(f"extraction job {job_id} crashed: {e}")
         try:
+            row = (db().table("extraction_jobs").select("tenant_id,catalog_set_id")
+                    .eq("id", job_id).limit(1).execute().data or [])
+            tid = row[0]["tenant_id"] if row else None
+            sid = row[0]["catalog_set_id"] if row else None
             db().table("extraction_jobs").update({
                 "status": "failed",
                 "error_message": f"runner crash: {type(e).__name__}: {e}",
@@ -239,6 +391,12 @@ async def _execute_job_async(job_id: str) -> None:
                 "completed_at": _now(),
                 "updated_at": _now(),
             }).eq("id", job_id).execute()
+            if tid and sid:
+                events.emit(tenant_id=tid, catalog_set_id=sid, job_id=job_id,
+                            kind=events.JOB_FAILED,
+                            message=f"Runner crash: {type(e).__name__}: {str(e)[:200]}",
+                            payload={"cause": "runner_crash"})
+                _reconcile_set_after_failure(db(), sid, tid)
         except Exception:
             pass
 
@@ -267,9 +425,15 @@ def _execute_job_sync(job_id: str) -> None:
     # Transition queued → running
     c.table("extraction_jobs").update({
         "status": "running", "started_at": job.get("started_at") or _now(),
-        "heartbeat_at": _now(), "updated_at": _now(),
-        "error_message": None,
+        "heartbeat_at": _now(), "last_seen_at": _now(),
+        "last_activity_at": _now(), "worker_id": events.worker_id(),
+        "updated_at": _now(), "error_message": None,
     }).eq("id", job_id).execute()
+    events.emit(
+        tenant_id=tenant_id, catalog_set_id=set_id, job_id=job_id,
+        kind=events.JOB_STARTED, message="Extraction job started",
+        payload={"config": config, "retry_count": int(job.get("retry_count") or 0)},
+    )
     c.table("brand_catalog_sets").update({
         "status": "extracting",
         "extraction_started_at": _now(),
@@ -315,6 +479,13 @@ def _execute_job_sync(job_id: str) -> None:
                           current_document_name=d.get("display_name") or d.get("original_filename"),
                           current_page=0, total_pages=d.get("page_count") or 0,
                           current_stage=None, current_stage_label=None)
+        events.emit(
+            tenant_id=tenant_id, catalog_set_id=set_id, job_id=job_id,
+            catalog_document_id=bcd_id, kind=events.DOCUMENT_STARTED,
+            message=f"Document started: {d.get('display_name') or d.get('original_filename')}",
+            payload={"page_count": d.get("page_count") or 0,
+                     "source_document_id": src_doc_id},
+        )
 
         try:
             storage_path = d.get("storage_path") or (
@@ -391,6 +562,14 @@ def _execute_job_sync(job_id: str) -> None:
             }).eq("id", src_doc_id).execute()
             bcs._refresh_set_progress(c, set_id)
             _refresh_job_aggregates(c, job_id, set_id)
+            events.emit(
+                tenant_id=tenant_id, catalog_set_id=set_id, job_id=job_id,
+                catalog_document_id=bcd_id, kind=events.DOCUMENT_COMPLETED,
+                message=f"Document completed: {d.get('display_name') or d.get('original_filename')}",
+                payload={"pages_written": pages_written,
+                          "products": int((result.get("metrics") or {}).get("products_count") or 0),
+                          "images":   int((result.get("metrics") or {}).get("images_count") or 0)},
+            )
 
         except Exception as e:
             logger.exception(f"job {job_id} doc {bcd_id} failed: {e}")
@@ -410,6 +589,12 @@ def _execute_job_sync(job_id: str) -> None:
                 pass
             bcs._refresh_set_progress(c, set_id)
             _refresh_job_aggregates(c, job_id, set_id)
+            events.emit(
+                tenant_id=tenant_id, catalog_set_id=set_id, job_id=job_id,
+                catalog_document_id=bcd_id, kind=events.DOCUMENT_FAILED,
+                message=f"Document failed: {str(e)[:200]}",
+                payload={"error": str(e)[:400]},
+            )
 
     # Build unified index (best-effort)
     if rebuild:
@@ -426,6 +611,10 @@ def _execute_job_sync(job_id: str) -> None:
         "updated_at": _now(),
     }).eq("id", set_id).execute()
     _terminal(c, job_id, "completed", None)
+    events.emit(
+        tenant_id=tenant_id, catalog_set_id=set_id, job_id=job_id,
+        kind=events.JOB_COMPLETED, message="Extraction job completed",
+    )
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────
@@ -449,6 +638,9 @@ def _persist_current(c, job_id: str, *,
                       vision_total: Optional[int] = None) -> None:
     upd: Dict[str, Any] = {
         "heartbeat_at": _now(),
+        "last_seen_at": _now(),
+        "last_activity_at": _now(),
+        "worker_id": events.worker_id(),
         "updated_at": _now(),
     }
     if current_document_id is not None:    upd["current_document_id"] = current_document_id
@@ -459,6 +651,27 @@ def _persist_current(c, job_id: str, *,
     if current_stage_label is not None:    upd["current_stage_label"] = current_stage_label
     if vision_current is not None:         upd["current_vision_current"] = vision_current
     if vision_total is not None:           upd["current_vision_total"] = vision_total
+    # ETA · linear projection from job started_at + processed_pages
+    try:
+        job_row = (c.table("extraction_jobs")
+                    .select("started_at,total_pages,processed_pages")
+                    .eq("id", job_id).limit(1).execute().data or [])
+        if job_row:
+            jr = job_row[0]
+            started = jr.get("started_at")
+            tot = int(jr.get("total_pages") or 0)
+            done = int(jr.get("processed_pages") or 0)
+            if started and tot > 0 and done > 0:
+                t_start = datetime.fromisoformat(started.replace("Z", "+00:00"))
+                if t_start.tzinfo is None:
+                    t_start = t_start.replace(tzinfo=timezone.utc)
+                elapsed = (datetime.now(timezone.utc) - t_start).total_seconds()
+                if elapsed > 5:
+                    pps = done / elapsed
+                    if pps > 0:
+                        upd["estimated_remaining_seconds"] = max(0, int((tot - done) / pps))
+    except Exception:
+        pass
     try:
         c.table("extraction_jobs").update(upd).eq("id", job_id).execute()
     except Exception as e:
