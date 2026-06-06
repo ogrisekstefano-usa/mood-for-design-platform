@@ -349,6 +349,7 @@ function EntityInspector({ setId, entity, onAfterCorrection, lastImpact, onAfter
                     key={s.key}
                     className={`rw-cert-scope__row ${scope === s.key ? 'is-active' : ''}`}
                     data-testid={`rw-cert-scope-${s.key}`}
+                    onClick={() => setScope(s.key)}
                   >
                     <input
                       type="radio"

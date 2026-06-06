@@ -413,9 +413,13 @@ def list_needs_review(
     rows = (q.order("entity_type").order("mention_count", desc=True)
              .limit(500).execute().data or [])
 
-    out = {"entities": rows, "count": len(rows), "filter": type}
-    if include_first:
-        out["first_anomaly"] = rows[0]["id"] if rows else None
+    out = {
+        "entities": rows,
+        "count":    len(rows),
+        "filter":   type,
+        # KE-003 · always expose first_anomaly for stable contract.
+        "first_anomaly": rows[0]["id"] if rows else None,
+    }
     return out
 
 
@@ -554,9 +558,10 @@ def _condition_based_warning(c, set_id: str, ftype: str, include_first: bool):
         "entities": matches[:500],
         "count":    len(matches),
         "filter":   ftype,
+        # KE-003 · always expose first_anomaly so the deep-link contract
+        # is stable regardless of the include_first query param.
+        "first_anomaly": matches[0]["id"] if matches else None,
     }
-    if include_first:
-        out["first_anomaly"] = matches[0]["id"] if matches else None
     return out
 
 
