@@ -29,6 +29,7 @@ from core.permissions import (
 from core.page_skeletons import PAGE_SKELETONS, get_skeleton
 from core.presentation_transitions import PRESENTATION_TRANSITIONS, VALID_TRANSITION_IDS
 from database import db, db_available
+from services import knowledge_usage_hooks as _ke_hooks  # KE-005B.1
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -205,6 +206,7 @@ class BlockCreate(BaseModel):
     content: Optional[Dict[str, Any]] = None
     style:   Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, Any]] = None
+    entity_id: Optional[str] = None  # KE-005B · canonical entity reference
 
 
 class BlockUpdate(BaseModel):
@@ -221,6 +223,7 @@ class BlockUpdate(BaseModel):
     hidden:  Optional[bool] = None
     opacity: Optional[float] = None
     rotation: Optional[float] = None
+    entity_id: Optional[str] = None  # KE-005B · canonical entity reference (passare null per detach)
 
 
 class BlocksBatchUpdate(BaseModel):
@@ -578,11 +581,25 @@ def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(requi
     }
     if image_url:
         row["image_url"] = image_url
+    # KE-005B · Knowledge-Native binding (optional)
+    if body.entity_id:
+        row["entity_id"] = body.entity_id
     r = client.table("moodboard_elements").insert(row).execute()
     client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
     _push_activity(ctx["tenant_id"], mb.get("project_id"), ctx["profile_id"],
                    "moodboard.block_added", moodboard_id, mb.get("title"),
                    {"block_type": body.type})
+    # KE-005B · side-effect attach (idempotente · cross-tenant safe)
+    if body.entity_id:
+        try:
+            _ke_hooks.attach_entity(
+                tenant_id=ctx["tenant_id"], surface_type="moodboard",
+                surface_id=moodboard_id, entity_id=body.entity_id,
+                user_id=ctx.get("profile_id"),
+                extra={"block_id": row["id"], "page_id": page_id},
+            )
+        except Exception as ex:  # non-fatal: il block è già creato
+            logger.warning(f"ke005b attach_entity failed: {ex}")
     return _normalize_block(r.data[0] if r.data else row)
 
 
@@ -591,7 +608,7 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
                  ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    cur = client.table("moodboard_elements").select("content, position_json, style_json, metadata_json, type") \
+    cur = client.table("moodboard_elements").select("content, position_json, style_json, metadata_json, type, entity_id") \
         .eq("id", block_id).eq("moodboard_id", moodboard_id).limit(1).execute()
     if not cur.data:
         raise HTTPException(404, "Block not found")
@@ -601,7 +618,13 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
     content = _parse_jsonish(row.get("content"))
     metadata = _parse_jsonish(row.get("metadata_json"))
 
-    body_d = body.model_dump(exclude_none=True)
+    body_d = body.model_dump(exclude_none=False)  # accept null per detach
+    # entity_id binding management (KE-005B)
+    new_entity_id_provided = "entity_id" in body.model_dump(exclude_unset=True)
+    new_entity_id = body_d.pop("entity_id", None) if new_entity_id_provided else None
+    old_entity_id = row.get("entity_id")
+    # drop None placeholders that were forced by exclude_none=False
+    body_d = {k: v for k, v in body_d.items() if v is not None}
     for k in ("x", "y", "width", "height", "z_index"):
         if k in body_d:
             pos[k] = body_d.pop(k)
@@ -623,11 +646,31 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
     if row.get("type") == "image" and "src" in content:
         payload["image_url"] = content["src"]
         payload["title"] = content.get("caption")
+    if new_entity_id_provided:
+        payload["entity_id"] = new_entity_id  # may be None (explicit detach)
     payload["updated_at"] = _now()
 
     r = client.table("moodboard_elements").update(payload) \
         .eq("id", block_id).eq("moodboard_id", moodboard_id).execute()
     client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+
+    # KE-005B · attach/detach diff
+    if new_entity_id_provided and new_entity_id != old_entity_id:
+        try:
+            if old_entity_id:
+                _ke_hooks.detach_entity(
+                    tenant_id=ctx["tenant_id"], surface_type="moodboard",
+                    surface_id=moodboard_id, entity_id=old_entity_id,
+                    user_id=ctx.get("profile_id"))
+            if new_entity_id:
+                _ke_hooks.attach_entity(
+                    tenant_id=ctx["tenant_id"], surface_type="moodboard",
+                    surface_id=moodboard_id, entity_id=new_entity_id,
+                    user_id=ctx.get("profile_id"),
+                    extra={"block_id": block_id})
+        except Exception as ex:
+            logger.warning(f"ke005b update_block hook failed: {ex}")
+
     return _normalize_block(r.data[0] if r.data else {**row, **payload})
 
 
@@ -635,9 +678,21 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
 def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    # KE-005B · read entity_id before delete to enable detach hook
+    cur = client.table("moodboard_elements").select("entity_id") \
+        .eq("id", block_id).eq("moodboard_id", moodboard_id).limit(1).execute()
+    old_entity_id = (cur.data[0].get("entity_id") if cur.data else None)
     client.table("moodboard_elements").delete() \
         .eq("id", block_id).eq("moodboard_id", moodboard_id).execute()
     client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    if old_entity_id:
+        try:
+            _ke_hooks.detach_entity(
+                tenant_id=ctx["tenant_id"], surface_type="moodboard",
+                surface_id=moodboard_id, entity_id=old_entity_id,
+                user_id=ctx.get("profile_id"))
+        except Exception as ex:
+            logger.warning(f"ke005b detach_entity failed: {ex}")
     return {"message": "deleted"}
 
 

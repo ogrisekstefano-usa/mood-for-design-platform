@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 06 Jun 2026
-> **Status:** KE-004 Future Uses™ + Connected Assets™ closed · ecosystem observable · ready for KE-005 or higher-order sprints
+> **Status:** KE-005B.1 Foundation closed · 9/9 backend pytest PASS · ready for KE-005B.2 Surfaces UI
 
 ## Original problem statement
 
@@ -40,6 +40,10 @@ Superhuman. Function before aesthetic.
 * **KE-002.1 · Value Wiring (06 Jun 2026)** — chiusura 3 P0 percettivi: KPI strip su counts reali (333 prodotti/26 designer/12 materiali per RIVA1920) · semantic event stream (PRODUCT_FOUND / DESIGNER_FOUND / MATERIAL_FOUND / IMAGE_FOUND) · 6 condition-based warning filters. New file `services/knowledge_kpi.py`. Backfill endpoint `/catalog-sets/{id}/backfill-semantic-events`. See `KE002_1_VALUE_WIRING_REPORT.md`. Classification: 🟢 READY_FOR_KE003.
 * **KE-003 · Knowledge Certification Workspace™ (06 Jun 2026)** — 7 P0 chiusi: Warning Deep-Link (`?type=&focus=`), Entity Inspector V3.1 (4 CTAs APPROVA/RIFIUTA/UNISCI/MODIFICA × 3 scope), Scope Correction propagazione, Real Knowledge Impact da entity.mention_count + scope, Failed Document Modal (glass-dark con error/retry/related), Certification Flow gated, Post-Certification toast 5s con KPI reali. New files: `FailedDocumentModal.jsx`+`.css`. Backend endpoint `/documents/{id}/failure-context` + `/documents/{id}/pages` (Doc Viewer P0-5b · contenuto reale per pagina). Contract fix: `needs-review` ora ritorna sempre `first_anomaly`. See `KE003_KNOWLEDGE_CERTIFICATION_WORKSPACE_REPORT.md`. Classification: 🟢 KNOWLEDGE_CERTIFICATION_READY.
 * **KE-004 · Future Uses™ + Connected Assets™ (06 Jun 2026)** — 5 P0 chiusi: Future Uses con sezione duale UTILIZZATO IN / DISPONIBILE PER (8 surfaces mappate) · Connected Assets™ hub-and-spoke (10 tipologie nodo da 682 brand_entity_relations) · Knowledge Impact History timeline da `knowledge_impact_events` (8 eventi reali · scope color-coded) · Certification Metrics nel Knowledge Strip (DECISIONI · PROPAGATE · TEMPO CERT) · Operational Readiness 5 surfaces (Moodboard / Design Journey / Material Board / Client Presentation / Brand Atlas) con regole server-side. 3 nuovi endpoint backend: `impact-history`, `certification-metrics`, `operational-readiness`. New files: `OperationalReadinessPanel.jsx`, `ImpactHistoryTimeline.jsx`. See `KE004_FUTURE_USES_CONNECTED_ASSETS_REPORT.md`. Classification: 🟢 ECOSYSTEM_READY.
+* **KE-005A · Moodboard Knowledge Audit (06 Jun 2026)** — READ-ONLY · Moodboard classificata LEGACY_ISLAND (0/4 hook al KE · 5/8 drift SSoT). See `KE005A_MOODBOARD_KNOWLEDGE_INTEGRATION_AUDIT.md`.
+* **KE-005B.0 · Design Journey Knowledge Audit (06 Jun 2026)** — READ-ONLY · Design Journey LEGACY_ISLAND transitivo (linked_entity_id → moodboards.id, non a Brand Atlas). Proposta sprint unificato KE-005B. See `KE005B0_DESIGN_JOURNEY_KNOWLEDGE_AUDIT.md`.
+* **KE-005B.0.5 · Entity Usage Architecture Review (06 Jun 2026)** — READ-ONLY · validata foundation cross-surface · 8/8 surface coperte dallo schema esistente · Entity Context Panel™ design. See `KE005B05_ENTITY_USAGE_ARCHITECTURE_REVIEW.md`.
+* **KE-005B.1 · Knowledge-Native Surfaces™ Foundation (06 Jun 2026)** — backend-only · migration 132 (entity_id su moodboard_elements, entity_refs JSONB su journey_milestones, source_type/target_type su brand_entity_relations, view entity_usage_lookup_v) · service `knowledge_usage_hooks.py` riscritto (5 direttive utente · idempotente · tenant-isolated · zero scrittura in knowledge_impact_events) · side-effect attach/detach wired in `moodboards_v1.py` + `design_journey.py` · endpoint aggregator `GET /api/knowledge/entities/{id}/context-panel` (9 sezioni nell'ordine approvato) · pytest suite 9/9 PASS. See `KE005B_FOUNDATION_REPORT.md`. Classification: 🟢 FOUNDATION_READY.
 
 ## Backlog (priority)
 

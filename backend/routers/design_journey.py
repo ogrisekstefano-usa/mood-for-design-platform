@@ -38,6 +38,7 @@ from pydantic import BaseModel
 
 from core.tenant_context import get_tenant_context
 from database import db
+from services import knowledge_usage_hooks as _ke_hooks  # KE-005B.1
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -105,6 +106,7 @@ class MilestonePatch(BaseModel):
     linked_entity_type: Optional[str] = None
     linked_entity_id:   Optional[str] = None
     metadata:     Optional[Dict[str, Any]] = None
+    entity_refs:  Optional[List[str]] = None  # KE-005B · canonical entity ids
 
 
 VALID_STATUSES = {
@@ -321,12 +323,31 @@ def patch_milestone(mid: str, body: MilestonePatch,
     if body.metadata is not None:
         merged = {**(cur.get("metadata") or {}), **(body.metadata or {})}
         patch["metadata"] = merged
+    # KE-005B · entity_refs JSONB diff (deferred to dopo l'update SQL)
+    entity_refs_provided = body.entity_refs is not None
+    if entity_refs_provided:
+        patch["entity_refs"] = body.entity_refs or []
 
     if not patch:
         return {"item": _slim(cur)}
 
     patch["updated_at"] = _now()
     c.table("journey_milestones").update(patch).eq("id", mid).execute()
+
+    # KE-005B · attach/detach diff per entity_refs
+    if entity_refs_provided:
+        try:
+            prev = cur.get("entity_refs") or []
+            if not isinstance(prev, list):
+                prev = []
+            _ke_hooks.sync_entity_refs(
+                tenant_id=tid, surface_type="design_journey",
+                surface_id=mid, previous_ids=prev,
+                new_ids=body.entity_refs or [],
+                user_id=uid,
+            )
+        except Exception as ex:
+            logger.warning(f"ke005b sync_entity_refs failed: {ex}")
 
     if new_status:
         narrative = STATUS_NARRATIVE.get(new_status, "{title} aggiornata.").format(
