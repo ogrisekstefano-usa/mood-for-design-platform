@@ -435,15 +435,19 @@ export default function ControlRoomPanel({ setId, documents = [], onAfterAction 
   const handleReview = async (doc) => {
     try {
       const { data } = await KE.documentReviewContext(setId, doc.id);
+      const el = document.querySelector(`[data-testid="rw-v3-root"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
       if (data?.first_anomaly) {
-        const el = document.querySelector(`[data-testid="rw-v3-root"]`);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-        toast.success(`Review: ${data.count} entità da risolvere su questo documento`);
+        toast.success(`Review: ${data.count} entità da risolvere su "${doc.display_name || doc.original_filename}"`);
+      } else if (data) {
+        toast.info(`Nessuna ambiguità rilevata su "${doc.display_name || doc.original_filename}" · doc status: ${doc.extraction_status}`);
       } else {
-        toast.info('Nessuna ambiguità su questo documento');
+        toast.warning('Review context non disponibile');
       }
     } catch (err) {
-      toast.error('Impossibile aprire il review context');
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail || err.message;
+      toast.error(`Review context: ${status ? `${status} · ` : ''}${detail}`);
     }
   };
   const handleRetry = async (doc) => {
