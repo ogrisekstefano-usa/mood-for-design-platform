@@ -122,6 +122,10 @@ export const documentPreview = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}`);
 export const documentReviewContext = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/review-context`);
+export const documentPages = (setId, docId, { pageNumber, limit = 200 } = {}) =>
+  api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/pages`, {
+    params: { page_number: pageNumber, limit },
+  });
 export const documentFailureContext = (setId, docId) =>
   api.get(`${BASE}/catalog-sets/${setId}/documents/${docId}/failure-context`);
 export const backfillSemanticEvents = (setId) =>
@@ -153,6 +157,6 @@ export default {
   atlasDiscover, atlasFacets,
   futureUses, connectedAssets, projectImpact, applyCorrection,
   workerStatus, listEvents, documentPreview, documentReviewContext,
-  documentFailureContext, backfillSemanticEvents,
+  documentPages, documentFailureContext, backfillSemanticEvents,
   retryFailed, retryDocument, extractionJobsHistory, needsReviewByType,
 };

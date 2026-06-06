@@ -1247,6 +1247,46 @@ def get_document_review_context(set_id: str, doc_id: str,
     }
 
 
+@router.get("/catalog-sets/{set_id}/documents/{doc_id}/pages")
+def get_document_pages(set_id: str, doc_id: str,
+                        page_number: int | None = None,
+                        limit: int = 200,
+                        ctx=Depends(get_tenant_context)):
+    """KE-003 · P0-5b · Real document content preview.
+
+    Returns the actual extracted pages with their key fields so the
+    Document Viewer column can show real data (collection, section,
+    confidence, raw_text excerpt, inline_entities) instead of fake
+    bounding boxes.
+    """
+    c = db(); tid = ctx["tenant_id"]
+    _require_set_ownership(c, tid, set_id)
+    q = (c.table("brand_catalog_pages")
+         .select("id,page_number,page_title,detected_collection,"
+                  "detected_section,visual_role,confidence_score,"
+                  "raw_text,asset_refs,inline_entities,review_status")
+         .eq("catalog_document_id", doc_id)
+         .order("page_number").limit(limit))
+    if page_number is not None:
+        q = q.eq("page_number", page_number).limit(1)
+    rows = q.execute().data or []
+    # Parse JSON-ish columns
+    import json as _j
+    out = []
+    for r in rows:
+        for k in ("asset_refs", "inline_entities"):
+            v = r.get(k)
+            if isinstance(v, str):
+                try: r[k] = _j.loads(v)
+                except Exception: r[k] = []
+        # Truncate raw_text to avoid pumping huge payloads on long catalogs
+        rt = r.get("raw_text") or ""
+        if isinstance(rt, str) and len(rt) > 1200:
+            r["raw_text"] = rt[:1200] + "…"
+        out.append(r)
+    return {"pages": out, "count": len(out), "document_id": doc_id}
+
+
 @router.get("/catalog-sets/{set_id}/documents/{doc_id}/failure-context")
 def get_document_failure_context(set_id: str, doc_id: str,
                                   ctx=Depends(get_tenant_context)):

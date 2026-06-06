@@ -105,18 +105,52 @@ function DocumentNavigator({ documents = [], pagesMeta, selectedDocId, onSelectD
 
 
 // ─── Document Viewer (Col 2) ────────────────────────────────────────
-function DocumentViewer({ document: doc, entities = [], onEntityClick, layers, onLayerToggle }) {
-  // Lightweight bbox preview — V3.1 uses placeholder rectangles; real
-  // page-rendering is non-blocking and can ship in a follow-up.
-  const sample = entities.slice(0, 4);
+function DocumentViewer({ setId, document: doc, entities = [], onEntityClick, layers, onLayerToggle }) {
+  // KE-003 · P0-5b · Real content preview · the PDF is subordinato,
+  // l'entità è protagonista. Niente rettangoli fasulli su sfondo nero:
+  // mostriamo cosa è REALMENTE stato estratto dalla pagina selezionata.
+  const [pages, setPages] = React.useState([]);
+  const [pageIdx, setPageIdx] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!setId || !doc?.id) return;
+    setLoading(true);
+    setPageIdx(0);
+    KE.documentPages(setId, doc.id, { limit: 200 })
+      .then(({ data }) => setPages(data?.pages || []))
+      .catch(() => setPages([]))
+      .finally(() => setLoading(false));
+  }, [setId, doc?.id]);
+
+  const total = pages.length;
+  const current = pages[pageIdx] || null;
+  const inline = Array.isArray(current?.inline_entities) ? current.inline_entities : [];
+  const assets = Array.isArray(current?.asset_refs) ? current.asset_refs : [];
+  const confidencePct = current?.confidence_score
+    ? Math.round(current.confidence_score * 100) : null;
+
+  // Filter inline entities by active layers (best-effort label match)
+  const layerFilter = (e) => {
+    const t = (e?.type || e?.entity_type || '').toLowerCase();
+    if (t.includes('product') && !layers.products) return false;
+    if (t.includes('material') && !layers.materials) return false;
+    if (t.includes('finish') && !layers.materials) return false;
+    if (t.includes('designer') && !layers.designers) return false;
+    if (t.includes('image') && !layers.images) return false;
+    return true;
+  };
+  const visibleInline = inline.filter(layerFilter);
+
   return (
     <section className="rw-col rw-viewer" data-testid="rw-v3-document-viewer">
       <div className="rw-col__header" style={{ display: 'flex', justifyContent: 'space-between' }}>
         <span>Source Document</span>
-        <span className="rw-mono" style={{ color: 'var(--rw-text-muted)' }}>
+        <span className="rw-mono" style={{ color: 'var(--rw-text-muted)' }} title={doc?.original_filename}>
           {doc?.display_name || doc?.original_filename || '—'}
         </span>
       </div>
+
       <div className="rw-viewer__toolbar">
         <div className="rw-viewer__layers">
           {['products', 'materials', 'designers', 'images'].map((l) => (
@@ -131,37 +165,135 @@ function DocumentViewer({ document: doc, entities = [], onEntityClick, layers, o
             </label>
           ))}
         </div>
-        <span className="rw-mono">120% · 1 / {doc?.page_count || '—'}</span>
+        <span className="rw-mono" data-testid="rw-page-indicator">
+          {total > 0 ? `pag. ${current?.page_number || pageIdx + 1} / ${doc?.page_count || total}` : '—'}
+        </span>
       </div>
-      <div className="rw-viewer__stage">
-        {sample.map((e, i) => {
-          const pos = [
-            { top: '15%', left: '15%', width: '40%', height: '20%' },
-            { top: '45%', left: '50%', width: '30%', height: '12%' },
-            { top: '65%', left: '10%', width: '25%', height: '10%' },
-            { top: '80%', left: '55%', width: '35%', height: '8%' },
-          ][i] || {};
-          const tone = e.entity_type === 'material' ? 'rw-bbox--material'
-                     : e.entity_type === 'designer' ? 'rw-bbox--designer'
-                     : '';
-          return (
-            <div
-              key={e.id}
-              className={`rw-bbox ${tone}`}
-              style={pos}
-              onClick={() => onEntityClick?.(e)}
-              data-testid={`rw-bbox-${e.id}`}
-              title={e.display_name}
-            >
-              {e.entity_type}: {e.display_name?.slice(0, 18) || '—'}
-            </div>
-          );
-        })}
+
+      <div className="rw-viewer__content" data-testid="rw-doc-content">
+        {loading && <div className="rw-doc-empty">Caricamento pagine…</div>}
+
+        {!loading && !current && (
+          <div className="rw-doc-empty">
+            <Icons.FileText size={24} />
+            <p>Nessuna pagina estratta disponibile per questo documento.</p>
+          </div>
+        )}
+
+        {!loading && current && (
+          <div className="rw-doc-page" data-testid={`rw-doc-page-${current.id}`}>
+            <header className="rw-doc-page__head">
+              <div className="rw-doc-page__title">
+                {current.page_title || `Pagina ${current.page_number}`}
+              </div>
+              <div className="rw-doc-page__meta">
+                {current.detected_collection && (
+                  <span className="rw-doc-chip">
+                    <Icons.Layers size={11} /> {current.detected_collection}
+                  </span>
+                )}
+                {current.detected_section && (
+                  <span className="rw-doc-chip">
+                    <Icons.Bookmark size={11} /> {current.detected_section}
+                  </span>
+                )}
+                {current.visual_role && (
+                  <span className="rw-doc-chip rw-doc-chip--muted">{current.visual_role}</span>
+                )}
+                {confidencePct !== null && (
+                  <span className={`rw-doc-chip ${confidencePct >= 70 ? 'rw-doc-chip--ok' : 'rw-doc-chip--warn'}`}>
+                    {confidencePct}% confidence
+                  </span>
+                )}
+              </div>
+            </header>
+
+            {current.raw_text && (
+              <section className="rw-doc-page__text" data-testid="rw-doc-page-text">
+                <div className="rw-doc-page__label">Testo estratto (excerpt)</div>
+                <pre>{current.raw_text}</pre>
+              </section>
+            )}
+
+            {visibleInline.length > 0 && (
+              <section className="rw-doc-page__entities" data-testid="rw-doc-page-entities">
+                <div className="rw-doc-page__label">
+                  Entità estratte da questa pagina · {visibleInline.length}
+                </div>
+                <div className="rw-doc-page__chips">
+                  {visibleInline.slice(0, 24).map((e, i) => {
+                    const t = (e.type || e.entity_type || 'entity').toLowerCase();
+                    const tone = t.includes('material') || t.includes('finish') ? 'rw-bbox--material'
+                              : t.includes('designer') ? 'rw-bbox--designer'
+                              : t.includes('product') ? 'rw-bbox--product'
+                              : '';
+                    return (
+                      <button
+                        key={`${e.id || i}-${e.name || e.value}`}
+                        className={`rw-doc-chip rw-doc-chip--clickable ${tone}`}
+                        onClick={() => onEntityClick?.(e)}
+                        data-testid={`rw-inline-entity-${i}`}
+                        title={`${t}: ${e.name || e.value || ''}`}
+                      >
+                        <span className="rw-doc-chip__type">{t}</span>
+                        <span className="rw-doc-chip__name">{e.name || e.value || '—'}</span>
+                      </button>
+                    );
+                  })}
+                  {visibleInline.length > 24 && (
+                    <span className="rw-doc-chip rw-doc-chip--muted">
+                      +{visibleInline.length - 24}
+                    </span>
+                  )}
+                </div>
+              </section>
+            )}
+
+            {assets.length > 0 && layers.images && (
+              <section className="rw-doc-page__entities">
+                <div className="rw-doc-page__label">
+                  Asset visivi referenziati · {assets.length}
+                </div>
+                <div className="rw-doc-page__chips">
+                  {assets.slice(0, 12).map((a, i) => (
+                    <span key={i} className="rw-doc-chip rw-doc-chip--muted" title={String(a)}>
+                      <Icons.Image size={11} /> asset {i + 1}
+                    </span>
+                  ))}
+                  {assets.length > 12 && (
+                    <span className="rw-doc-chip rw-doc-chip--muted">+{assets.length - 12}</span>
+                  )}
+                </div>
+              </section>
+            )}
+
+            <footer className="rw-doc-page__footer">
+              <Icons.AlertCircle size={11} />
+              <span>
+                Render PDF della pagina · in arrivo nel prossimo sprint. Per ora
+                il workspace mostra il contenuto strutturato già estratto.
+              </span>
+            </footer>
+          </div>
+        )}
       </div>
-      <div className="rw-viewer__pager">
-        <button>‹</button>
-        <span>Pagina 1 di {doc?.page_count || 0}</span>
-        <button>›</button>
+
+      <div className="rw-viewer__pager" data-testid="rw-doc-pager">
+        <button
+          onClick={() => setPageIdx((i) => Math.max(0, i - 1))}
+          disabled={pageIdx <= 0}
+          data-testid="rw-doc-pager-prev"
+          aria-label="Pagina precedente"
+        >‹</button>
+        <span className="rw-mono">
+          {total > 0 ? `${pageIdx + 1} di ${total}` : '—'}
+        </span>
+        <button
+          onClick={() => setPageIdx((i) => Math.min(total - 1, i + 1))}
+          disabled={pageIdx >= total - 1}
+          data-testid="rw-doc-pager-next"
+          aria-label="Pagina successiva"
+        >›</button>
       </div>
     </section>
   );
@@ -804,6 +936,7 @@ export default function ReviewWorkspaceV3({
             warnings={needsReview.length}
           />
           <DocumentViewer
+            setId={setId}
             document={selectedDoc}
             entities={visibleEntities}
             onEntityClick={setSelectedEntity}

@@ -10,22 +10,21 @@
 
 ## 1 · FILE MODIFICATI
 
-### Backend (+2 file, 3 edit)
+### Backend (+1 endpoint, 3 edit totali)
 | File | Cambio |
 |------|--------|
-| `backend/routers/extraction_jobs.py` | + endpoint `GET /catalog-sets/{id}/documents/{doc_id}/failure-context` (P0-5) · contract drift fix: `needs-review` ora ritorna sempre `first_anomaly` |
-| `backend/routers/review_workspace_v3.py` | `apply-correction` ora calcola Knowledge Impact REALE via `_compute_real_impact(c, set_id, entity, scope)` da `mention_count`, `source_document_ids` e `products` link (P0-4) |
+| `backend/routers/extraction_jobs.py` | + `GET /catalog-sets/{id}/documents/{doc_id}/failure-context` (P0-5) · + `GET /catalog-sets/{id}/documents/{doc_id}/pages` (P0-5b — contenuto reale) · contract drift fix: `needs-review` ora ritorna sempre `first_anomaly` |
+| `backend/routers/review_workspace_v3.py` | `apply-correction` ora calcola Knowledge Impact REALE via `_compute_real_impact(c, set_id, entity, scope)` (P0-4) |
 
 ### Frontend (+2 file new, 4 edit)
 | File | Cambio |
 |------|--------|
-| **NEW** `frontend/src/components/review-workspace/FailedDocumentModal.jsx` (~110 righe) | Modale glass-dark per documento failed (P0-5) |
-| **NEW** `frontend/src/components/review-workspace/failed-document-modal.css` (~145 righe) | Aesthetics Blueprint Chameleon™ per la modale |
-| `frontend/src/components/review-workspace/ReviewWorkspaceV3.jsx` | Entity Inspector V3.1: 4 CTAs (APPROVA·RIFIUTA·UNISCI·MODIFICA) · 3 scope radios · inline MODIFICA edit · inline UNISCI form · deep-link `focusEntity`/`focusType` auto-select · post-certification toast 5s (P0-2, P0-3, P0-4, P0-7, P0-8, P0-9, P0-10) |
-| `frontend/src/components/review-workspace/review-workspace-v3.css` | + ~150 righe per scope selector, 4-CTA grid, MODIFY input, certify button con `rw-pulse-glow` animation |
-| `frontend/src/components/control-room/ControlRoomPanel.jsx` | `handleReview` ora apre il `FailedDocumentModal` se il documento è failed · `handleWarningCategory` e `handleOpenReview` ora delegano a `onDeepLink` per setting query params invece di solo scroll (P0-1, P0-5) |
-| `frontend/src/pages/inspirations/CatalogSetWorkspacePage.jsx` | `useSearchParams` per gestire `?type=&focus=&doc=` · `handleDeepLink(...)` push URL + scroll smooth · mounting `FailedDocumentModal` con state `failedDoc` (P0-1, P0-5) |
-| `frontend/src/lib/knowledgeApi.js` | + `documentFailureContext(setId, docId)` · + `backfillSemanticEvents(setId)` |
+| **NEW** `frontend/src/components/review-workspace/FailedDocumentModal.jsx` + `.css` | Modale glass-dark per documento failed (P0-5) |
+| `frontend/src/components/review-workspace/ReviewWorkspaceV3.jsx` | Entity Inspector V3.1 con 4 CTAs (P0-2/3/4/7/8/9/10) · **Document Viewer riscritto** per mostrare contenuto reale: page metadata, raw_text excerpt, inline_entities, asset count + pager funzionante (P0-5b · fix rettangoli fluttuanti) |
+| `frontend/src/components/review-workspace/review-workspace-v3.css` | + ~310 righe per scope selector, 4-CTA grid, MODIFY input, certify button con `rw-pulse-glow`, **nuovo Document Viewer content area** |
+| `frontend/src/components/control-room/ControlRoomPanel.jsx` | `onDeepLink` + `onFailedReview` props (P0-1, P0-5) |
+| `frontend/src/pages/inspirations/CatalogSetWorkspacePage.jsx` | `useSearchParams` + `handleDeepLink` + FailedDocumentModal mount |
+| `frontend/src/lib/knowledgeApi.js` | + `documentFailureContext`, `documentPages`, `backfillSemanticEvents` |
 
 ---
 
@@ -99,6 +98,7 @@ Quando warning critici = 0 → Certify button ATTIVO
 | `03_entity_inspector_modify.png` | Modalità MODIFICA · input `rw-entity-name-input` + save/cancel |
 | `04_scope_catalog_active.png` | Conferma scope `catalog` attivo (cyan highlight) |
 | `05_failed_doc_modal.png` | Failed Document Modal su Riva1920_1006 Catalogue · errore + timestamp + retry + 8 related docs |
+| **`07_doc_viewer_real_text.png`** | **Document Viewer P0-5b fix**: pagina 3/96 di RIVA1920_catalogo_BARRIQUE · chip `product_spread` + `20% confidence` · testo estratto REALE (la dedica San Patrignano in italiano/inglese) · footer onesto "Render PDF in arrivo" · pager `‹ 3 di 96 ›` funzionante |
 
 ---
 
