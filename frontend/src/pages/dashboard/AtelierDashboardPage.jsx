@@ -154,7 +154,7 @@ const ACTION_DESTINATIONS = [
     eyebrow: 'Prepara il momento',
     title: 'Presentazione Cliente',
     description: 'Una presentazione elegante, costruita per chiudere il progetto.',
-    href: '/workspace/presentations/new',
+    href: '/project-stories',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80',
   },
 ];

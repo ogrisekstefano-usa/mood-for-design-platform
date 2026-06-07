@@ -1,0 +1,56 @@
+{
+  "summary": "STORE-004 Project Story™ tested end-to-end (backend + frontend). All 9 pytest cases pass. All 6 cinematic sections render in studio + public viewer. Share button copies correct URL to clipboard. CRITICAL gating test passes: 'Genera Project Story' CTA is correctly hidden for spec status=draft/review and shown for approved/ready; click triggers POST and redirects to new /project-stories/{id}.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "observations": [
+      {
+        "area": "Dashboard card 'Presentazione Cliente'",
+        "issue": "On /studio/pulse, no <a href> containing '/project-stories' or text 'Presentazione Cliente' was detected during scan. Page also produced backend 503s on some dashboard widgets. The Project Story card itself may live on /dashboard or be conditionally rendered (e.g. tied to summary tile data that 503'd). Worth a quick manual check by main agent or a follow-up with broader selector."
+      },
+      {
+        "area": "Console noise (PRE-EXISTING, not STORE-004)",
+        "issue": "Many repeated i18n missing string warnings (auth.login.*, nav.*) and a React 'setState during render' warning from LocalizationOverlay. Unrelated to STORE-004 but worth a sprint cleanup."
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_store004_project_stories.py",
+    "/app/test_reports/pytest/store004_results.xml"
+  ],
+  "verified_features": [
+    "BE GET /api/project-stories returns tenant-scoped list",
+    "BE POST /api/project-stories/generate-from-specification/{id} returns 201 with 6 sections; selected_products contain brand_name + display_name + entity_type",
+    "BE GET /api/project-stories/{id} returns full sections JSONB",
+    "BE PATCH /api/project-stories/{id} persists title + sections.vision",
+    "BE GET /api/story/{share_token} public, NO auth, strips tenant_id + created_by",
+    "BE DELETE /api/project-stories/{id} soft-deletes (vanishes from list; detail 404)",
+    "FE /project-stories list page renders (data-testid='project-stories-list')",
+    "FE /project-stories/{id} viewer renders all 6 sections (.ps-cover/.ps-vision/.ps-moodboard/.ps-material/.ps-products/.ps-summary)",
+    "FE Share button (data-testid='ps-share-btn') copies https://.../story/{token} to clipboard, label flips to 'Link copiato!'",
+    "FE Showroom mode link (data-testid='ps-public-link') href=/story/{token}",
+    "FE /story/{token} public route renders 6 sections without studio chrome (no .ps-toolbar / .ps-back)",
+    "FE CTA gating: data-testid='generate-project-story' absent for draft + review, present for approved + ready",
+    "FE Click on generate CTA → POST 200 → window.location.assign('/project-stories/<new_id>')"
+  ],
+  "action_items": [
+    "Verify dashboard card 'Presentazione Cliente' actually links to /project-stories (could not detect href on /studio/pulse during automation; possibly on /dashboard or hidden behind 503 widget failure).",
+    "Optional cleanup: i18n missing keys (auth.login.*, nav.*) and LocalizationOverlay setState-in-render warning."
+  ],
+  "critical_code_review_comments": [
+    "project_stories.py: list endpoint includes share_token but not tenant_id — good for least-privilege. PATCH does not validate status enum (any string accepted). Consider validating against {draft, published}.",
+    "Soft delete uses deleted_at column — confirmed list/detail filters with .is_('deleted_at','null'). Public /story/{token} also filters deleted_at — good.",
+    "Public payload pops tenant_id and created_by — verified at runtime. Still returns share_token in payload; acceptable since the client already knows it via URL.",
+    "Generate endpoint silently caps moodboard/material entity_ids to 24/24 and selected_products to all items — reasonable for cinematic view."
+  ],
+  "updated_files": ["/app/backend/tests/test_store004_project_stories.py"],
+  "success_rate": { "backend": "100% (9/9)", "frontend": "92% (12/13 — dashboard card link unverified)" },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin Stefano · tenant studio)",
+  "seed_data_creation": "Generated 1 new Project Story via POST /api/project-stories/generate-from-specification (spec e9648cbb-4042-4f2a-91b2-ac2a66150a38). The original story 3127f798-8ea7-4b7c-ab67-4549f0115832 was PATCHED (title='TEST_PATCHED_TITLE', sections.vision={headline:'TEST_headline_iter', body:'TEST_body_iter'}) — main agent may want to revert if it affects demos. Pytest also generates+deletes one transient story each run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "STORE-004 fully green except for dashboard card href verification on /dashboard vs /studio/pulse — needs a 30s manual check or a broader selector scan. Existing PATCH leaves seed story with modified title/vision — restore if pristine state required.",
+  "rca of the issue": "N/A — no defects found in scope."
+}
