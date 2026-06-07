@@ -15,7 +15,7 @@
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Layers, Sparkles, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Layers, Sparkles, ExternalLink, FileText } from 'lucide-react';
 import api from '../../lib/api';
 import EntityPicker from '../../components/knowledge/EntityPicker';
 import EntityContextPanel from '../../components/knowledge/EntityContextPanel';
@@ -120,6 +120,17 @@ const MaterialBoardWorkspace = () => {
             <Sparkles size={12} strokeWidth={1.6} /> Da Moodboard
           </Link>
         )}
+        {/* STORE-003 · Convert to Specification */}
+        <button type="button" className="mbw-source"
+                style={{ background: 'rgba(111,228,210,0.10)', cursor: 'pointer' }}
+                data-testid="convert-to-specification"
+                onClick={() => {
+                  api.post(`/api/specifications/convert-from-material-board/${id}`)
+                    .then((r) => { if (r?.data?.package?.id) window.location.assign(`/specifications/${r.data.package.id}`); })
+                    .catch(() => {});
+                }}>
+          <FileText size={12} strokeWidth={1.6} /> Converti in Specification
+        </button>
       </header>
 
       <div className="mbw-body">

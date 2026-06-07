@@ -202,6 +202,9 @@ api_router.include_router(_dashboard_snapshot_router.router, tags=["dashboard-sn
 # STORE-002 · Material Board Studio™ (Feb/Jun 2026)
 from routers import material_boards as _mb_router  # noqa: E402
 api_router.include_router(_mb_router.router, tags=["material-boards"])
+# STORE-003 · Specification Package™ (Feb/Jun 2026)
+from routers import specifications as _spec_router  # noqa: E402
+api_router.include_router(_spec_router.router, tags=["specifications"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)

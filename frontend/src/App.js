@@ -46,6 +46,8 @@ const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboa
 const WorkspacePreparePage = lazy(() => import('./pages/workspace/WorkspacePreparePage'));
 const MaterialBoardsListPage = lazy(() => import('./pages/material-boards/MaterialBoardsListPage'));
 const MaterialBoardWorkspace = lazy(() => import('./pages/material-boards/MaterialBoardWorkspace'));
+const SpecificationsListPage = lazy(() => import('./pages/specifications/SpecificationPages').then(m => ({ default: m.SpecificationsListPage })));
+const SpecificationWorkspace = lazy(() => import('./pages/specifications/SpecificationPages').then(m => ({ default: m.SpecificationWorkspace })));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const DesignerConversationsPage = lazy(() => import('./pages/workspace/DesignerConversationsPage'));
@@ -632,6 +634,9 @@ function App() {
                   {/* STORE-002 · Material Board Studio™ (real surface) */}
                   <Route path="/material-boards" element={<MaterialBoardsListPage />} />
                   <Route path="/material-boards/:id" element={<MaterialBoardWorkspace />} />
+                  {/* STORE-003 · Specification Package™ */}
+                  <Route path="/specifications" element={<SpecificationsListPage />} />
+                  <Route path="/specifications/:id" element={<SpecificationWorkspace />} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
                   <Route path="/moodboards" element={G('inspirations', <MoodboardsPage />)} />
                   <Route path="/moodboards/:id" element={G('inspirations', <MoodboardEditor />)} />
