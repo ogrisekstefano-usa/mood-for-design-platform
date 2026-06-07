@@ -12,9 +12,11 @@
 import React from 'react';
 import VersionStack from './VersionStack';
 import { useT } from '../../i18n/useT';
+import KnowledgeAnchorsRail from '../knowledge/KnowledgeAnchorsRail';
 
 const MoodboardDirectionWorkspace = ({ context, artifacts, voices, projectId, children }) => {
   const { t } = useT();
+  const milestoneId = context?.step?.id;
   return (
     <div data-testid="sw-workspace-moodboard">
       {/* Rationale / Direction note */}
@@ -40,6 +42,15 @@ const MoodboardDirectionWorkspace = ({ context, artifacts, voices, projectId, ch
           proposta visiva offerta al cliente — e una conversazione aperta.
         </p>
       </section>
+
+      {/* KE-005B.2 · Knowledge anchors */}
+      {milestoneId && (
+        <KnowledgeAnchorsRail
+          surfaceType="design_journey"
+          surfaceId={milestoneId}
+          title="Entità ancorate a questo capitolo"
+        />
+      )}
 
       {/* Version Stack — i capitoli moodboard */}
       <section className="sw-section" data-testid="sw-section-versions">

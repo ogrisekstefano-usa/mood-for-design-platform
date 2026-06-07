@@ -47,6 +47,9 @@ import { trackEvent } from '../../lib/telemetry';
 import { FONT_REGISTRY, FONT_CATEGORIES } from '../../blueprint/moodboard/fontRegistry';
 import { copyStyle, pasteStyle, hasClipboardStyle, clipboardBlockType } from '../../blueprint/moodboard/styleClipboard';
 import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
+// KE-005B.2 · Knowledge-Native Surfaces
+import EntityPicker from '../../components/knowledge/EntityPicker';
+import EntityContextPanel from '../../components/knowledge/EntityContextPanel';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -81,6 +84,12 @@ const MoodboardEditor = ({ readOnly = false }) => {
   // QuickAdjust modal — lifted to editor root so changing the active block
   // doesn't unmount it mid-adjust. Holds { blockId, src }.
   const [quickAdjust, setQuickAdjust] = useState(null);
+
+  // KE-005B.2 · Knowledge-Native state
+  // pickerCtx · null when closed · { entityTypes, intent: 'add'|'swap', swapBlockId? }
+  const [pickerCtx, setPickerCtx] = useState(null);
+  // contextPanel · null when closed · { entityId, blockId }
+  const [contextPanel, setContextPanel] = useState(null);
 
   const history = useHistory();
   // Workspace mode is owned globally by the Topbar's ThemeSwitcher — the
@@ -302,6 +311,22 @@ const MoodboardEditor = ({ readOnly = false }) => {
 
   const addBlock = async (type) => {
     if (readOnly) return;
+    // KE-005B.2 · Knowledge-aware types open the EntityPicker instead of
+    // creating an empty block. The user picks a canonical entity from the
+    // Brand Atlas and we create the block bound to it.
+    const KNOWLEDGE_TYPES = {
+      product:  ['product'],
+      material: ['material', 'finish'],
+      designer: ['designer'],
+    };
+    if (KNOWLEDGE_TYPES[type]) {
+      setPickerCtx({
+        entityTypes: KNOWLEDGE_TYPES[type],
+        intent: 'add',
+        blockType: type,
+      });
+      return;
+    }
     const meta = BLOCK_TYPES.find((b) => b.type === type);
     // New blocks always sit on top of the same-page stack — eliminates
     // z-index collisions and keeps panel ↔ canvas in sync from creation.
@@ -323,6 +348,85 @@ const MoodboardEditor = ({ readOnly = false }) => {
     trackEvent('moodboard.block_added',
       { block_type: type, moodboard_id: id },
       { entityType: 'moodboard', entityId: id });
+  };
+
+  // KE-005B.2 · Handler dell'EntityPicker · crea o sostituisce un block
+  // bound a un'entità canonica del Brand Atlas.
+  const handlePickerSelect = async (entity) => {
+    if (!entity || !pickerCtx) return;
+    const intent    = pickerCtx.intent;
+    const blockType = pickerCtx.blockType || 'product';
+    setPickerCtx(null);
+
+    if (intent === 'swap' && pickerCtx.swapBlockId) {
+      // Swap entity on existing block · backend hooks detach old + attach new
+      try {
+        const r = await api.put(
+          `/api/moodboards/${id}/blocks/${pickerCtx.swapBlockId}`,
+          {
+            entity_id: entity.id,
+            content: { entity_snapshot: {
+              id: entity.id, type: entity.entity_type,
+              display_name: entity.display_name,
+              brand_id: entity.brand_id,
+            } },
+          },
+        );
+        setBlocks((bs) => {
+          const next = bs.map((b) => b.id === pickerCtx.swapBlockId ? r.data : b);
+          history.record(next); return next;
+        });
+        setContextPanel({ entityId: entity.id, blockId: pickerCtx.swapBlockId });
+        toast.success(`Sostituito con ${entity.display_name}`);
+      } catch (e) { toast.error('Impossibile sostituire l\'entità'); }
+      return;
+    }
+
+    // Default: create new entity-bound block
+    const meta = BLOCK_TYPES.find((b) => b.type === blockType);
+    const samePageBlocks = blocks.filter((b) =>
+      (b.page_id || firstPageId) === activePageId,
+    );
+    const maxZ = samePageBlocks.reduce((m, b) => Math.max(m, b.z_index || 0), -1);
+    const payload = {
+      type: blockType,
+      x: 60 + (samePageBlocks.length % 5) * 24,
+      y: 60 + (samePageBlocks.length % 5) * 24,
+      ...(meta?.defaults || {}),
+      z_index: maxZ + 1,
+      page_id: activePageId,
+      entity_id: entity.id,
+      content: { entity_snapshot: {
+        id: entity.id, type: entity.entity_type,
+        display_name: entity.display_name,
+        brand_id: entity.brand_id,
+        canonical_ref_id: entity.canonical_ref_id,
+      } },
+    };
+    try {
+      const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
+      setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
+      setSelectedId(r.data.id);
+      setRightTab('inspector');
+      toast.success(`${entity.display_name} aggiunto`);
+      trackEvent('moodboard.entity_block_added',
+        { block_type: blockType, entity_id: entity.id, moodboard_id: id },
+        { entityType: 'moodboard', entityId: id });
+    } catch (e) { toast.error('Impossibile aggiungere l\'entità'); }
+  };
+
+  const removeEntityBlock = async (blockId) => {
+    if (!blockId) return;
+    try {
+      await api.delete(`/api/moodboards/${id}/blocks/${blockId}`);
+      setBlocks((bs) => {
+        const next = bs.filter((b) => b.id !== blockId);
+        history.record(next); return next;
+      });
+      setSelectedId(null);
+      setContextPanel(null);
+      toast.success('Elemento rimosso dalla moodboard');
+    } catch (e) { toast.error('Impossibile rimuovere'); }
   };
 
   // ── Quick Add™ — instant add from MoodPanel (Inspirations / Products /
@@ -1123,6 +1227,31 @@ const MoodboardEditor = ({ readOnly = false }) => {
                         Regia
                       </button>
                     )}
+                    {/* KE-005B.2 · Knowledge chip · click → Entity Context Panel */}
+                    {b.entity_id && (
+                      <button
+                        type="button"
+                        data-testid={`knowledge-trigger-${b.id}`}
+                        onMouseDown={(e) => { e.stopPropagation(); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedId(b.id);
+                          setContextPanel({ entityId: b.entity_id, blockId: b.id });
+                        }}
+                        style={{
+                          position: 'absolute', top: 8, left: 8, zIndex: 5,
+                          display: 'inline-flex', alignItems: 'center', gap: 5,
+                          padding: '4px 9px', fontSize: 10, fontWeight: 600,
+                          letterSpacing: '0.16em', textTransform: 'uppercase',
+                          background: 'rgba(8,9,11,0.72)', backdropFilter: 'blur(6px)',
+                          border: '1px solid rgba(111,228,210,0.40)',
+                          color: '#6FE4D2', borderRadius: 999, cursor: 'pointer',
+                        }}
+                        title="Ispeziona nel Knowledge Engine">
+                        <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#6FE4D2' }} />
+                        Knowledge
+                      </button>
+                    )}
                     {!readOnly && isSelected && !b.locked && (
                       // Resize handle — visible 10×10 teal nub with an
                       // invisible 22×22 hit area so it's effortless to grab
@@ -1388,6 +1517,43 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </div>
         </div>
       )}
+
+      {/* KE-005B.2 · EntityPicker · Spotlight-style search (unmount on close → state reset) */}
+      {pickerCtx && (
+        <EntityPicker
+          open
+          onClose={() => setPickerCtx(null)}
+          onSelect={handlePickerSelect}
+          entityTypes={pickerCtx.entityTypes || ['product', 'material', 'finish', 'designer']}
+          title={pickerCtx.intent === 'swap'
+            ? 'Sostituisci con un\'altra entità del Brand Atlas'
+            : 'Cerca un prodotto, materiale o designer'}
+        />
+      )}
+
+      {/* KE-005B.2 · EntityContextPanel · cuore dell'ecosistema */}
+      <EntityContextPanel
+        open={!!contextPanel}
+        entityId={contextPanel?.entityId}
+        onClose={() => setContextPanel(null)}
+        surfaceContext={contextPanel ? { type: 'moodboard', id, blockId: contextPanel.blockId } : null}
+        onSwap={() => {
+          const block = blocks.find((b) => b.id === contextPanel?.blockId);
+          if (!block) return;
+          const types = block.type === 'product' ? ['product']
+                      : block.type === 'material' ? ['material', 'finish']
+                      : block.type === 'designer' ? ['designer']
+                      : ['product', 'material', 'finish', 'designer'];
+          setContextPanel(null);
+          setPickerCtx({
+            entityTypes: types,
+            intent: 'swap',
+            swapBlockId: contextPanel.blockId,
+            blockType: block.type,
+          });
+        }}
+        onRemove={() => removeEntityBlock(contextPanel?.blockId)}
+      />
     </div>
   );
 };

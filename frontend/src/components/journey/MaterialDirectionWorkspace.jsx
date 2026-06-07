@@ -12,6 +12,7 @@
 import React, { useMemo } from 'react';
 import VersionStack from './VersionStack';
 import { useT } from '../../i18n/useT';
+import KnowledgeAnchorsRail from '../knowledge/KnowledgeAnchorsRail';
 
 const GROUP_META = {
   selected: { eyebrow: 'Palette tattile', title: 'La materia scelta' },
@@ -19,8 +20,9 @@ const GROUP_META = {
   rejected: { eyebrow: 'Non scelte',      title: 'Materie scartate · per memoria' },
 };
 
-const MaterialDirectionWorkspace = ({ artifacts, projectId, children }) => {
+const MaterialDirectionWorkspace = ({ context, artifacts, projectId, children }) => {
   const { t } = useT();
+  const milestoneId = context?.step?.id;
   const groups = useMemo(() => {
     const sel = []; const alt = []; const rej = [];
     (artifacts || []).forEach((a) => {
@@ -60,6 +62,15 @@ const MaterialDirectionWorkspace = ({ artifacts, projectId, children }) => {
           scelta che il Journey ha attraversato.
         </p>
       </section>
+
+      {/* KE-005B.2 · Knowledge anchors */}
+      {milestoneId && (
+        <KnowledgeAnchorsRail
+          surfaceType="design_journey"
+          surfaceId={milestoneId}
+          title="Materiali ancorati a questo capitolo"
+        />
+      )}
 
       {totalCount === 0 ? (
         <VersionStack

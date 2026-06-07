@@ -1,0 +1,92 @@
+/* KnowledgeAnchorsRail · per design_journey milestone (KE-005B.2) */
+
+.kar {
+  margin: 24px 0;
+  padding: 22px 24px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(20,22,26,0.62), rgba(14,16,19,0.74));
+}
+.kar__head {
+  display: flex; align-items: center;
+  gap: 16px; margin-bottom: 16px;
+}
+.kar__eyebrow {
+  font-family: var(--atelier-sans, 'Inter', sans-serif);
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--atelier-cyan, #6FE4D2);
+  margin: 0;
+}
+.kar__title {
+  font-family: var(--atelier-serif, 'Cormorant Garamond', serif);
+  font-size: 19px; font-weight: 400;
+  color: #f3efe8;
+  margin: 0;
+  letter-spacing: -0.002em;
+}
+.kar__add {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(111,228,210,0.08);
+  border: 1px solid rgba(111,228,210,0.32);
+  color: #6FE4D2;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: var(--atelier-sans, sans-serif);
+}
+.kar__add:hover {
+  background: rgba(111,228,210,0.14);
+  border-color: rgba(111,228,210,0.55);
+}
+
+.kar__loading {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 4px;
+  font-size: 12.5px;
+  color: rgba(243,239,232,0.50);
+  font-style: italic;
+}
+.kar__spin { animation: kar-spin 1.1s linear infinite; }
+@keyframes kar-spin { to { transform: rotate(360deg); } }
+
+.kar__empty {
+  font-size: 13px;
+  color: rgba(243,239,232,0.55);
+  line-height: 1.55;
+  margin: 0;
+  font-style: italic;
+}
+.kar__empty em {
+  color: rgba(111,228,210,0.80);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.kar__list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.kar__chip { display: inline-flex; }
+.kar__chip-body {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #f3efe8;
+  font-size: 12.5px; font-weight: 400;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: var(--atelier-sans, sans-serif);
+}
+.kar__chip-body:hover {
+  background: rgba(111,228,210,0.08);
+  border-color: rgba(111,228,210,0.36);
+}
+.kar__chip-icon { color: var(--atelier-cyan, #6FE4D2); flex-shrink: 0; }
+.kar__chip-name { letter-spacing: 0.005em; }
