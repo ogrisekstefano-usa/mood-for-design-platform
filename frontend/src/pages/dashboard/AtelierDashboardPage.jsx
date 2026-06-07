@@ -146,7 +146,7 @@ const ACTION_DESTINATIONS = [
     eyebrow: 'Costruisci la palette',
     title: 'Material Board',
     description: 'Una selezione professionale di materiali, finiture e campioni.',
-    href: '/workspace/material-boards/new',
+    href: '/material-boards',
     image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1600&q=80',
   },
   {

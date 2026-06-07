@@ -199,6 +199,9 @@ api_router.include_router(atelier_dashboard.router,                         tags
 # Dashboard Snapshot · Ecosistema MOOD™ + Intelligence™ + Spotlight (Feb 2026)
 from routers import dashboard_snapshot as _dashboard_snapshot_router  # noqa: E402
 api_router.include_router(_dashboard_snapshot_router.router, tags=["dashboard-snapshot"])
+# STORE-002 · Material Board Studio™ (Feb/Jun 2026)
+from routers import material_boards as _mb_router  # noqa: E402
+api_router.include_router(_mb_router.router, tags=["material-boards"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)

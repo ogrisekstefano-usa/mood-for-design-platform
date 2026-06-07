@@ -44,6 +44,8 @@ const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage')
 const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const WorkspacePreparePage = lazy(() => import('./pages/workspace/WorkspacePreparePage'));
+const MaterialBoardsListPage = lazy(() => import('./pages/material-boards/MaterialBoardsListPage'));
+const MaterialBoardWorkspace = lazy(() => import('./pages/material-boards/MaterialBoardWorkspace'));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const DesignerConversationsPage = lazy(() => import('./pages/workspace/DesignerConversationsPage'));
@@ -627,6 +629,9 @@ function App() {
                   {/* Editorial Dashboard · Prepare workspace wizard (KE-006/007 onboarding) */}
                   <Route path="/workspace/material-boards/new" element={<WorkspacePreparePage />} />
                   <Route path="/workspace/presentations/new" element={<WorkspacePreparePage />} />
+                  {/* STORE-002 · Material Board Studio™ (real surface) */}
+                  <Route path="/material-boards" element={<MaterialBoardsListPage />} />
+                  <Route path="/material-boards/:id" element={<MaterialBoardWorkspace />} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
                   <Route path="/moodboards" element={G('inspirations', <MoodboardsPage />)} />
                   <Route path="/moodboards/:id" element={G('inspirations', <MoodboardEditor />)} />

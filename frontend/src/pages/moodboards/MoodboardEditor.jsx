@@ -1040,6 +1040,26 @@ const MoodboardEditor = ({ readOnly = false }) => {
             </button>
           )}
 
+          {/* STORE-002 · Convert to Material Board (visible when approved) */}
+          {!readOnly && mb.status === 'approved' && (
+            <button onClick={() => {
+              api.post(`/api/material-boards/convert-from-moodboard/${id}`)
+                .then((r) => {
+                  if (r?.data?.board?.id) {
+                    window.location.assign(`/material-boards/${r.data.board.id}`);
+                  }
+                })
+                .catch(() => toast.error('Conversione non riuscita'));
+            }}
+                    data-testid="convert-material-board-btn"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--bp-radius-sm)] border border-[var(--bp-primary)] text-[var(--bp-primary)] hover:bg-[var(--bp-primary)]/10 transition-all">
+              <Layers size={11} strokeWidth={1.5} />
+              <span className="text-[11px] tracking-[0.18em] uppercase font-medium">
+                Converti in Material Board
+              </span>
+            </button>
+          )}
+
           {/* Prepare Project Proposal — appears only when ALL pages are approved */}
           {!readOnly && allApproved && (
             <button onClick={handoffToProposal}
