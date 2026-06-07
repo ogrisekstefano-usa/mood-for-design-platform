@@ -130,8 +130,7 @@ const MaterialBoardWorkspace = () => {
                     .catch(() => {});
                 }}>
           <FileText size={12} strokeWidth={1.6} /> Converti in Specification
-        </button>
-      </header>
+        </button>      </header>
 
       <div className="mbw-body">
         {/* Library (sinistra) */}

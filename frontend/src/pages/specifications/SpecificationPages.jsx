@@ -5,8 +5,7 @@
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowUpRight, Plus, Trash2, FileText, Sparkles, Check } from 'lucide-react';
-import api from '../../lib/api';
+import { ArrowLeft, ArrowUpRight, Plus, Trash2, FileText, Sparkles, Check } from 'lucide-react';import api from '../../lib/api';
 import EntityPicker from '../../components/knowledge/EntityPicker';
 import EntityContextPanel from '../../components/knowledge/EntityContextPanel';
 import './specifications.css';
@@ -135,6 +134,17 @@ export const SpecificationWorkspace = () => {
         <button type="button" className="specw-add" onClick={() => setPicker(true)}
                 data-testid="specw-add">
           <Plus size={13} strokeWidth={1.7} /> Aggiungi elemento
+        </button>
+        {/* STORE-004 · Genera Project Story */}
+        <button type="button" className="specw-add"
+                style={{ background: 'linear-gradient(135deg, rgba(232,178,98,0.14), rgba(111,228,210,0.10))', borderColor: 'rgba(232,178,98,0.40)', color: '#E8B262' }}
+                data-testid="generate-project-story"
+                onClick={() => {
+                  api.post(`/api/project-stories/generate-from-specification/${id}`)
+                    .then((r) => { if (r?.data?.id) window.location.assign(`/project-stories/${r.data.id}`); })
+                    .catch(() => {});
+                }}>
+          <Sparkles size={13} strokeWidth={1.7} /> Genera Project Story
         </button>
       </header>
 

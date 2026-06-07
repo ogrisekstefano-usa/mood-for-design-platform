@@ -48,6 +48,9 @@ const MaterialBoardsListPage = lazy(() => import('./pages/material-boards/Materi
 const MaterialBoardWorkspace = lazy(() => import('./pages/material-boards/MaterialBoardWorkspace'));
 const SpecificationsListPage = lazy(() => import('./pages/specifications/SpecificationPages').then(m => ({ default: m.SpecificationsListPage })));
 const SpecificationWorkspace = lazy(() => import('./pages/specifications/SpecificationPages').then(m => ({ default: m.SpecificationWorkspace })));
+const ProjectStoriesListPage = lazy(() => import('./pages/project-stories/ProjectStoryPages').then(m => ({ default: m.ProjectStoriesListPage })));
+const ProjectStoryViewer = lazy(() => import('./pages/project-stories/ProjectStoryPages').then(m => ({ default: m.ProjectStoryViewer })));
+const PublicProjectStoryViewer = lazy(() => import('./pages/project-stories/ProjectStoryPages').then(m => ({ default: m.PublicProjectStoryViewer })));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const DesignerConversationsPage = lazy(() => import('./pages/workspace/DesignerConversationsPage'));
@@ -637,6 +640,9 @@ function App() {
                   {/* STORE-003 · Specification Package™ */}
                   <Route path="/specifications" element={<SpecificationsListPage />} />
                   <Route path="/specifications/:id" element={<SpecificationWorkspace />} />
+                  {/* STORE-004 · Project Story™ */}
+                  <Route path="/project-stories" element={<ProjectStoriesListPage />} />
+                  <Route path="/project-stories/:id" element={<ProjectStoryViewer />} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
                   <Route path="/moodboards" element={G('inspirations', <MoodboardsPage />)} />
                   <Route path="/moodboards/:id" element={G('inspirations', <MoodboardEditor />)} />
@@ -887,6 +893,8 @@ function App() {
                 <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />
                 <Route path="/presentation/:shareToken" element={<PublicPresentation />} />
                 <Route path="/review/:shareToken" element={<ReviewMode />} />
+                {/* STORE-004 · Public Project Story (cliente · no auth) */}
+                <Route path="/story/:token" element={<PublicProjectStoryViewer />} />
                 <Route path="/f/:tenantSlug/:formSlug" element={<PublicFormPage />} />
                 <Route path="/:tenantSlug" element={<PublicTenantPage />} />
                 <Route path="/:tenantSlug/:pageSlug" element={<PublicTenantPage />} />
