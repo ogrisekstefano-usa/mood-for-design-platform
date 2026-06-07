@@ -1,0 +1,232 @@
+/* Workspace Prepare · "Prepara il tuo workspace" wizard
+ * Dark editorial · ispirato a onboarding Apple / Notion Beta. */
+
+.wsp-canvas {
+  min-height: 100vh;
+  background: #0c0d10;
+  padding-bottom: 100px;
+  color: #f3efe8;
+}
+
+.wsp-hero {
+  position: relative;
+  height: clamp(340px, 46vh, 480px);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.wsp-hero__veil {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8,9,11,0.10) 0%, rgba(8,9,11,0.50) 50%, rgba(12,13,16,0.98) 100%),
+    linear-gradient(90deg, rgba(8,9,11,0.55) 0%, rgba(8,9,11,0.10) 100%);
+}
+.wsp-hero__inner {
+  position: relative; z-index: 2;
+  padding: clamp(40px, 5vw, 64px);
+  max-width: 760px;
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+
+.wsp-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: none;
+  color: rgba(243,239,232,0.65);
+  font-size: 12px; cursor: pointer;
+  padding: 0; margin-bottom: 22px;
+  letter-spacing: 0.02em;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+.wsp-back:hover { color: #6FE4D2; }
+
+.wsp-eyebrow {
+  font-family: var(--atelier-sans, sans-serif);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: #6FE4D2;
+  margin: 0 0 16px;
+}
+.wsp-title {
+  font-family: var(--atelier-serif, serif);
+  font-size: clamp(36px, 5.2vw, 60px);
+  font-weight: 300; line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #f3efe8;
+  margin: 0 0 14px;
+}
+.wsp-intro {
+  font-size: 15px; font-weight: 300;
+  color: rgba(243,239,232,0.72);
+  margin: 0; max-width: 560px;
+  line-height: 1.55;
+}
+
+/* ─── Form ───────────────────────────────────────────────────────── */
+.wsp-form {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 64px clamp(24px, 4vw, 48px) 0;
+  display: flex; flex-direction: column; gap: 48px;
+}
+
+.wsp-step {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.wsp-step:last-of-type { border-bottom: none; padding-bottom: 0; }
+.wsp-step__num {
+  font-family: var(--atelier-serif, serif);
+  font-size: 28px; font-weight: 300;
+  color: rgba(111,228,210,0.50);
+  letter-spacing: 0.02em;
+}
+.wsp-step__body { min-width: 0; }
+.wsp-step__label {
+  display: block;
+  font-family: var(--atelier-serif, serif);
+  font-size: 22px; font-weight: 400;
+  color: #f3efe8;
+  margin-bottom: 18px;
+  letter-spacing: -0.002em;
+  line-height: 1.3;
+}
+
+.wsp-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  color: #f3efe8;
+  font-size: 15px; font-weight: 300;
+  padding: 14px 16px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  font-family: var(--atelier-sans, sans-serif);
+}
+.wsp-input::placeholder { color: rgba(243,239,232,0.32); font-style: italic; }
+.wsp-input:focus {
+  outline: none;
+  border-color: rgba(111,228,210,0.40);
+  background: rgba(111,228,210,0.04);
+}
+
+.wsp-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.wsp-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(243,239,232,0.78);
+  font-size: 13px; font-weight: 400;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--atelier-sans, sans-serif);
+}
+.wsp-pill:hover {
+  border-color: rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.06);
+}
+.wsp-pill--on {
+  background: rgba(111,228,210,0.10);
+  border-color: rgba(111,228,210,0.45);
+  color: #6FE4D2;
+}
+
+/* ─── Actions ────────────────────────────────────────────────────── */
+.wsp-form__actions {
+  display: flex; align-items: center; gap: 24px;
+  padding-top: 16px;
+}
+.wsp-submit {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #f3efe8;
+  color: #0c0d10;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+  font-family: var(--atelier-sans, sans-serif);
+}
+.wsp-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.4);
+}
+.wsp-submit:disabled { opacity: 0.6; cursor: wait; }
+
+.wsp-cancel {
+  font-size: 13px;
+  color: rgba(243,239,232,0.50);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+.wsp-cancel:hover { color: #f3efe8; }
+
+/* ─── Confirmation ───────────────────────────────────────────────── */
+.wsp-confirmation {
+  max-width: 600px;
+  margin: -80px auto 0;
+  position: relative; z-index: 10;
+  background: linear-gradient(180deg, rgba(20,22,26,0.98), rgba(14,16,19,0.99));
+  border: 1px solid rgba(111,228,210,0.18);
+  border-radius: 18px;
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.55);
+}
+.wsp-confirmation__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(111,228,210,0.10);
+  color: #6FE4D2;
+  border: 1px solid rgba(111,228,210,0.30);
+  margin-bottom: 24px;
+}
+.wsp-confirmation__title {
+  font-family: var(--atelier-serif, serif);
+  font-size: 28px; font-weight: 300;
+  color: #f3efe8;
+  margin: 0 0 12px;
+}
+.wsp-confirmation__body {
+  font-size: 14px; font-weight: 300;
+  color: rgba(243,239,232,0.66);
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+.wsp-confirmation__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #f3efe8;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.wsp-confirmation__cta:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.24);
+}
+
+@media (max-width: 720px) {
+  .wsp-step { grid-template-columns: 50px 1fr; gap: 14px; }
+  .wsp-step__num { font-size: 22px; }
+  .wsp-step__label { font-size: 18px; }
+  .wsp-form__actions { flex-direction: column; align-items: stretch; }
+  .wsp-submit { justify-content: center; }
+  .wsp-cancel { text-align: center; }
+}

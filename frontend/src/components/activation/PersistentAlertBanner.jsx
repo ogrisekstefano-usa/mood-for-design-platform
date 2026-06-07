@@ -10,6 +10,7 @@
  *   - banner non dismissed nelle ultime 24h
  */
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { AlertCircle, X, ArrowRight } from 'lucide-react';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import { useSmartCtaRouter } from '../../hooks/useSmartCtaRouter';
@@ -17,8 +18,11 @@ import { useSmartCtaRouter } from '../../hooks/useSmartCtaRouter';
 export default function PersistentAlertBanner() {
   const { data, bannerDismissed, dismissBanner } = useActivationFoundation();
   const route = useSmartCtaRouter();
+  const { pathname } = useLocation();
 
   if (!data || data.activated || bannerDismissed) return null;
+  // Editorial Dashboard (Feb 2026) · banner NON deve dominare /dashboard
+  if (pathname === '/dashboard' || pathname === '/dashboard/') return null;
   const next = data.next_action;
   if (!next) return null;
 

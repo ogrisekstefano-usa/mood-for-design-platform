@@ -1,32 +1,36 @@
 /**
- * AtelierDashboardPage — Blueprint Atelier™ · Wave B (DB-driven · Cinematic)
- * ITER138 · Phase 2 (post-cinematic refinement, DB-driven content model)
+ * AtelierDashboardPage — "Editorial Studio" redesign (Feb 2026 · Stefano brief)
  *
- * NO hardcoded mock content. ALL copy + imagery + KPI labels + inspiration
- * quotes resolve from:
- *   GET /api/atelier/dashboard/config   (config + media bindings + quote)
- *   GET /api/dashboard/pulse            (real journey data, ALE-localized)
+ * Trasformazione: da console amministrativa a "spazio che ispira azione,
+ * progettazione e crescita del business" (Apple / Notion / AD / Mohd refs).
  *
- * Elegant fallback path:
- *   - When DB returns nothing, the inline empty states render
- *     ("Awaiting first journey", "No movement yet", etc.) localized via t()
- *   - System default rows (tenant_id=NULL) seed the demo experience,
- *     scoped & overridable per tenant via Command Center.
+ * Struttura:
+ *   1. HERO IMMERSIVO       — full-width · overlay · headline editoriale (NO KPI)
+ *   2. IN EVIDENZA OGGI     — single card · spotlight da /dashboard/ecosystem-snapshot
+ *   3. COSA PUOI FARE ADESSO — 4 destinazioni visuali (Netflix-style)
+ *   4. I TUOI PROGETTI ATTIVI — max 5 · card immagine + nome + stato + ultimo movimento + cliente
+ *   5. MOOD INTELLIGENCE™   — suggerimenti calcolati live (no LLM)
+ *   6. ECOSISTEMA MOOD™     — 8 KPI patrimonio digitale
+ *   7. Sidebar destra        — PendingBookings + RelationshipLiveTimeline
+ *
+ * Endpoint:
+ *   GET /api/atelier/dashboard/config        (hero media · invariato)
+ *   GET /api/dashboard/pulse                 (active journeys · invariato)
+ *   GET /api/dashboard/ecosystem-snapshot    (NUOVO · spotlight + intel + ecosystem)
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowUpRight, MessageSquare, CheckSquare, FileText,
-  CalendarDays, ClipboardCheck, Package, FileSignature,
+  ArrowUpRight, Sparkles, Compass, Layers, FileSignature, Layout,
+  Package, Users, TrendingUp, Folder, AlertCircle,
 } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
-import WorkspaceActionHub, { StandaloneQuickActions } from '../../components/activation/WorkspaceActionHub';
-import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import './atelier-dashboard.css';
+import './atelier-dashboard-editorial.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 const greetSlot = () => {
@@ -36,79 +40,39 @@ const greetSlot = () => {
   return 'evening';
 };
 
-const initials = (name = '') =>
-  name.split(' ').filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('') || '·';
-
-const relativeWhen = (iso, t) => {
+const relativeWhen = (iso) => {
   if (!iso) return '';
   const d = new Date(iso);
   const now = new Date();
   const diff = (now - d) / 1000 / 60 / 60;
-  if (diff < 1) return t('atelier.dashboard.time.just_now', null, 'just now');
-  if (diff < 24) return t('atelier.dashboard.time.hours_ago', { n: Math.floor(diff) }, `${Math.floor(diff)}h ago`);
+  if (diff < 1) return 'pochi minuti fa';
+  if (diff < 24) return `${Math.floor(diff)}h fa`;
   const days = Math.floor(diff / 24);
-  if (days === 1) return t('atelier.dashboard.time.yesterday', null, 'yesterday');
-  if (days < 7) return t('atelier.dashboard.time.days_ago', { n: days }, `${days} days ago`);
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  if (days === 1) return 'ieri';
+  if (days < 7) return `${days} giorni fa`;
+  return d.toLocaleDateString('it-IT', { month: 'short', day: 'numeric' });
 };
 
-const upcomingParts = (iso) => {
-  if (!iso) return { day: '—', month: '' };
-  const d = new Date(iso);
-  return {
-    day: d.toLocaleDateString(undefined, { day: '2-digit' }),
-    month: d.toLocaleDateString(undefined, { month: 'short' }).toUpperCase(),
-  };
-};
-
-const iconForActivity = (e) => {
-  const k = (e.kind || e.chapter_kind || e.canon || '').toLowerCase();
-  if (k.includes('message') || k.includes('feedback') || k.includes('voice')) return MessageSquare;
-  if (k.includes('approv'))                                                    return CheckSquare;
-  if (k.includes('file') || k.includes('upload') || k.includes('chapter'))     return FileText;
-  return MessageSquare;
-};
-
-const iconForMilestone = (m) => {
-  const k = (m.kind || m.milestone || '').toLowerCase();
-  if (k.includes('approv') || k.includes('final')) return ClipboardCheck;
-  if (k.includes('render') || k.includes('delivery') || k.includes('deliver')) return Package;
-  if (k.includes('material') || k.includes('moodboard')) return FileSignature;
-  return CalendarDays;
-};
-
-// Format hero summary template "{active} Journeys unfolding · {voices} voices..."
-const fillTemplate = (tpl, vars) =>
-  (tpl || '').replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? String(vars[k]) : ''));
-
-// Format card status into editorial chip label via i18n
-const statusLabel = (status, t) => {
+const statusLabel = (status) => {
   const map = {
-    in_progress:        t('atelier.dashboard.card.status.in_progress', null, 'IN PROGRESS'),
-    presenting:         t('atelier.dashboard.card.status.in_review',   null, 'IN REVIEW'),
-    conversation_open:  t('atelier.dashboard.card.status.new',         null, 'NEW'),
-    drifting:           t('atelier.dashboard.card.status.listening',   null, 'LISTENING'),
-    approved:           t('atelier.dashboard.card.status.approved',    null, 'APPROVED'),
-    closed:             t('atelier.dashboard.card.status.delivered',   null, 'DELIVERED'),
-    on_pause:           t('atelier.dashboard.card.status.paused',      null, 'PAUSED'),
+    in_progress:        { label: 'IN CORSO',     tone: 'cyan' },
+    active:             { label: 'ATTIVA',       tone: 'cyan' },
+    presenting:         { label: 'IN REVISIONE', tone: 'amber' },
+    in_review:          { label: 'IN REVISIONE', tone: 'amber' },
+    conversation_open:  { label: 'NUOVO',        tone: 'cyan' },
+    drifting:           { label: 'IN ASCOLTO',   tone: 'mute' },
+    approved:           { label: 'APPROVATA',    tone: 'cyan' },
+    closed:             { label: 'CONSEGNATA',   tone: 'mute' },
+    on_pause:           { label: 'IN PAUSA',     tone: 'mute' },
+    draft:              { label: 'BOZZA',        tone: 'mute' },
   };
-  return { label: map[status] || t('atelier.dashboard.card.status.active', null, 'ACTIVE'),
-           tone: (status === 'closed' || status === 'on_pause') ? 'mute' : 'cyan' };
+  return map[status] || { label: 'ATTIVO', tone: 'cyan' };
 };
 
-// ── Hero ────────────────────────────────────────────────────────────
-const Hero = ({ config, biz, userName }) => {
-  const t = useT();
+// ── Hero (no KPI) ──────────────────────────────────────────────────
+const Hero = ({ config, userName }) => {
   const slot = greetSlot();
-  const greeting = t(`atelier.dashboard.hero.greeting.${slot}`, null,
-    slot === 'morning' ? 'Buongiorno' : slot === 'afternoon' ? 'Buon pomeriggio' : 'Buonasera');
-  const eyebrow = t('atelier.dashboard.hero.eyebrow_v2', null, 'Dashboard operativa');
-  const summary = fillTemplate(
-    t('atelier.dashboard.hero.summary_template_v2', null,
-      '{leads} Lead · {prospects} Prospect · {journeys} Journey attive'),
-    { leads: biz.leads || 0, prospects: biz.prospects || 0, journeys: biz.active_journeys || 0 }
-  );
-
+  const greeting = slot === 'morning' ? 'Buongiorno' : slot === 'afternoon' ? 'Buon pomeriggio' : 'Buonasera';
   const heroSrc = config?.hero_media?.file_url;
   const heroAlt = config?.hero_media?.alt_text || '';
   const focal = config?.hero_media
@@ -116,260 +80,387 @@ const Hero = ({ config, biz, userName }) => {
     : '50% 50%';
 
   return (
-    <header className="atd-hero" data-testid="atelier-hero">
-      <div className="atd-hero__left">
-        <p className="atd-hero__eyebrow" data-testid="atelier-hero-eyebrow">{eyebrow}</p>
-
-        <h1 className="atd-hero__title" data-testid="atelier-hero-title">
-          {greeting},<br />{userName || ''}.
-        </h1>
-
-        <p className="atd-hero__lede" data-testid="atelier-hero-lede">{summary}</p>
-
-        <div className="atd-hero__kpis" data-testid="atelier-hero-kpis">
-          <Kpi value={biz.leads || 0}
-               label={t('atelier.dashboard.kpi.leads', null, 'Lead')}
-               testid="kpi-leads" />
-          <Kpi value={biz.prospects || 0}
-               label={t('atelier.dashboard.kpi.prospects', null, 'Prospect')}
-               testid="kpi-prospects" />
-          <Kpi value={biz.customers || 0}
-               label={t('atelier.dashboard.kpi.customers', null, 'Clienti')}
-               testid="kpi-customers" />
-          <Kpi value={biz.active_journeys || 0}
-               label={t('atelier.dashboard.kpi.active_journeys_v2', null, 'Journey attive')}
-               testid="kpi-active-journeys" />
-        </div>
-      </div>
-
-      <div className="atd-hero__image" data-testid="atelier-hero-image">
+    <header className="atd-hero atd-hero--editorial" data-testid="atelier-hero">
+      <div className="atd-hero__bg">
         {heroSrc && (
           <img src={heroSrc} alt={heroAlt} loading="eager"
                style={{ objectPosition: focal }} />
         )}
-        <div className="atd-hero__image-overlay" aria-hidden />
+        <div className="atd-hero__veil" aria-hidden />
+      </div>
+      <div className="atd-hero__caption">
+        <p className="atd-hero__eyebrow" data-testid="atelier-hero-eyebrow">Lo studio · oggi</p>
+        <h1 className="atd-hero__title" data-testid="atelier-hero-title">
+          {greeting}, {userName || ''}.
+        </h1>
+        <p className="atd-hero__lede" data-testid="atelier-hero-lede">
+          Ecco cosa sta accadendo oggi nel tuo studio.
+        </p>
       </div>
     </header>
   );
 };
 
-const Kpi = ({ value, label, testid }) => (
-  <div className="atd-kpi" data-testid={testid}>
-    <span className="atd-kpi__value">{value}</span>
-    <span className="atd-kpi__label">{label}</span>
-  </div>
-);
-
-// ── Project card · DB-driven ────────────────────────────────────────
-const ProjectCard = ({ project, index, fallbackMedia }) => {
-  const t = useT();
-  // 1. project.cover_url (real project upload) > 2. tenant fallback media > 3. invisible
-  const fallback = fallbackMedia?.[index % Math.max(fallbackMedia.length, 1)];
-  const cover = project.cover_url || fallback?.file_url;
-  const coverAlt = project.cover_alt || fallback?.alt_text || project.title || '';
-  const focal = fallback
-    ? `${(fallback.focal_point_x * 100).toFixed(1)}% ${(fallback.focal_point_y * 100).toFixed(1)}%`
-    : '50% 50%';
-
-  const status = project.lifecycle_state || project.status || 'in_progress';
-  const { label, tone } = statusLabel(status, t);
-  const progress = typeof project.progress === 'number'
-    ? project.progress
-    : typeof project.progress_pct === 'number'
-      ? project.progress_pct
-      : 0;
-  const updatedAt = project.last_event?.when || project.last_evolved_at || project.updated_at;
-  const collaborators = project.collaborators || [];
-
-  // Project title: real project name → milestone label → fallback
-  const title = project.title || project.account_name || project.current_milestone?.label
-                || t('atelier.dashboard.card.untitled', null, 'Untitled journey');
-  const subtitle = project.subtitle || project.location || project.current_milestone?.label || '';
-
+// ── Spotlight · IN EVIDENZA OGGI ──────────────────────────────────
+const Spotlight = ({ data }) => {
+  if (!data) return null;
+  const toneClass = `atd-spotlight--${data.tone || 'cyan'}`;
   return (
-    <Link
-      to={project.project_id ? `/workspace/projects/${project.project_id}` : '/workspace/projects'}
-      className="atd-card"
-      data-testid={`atelier-project-card-${index}`}
-    >
-      <div className="atd-card__cover">
-        {cover && (
-          <img src={cover} alt={coverAlt} loading="lazy"
-               style={{ objectPosition: focal }} />
-        )}
-        <span className={`atd-card__badge atd-card__badge--${tone}`}>{label}</span>
-        <div className="atd-card__cover-veil" aria-hidden />
-        <div className="atd-card__body">
-          <h3 className="atd-card__title" data-testid={`atelier-project-card-title-${index}`}>{title}</h3>
-          {subtitle && <p className="atd-card__subtitle">{subtitle}</p>}
-
-          <div className="atd-card__progress">
-            <div className="atd-card__progress-track">
-              <div className="atd-card__progress-fill" style={{ width: `${progress}%` }} />
-            </div>
-            <span className="atd-card__progress-pct">{progress}%</span>
-          </div>
-
-          <div className="atd-card__foot">
-            <span className="atd-card__meta">
-              {updatedAt
-                ? t('atelier.dashboard.card.updated', { when: relativeWhen(updatedAt, t) },
-                    `Updated ${relativeWhen(updatedAt, t)}`)
-                : t('atelier.dashboard.card.no_updates', null, 'Awaiting first chapter')}
-            </span>
-            {collaborators.length > 0 && (
-              <div className="atelier-avatar-stack">
-                {collaborators.slice(0, 3).map((c, i) => (
-                  <div key={i} className="atelier-avatar-stack__item" aria-label={c.name || ''}>
-                    {c.avatar_url ? <img src={c.avatar_url} alt="" /> : initials(c.name)}
-                  </div>
-                ))}
-                {collaborators.length > 3 && (
-                  <div className="atelier-avatar-stack__item">+{collaborators.length - 3}</div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+    <section className={`atd-spotlight ${toneClass}`} data-testid="atelier-spotlight">
+      <div className="atd-spotlight__eyebrow">In evidenza oggi</div>
+      <div className="atd-spotlight__body">
+        <h2 className="atd-spotlight__title" data-testid="atelier-spotlight-title">
+          {data.title}
+        </h2>
+        <p className="atd-spotlight__subtitle">{data.subtitle}</p>
       </div>
-    </Link>
+      <Link to={data.cta_href || '#'} className="atd-spotlight__cta"
+            data-testid="atelier-spotlight-cta">
+        {data.cta_label || 'Apri'}
+        <ArrowUpRight size={16} strokeWidth={1.6} />
+      </Link>
+    </section>
   );
 };
 
-// ── Operational 3-column ────────────────────────────────────────────
-const ActivityColumn = ({ title, events, t }) => (
-  <section className="atd-panel" data-testid="atelier-col-activity">
-    <h3 className="atd-panel__title">{title}</h3>
-    {events.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty_v3', null,
-        'Nessuna attività registrata.')}</p>
-    ) : (
-      <ul className="atd-feed">
-        {events.slice(0, 4).map((e, i) => {
-          const Icon = iconForActivity(e);
+// ── Cosa puoi fare adesso · 4 destinations (Netflix/Apple TV style) ──
+const ACTION_DESTINATIONS = [
+  {
+    id: 'new-journey',
+    eyebrow: 'Apri un nuovo capitolo',
+    title: 'Nuovo Design Journey',
+    description: 'Avvia un progetto e guida il cliente attraverso ogni passaggio creativo.',
+    href: '/workspace/projects?new=1',
+    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    id: 'new-moodboard',
+    eyebrow: 'Componi l\'ispirazione',
+    title: 'Crea una Moodboard',
+    description: 'Comporre un racconto visivo utilizzando prodotti e materiali certificati.',
+    href: '/moodboards',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    id: 'material-board',
+    eyebrow: 'Costruisci la palette',
+    title: 'Material Board',
+    description: 'Una selezione professionale di materiali, finiture e campioni.',
+    href: '/workspace/material-boards/new',
+    image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    id: 'client-presentation',
+    eyebrow: 'Prepara il momento',
+    title: 'Presentazione Cliente',
+    description: 'Una presentazione elegante, costruita per chiudere il progetto.',
+    href: '/workspace/presentations/new',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80',
+  },
+];
+
+const ActionDestinationsGrid = () => (
+  <section className="atd-destinations" data-testid="atelier-destinations">
+    <header className="atd-section__head">
+      <div>
+        <p className="atd-section__eyebrow">Apertura</p>
+        <h2 className="atd-section__title">Cosa puoi fare adesso</h2>
+      </div>
+    </header>
+    <div className="atd-destinations__grid">
+      {ACTION_DESTINATIONS.map((d) => (
+        <Link key={d.id} to={d.href} className="atd-dest-card"
+              data-testid={`atelier-destination-${d.id}`}>
+          <div className="atd-dest-card__bg" aria-hidden>
+            <img src={d.image} alt="" loading="lazy" />
+            <div className="atd-dest-card__veil" />
+          </div>
+          <div className="atd-dest-card__body">
+            <p className="atd-dest-card__eyebrow">{d.eyebrow}</p>
+            <h3 className="atd-dest-card__title">{d.title}</h3>
+            <p className="atd-dest-card__desc">{d.description}</p>
+            <span className="atd-dest-card__cta">
+              Entra <ArrowUpRight size={14} strokeWidth={1.6} />
+            </span>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </section>
+);
+
+// ── Progetti attivi · card editoriali ──────────────────────────────
+const ProjectsRail = ({ projects, fallbackMedia }) => {
+  if (!projects || projects.length === 0) {
+    return (
+      <section className="atd-projects atd-projects--editorial" data-testid="atelier-projects-section">
+        <header className="atd-section__head">
+          <div>
+            <p className="atd-section__eyebrow">In atelier</p>
+            <h2 className="atd-section__title">I tuoi progetti attivi</h2>
+          </div>
+        </header>
+        <div className="atd-projects__empty" data-testid="atelier-projects-empty">
+          <p>Nessun progetto attivo. Avvia il primo Design Journey per iniziare il racconto.</p>
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="atd-projects atd-projects--editorial" data-testid="atelier-projects-section">
+      <header className="atd-section__head">
+        <div>
+          <p className="atd-section__eyebrow">In atelier</p>
+          <h2 className="atd-section__title">I tuoi progetti attivi</h2>
+        </div>
+        <Link to="/workspace/projects" className="atd-section__cta"
+              data-testid="atd-see-all-projects">
+          Vedi tutti i progetti
+          <ArrowUpRight size={13} strokeWidth={1.6} />
+        </Link>
+      </header>
+      <div className="atd-projects-rail">
+        {projects.slice(0, 5).map((p, i) => {
+          const fallback = fallbackMedia?.[i % Math.max(fallbackMedia.length, 1)];
+          const cover = p.cover_url || fallback?.file_url;
+          const focal = fallback
+            ? `${(fallback.focal_point_x * 100).toFixed(1)}% ${(fallback.focal_point_y * 100).toFixed(1)}%`
+            : '50% 50%';
+          const { label, tone } = statusLabel(p.lifecycle_state || p.status || 'in_progress');
+          const title = p.title || p.account_name || 'Progetto senza nome';
+          const client = p.account_name || p.client_name || '—';
+          const lastMove = p.last_event?.label || p.current_milestone?.label || 'Avviato';
+          const lastWhen = relativeWhen(p.last_event?.when || p.last_evolved_at || p.updated_at);
+
           return (
-            <li key={i} className="atd-feed__item">
-              <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
-              <div className="atd-feed__body">
-                <p className="atd-feed__line">{e.chapter || e.text || e.label || '—'}</p>
-                <p className="atd-feed__meta">
-                  {e.account ? `${e.account} · ` : ''}{relativeWhen(e.when, t)}
+            <Link
+              key={p.journey_id || p.id || i}
+              to={p.project_id ? `/workspace/projects/${p.project_id}` : '/workspace/projects'}
+              className="atd-proj-card"
+              data-testid={`atelier-project-card-${i}`}
+            >
+              <div className="atd-proj-card__cover">
+                {cover && <img src={cover} alt="" loading="lazy" style={{ objectPosition: focal }} />}
+                <div className="atd-proj-card__veil" />
+                <span className={`atd-proj-card__badge atd-proj-card__badge--${tone}`}>{label}</span>
+              </div>
+              <div className="atd-proj-card__body">
+                <h3 className="atd-proj-card__title">{title}</h3>
+                <p className="atd-proj-card__client">{client}</p>
+                <p className="atd-proj-card__move">
+                  <span className="atd-proj-card__move-label">{lastMove}</span>
+                  {lastWhen && <span className="atd-proj-card__move-when"> · {lastWhen}</span>}
                 </p>
               </div>
-            </li>
+            </Link>
           );
         })}
-      </ul>
-    )}
-  </section>
-);
+      </div>
+    </section>
+  );
+};
 
-const MilestonesColumn = ({ title, milestones, t }) => (
-  <section className="atd-panel" data-testid="atelier-col-milestones">
-    <h3 className="atd-panel__title">{title}</h3>
-    {milestones.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty_v3', null,
-        'Nessuna scadenza in arrivo.')}</p>
-    ) : (
-      <ul className="atd-feed">
-        {milestones.slice(0, 4).map((m, i) => {
-          const Icon = iconForMilestone(m);
-          const { day, month } = upcomingParts(m.due_at || m.presented_at || m.when);
+// ── Mood Intelligence ──────────────────────────────────────────────
+const INTEL_ICON = {
+  users: Users, layout: Layout, compass: Compass, folder: Folder,
+  package: Package, 'trending-up': TrendingUp, default: AlertCircle,
+};
+const IntelligenceGrid = ({ items }) => {
+  if (!items || items.length === 0) {
+    return (
+      <section className="atd-intelligence" data-testid="atelier-intelligence">
+        <header className="atd-section__head">
+          <div>
+            <p className="atd-section__eyebrow">Mood Intelligence™</p>
+            <h2 className="atd-section__title">MOOD suggerisce per te</h2>
+          </div>
+        </header>
+        <div className="atd-intelligence__empty">
+          Lo studio è in equilibrio. Nessun suggerimento per oggi.
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="atd-intelligence" data-testid="atelier-intelligence">
+      <header className="atd-section__head">
+        <div>
+          <p className="atd-section__eyebrow">Mood Intelligence™</p>
+          <h2 className="atd-section__title">MOOD suggerisce per te</h2>
+        </div>
+        <span className="atd-section__cta atd-section__cta--passive">
+          Calcolato dal Knowledge Engine
+          <Sparkles size={13} strokeWidth={1.6} />
+        </span>
+      </header>
+      <div className="atd-intelligence__grid">
+        {items.slice(0, 4).map((s) => {
+          const Icon = INTEL_ICON[s.icon] || INTEL_ICON.default;
           return (
-            <li key={i} className="atd-feed__item atd-feed__item--milestone">
-              <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
-              <div className="atd-feed__body">
-                <p className="atd-feed__line">{m.chapter_title || m.milestone || m.title || '—'}</p>
-                <p className="atd-feed__meta">{m.account || m.project_name || ''}</p>
+            <Link key={s.id} to={s.cta_href || '#'} className="atd-intel-card"
+                  data-testid={`atelier-intel-${s.id}`}>
+              <span className="atd-intel-card__icon">
+                <Icon size={18} strokeWidth={1.6} />
+              </span>
+              <div className="atd-intel-card__body">
+                <h4 className="atd-intel-card__title">{s.title}</h4>
+                <p className="atd-intel-card__subtitle">{s.subtitle}</p>
               </div>
-              <div className="atd-feed__date">
-                <span className="atd-feed__date-day">{day}</span>
-                <span className="atd-feed__date-month">{month}</span>
-              </div>
-            </li>
+              <span className="atd-intel-card__cta">
+                {s.cta_label}
+                <ArrowUpRight size={13} strokeWidth={1.5} />
+              </span>
+            </Link>
           );
         })}
-      </ul>
-    )}
+      </div>
+    </section>
+  );
+};
+
+// ── Ecosistema MOOD™ ───────────────────────────────────────────────
+const ECOSYSTEM_TILES = [
+  { key: 'brands',        label: 'Brand certificati' },
+  { key: 'products',      label: 'Prodotti' },
+  { key: 'materials',     label: 'Materiali' },
+  { key: 'designers',     label: 'Designer' },
+  { key: 'images',        label: 'Immagini' },
+  { key: 'moodboards',    label: 'Moodboard' },
+  { key: 'journeys',      label: 'Design Journey' },
+  { key: 'presentations', label: 'Presentazioni' },
+];
+const Ecosystem = ({ data }) => (
+  <section className="atd-ecosystem" data-testid="atelier-ecosystem">
+    <header className="atd-section__head">
+      <div>
+        <p className="atd-section__eyebrow">Patrimonio</p>
+        <h2 className="atd-section__title">Il tuo ecosistema MOOD™</h2>
+      </div>
+    </header>
+    <div className="atd-ecosystem__grid">
+      {ECOSYSTEM_TILES.map((t) => {
+        const v = (data && data[t.key]) || 0;
+        return (
+          <div key={t.key} className="atd-eco-tile" data-testid={`atelier-eco-${t.key}`}>
+            <div className="atd-eco-tile__value">{Number(v).toLocaleString('it-IT')}</div>
+            <div className="atd-eco-tile__label">{t.label}</div>
+          </div>
+        );
+      })}
+    </div>
   </section>
 );
 
-const InspirationColumn = null; // ITER181.A · removed
-void InspirationColumn;
+// ── Recent Activity · timeline narrativa ──────────────────────────
+const friendlyActivity = (e) => {
+  // Normalizza l'evento in una frase comprensibile per il titolare
+  if (e.chapter) return e.chapter;
+  if (e.text)    return e.text;
+  if (e.label)   return e.label;
+  const k = (e.kind || e.chapter_kind || e.canon || '').toLowerCase();
+  if (k.includes('moodboard')) return 'Aggiornamento moodboard';
+  if (k.includes('milestone')) return 'Tappa raggiunta';
+  if (k.includes('message') || k.includes('voice')) return 'Nuovo messaggio';
+  if (k.includes('approval') || k.includes('approv')) return 'Approvazione ricevuta';
+  return 'Movimento nello studio';
+};
+const ActivityNarrative = ({ events }) => {
+  if (!events || events.length === 0) {
+    return (
+      <section className="atd-activity-narrative" data-testid="atelier-activity-narrative">
+        <header className="atd-section__head">
+          <div>
+            <p className="atd-section__eyebrow">Movimento</p>
+            <h2 className="atd-section__title">Attività recenti</h2>
+          </div>
+        </header>
+        <p className="atd-activity-narrative__empty">
+          Nessun movimento recente nello studio.
+        </p>
+      </section>
+    );
+  }
+  return (
+    <section className="atd-activity-narrative" data-testid="atelier-activity-narrative">
+      <header className="atd-section__head">
+        <div>
+          <p className="atd-section__eyebrow">Movimento</p>
+          <h2 className="atd-section__title">Attività recenti</h2>
+        </div>
+      </header>
+      <ul className="atd-activity-list">
+        {events.slice(0, 6).map((e, i) => (
+          <li key={i} className="atd-activity-item">
+            <span className="atd-activity-item__dot" aria-hidden />
+            <div className="atd-activity-item__body">
+              <p className="atd-activity-item__line">{friendlyActivity(e)}</p>
+              <p className="atd-activity-item__meta">
+                {e.account ? `${e.account} · ` : ''}{relativeWhen(e.when)}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
 
 // ── Main ────────────────────────────────────────────────────────────
 const AtelierDashboardPage = () => {
   const t = useT();
   const { locale } = useBlueprint();
   const { user } = useAuth();
-  const { data: afData } = useActivationFoundation();
   const userName = user?.first_name || user?.full_name?.split(' ')[0] || '';
 
   const [config, setConfig] = useState(null);
-  const [pulse, setPulse]   = useState({ active_journeys: [], counts: {}, recent_evolutions: [], chapters_waiting: [] });
+  const [pulse, setPulse]   = useState({ active_journeys: [], counts: {}, recent_evolutions: [] });
+  const [snapshot, setSnapshot] = useState(null);
 
   useEffect(() => {
     let alive = true;
     Promise.all([
-      api.get(`/api/atelier/dashboard/config?locale=${encodeURIComponent(locale || 'en-US')}`)
+      api.get(`/api/atelier/dashboard/config?locale=${encodeURIComponent(locale || 'it-IT')}`)
         .then(r => r.data).catch(() => null),
-      api.get(`/api/dashboard/pulse?locale=${encodeURIComponent(locale || 'en-US')}`)
-        .then(r => r.data).catch(() => ({ active_journeys: [], counts: {} })),
-    ]).then(([cfg, p]) => {
+      api.get(`/api/dashboard/pulse?locale=${encodeURIComponent(locale || 'it-IT')}`)
+        .then(r => r.data).catch(() => ({ active_journeys: [], recent_evolutions: [] })),
+      api.get('/api/dashboard/ecosystem-snapshot')
+        .then(r => r.data).catch(() => null),
+    ]).then(([cfg, p, snap]) => {
       if (!alive) return;
-      setConfig(cfg);
-      setPulse(p || {});
+      setConfig(cfg); setPulse(p || {}); setSnapshot(snap);
     });
     return () => { alive = false; };
   }, [locale]);
 
-  const biz = afData?.business_counts || { leads: 0, prospects: 0, customers: 0, active_journeys: 0 };
-  const projects = useMemo(() => (pulse.active_journeys || []).slice(0, 4), [pulse.active_journeys]);
+  const projects = useMemo(() => pulse.active_journeys || [], [pulse.active_journeys]);
   const recent   = useMemo(() => pulse.recent_evolutions || [], [pulse.recent_evolutions]);
-  const milestones = useMemo(() => pulse.chapters_waiting || [], [pulse.chapters_waiting]);
+  void t;
 
   return (
-    <div className="atd-canvas" data-testid="atelier-dashboard">
-      <Hero config={config} biz={biz} userName={userName} />
+    <div className="atd-canvas atd-canvas--editorial" data-testid="atelier-dashboard">
+      {/* 1. HERO */}
+      <Hero config={config} userName={userName} />
 
-      <WorkspaceActionHub />
-      <StandaloneQuickActions />
+      {/* 2. IN EVIDENZA OGGI */}
+      <Spotlight data={snapshot?.spotlight} />
 
-      <section className="atd-projects" data-testid="atelier-projects-section">
-        <header className="atd-section__head">
-          <h2 className="atd-section__title">
-            {t('atelier.dashboard.projects.title_v2', null, 'Design Journey attive')}
-          </h2>
-          <Link to="/workspace/projects" className="atd-section__cta" data-testid="atd-see-all-projects">
-            {t('atelier.dashboard.projects.see_all', null, 'Vedi tutte')}
-            <ArrowUpRight size={13} strokeWidth={1.6} />
-          </Link>
-        </header>
-        {projects.length === 0 ? (
-          <div className="atd-projects__empty" data-testid="atelier-projects-empty">
-            <p>{t('atelier.dashboard.projects.empty_v3', null, 'Nessuna Design Journey attiva.')}</p>
-          </div>
-        ) : (
-          <div className="atd-projects__grid">
-            {projects.map((p, i) => (
-              <ProjectCard key={p.journey_id || p.id || i}
-                           project={p} index={i}
-                           fallbackMedia={config?.project_card_fallback_media || []} />
-            ))}
-          </div>
-        )}
-      </section>
+      {/* 3. COSA PUOI FARE ADESSO */}
+      <ActionDestinationsGrid />
 
-      <section className="atd-desk atd-desk--2col">
-        <ActivityColumn
-          title={t('atelier.dashboard.col.recent_activity_v2', null, 'Attività recenti')}
-          events={recent} t={t} />
-        <MilestonesColumn
-          title={t('atelier.dashboard.col.upcoming_milestones_v2', null, 'Prossime scadenze')}
-          milestones={milestones} t={t} />
-      </section>
+      {/* 4. I TUOI PROGETTI ATTIVI */}
+      <ProjectsRail projects={projects}
+                     fallbackMedia={config?.project_card_fallback_media || []} />
 
-      {/* Attività relazionali (ex Timeline relazioni) */}
+      {/* 5. MOOD INTELLIGENCE™ */}
+      <IntelligenceGrid items={snapshot?.intelligence || []} />
+
+      {/* 6. ATTIVITÀ RECENTI */}
+      <ActivityNarrative events={recent} />
+
+      {/* 7. ECOSISTEMA MOOD™ */}
+      <Ecosystem data={snapshot?.ecosystem} />
+
+      {/* Sidebar relazionale (mantenuta) */}
       <section className="atd-live-relationships" data-testid="atelier-live-relationships">
         <PendingBookingsPanel locale="it" />
         <RelationshipLiveTimeline locale="it" />

@@ -43,6 +43,7 @@ const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
 const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
+const WorkspacePreparePage = lazy(() => import('./pages/workspace/WorkspacePreparePage'));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const DesignerConversationsPage = lazy(() => import('./pages/workspace/DesignerConversationsPage'));
@@ -623,6 +624,9 @@ function App() {
                   <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <LegacyStepRedirect />)} />
                   <Route path="/workspace/proposals" element={G('journey_index', <ProposalsPage />)} />
                   <Route path="/workspace/proposals/:id/compose" element={G('journey_index', <ProposalComposerPage />)} />
+                  {/* Editorial Dashboard · Prepare workspace wizard (KE-006/007 onboarding) */}
+                  <Route path="/workspace/material-boards/new" element={<WorkspacePreparePage />} />
+                  <Route path="/workspace/presentations/new" element={<WorkspacePreparePage />} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
                   <Route path="/moodboards" element={G('inspirations', <MoodboardsPage />)} />
                   <Route path="/moodboards/:id" element={G('inspirations', <MoodboardEditor />)} />

@@ -196,6 +196,9 @@ api_router.include_router(journey_step_workspace.router,                    tags
 api_router.include_router(site_evolution.router,                            tags=["site-evolution"])
 api_router.include_router(journey_closure.router,                           tags=["journey-closure"])
 api_router.include_router(atelier_dashboard.router,                         tags=["atelier-dashboard"])
+# Dashboard Snapshot · Ecosistema MOOD™ + Intelligence™ + Spotlight (Feb 2026)
+from routers import dashboard_snapshot as _dashboard_snapshot_router  # noqa: E402
+api_router.include_router(_dashboard_snapshot_router.router, tags=["dashboard-snapshot"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)
