@@ -25,6 +25,8 @@ import CinematicLoader from '../components/CinematicLoader';
 // Lazy-load the existing pages we will mount under the new canonical paths
 const ProjectDetailPage          = lazy(() => import('../pages/workspace/ProjectDetailPage'));
 const StepWorkspacePage          = lazy(() => import('../pages/journey/StepWorkspacePage'));
+// STORE-009 · The Daily Operating Workspace™ (new canonical for /studio/journey/:jid)
+const JourneyOperatingPage       = lazy(() => import('../pages/journey-operating/JourneyOperatingPage'));
 // ITER172 · Gen 3 (Atelier) promoted to V1 — /journey/:jid renders the Atelier
 // preset (via ClientWelcomePresetPage) instead of the Gen 2 narrative companion.
 // ClientCompanionPage source kept on disk (marker `ITER172 · FROZEN`), no route
@@ -47,10 +49,17 @@ const Loader = () => (
  * ════════════════════════════════════════════════════════════════════ */
 export const StudioJourneyView = () => {
   const { jid } = useParams();
+  const location = useLocation();
+
+  // STORE-009 · Daily Operating Workspace is the new canonical for /studio/journey/:jid.
+  // Legacy ProjectDetailPage remains reachable via ?_legacy=1 for tooling/debug.
+  const isLegacyFallback = location.search.includes('_legacy=1');
+
   const [projectId, setProjectId] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!isLegacyFallback) return;  // new view fetches its own data
     let cancel = false;
     setProjectId(null); setError(null);
     api.get(`/api/journeys/${jid}/overview`)
@@ -62,8 +71,15 @@ export const StudioJourneyView = () => {
       })
       .catch((e) => { if (!cancel) setError(e?.response?.status === 404 ? 'not_found' : 'error'); });
     return () => { cancel = true; };
-  }, [jid]);
+  }, [jid, isLegacyFallback]);
 
+  if (!isLegacyFallback) {
+    return (
+      <Suspense fallback={<Loader />}>
+        <JourneyOperatingPage />
+      </Suspense>
+    );
+  }
   if (error === 'not_found') return <Navigate to="/dashboard" replace />;
   if (error)                  return <Navigate to="/dashboard" replace />;
   if (!projectId)             return <Loader />;

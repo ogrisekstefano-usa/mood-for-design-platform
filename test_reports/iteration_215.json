@@ -1,0 +1,38 @@
+{
+  "summary": "STORE-009 DESIGN JOURNEY REBUILD verified. JourneyOperatingPage renders correctly at /studio/journey/:jid with all 11 required data-testids. Phase rail (7 steps), roadmap, center column (checklist + assets), client snapshot all present. Interaction: clicking rail/roadmap switches center column without reload. Legacy ?_legacy=1 correctly renders ProjectDetailPage. Backend /api/journeys/{jid}/overview shape intact (journey/account/brief/milestones_flat/milestones_by_track/artifact_counts/timeline_recent). NULL budget/timeline render 'Not set' without crash. CURATE phase merges moodboards + material boards (2 cards rendered).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Right snapshot · Recent Activity",
+        "issues": [
+          "Timeline events render raw backend event_type strings like 'milestone_started' and 'journey_started'. While not editorial copy per se, the word 'milestone' is technically visible in the rendered text — STORE-009 forbids the word 'Milestone' in the operating UI. Recommend humanizing event_type values (e.g., 'milestone_started' → 'Step started', 'journey_started' → 'Journey started') so operational language stays consistent."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Optional polish) Humanize timeline event_type labels in jop-client-snapshot Recent Activity list to remove the literal word 'milestone'/'journey_started' from the rendered text. Map technical events to operational copy in JourneyOperatingPage.jsx around line 415."
+  ],
+  "critical_code_review_comments": [
+    "JourneyOperatingPage.jsx is 437 lines — within the 700-line guideline. Well-structured: phase mapping (27-55), data fetching (118-145), useMemo derivations (148-199), render (210+). DRY respected.",
+    "Data fetching pattern: 5 parallel GETs (projects, moodboards, material-boards, specifications, project-stories). Each .catch(()=>null) swallows errors silently — acceptable for non-critical accessory data but no toast/log surface for ops debugging. Consider lightweight console.warn on failures.",
+    "relatedAssets useMemo (177-189) hard-codes per-phase asset mapping — clean and predictable. DISCOVER/INSPIRE return [] (intentional, brief mandates 'No assets are linked to this phase yet').",
+    "Backend overview endpoint returns an extra additive field 'open_health_signals' not listed in the brief's expected shape — additive only, no regression to existing consumers.",
+    "Pre-existing React 'setState during render' warning visible in console (mentioned in brief as ProjectDetailPage warnings) — fires even on the new page due to shared sidebar/topbar components. Not blocking but worth a future cleanup sprint."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None. Used existing journey bb8ee381-58f8-4b76-9255-b9fd2020bc0f (project 'Conversazione di stefano', client 'stefano') as supplied in the review request.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "STORE-009 Daily Operating Workspace passes all 11 acceptance criteria. Verified evidence: (a) backend overview shape unchanged, project_id resolves to 930b31dc-1e1f-46c7-97d8-515ead998a52; (b) frontend renders journey-operating with all required testids and 7 rail steps DISCOVER→CELEBRATE; (c) clicking jop-rail-celebrate switches center title to 'Celebrate' and clicking 3rd roadmap button switches to 'Curate' with 2 asset cards (1 moodboard + 1 material board) appearing; (d) ?_legacy=1 hides jop-phase-rail and renders the legacy ProjectDetailPage with editorial tabs (Overview, Ispirazioni, Moodboard, Materiali, Proposte, Conversazioni, Timeline); (e) NULL budget/timeline render 'Not set' without crash. Only minor cosmetic finding: timeline_recent event_type strings are rendered raw ('milestone_started') — recommend humanization, not blocking.",
+  "rca_of_issues": "No bugs found. Only one cosmetic suggestion: humanize raw backend event_type strings in Recent Activity to keep operational language pure."
+}
