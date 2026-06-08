@@ -19,21 +19,26 @@ riattivato in un click flippando un flag tenant.
 
 ---
 
-## 1 · Surface visibili in modalità STORE
+## 1 · Surface visibili in modalità STORE (IA refactor v2 · 07 Jun 2026)
 
-| # | Voce sidebar | Route | Icona | Test ID |
-|---|--------------|-------|-------|---------|
-| 1 | Dashboard | `/dashboard` | LayoutDashboard | `sidebar-nav-dashboard` |
-| 2 | Client Relations | `/relations/accounts` | Users | `sidebar-nav-client-relations` |
-| 3 | Projects | `/workspace/projects` | FolderOpen | `sidebar-nav-projects` |
-| 4 | Design Journey | `/journeys` | Compass | `sidebar-nav-design-journey` |
-| 5 | Moodboards | `/moodboards` | Image | `sidebar-nav-moodboards` |
-| 6 | Material Boards | `/material-boards` | Palette | `sidebar-nav-material-boards` |
-| 7 | Specifications | `/specifications` | FileText | `sidebar-nav-specifications` |
-| 8 | Project Stories | `/project-stories` | Sparkles | `sidebar-nav-project-stories` |
-| 9 | Brand Atlas | `/inspirations/brands` | BookOpen | `sidebar-nav-brand-atlas` |
-| 10 | Knowledge Engine | `/inspirations/knowledge-engine` | Brain | `sidebar-nav-knowledge-engine` |
-| 11 | Settings | `/settings` | Settings | `sidebar-nav-settings` |
+| # | Sezione | Voce sidebar | Route | Icona | Test ID |
+|---|---------|--------------|-------|-------|---------|
+| 1 | SHOWROOM | Dashboard | `/dashboard` | LayoutDashboard | `sidebar-nav-dashboard` |
+| 2 | SHOWROOM | Client Relations | `/relations/accounts` | Users | `sidebar-nav-client-relations` |
+| 3 | SHOWROOM | Design Journeys | `/workspace/projects` | Compass | `sidebar-nav-design-journeys` |
+| 4 | SHOWROOM | Moodboards | `/moodboards` | Image | `sidebar-nav-moodboards` |
+| 5 | SHOWROOM | Material Boards | `/material-boards` | Palette | `sidebar-nav-material-boards` |
+| 6 | SHOWROOM | Specifications | `/specifications` | FileText | `sidebar-nav-specifications` |
+| 7 | SHOWROOM | Project Stories | `/project-stories` | Sparkles | `sidebar-nav-project-stories` |
+| 8 | KNOWLEDGE | Brand Atlas | `/inspirations/brands` | BookOpen | `sidebar-nav-brand-atlas` |
+| 9 | KNOWLEDGE | Knowledge Engine | `/inspirations/knowledge-engine` | Brain | `sidebar-nav-knowledge-engine` |
+| 10 | GROWTH | Content Studio | `/blueprint/editorial` | PenLine | `sidebar-nav-content-studio` |
+| 11 | GROWTH | Editorial Calendar | `/blueprint/editorial-calendar` | CalendarDays | `sidebar-nav-editorial-calendar` |
+| 12 | STUDIO | Media Library | `/library` | Library | `sidebar-nav-media-library` |
+| 13 | STUDIO | Calendar | `/workspace/calendar` | Calendar | `sidebar-nav-calendar` |
+| 14 | STUDIO | Workspace Settings | `/settings` | Settings | `sidebar-nav-settings` |
+
+**Storytelling IA:** SHOWROOM (vendi progetti) → KNOWLEDGE (organizza il sapere) → GROWTH (cresci il business) → STUDIO (risorse interne).
 
 Sezioni: **Showroom** (1-8) · **Knowledge** (9-10) · **Studio** (11).
 

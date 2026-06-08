@@ -286,17 +286,21 @@ def _module_visible_to(module: Dict[str, Any], rank: int) -> bool:
     return rank >= needed
 
 
-# ── STORE MODE™ curated navigation (STORE-001) ──────────────────────
+# ── STORE MODE™ curated navigation (STORE-001 · refactor IA SHOWROOM/KNOWLEDGE/GROWTH/STUDIO) ──
 # Quando tenant_configuration.is_store_mode=TRUE la sidebar mostra
-# esclusivamente queste 11 surface, nell'ordine in cui sono pensate per
-# uno showroom: dal cliente alla presentazione finale.
+# esclusivamente queste 14 surface, raccontando lo storytelling del
+# Design Sales Operating System™:
+#   SHOWROOM   → converti un cliente in un progetto chiuso
+#   KNOWLEDGE  → il cervello digitale dello showroom
+#   GROWTH    → visibilità internazionale & lead generation
+#   STUDIO    → risorse interne dello studio
 #
 # - NESSUN modulo viene rimosso dalla registry.
 # - NESSUNA route del frontend viene cancellata.
 # - Gating puramente di visibilità (sidebar runtime).
 STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
     {
-        "code": "store-success-path",
+        "code": "showroom",
         "label": "Showroom",
         "position": 10,
         "items": [
@@ -306,28 +310,25 @@ STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
             {"code": "client_relations",   "label": "Client Relations",
              "route": "/relations/accounts",        "icon": "Users",
              "test_id": "sidebar-nav-client-relations",   "position": 20},
-            {"code": "projects",           "label": "Projects",
-             "route": "/workspace/projects",        "icon": "FolderOpen",
-             "test_id": "sidebar-nav-projects",           "position": 30},
-            {"code": "design_journey",     "label": "Design Journey",
-             "route": "/journeys",                  "icon": "Compass",
-             "test_id": "sidebar-nav-design-journey",     "position": 40},
+            {"code": "design_journeys",    "label": "Design Journeys",
+             "route": "/workspace/projects",        "icon": "Compass",
+             "test_id": "sidebar-nav-design-journeys",    "position": 30},
             {"code": "moodboards",         "label": "Moodboards",
              "route": "/moodboards",                "icon": "Image",
-             "test_id": "sidebar-nav-moodboards",         "position": 50},
+             "test_id": "sidebar-nav-moodboards",         "position": 40},
             {"code": "material_boards",    "label": "Material Boards",
              "route": "/material-boards",           "icon": "Palette",
-             "test_id": "sidebar-nav-material-boards",    "position": 60},
+             "test_id": "sidebar-nav-material-boards",    "position": 50},
             {"code": "specifications",     "label": "Specifications",
              "route": "/specifications",            "icon": "FileText",
-             "test_id": "sidebar-nav-specifications",     "position": 70},
+             "test_id": "sidebar-nav-specifications",     "position": 60},
             {"code": "project_stories",    "label": "Project Stories",
              "route": "/project-stories",           "icon": "Sparkles",
-             "test_id": "sidebar-nav-project-stories",    "position": 80},
+             "test_id": "sidebar-nav-project-stories",    "position": 70},
         ],
     },
     {
-        "code": "store-knowledge",
+        "code": "knowledge",
         "label": "Knowledge",
         "position": 20,
         "items": [
@@ -340,13 +341,32 @@ STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
         ],
     },
     {
-        "code": "store-studio",
-        "label": "Studio",
+        "code": "growth",
+        "label": "Growth",
         "position": 30,
         "items": [
-            {"code": "settings_workspace", "label": "Settings",
+            {"code": "content_studio",     "label": "Content Studio",
+             "route": "/blueprint/editorial",       "icon": "PenLine",
+             "test_id": "sidebar-nav-content-studio",     "position": 10},
+            {"code": "editorial_calendar", "label": "Editorial Calendar",
+             "route": "/blueprint/editorial-calendar", "icon": "CalendarDays",
+             "test_id": "sidebar-nav-editorial-calendar", "position": 20},
+        ],
+    },
+    {
+        "code": "studio",
+        "label": "Studio",
+        "position": 40,
+        "items": [
+            {"code": "media_library",      "label": "Media Library",
+             "route": "/library",                   "icon": "Library",
+             "test_id": "sidebar-nav-media-library",      "position": 10},
+            {"code": "calendar",           "label": "Calendar",
+             "route": "/workspace/calendar",        "icon": "Calendar",
+             "test_id": "sidebar-nav-calendar",            "position": 20},
+            {"code": "settings_workspace", "label": "Workspace Settings",
              "route": "/settings",                  "icon": "Settings",
-             "test_id": "sidebar-nav-settings",           "position": 10},
+             "test_id": "sidebar-nav-settings",           "position": 30},
         ],
     },
 ]
