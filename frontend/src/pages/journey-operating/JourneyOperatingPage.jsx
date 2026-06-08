@@ -189,14 +189,6 @@ const JourneyOperatingPage = () => {
     [currentPhase]
   );
 
-  /* Completion percentage based on milestones done */
-  const completionPct = useMemo(() => {
-    const all = overview?.milestones_flat || [];
-    if (!all.length) return 0;
-    const done = all.filter(isMilestoneDone).length;
-    return Math.round((done / all.length) * 100);
-  }, [overview]);
-
   /* Related assets for the current phase */
   const relatedAssets = useMemo(() => {
     const key = currentPhase;
@@ -222,6 +214,14 @@ const JourneyOperatingPage = () => {
     return 'All steps completed';
   }, [milestonesByPhase, currentPhase]);
 
+  /* Combined "Curate · In Progress" status reading per the brief (kept BEFORE
+     the early return so the hook order is stable across renders). */
+  const statusLabel = useMemo(() => {
+    const raw = (overview?.journey?.overall_status || 'in_progress').replace('_', ' ');
+    const pretty = raw.charAt(0).toUpperCase() + raw.slice(1);
+    return `${currentPhaseDef.label} · ${pretty}`;
+  }, [overview, currentPhaseDef]);
+
   if (loading) {
     return <div className="jop-shell"><div className="jop-loading">Loading the operating workspace…</div></div>;
   }
@@ -242,30 +242,22 @@ const JourneyOperatingPage = () => {
             <span className="jop-hero__meta-value" data-testid="jop-client-name">{clientName}</span>
           </div>
           <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Current Phase</span>
+            <span className="jop-hero__meta-label">Status</span>
             <span className="jop-hero__meta-value jop-hero__meta-value--amber" data-testid="jop-current-phase">
-              {currentPhaseDef.label.toUpperCase()}
+              {statusLabel}
             </span>
           </div>
           <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Status</span>
-            <span className="jop-hero__meta-value">{(overview?.journey?.overall_status || 'in_progress').replace('_', ' ')}</span>
-          </div>
-          <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Completion</span>
-            <span className="jop-hero__meta-value jop-hero__meta-value--cyan">{completionPct}%</span>
-          </div>
-          <div className="jop-hero__meta-item">
             <span className="jop-hero__meta-label">Next Action</span>
-            <span className="jop-hero__meta-value" data-testid="jop-next-action">{nextAction}</span>
+            <span className="jop-hero__meta-value jop-hero__meta-value--cyan" data-testid="jop-next-action">{nextAction}</span>
           </div>
         </div>
       </header>
 
-      {/* PHASE RAIL */}
+      {/* PHASE RAIL · clean dot indicators, no numbers, no decoration */}
       <nav className="jop-rail" aria-label="Journey phases" data-testid="jop-phase-rail">
         <div className="jop-rail__track">
-          {PHASES.map((p, idx) => {
+          {PHASES.map((p) => {
             const status = computePhaseStatus(p.key, milestonesByPhase);
             const isCurrent = currentPhase === p.key;
             const cls = ['jop-rail__step'];
@@ -279,7 +271,7 @@ const JourneyOperatingPage = () => {
                 data-testid={`jop-rail-${p.key.toLowerCase()}`}
               >
                 <span className="jop-rail__dot">
-                  {status === 'done' ? <CheckCircle2 size={14} strokeWidth={2} /> : idx + 1}
+                  {status === 'done' ? <CheckCircle2 size={14} strokeWidth={2} /> : null}
                 </span>
                 <span className="jop-rail__label">{p.label}</span>
                 <span className="jop-rail__connector" />
@@ -405,6 +397,12 @@ const JourneyOperatingPage = () => {
             <p className="jop-snapshot__value">{projectTitle}</p>
           </div>
           <div className="jop-snapshot__field">
+            <p className="jop-snapshot__label">Project Type</p>
+            <p className={`jop-snapshot__value ${(project?.project_type || account.account_type) ? '' : 'jop-snapshot__value--mute'}`}>
+              {project?.project_type || (account.account_type || 'Not set').replace(/_/g, ' ')}
+            </p>
+          </div>
+          <div className="jop-snapshot__field">
             <p className="jop-snapshot__label">Budget Range</p>
             <p className={`jop-snapshot__value ${project?.budget_range ? '' : 'jop-snapshot__value--mute'}`}>
               {project?.budget_range || 'Not set'}
@@ -415,16 +413,6 @@ const JourneyOperatingPage = () => {
             <p className={`jop-snapshot__value ${project?.timeline ? '' : 'jop-snapshot__value--mute'}`}>
               {project?.timeline || 'Not set'}
             </p>
-          </div>
-          <div className="jop-snapshot__field">
-            <p className="jop-snapshot__label">Last Contact</p>
-            <p className="jop-snapshot__value">
-              {fmtDate(account.last_activity_at || overview?.journey?.updated_at)}
-            </p>
-          </div>
-          <div className="jop-snapshot__field">
-            <p className="jop-snapshot__label">Current Phase</p>
-            <p className="jop-snapshot__value jop-snapshot__value--amber">{currentPhaseDef.label.toUpperCase()}</p>
           </div>
           <div className="jop-snapshot__field">
             <p className="jop-snapshot__label">Next Action</p>
@@ -444,6 +432,14 @@ const JourneyOperatingPage = () => {
                 <li style={{ borderLeft: 'none', paddingLeft: 0, fontStyle: 'italic' }}>No recent activity yet.</li>
               )}
             </ul>
+          </div>
+
+          <div className="jop-snapshot__field" data-testid="jop-internal-notes">
+            <p className="jop-snapshot__label">Internal Notes</p>
+            <p className={`jop-snapshot__value ${account.notes ? '' : 'jop-snapshot__value--mute'}`}
+               style={{ whiteSpace: 'pre-wrap', lineHeight: 1.45, fontWeight: 400 }}>
+              {account.notes || 'No internal notes yet.'}
+            </p>
           </div>
         </aside>
       </div>

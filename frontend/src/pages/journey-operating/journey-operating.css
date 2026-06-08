@@ -97,7 +97,7 @@
 .jop-rail__step--done    { color: var(--jop-text-mute); }
 .jop-rail__step--current { color: var(--jop-text); }
 .jop-rail__dot {
-  width: 28px; height: 28px;
+  width: 22px; height: 22px;
   border-radius: 50%;
   border: 1.5px solid var(--jop-border-strong);
   background: var(--jop-bg-elev-2);
@@ -121,8 +121,8 @@
   letter-spacing: 0.18em; text-transform: uppercase;
 }
 .jop-rail__connector {
-  position: absolute; top: 22px; left: calc(50% + 18px);
-  right: calc(-50% + 18px); height: 1.5px;
+  position: absolute; top: 19px; left: calc(50% + 14px);
+  right: calc(-50% + 14px); height: 1.5px;
   background: var(--jop-border-strong);
 }
 .jop-rail__step--done .jop-rail__connector { background: var(--jop-cyan); opacity: 0.5; }
