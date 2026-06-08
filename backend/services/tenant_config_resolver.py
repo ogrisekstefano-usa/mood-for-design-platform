@@ -286,6 +286,85 @@ def _module_visible_to(module: Dict[str, Any], rank: int) -> bool:
     return rank >= needed
 
 
+# ── STORE MODE™ curated navigation (STORE-001) ──────────────────────
+# Quando tenant_configuration.is_store_mode=TRUE la sidebar mostra
+# esclusivamente queste 11 surface, nell'ordine in cui sono pensate per
+# uno showroom: dal cliente alla presentazione finale.
+#
+# - NESSUN modulo viene rimosso dalla registry.
+# - NESSUNA route del frontend viene cancellata.
+# - Gating puramente di visibilità (sidebar runtime).
+STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
+    {
+        "code": "store-success-path",
+        "label": "Showroom",
+        "position": 10,
+        "items": [
+            {"code": "dashboard",          "label": "Dashboard",
+             "route": "/dashboard",                 "icon": "LayoutDashboard",
+             "test_id": "sidebar-nav-dashboard",          "position": 10},
+            {"code": "client_relations",   "label": "Client Relations",
+             "route": "/relations/accounts",        "icon": "Users",
+             "test_id": "sidebar-nav-client-relations",   "position": 20},
+            {"code": "projects",           "label": "Projects",
+             "route": "/workspace/projects",        "icon": "FolderOpen",
+             "test_id": "sidebar-nav-projects",           "position": 30},
+            {"code": "design_journey",     "label": "Design Journey",
+             "route": "/journeys",                  "icon": "Compass",
+             "test_id": "sidebar-nav-design-journey",     "position": 40},
+            {"code": "moodboards",         "label": "Moodboards",
+             "route": "/moodboards",                "icon": "Image",
+             "test_id": "sidebar-nav-moodboards",         "position": 50},
+            {"code": "material_boards",    "label": "Material Boards",
+             "route": "/material-boards",           "icon": "Palette",
+             "test_id": "sidebar-nav-material-boards",    "position": 60},
+            {"code": "specifications",     "label": "Specifications",
+             "route": "/specifications",            "icon": "FileText",
+             "test_id": "sidebar-nav-specifications",     "position": 70},
+            {"code": "project_stories",    "label": "Project Stories",
+             "route": "/project-stories",           "icon": "Sparkles",
+             "test_id": "sidebar-nav-project-stories",    "position": 80},
+        ],
+    },
+    {
+        "code": "store-knowledge",
+        "label": "Knowledge",
+        "position": 20,
+        "items": [
+            {"code": "brand_atlas",        "label": "Brand Atlas",
+             "route": "/inspirations/brands",       "icon": "BookOpen",
+             "test_id": "sidebar-nav-brand-atlas",        "position": 10},
+            {"code": "knowledge_engine",   "label": "Knowledge Engine",
+             "route": "/inspirations/knowledge-engine", "icon": "Brain",
+             "test_id": "sidebar-nav-knowledge-engine",   "position": 20},
+        ],
+    },
+    {
+        "code": "store-studio",
+        "label": "Studio",
+        "position": 30,
+        "items": [
+            {"code": "settings_workspace", "label": "Settings",
+             "route": "/settings",                  "icon": "Settings",
+             "test_id": "sidebar-nav-settings",           "position": 10},
+        ],
+    },
+]
+
+
+def _store_navigation_tree() -> List[Dict[str, Any]]:
+    """Return a deep copy of STORE_NAVIGATION_TREE annotated with the
+    runtime fields the frontend Sidebar expects.
+    """
+    out: List[Dict[str, Any]] = []
+    for g in STORE_NAVIGATION_TREE:
+        items = [dict(it, state="enabled", end=False, has_mark=False,
+                      visibility="tenant") for it in g["items"]]
+        out.append({"code": g["code"], "label": g["label"],
+                    "position": g["position"], "items": items})
+    return out
+
+
 # ── navigation tree ─────────────────────────────────────────────────
 def resolve_navigation(tenant_id: Optional[str],
                        user_role: Optional[str],
@@ -314,6 +393,16 @@ def resolve_navigation(tenant_id: Optional[str],
     can still be enabled, just not shown in the sidebar).
     """
     cfg = resolve_tenant_config(tenant_id) if tenant_id else {}
+
+    # STORE-001 · STORE MODE™
+    # When the tenant is flagged is_store_mode=True (default for showroom
+    # tenants), return the curated 11-surface navigation regardless of
+    # the modules registry. Tenants without a configuration row default
+    # to TRUE (DB column NOT NULL DEFAULT TRUE). Platform governance
+    # remains accessible via the separate /admin/* surfaces.
+    if bool(cfg.get("is_store_mode", True)):
+        return _store_navigation_tree()
+
     overrides = cfg.get("navigation_overrides") or {}
     # navigation_overrides shape:
     #   {"hide_modules":["editorial_calendar"],
@@ -437,6 +526,7 @@ def resolve_runtime_bundle(tenant_id: Optional[str],
     }
     return {
         "tenant_id":    tenant_id,
+        "is_store_mode": bool(cfg.get("is_store_mode", True)),
         "configuration": {
             "primary_color":          cfg.get("primary_color"),
             "secondary_color":        cfg.get("secondary_color"),

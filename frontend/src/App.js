@@ -609,6 +609,8 @@ function App() {
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={G('dashboard', <AtelierDashboardPage />)} />
+                  {/* STORE-001 · Design Journey shortcut (active journeys list) */}
+                  <Route path="/journeys" element={G('journey_index', <JourneyPulsePage />)} />
                   <Route path="/dashboard/pulse" element={<Navigate to="/studio/pulse" replace />} />
                   <Route
                     path="/studio/pulse"

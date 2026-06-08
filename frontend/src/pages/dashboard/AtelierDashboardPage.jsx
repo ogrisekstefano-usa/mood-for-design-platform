@@ -150,6 +150,14 @@ const ACTION_DESTINATIONS = [
     image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1600&q=80',
   },
   {
+    id: 'specification',
+    eyebrow: 'Chiudi la trattativa',
+    title: 'Specification',
+    description: 'Il documento ufficiale che trasforma la palette in offerta firmabile.',
+    href: '/specifications',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
     id: 'client-presentation',
     eyebrow: 'Prepara il momento',
     title: 'Presentazione Cliente',
