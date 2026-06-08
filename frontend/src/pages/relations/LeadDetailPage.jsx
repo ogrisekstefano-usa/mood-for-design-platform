@@ -21,9 +21,10 @@
  */
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ChevronLeft, Loader2, Mail, Phone, Calendar, Tag } from 'lucide-react';
+import { ChevronLeft, Loader2, Mail, Phone, Calendar, Tag, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
 import DiscoveryInterviewPanel from '../../components/relations/DiscoveryInterviewPanel';
+import QualificationModal from '../lead-conversion/QualificationModal';
 
 const formatDate = (iso) => {
   if (!iso) return '—';
@@ -44,6 +45,36 @@ const LeadDetailPage = () => {
   const [lead, setLead] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // STORE-005 · Lead → Prospect → Design Journey™ conversion flow
+  const [showQualify, setShowQualify] = useState(false);
+  const [starting, setStarting] = useState(false);
+
+  const startJourney = async () => {
+    if (starting) return;
+    setStarting(true);
+    try {
+      const r = await api.post(`/api/leads/${leadId}/start-journey`);
+      if (r.data?.journey_id) {
+        navigate(`/studio/journey/${r.data.journey_id}`);
+        return;
+      }
+    } catch (e) {
+      console.warn('[lead] start-journey failed', e);
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  const onQualificationComplete = async (res) => {
+    setShowQualify(false);
+    // Refresh lead to reflect qualification
+    try {
+      const { data } = await api.get(`/api/leads/${leadId}`);
+      setLead(data);
+    } catch (_) {}
+    // If auto-qualified, jump directly into Design Journey creation
+    if (res?.qualified) startJourney();
+  };
 
   useEffect(() => {
     let cancel = false;
@@ -158,6 +189,61 @@ const LeadDetailPage = () => {
             </ul>
           </header>
 
+          {/* STORE-005 · Primary CTA: Create Design Journey */}
+          <div
+            data-testid="lead-cta-create-journey-wrap"
+            style={{
+              background: 'linear-gradient(135deg, rgba(232,178,98,0.10), rgba(111,228,210,0.06))',
+              border: '1px solid rgba(232,178,98,0.32)',
+              borderRadius: 12,
+              padding: '18px 20px',
+              marginBottom: 18,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 16,
+              flexWrap: 'wrap',
+            }}
+          >
+            <div>
+              <p style={{ fontSize: 10.5, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#a26d23', margin: 0, fontWeight: 600 }}>
+                Pronto a trasformarlo in progetto?
+              </p>
+              <p style={{ fontSize: 13, color: '#3a3d44', margin: '6px 0 0', maxWidth: 480, lineHeight: 1.4 }}>
+                Rispondi a 4 domande in {'\u003C'}90 secondi e MOOD crea automaticamente la Design Journey con tutti i dati prefillati.
+              </p>
+            </div>
+            {lead.first_journey_id ? (
+              <Link
+                to={`/studio/journey/${lead.first_journey_id}`}
+                data-testid="lead-cta-open-journey"
+                style={{
+                  padding: '12px 22px', borderRadius: 8,
+                  background: '#E8B262', color: '#07080B',
+                  fontSize: 12.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
+                }}
+              >
+                <Sparkles size={14} strokeWidth={2} /> Apri Design Journey
+              </Link>
+            ) : (
+              <button
+                type="button"
+                data-testid="lead-cta-create-journey"
+                onClick={() => setShowQualify(true)}
+                disabled={starting}
+                style={{
+                  padding: '12px 22px', borderRadius: 8, border: 'none',
+                  background: '#E8B262', color: '#07080B',
+                  fontSize: 12.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8,
+                }}
+              >
+                <Sparkles size={14} strokeWidth={2} /> {starting ? 'Creazione…' : 'Create Design Journey™'}
+              </button>
+            )}
+          </div>
+
           {/* Discovery panel (embedded) — risolve "non sai dove riprendere" */}
           <DiscoveryInterviewPanel
             leadId={leadId}
@@ -167,6 +253,15 @@ const LeadDetailPage = () => {
             }}
           />
         </>
+      )}
+
+      {showQualify && (
+        <QualificationModal
+          leadId={leadId}
+          leadName={name}
+          onClose={() => setShowQualify(false)}
+          onComplete={onQualificationComplete}
+        />
       )}
     </div>
   );
