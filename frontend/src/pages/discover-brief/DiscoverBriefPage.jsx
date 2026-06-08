@@ -590,11 +590,40 @@ const BlueprintPanel = ({ intel, state, catalog }) => {
 
 /* ─────────────────────────────────────────────────────────────
  *  SUMMARY VIEW (post-completion)
+ *  STORE-012A · Replace "Begin Inspire" with Generate Concept Directions™
  * ───────────────────────────────────────────────────────────── */
 const SummaryView = ({ intel, jid, onBack }) => {
   const recs = intel?.recommendations || {};
   const tpls = recs.moodboard_templates || [];
   const atlas = recs.brand_atlas || [];
+
+  const [sets, setSets] = useState([]);
+  const [loadingSets, setLoadingSets] = useState(true);
+  const [generating, setGenerating] = useState(false);
+
+  useEffect(() => {
+    let cancel = false;
+    api.get(`/api/journeys/${jid}/concept-directions`)
+      .then(r => { if (!cancel) setSets(r.data.sets || []); })
+      .catch(() => {})
+      .finally(() => { if (!cancel) setLoadingSets(false); });
+    return () => { cancel = true; };
+  }, [jid]);
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    try {
+      await api.post(`/api/journeys/${jid}/concept-directions/generate`, {});
+      const r = await api.get(`/api/journeys/${jid}/concept-directions`);
+      setSets(r.data.sets || []);
+    } catch (e) {
+      console.error('generate concept directions failed', e?.response?.data || e);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const hasSets = sets.length > 0;
 
   return (
     <div className="dbe-summary" data-testid="dbe-summary">
@@ -602,10 +631,113 @@ const SummaryView = ({ intel, jid, onBack }) => {
         <p className="dbe-summary__eyebrow">Discovery complete</p>
         <h2 className="dbe-summary__title">Design Intelligence™ is ready.</h2>
         <p className="dbe-summary__subtitle">
-          Blueprint AI prepared a Recommended Starting Point™ so you never face a blank canvas.
+          Blueprint AI prepared the foundations. Let it now compose three Concept Directions you can refine instead of starting from a blank canvas.
         </p>
       </header>
 
+      {/* Primary CTA · Generate Concept Directions */}
+      {!hasSets && !loadingSets && (
+        <section className="dbe-gencta" data-testid="dbe-gencta">
+          <div className="dbe-gencta__copy">
+            <p className="dbe-gencta__eyebrow">Blueprint AI · Next Step</p>
+            <h3 className="dbe-gencta__title">Generate Concept Directions™</h3>
+            <p className="dbe-gencta__hint">
+              Three ready-to-edit Concept Boards in seconds — preloaded with materials from your Brand Atlas, images from your Media Library and a tailored color palette.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="dbe-btn dbe-btn--primary dbe-btn--xl"
+            onClick={handleGenerate}
+            disabled={generating}
+            data-testid="dbe-generate-concepts"
+          >
+            {generating ? <><Loader2 size={16} className="dbe-spin" /> Composing 3 Concept Boards…</> : <><Sparkles size={16} /> Generate Concept Directions™</>}
+          </button>
+        </section>
+      )}
+
+      {/* Generated sets */}
+      {hasSets && (
+        <section className="dbe-sets" data-testid="dbe-sets">
+          {sets.map((s) => (
+            <div key={s.set_id} className="dbe-set" data-testid={`dbe-set-${s.set_index}`}>
+              <header className="dbe-set__hdr">
+                <p className="dbe-set__eyebrow">Concept</p>
+                <h3 className="dbe-set__title">{s.set_label}</h3>
+                <p className="dbe-set__date">{s.set_created_at ? new Date(s.set_created_at).toLocaleString() : ''}</p>
+              </header>
+              <div className="dbe-set__grid">
+                {s.directions.map((d) => (
+                  <article key={d.moodboard_id} className="dbe-concept" data-testid={`dbe-concept-${d.moodboard_id}`}>
+                    <header className="dbe-concept__hdr">
+                      <span className="dbe-concept__letter">{d.direction_letter}</span>
+                      <p className="dbe-concept__name">{d.direction_name}</p>
+                    </header>
+
+                    {/* mini palette */}
+                    {d.color_palette?.length > 0 && (
+                      <div className="dbe-concept__palette" aria-label="palette">
+                        {d.color_palette.map((hex, i) => (
+                          <span key={i} className="dbe-concept__swatch" style={{ background: hex }} title={hex} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* mini style DNA */}
+                    {d.style_dna_snapshot?.length > 0 && (
+                      <div className="dbe-concept__style">
+                        {d.style_dna_snapshot.slice(0, 2).map((sd) => (
+                          <div key={sd.key} className="dbe-concept__dna">
+                            <span>{sd.label}</span>
+                            <span className="dbe-concept__dna-score">{sd.score}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <ul className="dbe-concept__counts">
+                      <li><strong>{d.counts.materials}</strong> materials</li>
+                      <li><strong>{d.counts.products}</strong> products</li>
+                      <li><strong>{d.counts.images}</strong> images</li>
+                    </ul>
+
+                    {d.needs_flags?.length > 0 && (
+                      <div className="dbe-concept__needs">
+                        {d.needs_flags.map(f => (
+                          <span key={f} className="dbe-concept__need-pill">{f.replace('NEEDS_', '').replace('_', ' ')}</span>
+                        ))}
+                      </div>
+                    )}
+
+                    <Link to={`/moodboards/${d.moodboard_id}`} className="dbe-concept__open" data-testid={`dbe-open-${d.moodboard_id}`}>
+                      Open Direction <ArrowRight size={13} />
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div className="dbe-sets__regen">
+            <button
+              type="button"
+              className="dbe-btn dbe-btn--ghost"
+              onClick={handleGenerate}
+              disabled={generating}
+              data-testid="dbe-generate-more"
+            >
+              {generating ? <><Loader2 size={14} className="dbe-spin" /> Composing alternatives…</> : <><Sparkles size={14} /> Propose 3 alternative directions</>}
+            </button>
+          </div>
+        </section>
+      )}
+
+      {loadingSets && (
+        <p className="dbe-bp__mute" data-testid="dbe-loading-sets">Loading concept directions…</p>
+      )}
+
+      {/* Existing recommendations */}
       <section className="dbe-summary__block">
         <p className="dbe-summary__block-title">Recommended Moodboard Templates</p>
         {tpls.length === 0 && <p className="dbe-bp__mute">No matching templates yet — start a blank moodboard from Curate.</p>}
@@ -637,9 +769,6 @@ const SummaryView = ({ intel, jid, onBack }) => {
         <button type="button" className="dbe-btn dbe-btn--ghost" onClick={onBack} data-testid="dbe-summary-back">
           <ArrowLeft size={14} /> Edit Discovery
         </button>
-        <Link to={`/studio/journey/${jid}`} className="dbe-btn dbe-btn--primary" data-testid="dbe-summary-inspire">
-          Begin Inspire <ArrowRight size={14} />
-        </Link>
       </footer>
     </div>
   );

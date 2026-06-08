@@ -448,6 +448,109 @@
   padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.05);
 }
 
+/* ── STORE-012A · CONCEPT DIRECTIONS ─────────────────────────────── */
+.dbe-gencta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 36px;
+  margin: 0 0 40px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at top right, rgba(217,177,108,0.18), transparent 60%),
+    linear-gradient(135deg, rgba(217,177,108,0.08), rgba(217,177,108,0.02));
+  border: 1px solid rgba(217,177,108,0.35);
+  box-shadow: 0 16px 40px -16px rgba(217,177,108,0.25);
+}
+.dbe-gencta__eyebrow {
+  margin: 0; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #d9b16c;
+}
+.dbe-gencta__title {
+  margin: 6px 0 8px; font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 500; color: #f1f4f9; letter-spacing: -0.015em;
+}
+.dbe-gencta__hint {
+  margin: 0; font-size: 13px; color: #b3bbcb; line-height: 1.55; max-width: 580px;
+}
+.dbe-btn--xl { padding: 14px 28px; font-size: 14px; }
+
+.dbe-sets { display: flex; flex-direction: column; gap: 32px; margin-bottom: 32px; }
+.dbe-set { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; }
+.dbe-set__hdr { margin-bottom: 18px; display: flex; align-items: baseline; gap: 14px; }
+.dbe-set__eyebrow {
+  margin: 0; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #d9b16c;
+}
+.dbe-set__title {
+  margin: 0; font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 500; color: #f1f4f9;
+}
+.dbe-set__date { margin: 0; font-size: 11px; color: #6b7488; font-variant-numeric: tabular-nums; }
+.dbe-set__grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.dbe-concept {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 22px 20px; border-radius: 10px;
+  background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: border-color .2s, transform .2s;
+}
+.dbe-concept:hover {
+  border-color: rgba(217,177,108,0.35);
+  transform: translateY(-2px);
+}
+.dbe-concept__hdr { display: flex; align-items: center; gap: 12px; }
+.dbe-concept__letter {
+  width: 30px; height: 30px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(217,177,108,0.18); color: #f1d699;
+  font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.dbe-concept__name {
+  margin: 0; font-family: 'Cormorant Garamond', serif;
+  font-size: 19px; color: #f1f4f9; font-weight: 500; line-height: 1.2;
+}
+.dbe-concept__palette { display: flex; gap: 4px; }
+.dbe-concept__swatch {
+  flex: 1; height: 24px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.dbe-concept__style { display: flex; flex-direction: column; gap: 4px; }
+.dbe-concept__dna {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: #b3bbcb;
+}
+.dbe-concept__dna-score { color: #d9b16c; font-variant-numeric: tabular-nums; }
+.dbe-concept__counts {
+  list-style: none; margin: 4px 0 0; padding: 10px 0 0;
+  border-top: 1px dashed rgba(255,255,255,0.06);
+  display: flex; gap: 16px; font-size: 11px; color: #8c95a5;
+}
+.dbe-concept__counts strong { color: #f1f4f9; font-weight: 600; margin-right: 2px; font-variant-numeric: tabular-nums; }
+.dbe-concept__needs { display: flex; flex-wrap: wrap; gap: 4px; }
+.dbe-concept__need-pill {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px;
+  background: rgba(220, 130, 80, 0.12); color: #e89a72;
+  border: 1px solid rgba(220, 130, 80, 0.3);
+}
+.dbe-concept__open {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(217,177,108,0.1);
+  border: 1px solid rgba(217,177,108,0.35);
+  color: #f1d699; font-size: 12px; letter-spacing: 0.02em;
+  text-decoration: none; margin-top: auto;
+  transition: all .2s;
+}
+.dbe-concept__open:hover {
+  background: linear-gradient(135deg, #d9b16c, #c69a52);
+  color: #0a0d12; font-weight: 500;
+}
+.dbe-sets__regen { display: flex; justify-content: center; padding-top: 10px; }
+
 /* ── RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 1280px) {
   .dbe-body { grid-template-columns: 1fr; }

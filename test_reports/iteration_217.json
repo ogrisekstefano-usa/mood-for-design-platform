@@ -1,0 +1,48 @@
+{
+  "summary": "STORE-012A GENERATE CONCEPT BOARD backend verified end-to-end (10/10 pytest passing). POST /api/journeys/{jid}/concept-directions/generate appends new Direction Sets without overwriting prior ones (next set_index = max(prior)+1, fresh set_id, label 'Direction Set NN'), letters scheme matches set_index (A/B/C for set 1, A2/B2/C2 for set 2, A3/B3/C3 for set 3+), each direction returns moodboard_id + direction_name + 5-color palette + 3-entry style_dna_snapshot + counts{materials,products,images} + needs_flags[]. GET /api/journeys/{jid}/concept-directions returns sets grouped + sorted by set_index with full direction payload (title/status/updated_at/counts/needs_flags). Tenant has 0 products → all 3 generated boards on every set flag NEEDS_PRODUCT_SELECTION (not blocked, still created). Direction name rotation across sets confirmed via two successive POSTs. STORE-011 regression endpoints (/discover/catalog, /discover-brief, /discover-brief/intelligence) still healthy. Frontend partial: dbe-* test IDs render correctly on wizard steps (dbe-close, dbe-progress, dbe-rail-snapshot..notes, dbe-step-snapshot, dbe-prev/next, dbe-blueprint-panel) but the Summary view containing dbe-generate-concepts / dbe-generate-more / dbe-set-N / dbe-concept-* / dbe-open-* did NOT render on first load of /studio/journey/:jid/discover even though completion=100% — wizard opens on step 1 by default. Likely needs user to navigate through all 7 steps to reach the Summary state, or main agent should route directly to Summary when discovery_status==completed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "DiscoverBriefPage (SummaryView)",
+        "issue": "When opening /studio/journey/:jid/discover on a journey where discovery_status='completed' (progress 100%), the wizard opens at Step 1 (Project Snapshot) instead of the Summary view. The Generate Concept Directions CTA + Direction Sets renderer are gated behind the Summary view and are therefore not directly reachable. data-testid=dbe-generate-concepts / dbe-generate-more / dbe-set-N / dbe-concept-{id} / dbe-open-{id} were NOT present in the DOM at this entry point.",
+        "selector": "[data-testid=\"dbe-generate-concepts\"]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter217_concept_directions.py",
+    "/app/test_reports/pytest/iter217_store012a.xml",
+    "/app/test_reports/_screens/iter217_discover_summary.png"
+  ],
+  "action_items": [
+    "When discovery_status=='completed' on initial mount of DiscoverBriefPage, automatically render the Summary view (which contains dbe-generate-concepts / dbe-generate-more and the Direction Sets renderer) instead of starting the wizard at step 1. Alternatively, expose a dedicated route like /studio/journey/:jid/discover/summary so testing + deep links land on the Concept Directions panel.",
+    "Add Step Notes (step 7) → Summary 'Finish' click handler if it doesn't already exist — manual smoke from main agent already confirmed the Summary renders correctly with sets/concept cards/palette/counts/needs flags, so the rendering itself is verified.",
+    "Optional polish: addressed in iter216 already — login still suffers from many missing auth.login.* i18n keys in locale it-IT and a 'setState during render' React warning emitted on /auth (not blocking)."
+  ],
+  "critical_code_review_comments": [
+    "concept_directions.py ~590 LOC — within target. Clear separation: palette library, direction name registry, asset pools, element seeding, core board creation, endpoints. Zero new tables — concept_seed lives inside moodboards.ai_metadata as documented.",
+    "Every generated moodboard has journey_id set + ai_metadata.concept_seed populated with set_id/set_index/set_label/direction_letter/direction_name/color_palette/material_entity_ids/product_entity_ids/media_ids/needs_flags/generator='store-012a' → architecture compliance OK.",
+    "Set index derived by counting distinct concept_seed.set_id values on existing journey moodboards (not from a counter) — safe under concurrent runs of the same user but not under concurrent multi-writer scenarios; acceptable for now.",
+    "Letter scheme: A/B/C for set 1, A2/B2/C2 for set 2, A{n}/B{n}/C{n} for set ≥3 — matches the spec exactly.",
+    "Rotation logic: direction_styles list shifts by (set_index-1)%3 and atmosphere assignments rotate by (set_index-1)%len(atm_pool) so subsequent sets propose ALTERNATIVE pairings. Verified via two successive POSTs producing different direction_name vectors.",
+    "Palette is fully deterministic by atmosphere key — no LLM coupling — matches confirmed default 4a.",
+    "Visibility='studio_only' applied correctly (avoids the studio/tenant constraint violation noted in agent_to_agent context).",
+    "Timeline event 'concept_directions_generated' emitted non-blockingly in try/except — good observability.",
+    "Element seeding: 1 headline text + 1 palette + up to 8 images + up to 5 materials + up to 5 products with position_json bounds and content carrying real entity ids (media_id/material_id/product_id). When pools are empty, the count just drops to 0 (no fake stand-ins) — clean.",
+    "Suggestion: needs_flags currently uses '<3' threshold for product/material/media but the spec contract says 'flag set when pool is empty' — slight semantic widening. Not blocking, but worth surfacing explicitly in the UI legend so designers know that 1-2 items also triggers the warning."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter217_concept_directions.py (NEW · 10 pytest cases: regression discover-brief x3, list grouped sets, generate append envelope/letters/payload/persistence, rotation, needs_flags)"
+  ],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "partial — dbe-* wizard testids confirmed; Summary view not reachable from default route entry"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! — verified via /api/auth/login → session.access_token",
+  "seed_data_creation": "Journey 8bb7a3b4-02af-4040-8420-37a254713899 now has 5 Direction Sets (3 from agent smoke + 2 created by these tests · 15 moodboards total) all properly linked via journey_id and ai_metadata.concept_seed.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend is fully signed off. The single open frontend item is that the SummaryView is gated by the wizard flow and not reached on initial mount when discovery is already completed — main agent should auto-render Summary if discovery_status=='completed' (or add a deep-link route). After that fix, re-run the playwright at /studio/journey/8bb7a3b4-02af-4040-8420-37a254713899/discover and assert: (1) dbe-generate-concepts visible if no sets, (2) dbe-set-1..dbe-set-N rendered with 3 dbe-concept-* cards each, (3) dbe-generate-more click appends a new set, (4) dbe-open-{id} click navigates to /moodboards/{id}. Login playwright pattern that works: page.fill('input[type=\"email\"]', 'admin@moodfordesign.com'); page.fill('input[type=\"password\"]', 'Blueprint2024!'); page.click('button[type=\"submit\"]'); then poll until url leaves /auth (arrived at /dashboard).",
+  "rca_of_issue": "Summary view not reachable on initial mount RCA: DiscoverBriefPage opens the wizard at currentStep=0 (Project Snapshot) regardless of completion. The agent_to_agent note states the Summary view DOES render the sets correctly (smoke-confirmed by main agent). So the issue is purely routing/entry-state, not rendering. Mitigation: in DiscoverBriefPage useEffect on initial mount, if discovery_status==='completed' set viewMode='summary' (or currentStep = STEPS.length so the Summary panel renders)."
+}

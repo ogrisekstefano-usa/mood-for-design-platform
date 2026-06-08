@@ -221,6 +221,9 @@ api_router.include_router(_journey_assets_router.router, tags=["journey-assets"]
 # STORE-011 · Design Discovery™ Engine (Feb 2026)
 from routers import discover_brief as _discover_brief_router  # noqa: E402
 api_router.include_router(_discover_brief_router.router, tags=["discover-brief"])
+# STORE-012A · Generate Concept Board™ (Feb 2026)
+from routers import concept_directions as _concept_directions_router  # noqa: E402
+api_router.include_router(_concept_directions_router.router, tags=["concept-directions"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)
