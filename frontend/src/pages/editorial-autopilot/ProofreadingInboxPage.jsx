@@ -102,6 +102,31 @@ const ProofreadingInboxPage = () => {
   };
 
   const isBlocked = detail?.is_blocked;
+  /* STORE-008A · locale-mismatch guard (cheap heuristic)
+     Flags variants where body_blocks looks like it was inherited from the
+     master canonical_locale instead of the variant target_locale. */
+  const localeMismatch = useMemo(() => {
+    if (!detail) return false;
+    const tl = (detail.target_locale || '').slice(0, 2).toLowerCase();
+    if (!tl) return false;
+    const bodyText = (detail.body_blocks || [])
+      .map((b) => b.text || b.body || b.content || '')
+      .join(' ')
+      .slice(0, 1200);
+    if (bodyText.length < 60) return false;
+    // very lightweight cheat-detector based on language-specific function-words
+    const hits = {
+      en: (bodyText.match(/\b(the|and|with|of|for|is|are|this|that|which|in)\b/gi) || []).length,
+      it: (bodyText.match(/\b(il|la|le|gli|lo|del|della|che|con|per|sono|è|nel|nella|come)\b/gi) || []).length,
+      fr: (bodyText.match(/\b(le|la|les|des|du|et|qui|dans|pour|avec|une|aux|aux)\b/gi) || []).length,
+      es: (bodyText.match(/\b(el|la|los|las|de|que|con|por|para|este|esta)\b/gi) || []).length,
+      de: (bodyText.match(/\b(der|die|das|und|mit|für|ist|sind|von|im|den)\b/gi) || []).length,
+    };
+    const top = Object.entries(hits).sort((a, b) => b[1] - a[1])[0];
+    if (!top || top[1] < 5) return false;
+    return top[0] !== tl;
+  }, [detail]);
+
   const channelEmoji = useMemo(() => {
     if (!detail?.channel) return '📝';
     const c = detail.channel.toLowerCase();
@@ -291,8 +316,8 @@ const ProofreadingInboxPage = () => {
                   className="epi-action-btn epi-action-btn--approve"
                   data-testid="epi-action-approve"
                   onClick={onApprove}
-                  disabled={acting || isBlocked || detail.status === 'approved' || detail.status === 'published'}
-                  title={isBlocked ? 'Sblocca i media richiesti prima di approvare' : ''}
+                  disabled={acting || isBlocked || localeMismatch || detail.status === 'approved' || detail.status === 'published'}
+                  title={isBlocked ? 'Sblocca i media richiesti prima di approvare' : (localeMismatch ? 'Rigenera nella lingua target prima di approvare' : '')}
                 >
                   <CheckCircle2 size={13} strokeWidth={2} /> Approva
                 </button>
