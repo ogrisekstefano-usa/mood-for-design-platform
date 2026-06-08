@@ -41,6 +41,8 @@ const JourneyPreparingPage = lazy(() => import('./pages/journey/JourneyPreparing
 const AtmosphericPreviewPage = lazy(() => import('./pages/AtmosphericPreviewPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
+// STORE-011 · Design Discovery™ Engine
+const DiscoverBriefPage = lazy(() => import('./pages/discover-brief/DiscoverBriefPage'));
 const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const WorkspacePreparePage = lazy(() => import('./pages/workspace/WorkspacePreparePage'));
@@ -631,6 +633,8 @@ function App() {
                   {/* ITER168 · Phase 2 · journey-keyed canonical (NEW) */}
                   <Route path="/studio/journey/:jid" element={G('journey_index', <StudioJourneyView />)} />
                   <Route path="/studio/journey/:jid/step/:milestoneType" element={G('journey_index', <StudioJourneyStepView />)} />
+                  {/* STORE-011 · Design Discovery™ Engine */}
+                  <Route path="/studio/journey/:jid/discover" element={G('journey_index', <DiscoverBriefPage />)} />
                   {/* ITER168 · Phase 2 · silent legacy redirects (project_id → jid) */}
                   <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectToJourneyRedirect />)} />
                   <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <LegacyStepRedirect />)} />

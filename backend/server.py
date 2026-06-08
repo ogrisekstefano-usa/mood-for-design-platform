@@ -218,6 +218,9 @@ api_router.include_router(_lead_conversion_router.router, tags=["lead-conversion
 # STORE-010 · Journey-First Asset Architecture™ (Jun 2026)
 from routers import journey_assets as _journey_assets_router  # noqa: E402
 api_router.include_router(_journey_assets_router.router, tags=["journey-assets"])
+# STORE-011 · Design Discovery™ Engine (Feb 2026)
+from routers import discover_brief as _discover_brief_router  # noqa: E402
+api_router.include_router(_discover_brief_router.router, tags=["discover-brief"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)

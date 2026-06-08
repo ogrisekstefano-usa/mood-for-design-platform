@@ -323,6 +323,43 @@ const JourneyOperatingPage = () => {
             <p className="jop-section__obj">{currentPhaseDef.objective}</p>
           </section>
 
+          {/* STORE-011 · Discover Brief Engine entry — only when DISCOVER is current phase */}
+          {currentPhase === 'DISCOVER' && (
+            <section className="jop-block" data-testid="jop-discover-cta">
+              <header className="jop-block__hdr">
+                <h3 className="jop-block__title">Design Discovery™</h3>
+              </header>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '20px 22px', borderRadius: '8px',
+                background: 'linear-gradient(135deg, rgba(217,177,108,0.08), rgba(217,177,108,0.02))',
+                border: '1px solid rgba(217,177,108,0.25)',
+              }}>
+                <div>
+                  <p style={{ margin: 0, fontSize: 14, color: '#f1f4f9', fontWeight: 500 }}>
+                    Open the first design conversation.
+                  </p>
+                  <p style={{ margin: '4px 0 0', fontSize: 12, color: '#8c95a5' }}>
+                    Visual-first wizard · 5–8 minutes · generates Style DNA™, Material DNA™ and AI Recommendations.
+                  </p>
+                </div>
+                <Link
+                  to={`/studio/journey/${overview?.journey?.id}/discover`}
+                  data-testid="jop-open-discover"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    padding: '10px 20px', borderRadius: 999,
+                    background: 'linear-gradient(135deg, #d9b16c, #c69a52)',
+                    color: '#0a0d12', fontSize: 13, fontWeight: 500,
+                    textDecoration: 'none', letterSpacing: '0.02em',
+                  }}
+                >
+                  <Sparkles size={14} /> Open Discovery Engine
+                </Link>
+              </div>
+            </section>
+          )}
+
           {/* Checklist */}
           <section className="jop-block" data-testid="jop-checklist">
             <header className="jop-block__hdr">
