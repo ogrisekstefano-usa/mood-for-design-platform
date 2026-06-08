@@ -60,6 +60,9 @@ const ProposalComposerPage = lazy(() => import('./pages/workspace/ProposalCompos
 const ReferencesPage = lazy(() => import('./pages/workspace/ReferencesPage'));
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
+// STORE-008A · Editorial Autopilot™ MVP (Jun 2026)
+const EditorialAutopilotPage  = lazy(() => import('./pages/editorial-autopilot/EditorialAutopilotPage'));
+const ProofreadingInboxPage   = lazy(() => import('./pages/editorial-autopilot/ProofreadingInboxPage'));
 const MarketMatrixPage = lazy(() => import('./pages/governance/MarketMatrixPage'));
 const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsPage'));
 const BrandVoiceAdaptersPage = lazy(() => import('./pages/governance/BrandVoiceAdaptersPage'));
@@ -706,7 +709,9 @@ function App() {
                   <Route path="/editorial/inbox" element={<StudioAdminRoute><VariantApprovalInboxPage /></StudioAdminRoute>} />
 
                   {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
-                  <Route path="/blueprint/editorial" element={<StudioAdminRoute>{G('magazine', <EditorialStudioPage />)}</StudioAdminRoute>} />
+                  <Route path="/blueprint/editorial" element={<StudioAdminRoute>{G('magazine', <EditorialAutopilotPage />)}</StudioAdminRoute>} />
+                  <Route path="/blueprint/editorial/inbox" element={<StudioAdminRoute>{G('magazine', <ProofreadingInboxPage />)}</StudioAdminRoute>} />
+                  <Route path="/blueprint/editorial/legacy" element={<StudioAdminRoute>{G('magazine', <EditorialStudioPage />)}</StudioAdminRoute>} />
                   <Route path="/blueprint/markets" element={<StudioAdminRoute>{G('market_matrix', <MarketMatrixPage />)}</StudioAdminRoute>} />
                   <Route path="/blueprint/intelligence" element={<StudioAdminRoute><MarketInsightsPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />

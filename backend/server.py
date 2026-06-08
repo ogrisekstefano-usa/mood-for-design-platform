@@ -209,6 +209,9 @@ api_router.include_router(_spec_router.router, tags=["specifications"])
 from routers import project_stories as _story_router  # noqa: E402
 api_router.include_router(_story_router.router, tags=["project-stories"])
 api_router.include_router(_story_router.public_router, tags=["project-stories-public"])
+# STORE-008A · Editorial Autopilot™ MVP (Jun 2026)
+from routers import editorial_autopilot as _editorial_autopilot_router  # noqa: E402
+api_router.include_router(_editorial_autopilot_router.router, tags=["editorial-autopilot"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 # ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)
