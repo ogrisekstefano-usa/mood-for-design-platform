@@ -95,6 +95,30 @@ const fmtDate = (iso) => {
 
 const initials = (name) => (name || '?').trim().split(/\s+/).slice(0, 2).map(s => s[0] || '').join('').toUpperCase();
 
+/* Humanize raw backend event_type strings · keep operational language */
+const EVENT_TYPE_LABELS = {
+  journey_started:     'Journey started',
+  journey_completed:   'Journey completed',
+  milestone_started:   'Step started',
+  milestone_completed: 'Step completed',
+  milestone_approved:  'Step approved',
+  milestone_skipped:   'Step skipped',
+  milestone_reopened:  'Step reopened',
+  brief_submitted:     'Brief submitted',
+  moodboard_created:   'Moodboard created',
+  moodboard_approved:  'Moodboard approved',
+  material_board_created: 'Material board created',
+  specification_created:  'Specification created',
+  project_story_created:  'Project story created',
+};
+const humanizeEvent = (e) => {
+  if (!e) return 'Activity';
+  if (e.title) return e.title;
+  return EVENT_TYPE_LABELS[e.event_type] || (e.event_type || 'Activity')
+    .replace(/_/g, ' ')
+    .replace(/^./, c => c.toUpperCase());
+};
+
 const safeList = (resp) => {
   if (!resp) return [];
   if (Array.isArray(resp)) return resp;
@@ -412,7 +436,7 @@ const JourneyOperatingPage = () => {
             <ul className="jop-snapshot__timeline">
               {(overview?.timeline_recent || []).slice(0, 5).map((t, i) => (
                 <li key={t.id || i}>
-                  {t.title || t.event_type || 'Activity'}
+                  {humanizeEvent(t)}
                   <span className="jop-snapshot__timeline-when">{fmtDate(t.created_at)}</span>
                 </li>
               ))}
