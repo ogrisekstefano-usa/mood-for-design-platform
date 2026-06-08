@@ -48,6 +48,7 @@ const DiscoverBriefPage = () => {
   const [stepIdx, setStepIdx] = useState(0);
   const [saving, setSaving] = useState(false);
   const [completing, setCompleting] = useState(false);
+  const initialJump = useRef(false);
   const saveTimer = useRef(null);
 
   /* Load catalog + state in parallel */
@@ -62,6 +63,11 @@ const DiscoverBriefPage = () => {
       setCatalog(cat.data);
       setState(normalizeState(st.data));
       setIntel(intl.data);
+      // STORE-012A · auto-jump to Summary when Discovery is already completed
+      if (!initialJump.current && st.data?.discovery_status === 'completed') {
+        setStepIdx(STEPS.length);
+        initialJump.current = true;
+      }
     }).catch(() => {});
     return () => { cancel = true; };
   }, [jid]);
