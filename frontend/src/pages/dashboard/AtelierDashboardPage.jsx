@@ -123,8 +123,16 @@ const Spotlight = ({ data }) => {
   );
 };
 
-// ── Cosa puoi fare adesso · 4 destinations (Netflix/Apple TV style) ──
+// ── Cosa puoi fare adesso · 6 destinations (Netflix/Apple TV style) ──
 const ACTION_DESTINATIONS = [
+  {
+    id: 'new-client',
+    eyebrow: 'Inizia da qui',
+    title: 'Nuovo Cliente',
+    description: 'Accogli un nuovo cliente e apri la prima conversazione progettuale.',
+    href: '/relations/accounts',
+    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80',
+  },
   {
     id: 'new-journey',
     eyebrow: 'Apri un nuovo capitolo',
