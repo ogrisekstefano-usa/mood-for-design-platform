@@ -13,10 +13,14 @@ welcome experience.
 """
 from datetime import datetime, timezone
 from typing import Optional, List
+import logging
+import uuid
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from core.tenant_context import get_tenant_context
 from database import db
+
+log = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -777,8 +781,8 @@ def leave_shared_voice(journey_id: str, body: SharedVoiceIn,
     tenant_id  = ctx["tenant_id"]
     c = db()
 
-    journey = _verify_journey_ownership(c, tenant_id, journey_id, profile_id,
-                                         ctx.get("role"))
+    _ = _verify_journey_ownership(c, tenant_id, journey_id, profile_id,
+                                  ctx.get("role"))
 
     ms = (c.table("journey_milestones").select("id,title,milestone_type")
           .eq("id", body.milestone_id).eq("journey_id", journey_id)
@@ -851,5 +855,263 @@ def leave_shared_voice(journey_id: str, body: SharedVoiceIn,
             "created_at": now_iso,
         },
         "chapter": {"id": chapter["id"], "title": chapter["title"]},
+    }
+
+
+# ════════════════════════════════════════════════════════════════════
+#  STORE-012C · CLIENT PORTAL CONCEPT REVIEW™
+#
+#  GET  /api/client/journeys/{jid}/concept-directions
+#  POST /api/client/concept-directions/{moodboard_id}/feedback
+#
+#  Rules:
+#  · Preferred ≠ Approved. We never change moodboard.status from the
+#    client side. Status remains in the studio's hands.
+#  · One "preferred" direction per Direction Set: switching emits a
+#    "changed preferred direction" timeline event.
+#  · Reactions vocabulary: interested · explore_further · preferred · comment.
+#  · Every reaction is persisted in milestone_feedback + journey_timeline_events
+#    + appended into moodboards.ai_metadata.concept_seed.client_reactions.
+#  · Client Alignment Score™ is updated INTERNALLY (never exposed to
+#    client). It is stored on each moodboard's concept_seed.
+# ════════════════════════════════════════════════════════════════════
+
+VALID_REACTIONS = {"interested", "explore_further", "preferred", "comment"}
+SCORE_WEIGHT = {"interested": 3, "explore_further": 2, "preferred": 10, "comment": 5}
+
+# Narrative templates per locale.
+FB_NARRATIVES = {
+    "it-IT": {
+        "interested":      'Il cliente ha segnato "{name}" come interessante.',
+        "explore_further": 'Il cliente vuole esplorare ulteriormente "{name}".',
+        "preferred":       'Il cliente ha indicato "{name}" come direzione preferita.',
+        "preferred_changed":'Il cliente ha cambiato direzione preferita: da "{prev}" a "{name}".',
+        "comment":         'Il cliente ha lasciato un commento su "{name}": "{quote}"',
+    },
+    "en-US": {
+        "interested":      'The client marked "{name}" as interesting.',
+        "explore_further": 'The client wants to explore "{name}" further.',
+        "preferred":       'The client marked "{name}" as preferred direction.',
+        "preferred_changed":'The client changed preferred direction from "{prev}" to "{name}".',
+        "comment":         'The client left a comment on "{name}": "{quote}"',
+    },
+}
+
+
+def _narratives(locale: str) -> dict:
+    return FB_NARRATIVES.get(locale) or FB_NARRATIVES["it-IT"]
+
+
+class ConceptFeedbackIn(BaseModel):
+    reaction: str
+    comment: Optional[str] = None
+
+
+@router.get("/journeys/{journey_id}/concept-directions")
+def client_list_concept_directions(journey_id: str, ctx: dict = Depends(get_tenant_context)):
+    """Return Direction Sets that have been SHARED with the client.
+
+    Boards whose concept_seed lacks `shared_at` are excluded entirely. The
+    Client Alignment Score™ is NEVER included in the response."""
+    profile_id = _require_client(ctx)
+    tenant_id  = ctx["tenant_id"]
+    c = db()
+    _verify_journey_ownership(c, tenant_id, journey_id, profile_id, ctx.get("role"))
+
+    rows = (c.table("moodboards")
+             .select("id,title,ai_metadata,status,updated_at,cover_metadata")
+             .eq("tenant_id", tenant_id).eq("journey_id", journey_id)
+             .is_("deleted_at", "null")
+             .execute().data or [])
+
+    sets: dict = {}
+    for r in rows:
+        seed = ((r.get("ai_metadata") or {}).get("concept_seed") or {})
+        if not seed.get("shared_at"):
+            continue
+        sid = seed.get("set_id")
+        if not sid:
+            continue
+        if sid not in sets:
+            sets[sid] = {
+                "set_id":         sid,
+                "set_index":      seed.get("set_index"),
+                "set_label":      seed.get("set_label") or f"Direction Set {(seed.get('set_index') or 0):02d}",
+                "set_shared_at":  seed.get("shared_at"),
+                "directions":     [],
+            }
+        reactions = seed.get("client_reactions") or []
+        cover = (r.get("cover_metadata") or {}).get("signed_url") or (r.get("cover_metadata") or {}).get("url")
+        sets[sid]["directions"].append({
+            "moodboard_id":     r["id"],
+            "direction_letter": seed.get("direction_letter"),
+            "direction_name":   seed.get("direction_name"),
+            "color_palette":    seed.get("color_palette") or [],
+            "style_dna_snapshot": seed.get("style_dna_snapshot") or [],
+            "material_entity_ids": seed.get("material_entity_ids") or [],
+            "media_ids":        seed.get("media_ids") or [],
+            "cover_url":        cover,
+            "designer_notes":   seed.get("designer_notes") or "",
+            "is_preferred":     bool(seed.get("is_preferred")),
+            "my_reactions":     [{"reaction": x.get("reaction"),
+                                  "created_at": x.get("created_at"),
+                                  "comment": x.get("comment")}
+                                  for x in reactions
+                                  if x.get("by") == profile_id],
+        })
+
+    sets_list = sorted(sets.values(), key=lambda s: s.get("set_index") or 0)
+    return {"sets": sets_list, "total_sets": len(sets_list)}
+
+
+@router.post("/concept-directions/{moodboard_id}/feedback", status_code=201)
+def client_concept_feedback(moodboard_id: str, body: ConceptFeedbackIn,
+                            ctx: dict = Depends(get_tenant_context)):
+    """Persist a client reaction. NEVER changes moodboard.status."""
+    profile_id = _require_client(ctx)
+    tenant_id  = ctx["tenant_id"]
+
+    if body.reaction not in VALID_REACTIONS:
+        raise HTTPException(422, f"Invalid reaction. Allowed: {sorted(VALID_REACTIONS)}")
+    if body.reaction == "comment" and not (body.comment and body.comment.strip()):
+        raise HTTPException(422, "Comment text is required for reaction=comment")
+
+    c = db()
+    # Load the target moodboard
+    mb_rows = (c.table("moodboards").select("id,journey_id,ai_metadata,title")
+                .eq("id", moodboard_id).eq("tenant_id", tenant_id)
+                .limit(1).execute().data or [])
+    if not mb_rows:
+        raise HTTPException(404, "Concept Board non trovato")
+    mb = mb_rows[0]
+    jid = mb.get("journey_id")
+    if not jid:
+        raise HTTPException(400, "Concept Board non collegato ad alcun Journey")
+
+    # Ownership via journey
+    _verify_journey_ownership(c, tenant_id, jid, profile_id, ctx.get("role"))
+
+    am = mb.get("ai_metadata") or {}
+    seed = dict(am.get("concept_seed") or {})
+    if not seed.get("shared_at"):
+        raise HTTPException(403, "Questa direzione non è ancora stata condivisa con te")
+
+    set_id = seed.get("set_id")
+    direction_name = seed.get("direction_name") or mb.get("title") or "Concept"
+    locale = "it-IT"
+    try:
+        # Reuse the resolver from concept_directions for consistency.
+        from routers.concept_directions import _resolve_client_locale
+        locale = _resolve_client_locale(c, tenant_id, profile_id)
+    except Exception:
+        pass
+    narratives = _narratives(locale)
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    reaction_record = {
+        "id":         str(uuid.uuid4()),
+        "reaction":   body.reaction,
+        "by":         profile_id,
+        "created_at": now_iso,
+        "comment":    (body.comment or "").strip() or None,
+    }
+
+    # Update concept_seed.client_reactions[]
+    reactions = list(seed.get("client_reactions") or [])
+    reactions.append(reaction_record)
+    seed["client_reactions"] = reactions
+
+    # ── Update Client Alignment Score™ (internal)
+    cur_score = int(seed.get("client_alignment_score") or 0)
+    seed["client_alignment_score"] = cur_score + SCORE_WEIGHT.get(body.reaction, 0)
+
+    # ── Handle "preferred": single per set semantics
+    set_preferred_switch = None  # (prev_name, prev_mb_id) if switch happens
+    if body.reaction == "preferred":
+        seed["is_preferred"] = True
+        # Find the previously preferred board in this set (if any other) and unset it.
+        if set_id:
+            other = (c.table("moodboards").select("id,ai_metadata,title")
+                      .eq("tenant_id", tenant_id).eq("journey_id", jid)
+                      .is_("deleted_at", "null").execute().data or [])
+            for o in other:
+                if o["id"] == moodboard_id:
+                    continue
+                o_am = o.get("ai_metadata") or {}
+                o_seed = dict(o_am.get("concept_seed") or {})
+                if o_seed.get("set_id") == set_id and o_seed.get("is_preferred"):
+                    set_preferred_switch = (o_seed.get("direction_name") or o.get("title") or "Concept", o["id"])
+                    o_seed["is_preferred"] = False
+                    # decrement aggregate score on the old preferred? — leave history intact.
+                    o_am["concept_seed"] = o_seed
+                    c.table("moodboards").update({
+                        "ai_metadata": o_am,
+                        "updated_at":  now_iso,
+                    }).eq("id", o["id"]).execute()
+
+    # Persist updated concept_seed back to moodboard
+    am["concept_seed"] = seed
+    c.table("moodboards").update({
+        "ai_metadata": am,
+        "updated_at":  now_iso,
+    }).eq("id", moodboard_id).execute()
+
+    # ── milestone_feedback row (mirrors voice persistence pattern)
+    fb_row = {
+        "id":             str(uuid.uuid4()),
+        "tenant_id":      tenant_id,
+        "milestone_id":   None,
+        "version_id":     None,
+        "kind":           f"concept_reaction_{body.reaction}",
+        "quote":          (body.comment or direction_name).strip()[:1000],
+        "author_role":    "client",
+        "author_user_id": profile_id,
+        "created_at":     now_iso,
+    }
+    try:
+        c.table("milestone_feedback").insert(fb_row).execute()
+    except Exception:
+        log.exception("milestone_feedback insert failed (non-blocking)")
+
+    # ── Timeline event(s)
+    quote_snippet = ((body.comment or "").strip().replace("\n", " "))[:140]
+    if body.reaction == "preferred" and set_preferred_switch:
+        narrative = narratives["preferred_changed"].format(
+            prev=set_preferred_switch[0], name=direction_name)
+    else:
+        key = body.reaction
+        narrative = narratives[key].format(name=direction_name, quote=quote_snippet)
+
+    tl_row = {
+        "id":            str(uuid.uuid4()),
+        "tenant_id":     tenant_id,
+        "journey_id":    jid,
+        "milestone_id":  None,
+        "event_type":    "client_concept_feedback",
+        "narrative_text": narrative,
+        "metadata":      {
+            "moodboard_id":    moodboard_id,
+            "direction_name":  direction_name,
+            "set_id":          set_id,
+            "reaction":        body.reaction,
+            "comment":         (body.comment or "").strip() or None,
+            "feedback_id":     fb_row["id"],
+            "switched_from_moodboard_id": set_preferred_switch[1] if set_preferred_switch else None,
+        },
+        "created_by":    profile_id,
+        "created_at":    now_iso,
+    }
+    try:
+        c.table("journey_timeline_events").insert(tl_row).execute()
+    except Exception:
+        log.exception("timeline event insert failed (non-blocking)")
+
+    return {
+        "feedback":        reaction_record,
+        "direction_name":  direction_name,
+        "set_id":          set_id,
+        "moodboard_id":    moodboard_id,
+        "narrative":       narrative,
+        "is_preferred":    bool(seed.get("is_preferred")),
     }
 

@@ -1,0 +1,42 @@
+{
+  "summary": "STORE-012C CLIENT PORTAL CONCEPT REVIEW™ fully verified — Backend 13/13 pytest PASS, Frontend Client Review page e2e PASS via playwright. Share endpoint marks the 3 boards of the set as status='sent' + stamps shared_at/shared_by + emits concept_set_shared timeline event; notify=false suppresses email; notify=true with no client_user_id returns email.sent=false (reason='no_client_email') and the endpoint still succeeds. Unshare reverts status to 'draft' and clears shared_at/shared_by. GET /api/client/journeys/{jid}/concept-directions returns ONLY shared sets, never exposes client_alignment_score (verified by string scan of full JSON payload), every direction includes moodboard_id/direction_letter/direction_name/color_palette/style_dna_snapshot/material_entity_ids/media_ids/cover_url/designer_notes/is_preferred/my_reactions[]. Feedback endpoint: interested → narrative italiano 'Il cliente ha segnato \"X\" come interessante.'; preferred → is_preferred=true on this board AND unset on the prior preferred board in same set; switching preferred A→B emits 'cambiato direzione preferita: da \"A\" a \"B\"'; comment requires non-empty body (422 otherwise); invalid reaction → 422. CRITICAL INVARIANT verified: moodboard.status NEVER changes from client feedback (stays 'sent', never 'approved'). Client Alignment Score™ increments correctly internally (3/2/10/5) and is stored on the studio-side moodboard ai_metadata.concept_seed.client_alignment_score — never leaks to /api/client/* responses. tenant_admin/super_admin QA bypass on _require_client confirmed working (admin user successfully drives the entire flow). Frontend Client page renders 12 cards across 4 sets with palette swatches, Style DNA list, 4 action buttons; gold ribbon + amber border on preferred card; reaction history pills surfacing; Italian toast narratives; Comment modal opens/submits/dismisses.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Client review optimistic reaction history pill", "issue": "After clicking 'Interesting' on a card with no prior reactions, the green ccr-history pill for that card does not appear in the same render cycle (re-mount/refresh shows it). The toast fires and backend persists correctly. Minor optimistic-UI nit — not blocking.", "affected_selectors": ["[data-testid=\"ccr-history-{moodboard_id}\"]"]}
+    ],
+    "design_issues": [
+      {"screen": "Auth page", "issues": ["Carried over from iter217: many missing auth.login.* i18n keys for locale it-IT (warnings, not blocking)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter218_concept_review.py",
+    "/app/test_reports/pytest/iter218_store012c.xml"
+  ],
+  "action_items": [
+    "(Optional polish) When client clicks a reaction on a card that had no prior feedback, optimistically inject a my_reactions entry locally so the green history pill appears immediately without a refetch.",
+    "(Carried) Continue addressing missing it-IT i18n keys for auth.login.* — unrelated to STORE-012C but still emitting console warnings."
+  ],
+  "critical_code_review_comments": [
+    "client_portal.py 1118 LOC — borderline (>700 target). Concept Review block (lines 860-1118) is cohesive and easily extractable into a separate router file (e.g. routers/client_concept_review.py) to keep client_portal.py lean. Suggest splitting before next feature lands here.",
+    "Locale resolver imported via local `from routers.concept_directions import _resolve_client_locale` inside the feedback handler — acceptable but creates an implicit cross-router dependency; consider moving the resolver into a shared `services/locales.py` for reuse.",
+    "concept_seed updates use a read→mutate→write pattern without optimistic locking. Two concurrent client feedback POSTs on the SAME moodboard can race and one client_reaction can be lost. Low-probability for the client portal, but worth a comment or an updated_at compare-and-swap if traffic grows.",
+    "Reaction model VALID_REACTIONS / SCORE_WEIGHT / FB_NARRATIVES are duplicated as dicts in module scope — clean but consider a single source-of-truth dataclass / Enum for type safety.",
+    "Email send path swallows all exceptions and returns reason=str(e)[:120] — good for non-blocking UX, but means a misconfigured SMTP would still report email.sent=false with a possibly noisy reason. Consider tagging known reasons ('no_client_email', 'no_client_user_id', 'smtp_error') discretely so the UI can render a helpful state.",
+    "_require_client tenant_admin/super_admin bypass works for QA but be careful: in production an admin can read+post feedback as if they were any client. Acceptable while flagged 'QA bypass' but should be gated by an env flag (e.g. ALLOW_ADMIN_CLIENT_BYPASS) before going prod.",
+    "Frontend: ClientConceptReviewPage card history pills are not optimistically updated after a successful action — calling fetchData() after each action would fix the cosmetic gap (already happens, but state diff may render only on next animation frame).",
+    "Studio summary view dbe-share / dbe-shared pill / preferred star / reaction strip — visually confirmed via prior iter217 smoke (gated behind SummaryView reachability per iter217 open item); no regression detected in backend wiring.",
+    "Test journey 8bb7a3b4-... now carries 9+ direction sets (each test run appends 3-5 more). Consider a cleanup endpoint (DELETE /api/journeys/{jid}/concept-directions/{set_id}) for QA hygiene; otherwise the journey will accumulate dozens of sets over time."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter218_concept_review.py (NEW · 13 pytest cases covering share/unshare, client GET, feedback matrix, score-internal-only invariant, status-never-changes invariant)"
+  ],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% on critical flows — shell renders, 12 cards, palette swatches, Style DNA, 4 action buttons, preferred ribbon + amber border, Italian toast narratives, comment modal opens/submits/dismisses"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin · tenant_admin/super_admin bypass on _require_client confirmed for QA)",
+  "seed_data_creation": "Test added several new Direction Sets to journey 8bb7a3b4-02af-4040-8420-37a254713899 (share/unshare/feedback scenarios). Journey now has 4 SHARED Direction Sets (12 cards) visible at /client/journey/{jid}/concepts. Reactions persisted on multiple boards (interested · preferred · comment). All test artifacts kept since this journey is the dedicated STORE-012 fixture.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "STORE-012C is end-to-end verified. The only optional polish is the optimistic history-pill refresh on first reaction (cosmetic). Backend pytest fixture pattern in test_iter218_concept_review.py: login → fresh_set fixture generates a new set per test class via POST /generate so tests don't fight each other; share with notify=false to skip email; client GET should never contain 'client_alignment_score' (string-scan the full JSON to catch any future regression). Frontend playwright: admin already authenticated via /api/auth/login redirects to /dashboard then direct navigate to /client/journey/{jid}/concepts works because of the QA bypass. data-testid scheme on the page: ccr-shell, ccr-empty, ccr-loading, ccr-set-{set_index}, ccr-card-{moodboard_id}, ccr-action-{reaction}-{moodboard_id}, ccr-history-{moodboard_id}, ccr-comment-modal, ccr-comment-text, ccr-comment-submit, ccr-back.",
+  "rca_of_issue": "No production bugs found. The only minor UX gap is the history-pill optimistic update: when the client triggers their FIRST reaction on a card, the local state update happens but the conditional render `{d.my_reactions?.length > 0 && <div data-testid=ccr-history-{id}>}` does not pick up the new reaction until the next fetchData() resolves. Mitigation: append the new reaction to the in-memory direction.my_reactions array on optimistic success before the refetch completes, or invalidate/refetch synchronously after POST 201."
+}

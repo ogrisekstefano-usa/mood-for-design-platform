@@ -158,6 +158,8 @@ const ClientDashboardLayout = lazy(() => import('./components/client/ClientDashb
 const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
 const ClientMessagesPage = lazy(() => import('./pages/client/ClientMessagesPage'));
 const ClientJourneysIndexPage = lazy(() => import('./pages/client/ClientJourneysIndexPage'));
+// STORE-012C · Client Portal Concept Review
+const ClientConceptReviewPage = lazy(() => import('./pages/client/ClientConceptReviewPage'));
 const ClientWelcomePresetPage = lazy(() => import('./pages/client/ClientWelcomePresetPage'));
 const BriefGuidedPage = lazy(() => import('./pages/client/BriefGuidedPage'));  // ITER172 · Client Design Journey™ V1
 // ITER172 · FROZEN — Gen 2 narrative companion. Source preserved; route disabled.
@@ -273,7 +275,10 @@ const ClientRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/auth/login" replace />;
-  if ((user.role || '').toLowerCase() !== 'client') {
+  const role = (user.role || '').toLowerCase();
+  // STORE-012C · allow tenant_admin / super_admin to QA the client portal
+  // (matches the backend _require_client bypass policy).
+  if (role !== 'client' && role !== 'tenant_admin' && role !== 'super_admin') {
     return <Navigate to="/dashboard" replace />;
   }
   return children;
@@ -832,6 +837,8 @@ function App() {
                 <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
                   <Route path="/client" element={<Navigate to="/client/welcome" replace />} />
                   <Route path="/client/journeys" element={<ClientJourneysIndexPage />} />
+                  {/* STORE-012C · Client Portal Concept Review */}
+                  <Route path="/client/journey/:jid/concepts" element={<ClientConceptReviewPage />} />
                   {/* ITER172 · Gen 2 narrative companion FROZEN — redirect to canonical V1.
                       <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} /> */}
                   <Route path="/client/journey/:journeyId" element={<RedirectClientJourneyToCanonical />} />

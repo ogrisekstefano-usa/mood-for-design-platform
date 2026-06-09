@@ -606,6 +606,7 @@ const SummaryView = ({ intel, jid, onBack }) => {
   const [sets, setSets] = useState([]);
   const [loadingSets, setLoadingSets] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [sharingSetId, setSharingSetId] = useState(null);
 
   useEffect(() => {
     let cancel = false;
@@ -626,6 +627,19 @@ const SummaryView = ({ intel, jid, onBack }) => {
       console.error('generate concept directions failed', e?.response?.data || e);
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleShare = async (setId) => {
+    setSharingSetId(setId);
+    try {
+      await api.post(`/api/journeys/${jid}/concept-directions/${setId}/share`, {});
+      const r = await api.get(`/api/journeys/${jid}/concept-directions`);
+      setSets(r.data.sets || []);
+    } catch (e) {
+      console.error('share failed', e?.response?.data || e);
+    } finally {
+      setSharingSetId(null);
     }
   };
 
@@ -672,13 +686,35 @@ const SummaryView = ({ intel, jid, onBack }) => {
                 <p className="dbe-set__eyebrow">Concept</p>
                 <h3 className="dbe-set__title">{s.set_label}</h3>
                 <p className="dbe-set__date">{s.set_created_at ? new Date(s.set_created_at).toLocaleString() : ''}</p>
+                <div className="dbe-set__share" data-testid={`dbe-set-share-${s.set_index}`}>
+                  {s.shared_at ? (
+                    <span className="dbe-set__shared-pill" title={`Shared on ${new Date(s.shared_at).toLocaleString()}`}>
+                      <Check size={11} strokeWidth={3} /> Shared with client
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="dbe-btn dbe-btn--primary dbe-btn--sm"
+                      onClick={() => handleShare(s.set_id)}
+                      disabled={sharingSetId === s.set_id}
+                      data-testid={`dbe-share-${s.set_index}`}
+                    >
+                      {sharingSetId === s.set_id ? <><Loader2 size={12} className="dbe-spin" /> Sharing…</> : <>Send to client for review</>}
+                    </button>
+                  )}
+                </div>
               </header>
               <div className="dbe-set__grid">
                 {s.directions.map((d) => (
-                  <article key={d.moodboard_id} className="dbe-concept" data-testid={`dbe-concept-${d.moodboard_id}`}>
+                  <article key={d.moodboard_id} className={`dbe-concept ${d.is_preferred ? 'is-preferred' : ''}`} data-testid={`dbe-concept-${d.moodboard_id}`}>
                     <header className="dbe-concept__hdr">
                       <span className="dbe-concept__letter">{d.direction_letter}</span>
                       <p className="dbe-concept__name">{d.direction_name}</p>
+                      {d.is_preferred && (
+                        <span className="dbe-concept__preferred" title="Client preferred direction">
+                          ★
+                        </span>
+                      )}
                     </header>
 
                     {/* mini palette */}
@@ -713,6 +749,15 @@ const SummaryView = ({ intel, jid, onBack }) => {
                         {d.needs_flags.map(f => (
                           <span key={f} className="dbe-concept__need-pill">{f.replace('NEEDS_', '').replace('_', ' ')}</span>
                         ))}
+                      </div>
+                    )}
+
+                    {/* client reactions count (studio side) */}
+                    {d.reaction_counts && (d.reaction_counts.interested + d.reaction_counts.explore_further + d.reaction_counts.preferred + d.reaction_counts.comment > 0) && (
+                      <div className="dbe-concept__reactions" data-testid={`dbe-reactions-${d.moodboard_id}`}>
+                        {d.reaction_counts.interested > 0 && <span title="Interested">◉ {d.reaction_counts.interested}</span>}
+                        {d.reaction_counts.explore_further > 0 && <span title="Explore further">↻ {d.reaction_counts.explore_further}</span>}
+                        {d.reaction_counts.comment > 0 && <span title="Comments">✎ {d.reaction_counts.comment}</span>}
                       </div>
                     )}
 

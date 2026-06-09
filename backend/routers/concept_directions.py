@@ -581,11 +581,242 @@ def list_concept_directions(jid: str, ctx=Depends(get_tenant_context)):
                 "products":  len(seed.get("product_entity_ids") or []),
                 "images":    len(seed.get("media_ids") or []),
             },
-            "needs_flags": seed.get("needs_flags") or [],
-            "title":       r.get("title"),
-            "status":      r.get("status"),
-            "updated_at":  r.get("updated_at"),
+            "needs_flags":      seed.get("needs_flags") or [],
+            "title":            r.get("title"),
+            "status":           r.get("status"),
+            "updated_at":       r.get("updated_at"),
+            # STORE-012C aggregated state
+            "shared_at":        seed.get("shared_at"),
+            "shared_by":        seed.get("shared_by"),
+            "is_preferred":     bool(seed.get("is_preferred")),
+            "reaction_counts":  _reaction_counts(seed.get("client_reactions") or []),
         })
+        if seed.get("shared_at"):
+            # propagate set-level shared marker
+            sets_map[sid]["shared_at"] = sets_map[sid].get("shared_at") or seed.get("shared_at")
 
     sets_list = sorted(sets_map.values(), key=lambda s: s.get("set_index") or 0)
     return {"sets": sets_list, "total_sets": len(sets_list)}
+
+
+# ════════════════════════════════════════════════════════════════════
+#  STORE-012C · Share with client + Client feedback ingestion
+# ════════════════════════════════════════════════════════════════════
+def _reaction_counts(reactions: List[Dict[str, Any]]) -> Dict[str, int]:
+    out = {"interested": 0, "explore_further": 0, "preferred": 0, "comment": 0}
+    for r in reactions or []:
+        k = r.get("reaction")
+        if k in out:
+            out[k] += 1
+    return out
+
+
+def _resolve_client_locale(c, tid: str, client_user_id: Optional[str]) -> str:
+    """client.preferred_locale → tenant.primary_locale → it-IT."""
+    if client_user_id:
+        try:
+            prof = (c.table("users_profile")
+                     .select("locale,preferred_locale")
+                     .eq("id", client_user_id).limit(1).execute().data or [])
+            if prof:
+                loc = prof[0].get("preferred_locale") or prof[0].get("locale")
+                if loc:
+                    return loc
+        except Exception:
+            pass
+    try:
+        ten = (c.table("tenants").select("primary_locale,default_locale")
+                .eq("id", tid).limit(1).execute().data or [])
+        if ten:
+            loc = ten[0].get("primary_locale") or ten[0].get("default_locale")
+            if loc:
+                return loc
+    except Exception:
+        pass
+    return "it-IT"
+
+
+SHARE_EMAIL = {
+    "it-IT": {
+        "subject": "Nuove direzioni progettuali pronte per te",
+        "body":    "Il tuo showroom ha preparato nuove direzioni progettuali per te. Accedi alla tua area riservata per vederle e lasciare il tuo feedback.",
+        "cta":     "Apri la mia area riservata",
+    },
+    "en-US": {
+        "subject": "New design directions are ready for you",
+        "body":    "Your showroom has prepared new design directions for you. Access your private area to review them and share your feedback.",
+        "cta":     "Open my private area",
+    },
+    "en-GB": {
+        "subject": "New design directions are ready for you",
+        "body":    "Your showroom has prepared new design directions for you. Access your private area to review them and share your feedback.",
+        "cta":     "Open my private area",
+    },
+    "fr-FR": {
+        "subject": "De nouvelles directions de projet sont prêtes",
+        "body":    "Votre showroom a préparé de nouvelles directions de projet. Accédez à votre espace privé pour les consulter et nous laisser votre retour.",
+        "cta":     "Ouvrir mon espace privé",
+    },
+}
+
+
+def _email_strings(locale: str) -> Dict[str, str]:
+    return SHARE_EMAIL.get(locale) or SHARE_EMAIL.get(locale.split("-")[0] + "-IT") or SHARE_EMAIL["it-IT"]
+
+
+class ShareBody(BaseModel):
+    notify: bool = True  # send email; default true
+
+
+@router.post("/journeys/{jid}/concept-directions/{set_id}/share")
+def share_concept_set(jid: str, set_id: str, body: ShareBody = ShareBody(),
+                      ctx=Depends(get_tenant_context)):
+    """Share a Direction Set with the client owner of the journey.
+
+    Marks the 3 moodboards of the set as `status='sent'` and stamps
+    `ai_metadata.concept_seed.shared_at` + `shared_by`. Emits a timeline
+    event `concept_set_shared`. Optionally sends a notification email
+    (no actions inside the email — only a CTA back to the private area).
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    journey = _resolve_journey(c, tid, jid)
+
+    # Fetch the 3 boards of the set
+    rows = (c.table("moodboards").select("id,ai_metadata,status,title")
+             .eq("tenant_id", tid).eq("journey_id", jid)
+             .is_("deleted_at", "null").execute().data or [])
+    in_set = [r for r in rows if ((r.get("ai_metadata") or {}).get("concept_seed") or {}).get("set_id") == set_id]
+    if not in_set:
+        raise HTTPException(404, "Direction Set not found")
+
+    shared_at = _now()
+    updates_done = 0
+    for r in in_set:
+        am = r.get("ai_metadata") or {}
+        seed = dict(am.get("concept_seed") or {})
+        seed["shared_at"] = shared_at
+        seed["shared_by"] = uid
+        am["concept_seed"] = seed
+        new_status = r.get("status") if r.get("status") not in (None, "draft") else "sent"
+        c.table("moodboards").update({
+            "ai_metadata": am,
+            "status":      new_status,
+            "updated_at":  shared_at,
+        }).eq("id", r["id"]).execute()
+        updates_done += 1
+
+    set_index = ((in_set[0].get("ai_metadata") or {}).get("concept_seed") or {}).get("set_index")
+    set_label = f"Direction Set {(set_index or 0):02d}"
+
+    # Timeline event
+    try:
+        c.table("journey_timeline_events").insert({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tid,
+            "journey_id":    jid,
+            "event_type":    "concept_set_shared",
+            "narrative_text": f"Hai condiviso {set_label} con il cliente.",
+            "metadata":      {"set_id": set_id, "set_index": set_index,
+                              "moodboard_ids": [r["id"] for r in in_set]},
+            "created_by":    uid,
+            "created_at":    shared_at,
+        }).execute()
+    except Exception:
+        log.exception("share timeline event failed (non-blocking)")
+
+    # Notification email (best-effort)
+    email_result = {"sent": False, "reason": None}
+    if body.notify:
+        try:
+            pid = journey.get("project_id")
+            client_user_id = None
+            client_email = None
+            if pid:
+                pr = (c.table("projects").select("client_user_id")
+                      .eq("id", pid).limit(1).execute().data or [])
+                if pr:
+                    client_user_id = pr[0].get("client_user_id")
+            if client_user_id:
+                up = (c.table("users_profile").select("email,first_name").eq("id", client_user_id).limit(1).execute().data or [])
+                if up:
+                    client_email = up[0].get("email")
+            if client_email:
+                from services.email_service import send_email
+                import os as _os
+                locale = _resolve_client_locale(c, tid, client_user_id)
+                strings = _email_strings(locale)
+                base = (_os.environ.get("FRONTEND_URL") or
+                        _os.environ.get("PUBLIC_BASE_URL") or "").rstrip("/")
+                area_url = (base + f"/client/journey/{jid}/concepts") if base else f"/client/journey/{jid}/concepts"
+                html = (
+                    f"<p style='font-family:Inter,sans-serif;font-size:14px;color:#1f1f1f;line-height:1.6'>{strings['body']}</p>"
+                    f"<p style='margin-top:24px'><a href='{area_url}' "
+                    f"style='display:inline-block;padding:12px 22px;background:#d9b16c;color:#0a0d12;"
+                    f"text-decoration:none;border-radius:999px;font-weight:500;font-family:Inter,sans-serif'>"
+                    f"{strings['cta']}</a></p>"
+                )
+                send_email(
+                    to=client_email, subject=strings["subject"],
+                    body_html=html, body_text=strings["body"],
+                    template="concept_review_invitation",
+                    event_type="concept_review_invitation",
+                    tenant_id=tid,
+                    metadata={"journey_id": jid, "set_id": set_id, "locale": locale},
+                )
+                email_result = {"sent": True, "to": client_email, "locale": locale}
+            else:
+                email_result = {"sent": False, "reason": "no_client_email"}
+        except Exception as e:
+            log.exception("share email failed (non-blocking)")
+            email_result = {"sent": False, "reason": str(e)[:120]}
+
+    return {
+        "set_id":     set_id,
+        "set_label":  set_label,
+        "shared_at":  shared_at,
+        "boards":     updates_done,
+        "email":      email_result,
+    }
+
+
+@router.post("/journeys/{jid}/concept-directions/{set_id}/unshare")
+def unshare_concept_set(jid: str, set_id: str, ctx=Depends(get_tenant_context)):
+    """Revoke a previously shared Direction Set."""
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    _resolve_journey(c, tid, jid)
+    rows = (c.table("moodboards").select("id,ai_metadata,status")
+             .eq("tenant_id", tid).eq("journey_id", jid)
+             .is_("deleted_at", "null").execute().data or [])
+    in_set = [r for r in rows if ((r.get("ai_metadata") or {}).get("concept_seed") or {}).get("set_id") == set_id]
+    if not in_set:
+        raise HTTPException(404, "Direction Set not found")
+    now = _now()
+    for r in in_set:
+        am = r.get("ai_metadata") or {}
+        seed = dict(am.get("concept_seed") or {})
+        seed["shared_at"] = None
+        seed["shared_by"] = None
+        am["concept_seed"] = seed
+        c.table("moodboards").update({
+            "ai_metadata": am,
+            "status":      "draft",
+            "updated_at":  now,
+        }).eq("id", r["id"]).execute()
+    try:
+        c.table("journey_timeline_events").insert({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tid,
+            "journey_id":    jid,
+            "event_type":    "concept_set_unshared",
+            "narrative_text": "Hai ritirato la condivisione del Direction Set.",
+            "metadata":      {"set_id": set_id},
+            "created_by":    uid,
+            "created_at":    now,
+        }).execute()
+    except Exception:
+        pass
+    return {"set_id": set_id, "unshared_at": now, "boards": len(in_set)}
