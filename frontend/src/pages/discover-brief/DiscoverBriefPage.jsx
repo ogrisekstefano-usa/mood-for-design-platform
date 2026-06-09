@@ -761,9 +761,12 @@ const SummaryView = ({ intel, jid, onBack }) => {
                       </div>
                     )}
 
-                    <Link to={`/moodboards/${d.moodboard_id}`} className="dbe-concept__open" data-testid={`dbe-open-${d.moodboard_id}`}>
-                      Open Direction <ArrowRight size={13} />
-                    </Link>
+                    {/* STORE-012B · Working Moodboard generation */}
+                    <WorkingMoodboardLauncher
+                      jid={jid}
+                      conceptMbId={d.moodboard_id}
+                      directionName={d.direction_name}
+                    />
                   </article>
                 ))}
               </div>
@@ -824,5 +827,72 @@ const SummaryView = ({ intel, jid, onBack }) => {
     </div>
   );
 };
+
+/* ─────────────────────────────────────────────────────────────
+ *  STORE-012B · Working Moodboard launcher button
+ *  Replaces the old "Open Direction" CTA. If a Working Moodboard
+ *  has already been derived from this Concept Board, opens it
+ *  directly; otherwise it generates one and then navigates.
+ * ───────────────────────────────────────────────────────────── */
+const WorkingMoodboardLauncher = ({ jid, conceptMbId, directionName }) => {
+  const [existingId, setExistingId] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let cancel = false;
+    api.get(`/api/journeys/${jid}/working-moodboards`)
+      .then((r) => {
+        if (cancel) return;
+        const match = (r.data?.working_moodboards || []).find(
+          (w) => w.source_concept_id === conceptMbId
+        );
+        if (match) setExistingId(match.moodboard_id);
+      })
+      .catch(() => {});
+    return () => { cancel = true; };
+  }, [jid, conceptMbId]);
+
+  if (existingId) {
+    return (
+      <Link
+        to={`/studio/moodboards/working/${existingId}`}
+        className="dbe-concept__open"
+        data-testid={`dbe-open-working-${conceptMbId}`}
+      >
+        Open Working Moodboard <ArrowRight size={13} />
+      </Link>
+    );
+  }
+
+  const generate = async () => {
+    setBusy(true);
+    try {
+      const r = await api.post(
+        `/api/journeys/${jid}/working-moodboards/from-concept/${conceptMbId}`,
+        {}
+      );
+      const newId = r.data?.moodboard_id;
+      if (newId) window.location.href = `/studio/moodboards/working/${newId}`;
+    } catch (e) {
+      console.error('generate working moodboard failed', e?.response?.data || e);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={generate}
+      disabled={busy}
+      className="dbe-concept__open"
+      data-testid={`dbe-generate-working-${conceptMbId}`}
+      title={`Generate Working Moodboard for ${directionName}`}
+    >
+      {busy ? <><Loader2 size={13} className="dbe-spin" /> Generating…</> :
+        <><Sparkles size={13} /> Generate Working Moodboard™</>}
+    </button>
+  );
+};
+
 
 export default DiscoverBriefPage;

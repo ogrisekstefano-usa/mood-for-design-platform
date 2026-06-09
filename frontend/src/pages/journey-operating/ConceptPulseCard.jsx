@@ -107,9 +107,20 @@ const ConceptPulseCard = ({ journeyId }) => {
             </p>
           </div>
           <Link
-            to={`/moodboards/${pulse.preferred_direction.moodboard_id}`}
+            to={`/studio/moodboards/working/${pulse.preferred_direction.moodboard_id}`}
             className="cp-preferred__cta"
             data-testid="cp-open-preferred"
+            onClick={(e) => {
+              // If no Working Moodboard exists yet, generate then navigate.
+              if (!pulse.preferred_has_working) {
+                e.preventDefault();
+                api.post(`/api/journeys/${journeyId}/working-moodboards/from-concept/${pulse.preferred_direction.moodboard_id}`, {})
+                  .then((r) => {
+                    const wid = r.data?.moodboard_id;
+                    if (wid) window.location.href = `/studio/moodboards/working/${wid}`;
+                  });
+              }
+            }}
           >
             Open <ArrowRight size={12} />
           </Link>

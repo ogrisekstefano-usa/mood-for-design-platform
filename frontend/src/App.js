@@ -43,6 +43,8 @@ const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
 // STORE-011 · Design Discovery™ Engine
 const DiscoverBriefPage = lazy(() => import('./pages/discover-brief/DiscoverBriefPage'));
+// STORE-012B · MOODBOARD V2.1 · Working Moodboard
+const WorkingMoodboardPage = lazy(() => import('./pages/working-moodboard/WorkingMoodboardPage'));
 const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const WorkspacePreparePage = lazy(() => import('./pages/workspace/WorkspacePreparePage'));
@@ -640,6 +642,8 @@ function App() {
                   <Route path="/studio/journey/:jid/step/:milestoneType" element={G('journey_index', <StudioJourneyStepView />)} />
                   {/* STORE-011 · Design Discovery™ Engine */}
                   <Route path="/studio/journey/:jid/discover" element={G('journey_index', <DiscoverBriefPage />)} />
+                  {/* STORE-012B · MOODBOARD V2.1 · Working Moodboard */}
+                  <Route path="/studio/moodboards/working/:id" element={G('inspirations', <WorkingMoodboardPage />)} />
                   {/* ITER168 · Phase 2 · silent legacy redirects (project_id → jid) */}
                   <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectToJourneyRedirect />)} />
                   <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <LegacyStepRedirect />)} />
