@@ -52,6 +52,8 @@ const WorkingMoodboardPage = () => {
   const [brain, setBrain] = useState(null);
   const [loading, setLoading] = useState(true);
   const [moodboard, setMoodboard] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState(null);
 
   useEffect(() => {
     let cancel = false;
@@ -94,7 +96,14 @@ const WorkingMoodboardPage = () => {
         next[pid] = next[pid].map(el => {
           if (el.id !== elementId) return el;
           const content = typeof el.content === 'string' ? safeParse(el.content) : (el.content || {});
-          return { ...el, content: { ...content, approval_status: newStatus } };
+          const meta = { ...(content.metadata || {}) };
+          if (newStatus === 'approved') {
+            meta.decision_stage = 'approved';
+            if (el.type === 'material' || el.type === 'product') meta.specification_candidate = true;
+          } else if (newStatus === 'rejected') {
+            meta.specification_candidate = false;
+          }
+          return { ...el, content: { ...content, approval_status: newStatus, metadata: meta } };
         });
       });
       return next;
@@ -105,6 +114,32 @@ const WorkingMoodboardPage = () => {
       console.error('approval patch failed', e?.response?.data || e);
     }
   };
+
+  // STORE-012F · Material Board Sync
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const r = await api.post(`/api/working-moodboards/${id}/sync-materials-board`, {});
+      setSyncResult({ ok: true, added: r.data?.added ?? 0, skipped: r.data?.skipped ?? 0, total: r.data?.approved_materials ?? 0 });
+    } catch (e) {
+      console.error('sync failed', e?.response?.data || e);
+      setSyncResult({ ok: false, error: e?.response?.data?.detail || 'Sync failed.' });
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncResult(null), 4500);
+    }
+  };
+
+  // Counts approved materials across the moodboard
+  const approvedMaterialsCount = useMemo(() => {
+    let n = 0;
+    Object.values(elementsByPage || {}).forEach(arr => arr.forEach(el => {
+      const c = typeof el.content === 'string' ? safeParse(el.content) : (el.content || {});
+      if (el.type === 'material' && c.approval_status === 'approved') n += 1;
+    }));
+    return n;
+  }, [elementsByPage]);
 
   // Sections from the working-payload (already grouped server-side)
   const sections = useMemo(() => {
@@ -151,6 +186,37 @@ const WorkingMoodboardPage = () => {
 
       <div className="wmb-body">
         <main className={`wmb-main ${presentation ? 'wmb-main--present' : ''}`}>
+          {!presentation && approvedMaterialsCount > 0 && (
+            <section className="wmb-sync" data-testid="wmb-sync-cta">
+              <div className="wmb-sync__copy">
+                <p className="wmb-sync__eyebrow">Material Board Sync™</p>
+                <p className="wmb-sync__headline">
+                  {approvedMaterialsCount} approved material{approvedMaterialsCount === 1 ? '' : 's'} ready to be added to the Material Board.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="wmb-btn wmb-btn--gold"
+                onClick={handleSync}
+                disabled={syncing}
+                data-testid="wmb-sync-go"
+              >
+                {syncing ? <><Loader2 size={13} className="wmb-spin" /> Syncing…</> :
+                  <><Sparkles size={13} /> Add Approved Materials to Material Board™</>}
+              </button>
+              {syncResult?.ok && (
+                <span className="wmb-sync__toast" data-testid="wmb-sync-toast">
+                  <Check size={12} strokeWidth={3} /> +{syncResult.added} added{syncResult.skipped ? ` · ${syncResult.skipped} already on board` : ''}
+                </span>
+              )}
+              {syncResult?.ok === false && (
+                <span className="wmb-sync__toast wmb-sync__toast--err" data-testid="wmb-sync-toast">
+                  <X size={12} /> {syncResult.error}
+                </span>
+              )}
+            </section>
+          )}
+
           {!presentation && sections.map((s) => (
             <SectionEdit key={s.page_id} section={s} onApproval={setApproval} />
           ))}
@@ -196,6 +262,21 @@ const SectionEdit = ({ section, onApproval }) => {
 const ElementCard = ({ el, onApproval }) => {
   const content = typeof el.content === 'string' ? safeParse(el.content) : (el.content || {});
   const status = content.approval_status || 'suggested';
+  const metadata = content.metadata || {};
+  const reactions = metadata.client_reactions || [];
+  const isSpecCandidate = !!metadata.specification_candidate;
+  const isApproved = status === 'approved';
+  const readyForMaterialBoard = isApproved && el.type === 'material' && metadata.decision_stage !== 'specified';
+  const readyForSpecification = isApproved && (el.type === 'material' || el.type === 'product');
+  const isSpecified = metadata.decision_stage === 'specified';
+
+  const counts = reactions.reduce((acc, r) => {
+    if (r.type === 'interesting') acc.interesting += 1;
+    else if (r.type === 'explore_further') acc.explore += 1;
+    else if (r.type === 'comment') acc.comments += 1;
+    return acc;
+  }, { interesting: 0, explore: 0, comments: 0 });
+  const lastComment = [...reactions].reverse().find(r => r.type === 'comment')?.comment;
 
   let body = null;
   if (el.type === 'image') {
@@ -236,9 +317,41 @@ const ElementCard = ({ el, onApproval }) => {
     body = <div className="wmb-el__text"><p className="wmb-el__text-body">{el.title || el.type}</p></div>;
   }
 
+  const totalReactions = counts.interesting + counts.explore + counts.comments;
+
   return (
     <article className={`wmb-el wmb-el--${el.type} wmb-el--${status}`} data-testid={`wmb-el-${el.id}`}>
       {body}
+
+      {/* STORE-012F · Client feedback summary */}
+      {totalReactions > 0 && (
+        <div className="wmb-el__feedback" data-testid={`wmb-feedback-${el.id}`}>
+          <div className="wmb-el__feedback-counts">
+            {counts.interesting > 0 && <span title="Interesting">◉ {counts.interesting}</span>}
+            {counts.explore > 0 && <span title="Explore further">↻ {counts.explore}</span>}
+            {counts.comments > 0 && <span title="Comments">✎ {counts.comments}</span>}
+          </div>
+          {lastComment && (
+            <p className="wmb-el__feedback-quote" title={lastComment}>“{lastComment}”</p>
+          )}
+        </div>
+      )}
+
+      {/* STORE-012F · Status badges */}
+      {(readyForMaterialBoard || readyForSpecification || isSpecified || isSpecCandidate) && (
+        <div className="wmb-el__badges" data-testid={`wmb-badges-${el.id}`}>
+          {readyForMaterialBoard && (
+            <span className="wmb-badge wmb-badge--mat" data-testid={`wmb-badge-mat-${el.id}`}>Ready for Material Board</span>
+          )}
+          {readyForSpecification && !isSpecified && (
+            <span className="wmb-badge wmb-badge--spec" data-testid={`wmb-badge-spec-${el.id}`}>Ready for Specification™</span>
+          )}
+          {isSpecified && (
+            <span className="wmb-badge wmb-badge--done" data-testid={`wmb-badge-specified-${el.id}`}>On Material Board</span>
+          )}
+        </div>
+      )}
+
       <ApprovalChips status={status} elementId={el.id} onApproval={onApproval} />
     </article>
   );

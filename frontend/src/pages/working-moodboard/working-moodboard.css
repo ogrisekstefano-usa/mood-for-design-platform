@@ -101,6 +101,70 @@
 .wmb-section__grid--atmosphere { grid-template-columns: repeat(3, 1fr); }
 .wmb-section__grid--notes { grid-template-columns: 1fr; }
 
+/* ── STORE-012F · Material Board Sync banner ────────────────────── */
+.wmb-sync {
+  display: flex; align-items: center; gap: 18px;
+  padding: 18px 22px; margin-bottom: 32px;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at top right, rgba(217,177,108,0.16), transparent 60%),
+    linear-gradient(135deg, rgba(217,177,108,0.10), rgba(217,177,108,0.02));
+  border: 1px solid rgba(217,177,108,0.35);
+}
+.wmb-sync__copy { flex: 1; }
+.wmb-sync__eyebrow { margin: 0; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #d9b16c; }
+.wmb-sync__headline {
+  margin: 4px 0 0; font-family: 'Cormorant Garamond', serif;
+  font-size: 19px; font-weight: 500; color: #f1f4f9;
+}
+.wmb-btn--gold {
+  background: linear-gradient(135deg, #d9b16c, #c69a52);
+  color: #0a0d12; font-weight: 500;
+}
+.wmb-btn--gold:hover:not(:disabled) { box-shadow: 0 8px 24px -10px rgba(217,177,108,0.6); }
+.wmb-sync__toast {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  background: rgba(96,200,134,0.16);
+  border: 1px solid rgba(96,200,134,0.4);
+  color: #c8f0d9; font-size: 11px;
+}
+.wmb-sync__toast--err {
+  background: rgba(220,80,80,0.16);
+  border-color: rgba(220,80,80,0.4);
+  color: #ffc6c6;
+}
+
+/* ── STORE-012F · Per-element feedback summary + badges ─────────── */
+.wmb-el__feedback {
+  padding: 8px 10px; border-radius: 6px;
+  background: rgba(217,177,108,0.06);
+  border: 1px solid rgba(217,177,108,0.2);
+}
+.wmb-el__feedback-counts {
+  display: flex; gap: 10px; font-size: 10px; color: #f1d699;
+}
+.wmb-el__feedback-quote {
+  margin: 6px 0 0; font-size: 11px; color: #c5cbd6;
+  font-style: italic; line-height: 1.4;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.wmb-el__badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.wmb-badge {
+  display: inline-flex; align-items: center;
+  padding: 4px 9px; border-radius: 999px;
+  font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.wmb-badge--mat {
+  background: rgba(96,200,134,0.14); color: #6dd49a; border: 1px solid rgba(96,200,134,0.3);
+}
+.wmb-badge--spec {
+  background: rgba(217,177,108,0.14); color: #f1d699; border: 1px solid rgba(217,177,108,0.3);
+}
+.wmb-badge--done {
+  background: rgba(96,140,200,0.16); color: #9fc4ff; border: 1px solid rgba(96,140,200,0.3);
+}
+
 /* ── ELEMENT CARD ────────────────────────────────────────────────── */
 .wmb-el {
   display: flex; flex-direction: column; gap: 10px;

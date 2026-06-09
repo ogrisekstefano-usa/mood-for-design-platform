@@ -1,0 +1,61 @@
+{
+  "summary": "STORE-012F · CLIENT APPROVAL THREAD™ + MATERIAL BOARD SYNC™ — backend pytest 15/17 PASS, 1 SKIP, 1 CRITICAL FAILURE caused by wrong DB table name in sync_materials_board. Verified: PATCH /api/moodboard-elements/{eid}/approval-status (approved → decision_stage=approved + specification_candidate=true; rejected → evaluation + spec_candidate=false; discussed → evaluation, no spec_candidate; suggested → 422). Verified: POST /api/client/moodboard-elements/{eid}/feedback (interesting/explore_further/comment narratives in Italian with element title quoted; missing comment → 422; invalid reaction → 422; concept board → 403 'This endpoint is for Working Moodboards'; client_reactions[] persisted into element.content.metadata; Client Signal™ timeline event emitted). Verified: GET /api/client/moodboards/{id}/presentation contains NO approval_* keys, NO client_alignment_score, NO decision_stage, NO specification_candidate (deep-key scan passes). Verified: timeline emits 'Il designer ha approvato' narrative on approval. Frontend testids confirmed present in code: wmb-sync-cta, wmb-sync-go, wmb-sync-toast, wmb-feedback-{id}, wmb-badge-mat-{id}, wmb-badge-spec-{id}, wmb-badge-specified-{id}.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/working-moodboards/{mbid}/sync-materials-board",
+        "issue": "Router writes to TABLE 'material_board_items' which does NOT exist in the schema. Postgres error: \"Could not find the table 'public.material_board_items' in the schema cache\" — hint: 'Perhaps you meant the table public.material_board_elements'. Effect: (a) every sync silently fails to persist items (the bare-except in the fallback also swallows the error), (b) the dedup query existing_eids := SELECT entity_id FROM material_board_items also returns [], so every consecutive idempotent call re-emits added>=1 instead of added=0, (c) created_board still returns true and decision_stage='specified' is still written to elements — giving the FRONTEND the illusion of success while the Material Board stays empty. This breaks the entire Material Board Sync™ feature in production. All other routers in /app/backend (material_boards.py, specifications.py, project_stories.py) correctly use 'material_board_elements'. FIX: rename all three occurrences in /app/backend/routers/working_moodboards.py (lines 843, 878, 887) from 'material_board_items' → 'material_board_elements' AND verify columns (source_element_id, source_moodboard_id, added_by may need rename/removal per actual material_board_elements schema).",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "POST /api/working-moodboards/{mbid}/sync-materials-board",
+        "issue": "Both insert paths are wrapped in try/except that LOGS but does not re-raise — masks DB errors and returns added=N to the client even when zero rows were actually persisted. Recommend: re-raise after fallback fails so HTTP 500 is returned to the UI."
+      },
+      {
+        "endpoint": "POST /api/working-moodboards/{mbid}/sync-materials-board",
+        "issue": "approval_status='approved' inserts AND material_board sync both write decision_stage but in different code paths. Approval writes 'approved', sync writes 'specified'. If sync fails silently (current bug) element stays at decision_stage='specified' yet Material Board has no row — desync between badge state and reality."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Material Board Sync banner → toast",
+        "issue": "Cannot complete live UI smoke test because the sync endpoint returns 200 with added=1 but no DB row is created (see CRITICAL backend bug). Toast will display '+1 added' while Material Board Page will show zero rows. Retest after backend fix.",
+        "affected_selectors": ["wmb-sync-toast", "wmb-badge-specified-{id}"]
+      }
+    ],
+    "design_issues": [
+      {"screen": "Auth/Login + Sidebar (carried)", "issues": ["~25 missing it-IT keys auth.login.* / nav.* — pre-existing console noise from iteration_220."]},
+      {"screen": "Dev console (carried)", "issues": ["React 'Cannot update a component while rendering' warning from LocalizationOverlay — pre-existing, not from STORE-012F."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter221_store012f_client_approval_thread.py",
+    "/app/test_reports/pytest/iter221_store012f.xml"
+  ],
+  "action_items": [
+    "CRITICAL: In /app/backend/routers/working_moodboards.py rename table 'material_board_items' → 'material_board_elements' at lines 843, 878, 887. Reconcile column names with the actual material_board_elements schema (the file currently uses source_element_id/source_moodboard_id/added_by which may not exist on that table — cross-check /app/backend/routers/material_boards.py).",
+    "Re-raise (or return 500) when material_board_elements insert fails — silent fallback hides the bug."
+  ],
+  "critical_code_review_comments": [
+    "Wrong table reference is the root cause of the only failing test. Once renamed, idempotency, persistence and badge truth-state all work.",
+    "Bare except blocks inside sync_materials_board (lines 818, 846, 879, 888, 902, 918) swallow ALL exceptions including the schema mismatch. Replace with except Exception as e and at minimum log.exception + raise.",
+    "Sync writes decision_stage='specified' to elements BEFORE confirming the material_board_elements rows actually inserted — order should be: insert items → on success, update elements → emit timeline event.",
+    "client_element_feedback in working_moodboards.py uses ctx['role'] in _verify_journey_ownership — verified the super_admin bypass works for QA, but make sure the production client role still passes ownership checks (not in scope for this iteration's tests).",
+    "Italian narrative templates are hardcoded — fine for V2.2, but a TODO is warranted because the rest of the studio is multi-locale."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter221_store012f_client_approval_thread.py (NEW · 17 pytest cases covering approval-status PATCH, client feedback, sync-materials-board, client presentation invariant, regression)"
+  ],
+  "success_rate": {"backend": "88% (15/17 PASS, 1 SKIP, 1 FAIL — failure is a real bug, not a test flake)", "frontend": "data-testids verified present in code; live UI sync flow could not be retested due to the backend bug above"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin) — _require_client bypass works as documented",
+  "seed_data_creation": "None. Used existing Working Moodboard 47821aa0-50c0-4ff6-ae5f-e6dccf0391e7 derived from the preferred Concept B9 (per request).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run pytest /app/backend/tests/test_iter221_store012f_client_approval_thread.py — after the table-name fix in working_moodboards.py, TestSyncMaterialBoard::test_sync_idempotent should pass. The test calls sync twice consecutively and asserts the second call returns added=0, skipped>=1. The third test (test_sync_no_approved_returns_zero) is SKIPPED because the live preview DB has no second Working Moodboard with material elements without approval — main agent can re-seed a fresh WMB to enable it. The 17-case suite covers all V2.2 spec items requested (approval lifecycle, client feedback × 5 reactions/422 paths, sync × 3, client presentation invariant via deep-key scan, regression of working-payload + project-brain).",
+  "rca_of_the_issue": "ROOT CAUSE: /app/backend/routers/working_moodboards.py was written against a table called 'material_board_items' but the actual schema uses 'material_board_elements' (confirmed by Postgres hint and by all sibling routers material_boards.py, specifications.py, project_stories.py). REPRODUCTION: POST /api/working-moodboards/47821aa0.../sync-materials-board twice in a row → both calls return added=1 instead of the second returning added=0. Backend log shows: APIError PGRST205 'Could not find the table public.material_board_items'. MITIGATION: rename 3 string occurrences to 'material_board_elements' and reconcile insert payload columns with the actual schema (drop unsupported keys like source_element_id/source_moodboard_id/added_by if they don't exist on that table)."
+}

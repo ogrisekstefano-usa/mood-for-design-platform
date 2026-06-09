@@ -46,7 +46,10 @@ from routers.discover_brief import (
 log = logging.getLogger(__name__)
 router = APIRouter()
 
-APPROVAL_STATES = ("suggested", "discussed", "approved", "rejected")
+APPROVAL_STATES = ("proposed", "suggested", "discussed", "approved", "rejected")
+STUDIO_ONLY_STATES = ("proposed", "discussed", "approved", "rejected")
+CLIENT_REACTIONS = ("interesting", "explore_further", "comment")
+DECISION_STAGES = ("inspiration", "evaluation", "selection", "approved", "specified")
 WORKING_SECTIONS = ("vision", "materials", "products", "atmosphere", "notes")
 
 
@@ -556,11 +559,13 @@ def get_working_payload(mbid: str, ctx=Depends(get_tenant_context)):
 @router.patch("/moodboard-elements/{element_id}/approval-status")
 def set_element_approval(element_id: str, body: ApprovalPatch,
                          ctx=Depends(get_tenant_context)):
-    if body.approval_status not in APPROVAL_STATES:
-        raise HTTPException(422, f"approval_status must be one of {list(APPROVAL_STATES)}")
+    """Studio-only. Designer controls proposed/discussed/approved/rejected."""
+    if body.approval_status not in STUDIO_ONLY_STATES:
+        raise HTTPException(422, f"approval_status must be one of {list(STUDIO_ONLY_STATES)}")
     c = db()
     tid = ctx["tenant_id"]
-    rows = (c.table("moodboard_elements").select("id,content,moodboard_id")
+    uid = ctx.get("profile_id")
+    rows = (c.table("moodboard_elements").select("id,content,moodboard_id,type,title")
               .eq("id", element_id).eq("tenant_id", tid).limit(1).execute().data or [])
     if not rows:
         raise HTTPException(404, "Element not found")
@@ -573,12 +578,353 @@ def set_element_approval(element_id: str, body: ApprovalPatch,
             content = {}
     elif not isinstance(content, dict):
         content = {}
+
+    prev = content.get("approval_status") or "suggested"
     content["approval_status"] = body.approval_status
     content["approval_changed_at"] = _now()
+    content["approval_changed_by"] = uid
+
+    # Decision stage mapping
+    metadata = dict(content.get("metadata") or {})
+    if body.approval_status == "approved":
+        metadata["decision_stage"] = "approved"
+        # Specification readiness for material/product elements
+        if el.get("type") in ("material", "product"):
+            metadata["specification_candidate"] = True
+    elif body.approval_status == "rejected":
+        metadata["decision_stage"] = "evaluation"
+        metadata["specification_candidate"] = False
+    elif body.approval_status == "discussed":
+        metadata["decision_stage"] = metadata.get("decision_stage") or "evaluation"
+    content["metadata"] = metadata
+
     c.table("moodboard_elements").update({
         "content": json.dumps(content),
     }).eq("id", element_id).execute()
-    return {"element_id": element_id, "approval_status": body.approval_status}
+
+    # Timeline event for studio status changes (designer-side history)
+    try:
+        title = el.get("title") or content.get("display_name") or content.get("text") or el.get("type")
+        narratives = {
+            "discussed": f'Il designer ha segnato "{title}" come discusso.',
+            "approved":  f'Il designer ha approvato "{title}" per la fase successiva.',
+            "rejected":  f'Il designer ha scartato "{title}" da questa proposta.',
+            "proposed":  f'Il designer ha riportato "{title}" allo stato di proposta.',
+        }
+        narrative = narratives.get(body.approval_status, f'Stato di "{title}" aggiornato a {body.approval_status}.')
+        mb_rows = (c.table("moodboards").select("journey_id")
+                    .eq("id", el["moodboard_id"]).limit(1).execute().data or [])
+        jid = (mb_rows[0] or {}).get("journey_id") if mb_rows else None
+        if jid:
+            c.table("journey_timeline_events").insert({
+                "id":           str(uuid.uuid4()),
+                "tenant_id":    tid,
+                "journey_id":   jid,
+                "event_type":   "element_status_changed",
+                "narrative_text": narrative,
+                "metadata":     {"element_id": element_id, "moodboard_id": el["moodboard_id"],
+                                 "from": prev, "to": body.approval_status,
+                                 "element_type": el.get("type")},
+                "created_by":   uid,
+                "created_at":   _now(),
+            }).execute()
+    except Exception:
+        log.exception("element_status timeline event failed (non-blocking)")
+
+    return {"element_id": element_id,
+            "approval_status": body.approval_status,
+            "decision_stage": metadata.get("decision_stage"),
+            "specification_candidate": bool(metadata.get("specification_candidate"))}
+
+
+# ════════════════════════════════════════════════════════════════════
+#  STORE-012F · CLIENT APPROVAL THREAD™
+# ════════════════════════════════════════════════════════════════════
+class ClientElementFeedback(BaseModel):
+    reaction: str                   # interesting | explore_further | comment
+    comment: Optional[str] = None
+
+
+@router.post("/client/moodboard-elements/{element_id}/feedback", status_code=201)
+def client_element_feedback(element_id: str, body: ClientElementFeedback,
+                            ctx=Depends(get_tenant_context)):
+    """Client reacts to a SINGLE Working Moodboard element.
+
+    Persists reactions in:
+      · moodboard_elements.content.metadata.client_reactions[]
+      · milestone_feedback
+      · journey_timeline_events  (Client Signal™ narrative)
+    Never changes approval_status (only the designer does).
+    """
+    from routers.client_portal import _require_client, _verify_journey_ownership
+    profile_id = _require_client(ctx)
+    tid = ctx["tenant_id"]
+
+    if body.reaction not in CLIENT_REACTIONS:
+        raise HTTPException(422, f"reaction must be one of {list(CLIENT_REACTIONS)}")
+    if body.reaction == "comment" and not (body.comment and body.comment.strip()):
+        raise HTTPException(422, "Comment text is required for reaction=comment")
+
+    c = db()
+    el_rows = (c.table("moodboard_elements")
+                .select("id,content,moodboard_id,type,title")
+                .eq("id", element_id).eq("tenant_id", tid).limit(1).execute().data or [])
+    if not el_rows:
+        raise HTTPException(404, "Element not found")
+    el = el_rows[0]
+
+    # Ownership via parent moodboard's journey
+    mb_rows = (c.table("moodboards").select("id,journey_id,ai_metadata,status")
+                .eq("id", el["moodboard_id"]).eq("tenant_id", tid).limit(1).execute().data or [])
+    if not mb_rows:
+        raise HTTPException(404, "Parent moodboard missing")
+    mb = mb_rows[0]
+    jid = mb.get("journey_id")
+    if not jid:
+        raise HTTPException(400, "Moodboard not linked to a Journey")
+    _verify_journey_ownership(c, tid, jid, profile_id, ctx.get("role"))
+
+    # Gate: only working moodboards (concept_seed is for STORE-012C path)
+    is_working = bool(((mb.get("ai_metadata") or {}).get("working_seed") or {}).get("source_concept_id"))
+    if not is_working:
+        raise HTTPException(403, "This endpoint is for Working Moodboards. Use Concept feedback for Concept Boards.")
+
+    content = el.get("content")
+    if isinstance(content, str):
+        try:
+            content = json.loads(content)
+        except Exception:
+            content = {}
+    elif not isinstance(content, dict):
+        content = {}
+    metadata = dict(content.get("metadata") or {})
+    reactions = list(metadata.get("client_reactions") or [])
+
+    now_iso = _now()
+    record = {
+        "id":         str(uuid.uuid4()),
+        "type":       body.reaction,
+        "author":     "client",
+        "author_id":  profile_id,
+        "created_at": now_iso,
+        "comment":    (body.comment or "").strip() or None,
+    }
+    reactions.append(record)
+    metadata["client_reactions"] = reactions
+    content["metadata"] = metadata
+    c.table("moodboard_elements").update({
+        "content": json.dumps(content),
+    }).eq("id", element_id).execute()
+
+    title = el.get("title") or content.get("display_name") or content.get("text") or "element"
+    quote = ((body.comment or "").strip().replace("\n", " "))[:140]
+    narratives = {
+        "interesting":     f'Client Signal™ — Il cliente ha mostrato interesse per "{title}".',
+        "explore_further": f'Client Signal™ — Il cliente vorrebbe approfondire "{title}".',
+        "comment":         f'Client Signal™ — Il cliente ha lasciato un commento su "{title}": "{quote}"',
+    }
+    narrative = narratives[body.reaction]
+
+    # milestone_feedback
+    fb_id = str(uuid.uuid4())
+    try:
+        c.table("milestone_feedback").insert({
+            "id":             fb_id,
+            "tenant_id":      tid,
+            "milestone_id":   None,
+            "version_id":     None,
+            "kind":           f"element_reaction_{body.reaction}",
+            "quote":          (body.comment or title)[:1000],
+            "author_role":    "client",
+            "author_user_id": profile_id,
+            "created_at":     now_iso,
+        }).execute()
+    except Exception:
+        log.exception("milestone_feedback insert failed (non-blocking)")
+
+    # journey_timeline_events — Client Signal™
+    try:
+        c.table("journey_timeline_events").insert({
+            "id":           str(uuid.uuid4()),
+            "tenant_id":    tid,
+            "journey_id":   jid,
+            "event_type":   "client_signal",
+            "narrative_text": narrative,
+            "metadata":     {"element_id": element_id, "moodboard_id": el["moodboard_id"],
+                             "element_type": el.get("type"), "reaction": body.reaction,
+                             "comment": (body.comment or "").strip() or None,
+                             "feedback_id": fb_id},
+            "created_by":   profile_id,
+            "created_at":   now_iso,
+        }).execute()
+    except Exception:
+        log.exception("client_signal timeline event failed (non-blocking)")
+
+    return {
+        "element_id":   element_id,
+        "moodboard_id": el["moodboard_id"],
+        "reaction":     body.reaction,
+        "created_at":   now_iso,
+        "narrative":    narrative,
+    }
+
+
+# ════════════════════════════════════════════════════════════════════
+#  STORE-012F · MATERIAL BOARD SYNC (designer-triggered)
+# ════════════════════════════════════════════════════════════════════
+@router.post("/working-moodboards/{mbid}/sync-materials-board")
+def sync_materials_board(mbid: str, ctx=Depends(get_tenant_context)):
+    """Push every APPROVED material element into the journey's Material Board.
+    Idempotent — adds new entries, skips already-present entity ids."""
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    mb_rows = (c.table("moodboards").select("id,journey_id,ai_metadata,title")
+                .eq("id", mbid).eq("tenant_id", tid).limit(1).execute().data or [])
+    if not mb_rows:
+        raise HTTPException(404, "Moodboard not found")
+    mb = mb_rows[0]
+    jid = mb.get("journey_id")
+    if not jid:
+        raise HTTPException(400, "Moodboard not linked to a Journey")
+
+    # Collect approved material elements
+    rows = (c.table("moodboard_elements")
+              .select("id,type,content,title")
+              .eq("tenant_id", tid).eq("moodboard_id", mbid)
+              .eq("type", "material").execute().data or [])
+    approved: List[Dict[str, Any]] = []
+    for r in rows:
+        ct = r.get("content")
+        if isinstance(ct, str):
+            try:
+                ct = json.loads(ct)
+            except Exception:
+                ct = {}
+        if (ct or {}).get("approval_status") == "approved":
+            approved.append({**r, "content": ct})
+    if not approved:
+        return {"created_board": False, "added": 0, "approved_materials": 0,
+                "message": "No approved materials found."}
+
+    # Locate or create Material Board for this journey (best-effort idempotency)
+    mb_board_id: Optional[str] = None
+    try:
+        existing = (c.table("material_boards").select("id")
+                     .eq("tenant_id", tid).eq("journey_id", jid)
+                     .is_("deleted_at", "null").limit(1).execute().data or [])
+        if existing:
+            mb_board_id = existing[0]["id"]
+    except Exception:
+        pass
+
+    created_board = False
+    if not mb_board_id:
+        mb_board_id = str(uuid.uuid4())
+        try:
+            c.table("material_boards").insert({
+                "id":         mb_board_id,
+                "tenant_id":  tid,
+                "journey_id": jid,
+                "title":      f"{mb.get('title') or 'Material Board'}",
+                "status":     "draft",
+                "created_by": uid,
+                "created_at": _now(),
+                "updated_at": _now(),
+            }).execute()
+            created_board = True
+        except Exception as e:
+            log.exception("material_boards insert failed")
+            raise HTTPException(500, f"Could not create Material Board: {e}")
+
+    # Existing material entity_ids on this board (skip duplicates)
+    existing_eids: set = set()
+    try:
+        items = (c.table("material_board_items").select("entity_id")
+                  .eq("tenant_id", tid).eq("material_board_id", mb_board_id).execute().data or [])
+        existing_eids = {(r.get("entity_id") or "") for r in items}
+    except Exception:
+        pass
+
+    added = 0
+    skipped = 0
+    new_items: List[Dict[str, Any]] = []
+    for el in approved:
+        ct = el["content"]
+        eid = ct.get("entity_id") or ct.get("material_id")
+        if not eid:
+            skipped += 1
+            continue
+        if eid in existing_eids:
+            skipped += 1
+            continue
+        new_items.append({
+            "id":                str(uuid.uuid4()),
+            "tenant_id":         tid,
+            "material_board_id": mb_board_id,
+            "entity_id":         eid,
+            "material_id":       ct.get("material_id") or eid,
+            "brand_id":          ct.get("brand_id"),
+            "display_name":      ct.get("display_name") or el.get("title"),
+            "source_element_id": el["id"],
+            "source_moodboard_id": mbid,
+            "added_by":          uid,
+            "created_at":        _now(),
+        })
+        added += 1
+
+    if new_items:
+        try:
+            c.table("material_board_items").insert(new_items).execute()
+        except Exception:
+            log.exception("material_board_items insert failed")
+            # try minimal-shape fallback
+            min_items = [{k: v for k, v in it.items()
+                          if k in ("id", "tenant_id", "material_board_id", "entity_id",
+                                   "material_id", "brand_id", "display_name")}
+                         for it in new_items]
+            try:
+                c.table("material_board_items").insert(min_items).execute()
+            except Exception:
+                pass
+
+    # Promote synced elements to decision_stage='specified'
+    for el in approved:
+        ct = el["content"]
+        meta = dict(ct.get("metadata") or {})
+        meta["decision_stage"] = "specified"
+        meta["material_board_id"] = mb_board_id
+        ct["metadata"] = meta
+        try:
+            c.table("moodboard_elements").update({
+                "content": json.dumps(ct),
+            }).eq("id", el["id"]).execute()
+        except Exception:
+            pass
+
+    # Timeline
+    try:
+        c.table("journey_timeline_events").insert({
+            "id":           str(uuid.uuid4()),
+            "tenant_id":    tid,
+            "journey_id":   jid,
+            "event_type":   "materials_synced_to_board",
+            "narrative_text": f"Sincronizzati {added} materiali approvati al Material Board.",
+            "metadata":     {"moodboard_id": mbid, "material_board_id": mb_board_id,
+                             "added": added, "skipped": skipped},
+            "created_by":   uid,
+            "created_at":   _now(),
+        }).execute()
+    except Exception:
+        pass
+
+    return {
+        "material_board_id": mb_board_id,
+        "created_board":     created_board,
+        "added":             added,
+        "skipped":           skipped,
+        "approved_materials": len(approved),
+    }
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -621,8 +967,16 @@ def client_moodboard_presentation(mbid: str, ctx=Depends(get_tenant_context)):
                 cnt = {}
         # In the client view we hide explicit approval status to keep the
         # presentation clean (status is a designer-side concept).
+        # We DO preserve content.metadata.client_reactions[] so the client
+        # can see their own reaction history. We DO NOT include other
+        # designer-internal metadata.
         if isinstance(cnt, dict):
-            cnt = {k: v for k, v in cnt.items() if not k.startswith("approval_")}
+            meta = (cnt.get("metadata") or {}) if isinstance(cnt.get("metadata"), dict) else {}
+            safe_meta = {}
+            if isinstance(meta.get("client_reactions"), list):
+                safe_meta["client_reactions"] = meta["client_reactions"]
+            cnt = {k: v for k, v in cnt.items() if not k.startswith("approval_") and k != "metadata"}
+            cnt["metadata"] = safe_meta
         by_page.setdefault(e["page_id"], []).append({
             "id":         e["id"],
             "type":       e.get("type"),
