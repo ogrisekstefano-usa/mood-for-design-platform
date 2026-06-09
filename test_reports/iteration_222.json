@@ -1,0 +1,40 @@
+{
+  "summary": "STORE-012F RETEST — Material Board Sync™ table-name fix verified. Backend pytest 16/17 PASS + 1 SKIP (env-only, no fresh WMB without approved materials). The previously failing TestSyncMaterialBoard::test_sync_idempotent now PASSES. Direct API verification: GET /api/material-boards/0c0d6a44-7070-4b19-9a00-b565cdeb45e2 returns 1 element with entity_id=b981e845-a780-4481-bbff-968f53ee0bed matching the approved material in WMB 47821aa0...; sync called twice consecutively → added=0, skipped=1 both times (idempotency holds); decision_stage='specified' correctly set on source element AFTER the insert succeeds (raise-on-failure now in place at lines 836-838 and 875-877). Frontend live smoke: logged in as admin, opened /studio/moodboards/working/47821aa0..., clicked wmb-sync-go → wmb-sync-toast displayed '+0 added · 1 already on board', wmb-badge-specified-* count=1, wmb-badge-mat-* count=0 — badge promotion verified. The critical bug from iteration 221 (table 'material_board_items' → 'material_board_elements') is fully resolved.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/working-moodboards/{mbid}/sync-materials-board", "issue": "The existing_eids dedup query on line 846 still wraps the read in bare except: pass. If that read silently fails, the next sync would re-insert duplicates instead of being idempotent. Recommend logging the exception (low risk — table now exists)."},
+      {"endpoint": "POST /api/working-moodboards/{mbid}/sync-materials-board", "issue": "decision_stage='specified' promotion loop (lines 881-892) iterates over ALL approved elements, including those that were skipped because their entity_id was already on the Material Board. This is semantically fine (they ARE specified) but means the loop is not gated on whether THIS sync call actually added the row. Cosmetic only."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Auth/Login + Sidebar (pre-existing)", "issues": ["~25 missing it-IT i18n keys auth.login.* / nav.* — carried from iter221, NOT from STORE-012F."]},
+      {"screen": "Dev console (pre-existing)", "issues": ["React 'Cannot update a component while rendering' warning from LocalizationOverlay — carried from iter221."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter221_store012f_client_approval_thread.py",
+    "/app/test_reports/pytest/iter222_store012f.xml"
+  ],
+  "action_items": [
+    "Optional: tighten the bare except: pass on line 846 (existing_eids read) to log.exception so future schema drift surfaces immediately.",
+    "Optional: gate the decision_stage='specified' promotion loop on `eid in (added entity_ids for this call)` so that elements which were skipped this call aren't re-touched on every sync."
+  ],
+  "critical_code_review_comments": [
+    "Fix is correct and matches the schema in material_boards.py. Insert payload uses only columns that exist (tenant_id, material_board_id, entity_id, position_json, sort_order).",
+    "The raise-on-failure on lines 836-838 and 875-877 prevents silent inserts — matches the iteration 221 review request.",
+    "decision_stage promotion is now correctly POST-INSERT (the comment on line 879-880 explicitly states 'ONLY after the insert above did not raise'). Logic is right.",
+    "material_boards locate-or-create is still wrapped in bare except (lines 818-819) — low risk because the create branch below has proper error handling, but worth logging."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% of runnable tests pass (16/16 PASS, 1 SKIP — skipped test requires a 2nd WMB without approved materials which doesn't exist in the FOUNDER-ONLY DB)", "frontend": "100% — sync CTA → toast → badge promotion all verified live"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin) — token extracted from session.access_token, works.",
+  "seed_data_creation": "None. Reused WMB 47821aa0-50c0-4ff6-ae5f-e6dccf0391e7 and pre-existing Material Board 0c0d6a44-7070-4b19-9a00-b565cdeb45e2 as instructed.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "STORE-012F is GREEN. The iter221 pytest file at /app/backend/tests/test_iter221_store012f_client_approval_thread.py is the canonical regression — re-run it any time the working_moodboards.py or material_boards.py routers are touched. The 1 SKIP (test_sync_no_approved_returns_zero) needs a 2nd WMB with material elements but no approved materials to actually run — main agent can create one via seed if a full 17/17 is needed. Idempotency target state on the live preview DB: WMB 47821aa0... has 1 approved material (b981e845-a780-4481-bbff-968f53ee0bed) already synced to MB 0c0d6a44-7070-4b19-9a00-b565cdeb45e2 — so consecutive sync calls return added=0/skipped=1.",
+  "rca_of_the_issue": "ROOT CAUSE (resolved in iter222): working_moodboards.py wrote to non-existent table 'material_board_items'. FIX VERIFIED: line 843 reads from 'material_board_elements'; line 874 inserts into 'material_board_elements' with payload {tenant_id, material_board_id, entity_id, position_json, sort_order} matching the real schema; line 875-877 now raises HTTPException(500) on insert failure instead of swallowing the error; decision_stage='specified' promotion moved to AFTER the insert (line 881) so a failed sync can no longer promote the badge. End-to-end persistence and idempotency proven by direct GET /api/material-boards/{id} returning the inserted row and by two consecutive sync calls returning added=0 skipped=1."
+}

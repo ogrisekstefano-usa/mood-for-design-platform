@@ -840,7 +840,7 @@ def sync_materials_board(mbid: str, ctx=Depends(get_tenant_context)):
     # Existing material entity_ids on this board (skip duplicates)
     existing_eids: set = set()
     try:
-        items = (c.table("material_board_items").select("entity_id")
+        items = (c.table("material_board_elements").select("entity_id")
                   .eq("tenant_id", tid).eq("material_board_id", mb_board_id).execute().data or [])
         existing_eids = {(r.get("entity_id") or "") for r in items}
     except Exception:
@@ -859,36 +859,25 @@ def sync_materials_board(mbid: str, ctx=Depends(get_tenant_context)):
             skipped += 1
             continue
         new_items.append({
-            "id":                str(uuid.uuid4()),
             "tenant_id":         tid,
             "material_board_id": mb_board_id,
             "entity_id":         eid,
-            "material_id":       ct.get("material_id") or eid,
-            "brand_id":          ct.get("brand_id"),
-            "display_name":      ct.get("display_name") or el.get("title"),
-            "source_element_id": el["id"],
-            "source_moodboard_id": mbid,
-            "added_by":          uid,
-            "created_at":        _now(),
+            "position_json":     {"x": 60 + (added % 4) * 240,
+                                   "y": 60 + (added // 4) * 280,
+                                   "width": 220, "height": 260, "z_index": added},
+            "sort_order":        added,
         })
         added += 1
 
     if new_items:
         try:
-            c.table("material_board_items").insert(new_items).execute()
-        except Exception:
-            log.exception("material_board_items insert failed")
-            # try minimal-shape fallback
-            min_items = [{k: v for k, v in it.items()
-                          if k in ("id", "tenant_id", "material_board_id", "entity_id",
-                                   "material_id", "brand_id", "display_name")}
-                         for it in new_items]
-            try:
-                c.table("material_board_items").insert(min_items).execute()
-            except Exception:
-                pass
+            c.table("material_board_elements").insert(new_items).execute()
+        except Exception as e:
+            log.exception("material_board_elements insert failed")
+            raise HTTPException(500, f"Sync failed: {e}")
 
-    # Promote synced elements to decision_stage='specified'
+    # Promote synced elements to decision_stage='specified' (ONLY after the
+    # insert above did not raise — otherwise we never reach here).
     for el in approved:
         ct = el["content"]
         meta = dict(ct.get("metadata") or {})
