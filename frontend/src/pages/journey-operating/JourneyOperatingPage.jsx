@@ -23,6 +23,7 @@ import {
   Briefcase, Calendar, Wallet, Activity,
 } from 'lucide-react';
 import api from '../../lib/api';
+import ConceptPulseCard from './ConceptPulseCard';
 import './journey-operating.css';
 
 /* ════════════════════════════════════════════════════════════════════
@@ -323,7 +324,7 @@ const JourneyOperatingPage = () => {
             <p className="jop-section__obj">{currentPhaseDef.objective}</p>
           </section>
 
-          {/* STORE-011 · Discover Brief Engine entry — only when DISCOVER is current phase */}
+          {/* STORE-012A · Discover Brief Engine entry — only when DISCOVER is current phase */}
           {currentPhase === 'DISCOVER' && (
             <section className="jop-block" data-testid="jop-discover-cta">
               <header className="jop-block__hdr">
@@ -357,6 +358,13 @@ const JourneyOperatingPage = () => {
                   <Sparkles size={14} /> Open Discovery Engine
                 </Link>
               </div>
+            </section>
+          )}
+
+          {/* STORE-012D · Concept Pulse™ — visible on INSPIRE & CURATE */}
+          {(currentPhase === 'INSPIRE' || currentPhase === 'CURATE') && overview?.journey?.id && (
+            <section className="jop-block" data-testid="jop-concept-pulse-block">
+              <ConceptPulseCard journeyId={overview.journey.id} />
             </section>
           )}
 

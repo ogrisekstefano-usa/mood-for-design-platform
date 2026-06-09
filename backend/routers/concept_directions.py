@@ -820,3 +820,248 @@ def unshare_concept_set(jid: str, set_id: str, ctx=Depends(get_tenant_context)):
     except Exception:
         pass
     return {"set_id": set_id, "unshared_at": now, "boards": len(in_set)}
+
+
+# ════════════════════════════════════════════════════════════════════
+#  STORE-012D · CONCEPT PULSE™
+#  Translates client feedback into an operational signal for the
+#  designer. NEVER exposes the raw numeric Client Alignment Score™ —
+#  only human-readable bands (high / medium / low).
+# ════════════════════════════════════════════════════════════════════
+
+# Score → band thresholds.
+_ALIGNMENT_BANDS = (
+    (15, "high"),
+    (5,  "medium"),
+    (0,  "low"),
+)
+_BAND_LABEL = {"high": "High alignment", "medium": "Medium alignment", "low": "Low alignment"}
+
+
+def _band(score: int) -> str:
+    for threshold, name in _ALIGNMENT_BANDS:
+        if score >= threshold:
+            return name
+    return "low"
+
+
+# Crude keyword heuristics for the "Open Material Board" suggestion.
+_MATERIAL_KEYWORDS = (
+    "material", "materiale", "materiali", "marble", "marmo", "wood", "legno",
+    "oak", "rovere", "stone", "pietra", "metal", "metallo", "brass", "ottone",
+    "concrete", "cemento", "leather", "pelle", "textile", "tessuto",
+    "ceramic", "porcellana", "glass", "vetro",
+)
+
+
+def _comment_mentions_material(reactions: List[Dict[str, Any]]) -> bool:
+    for r in reactions or []:
+        if r.get("reaction") != "comment":
+            continue
+        text = (r.get("comment") or "").lower()
+        if any(k in text for k in _MATERIAL_KEYWORDS):
+            return True
+    return False
+
+
+@router.get("/journeys/{jid}/concept-pulse")
+def get_concept_pulse(jid: str, ctx=Depends(get_tenant_context)):
+    """Operational signal card for the latest shared Direction Set.
+
+    Returns:
+      · preferred_direction (or null)
+      · ranking[] sorted by client_alignment_score (band only — no number)
+      · feedback_summary{} counts per reaction across the set
+      · suggested_next_action {key, headline, hint, action_type}
+      · quick_actions[] deep-links
+
+    The raw numeric score is intentionally NEVER returned.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    _resolve_journey(c, tid, jid)
+
+    rows = (c.table("moodboards")
+             .select("id,title,ai_metadata,status")
+             .eq("tenant_id", tid).eq("journey_id", jid)
+             .is_("deleted_at", "null")
+             .execute().data or [])
+
+    # Group by set_id, retain only shared sets, pick the latest.
+    sets_map: Dict[str, Dict[str, Any]] = {}
+    for r in rows:
+        seed = ((r.get("ai_metadata") or {}).get("concept_seed") or {})
+        if not seed.get("shared_at") or not seed.get("set_id"):
+            continue
+        sid = seed["set_id"]
+        if sid not in sets_map:
+            sets_map[sid] = {
+                "set_id":         sid,
+                "set_index":      seed.get("set_index") or 0,
+                "set_label":      seed.get("set_label") or f"Direction Set {(seed.get('set_index') or 0):02d}",
+                "set_shared_at":  seed.get("shared_at"),
+                "boards":         [],
+            }
+        sets_map[sid]["boards"].append((r, seed))
+
+    if not sets_map:
+        return {
+            "has_shared_set":      False,
+            "set":                 None,
+            "preferred_direction": None,
+            "ranking":             [],
+            "feedback_summary":    {"interested": 0, "explore_further": 0, "preferred": 0, "comment": 0},
+            "suggested_next_action": {
+                "key":          "wait_for_feedback",
+                "headline":     "Share a Direction Set with your client",
+                "hint":         "Once the client has direction options to react to, Concept Pulse™ will surface their alignment here.",
+                "action_type":  "share",
+            },
+            "quick_actions": [
+                {"key": "open_discovery", "label": "Open Discovery", "kind": "navigate",
+                 "href": f"/studio/journey/{jid}/discover"},
+            ],
+        }
+
+    # Latest shared set = highest set_index (fallback to most recent shared_at).
+    latest = sorted(sets_map.values(),
+                    key=lambda s: (s.get("set_index") or 0, s.get("set_shared_at") or ""),
+                    reverse=True)[0]
+
+    boards = latest["boards"]
+    feedback_summary = {"interested": 0, "explore_further": 0, "preferred": 0, "comment": 0}
+    all_reactions: List[Dict[str, Any]] = []
+    ranking: List[Dict[str, Any]] = []
+    preferred: Optional[Dict[str, Any]] = None
+
+    for r, seed in boards:
+        reactions = seed.get("client_reactions") or []
+        all_reactions.extend(reactions)
+        counts = _reaction_counts(reactions)
+        for k, v in counts.items():
+            feedback_summary[k] += v
+        score = int(seed.get("client_alignment_score") or 0)
+        ranking.append({
+            "moodboard_id":     r["id"],
+            "direction_letter": seed.get("direction_letter"),
+            "direction_name":   seed.get("direction_name"),
+            "alignment_band":   _band(score),
+            "alignment_label":  _BAND_LABEL[_band(score)],
+            "is_preferred":     bool(seed.get("is_preferred")),
+            "reaction_counts":  counts,
+            "color_palette":    seed.get("color_palette") or [],
+        })
+        if seed.get("is_preferred") and preferred is None:
+            preferred = {
+                "moodboard_id":     r["id"],
+                "direction_letter": seed.get("direction_letter"),
+                "direction_name":   seed.get("direction_name"),
+                "color_palette":    seed.get("color_palette") or [],
+                "alignment_band":   _band(score),
+                "alignment_label":  _BAND_LABEL[_band(score)],
+            }
+
+    # Sort ranking by alignment band then reaction count (deterministic, score order
+    # but band-bucketed; no exposed number).
+    band_order = {"high": 0, "medium": 1, "low": 2}
+    def _rank_key(b):
+        rc = b["reaction_counts"]
+        weight = rc["preferred"] * 10 + rc["interested"] * 3 + rc["explore_further"] * 2 + rc["comment"] * 5
+        return (band_order[b["alignment_band"]], -weight, b["direction_letter"] or "")
+    ranking.sort(key=_rank_key)
+    for i, b in enumerate(ranking, 1):
+        b["rank"] = i
+
+    # ── Suggested next action (deterministic)
+    explore_count   = feedback_summary["explore_further"]
+    comment_count   = feedback_summary["comment"]
+    interest_count  = feedback_summary["interested"]
+    no_feedback     = (interest_count + explore_count + comment_count + feedback_summary["preferred"]) == 0
+    material_signal = _comment_mentions_material(all_reactions)
+
+    if preferred and material_signal:
+        action = {
+            "key":         "material_board_for_preferred",
+            "headline":    f"Open Material Board to refine {preferred['direction_name']}",
+            "hint":        "Comments mention specific materials — refine the selection together with the client.",
+            "action_type": "material_board",
+        }
+    elif preferred:
+        action = {
+            "key":         "develop_preferred",
+            "headline":    f"Develop {preferred['direction_name']} with material variants",
+            "hint":        "Lean into the preferred direction with at least two material variants.",
+            "action_type": "develop_preferred",
+        }
+    elif explore_count >= 2:
+        action = {
+            "key":         "second_direction_set",
+            "headline":    "Prepare a second Direction Set on the requested alternatives",
+            "hint":        f"The client asked to explore further on {explore_count} boards — generate alternatives.",
+            "action_type": "generate_alternatives",
+        }
+    elif material_signal:
+        action = {
+            "key":         "open_material_board",
+            "headline":    "Open Material Board and refine the material selection",
+            "hint":        "Client comments reference materials — bring the conversation onto the Material Board.",
+            "action_type": "material_board",
+        }
+    elif no_feedback:
+        action = {
+            "key":         "wait_or_remind",
+            "headline":    "Awaiting client feedback",
+            "hint":        "Send a gentle reminder or follow up directly to keep the momentum.",
+            "action_type": "remind",
+        }
+    else:
+        action = {
+            "key":         "review_feedback",
+            "headline":    "Review the client feedback before next move",
+            "hint":        "Use the timeline below to read every reaction — then decide the next step.",
+            "action_type": "review",
+        }
+
+    # ── Quick actions deep-links
+    quick: List[Dict[str, Any]] = []
+    if preferred:
+        quick.append({
+            "key":   "open_preferred",
+            "label": "Open Preferred Concept",
+            "kind":  "navigate",
+            "href":  f"/moodboards/{preferred['moodboard_id']}",
+        })
+        quick.append({
+            "key":   "material_board_preferred",
+            "label": "Create Material Board from Preferred",
+            "kind":  "navigate",
+            "href":  f"/moodboards/{preferred['moodboard_id']}?intent=material_board",
+        })
+    quick.append({
+        "key":   "generate_alternatives",
+        "label": "Generate Alternative Directions",
+        "kind":  "api",
+        "href":  f"/api/journeys/{jid}/concept-directions/generate",
+        "method": "POST",
+    })
+    quick.append({
+        "key":   "view_feedback",
+        "label": "View Client Feedback",
+        "kind":  "navigate",
+        "href":  f"/client/journey/{jid}/concepts",
+    })
+
+    return {
+        "has_shared_set":       True,
+        "set": {
+            "set_id":        latest["set_id"],
+            "set_index":     latest["set_index"],
+            "set_label":     latest["set_label"],
+            "set_shared_at": latest["set_shared_at"],
+        },
+        "preferred_direction":  preferred,
+        "ranking":              ranking,
+        "feedback_summary":     feedback_summary,
+        "suggested_next_action": action,
+        "quick_actions":        quick,
+    }
