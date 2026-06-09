@@ -56,6 +56,29 @@ const ClientConceptReviewPage = () => {
 
   const submitReaction = async (moodboardId, reaction, comment) => {
     setPending({ moodboardId, reaction });
+    // Optimistic local update: drop a transient history pill immediately.
+    const optimisticEntry = {
+      reaction,
+      created_at: new Date().toISOString(),
+      comment: comment || null,
+    };
+    setSets((prev) => prev.map((s) => ({
+      ...s,
+      directions: s.directions.map((d) => {
+        if (d.moodboard_id !== moodboardId) {
+          // Switching preferred: clear is_preferred on other boards in the same set
+          if (reaction === 'preferred' && s.directions.some(x => x.moodboard_id === moodboardId)) {
+            return { ...d, is_preferred: false };
+          }
+          return d;
+        }
+        return {
+          ...d,
+          my_reactions: [...(d.my_reactions || []), optimisticEntry],
+          is_preferred: reaction === 'preferred' ? true : d.is_preferred,
+        };
+      }),
+    })));
     try {
       const payload = { reaction };
       if (comment) payload.comment = comment;
@@ -67,6 +90,7 @@ const ClientConceptReviewPage = () => {
       console.error('feedback failed', e?.response?.data || e);
       setToast({ narrative: 'Could not save your feedback. Please retry.', error: true });
       setTimeout(() => setToast(null), 3200);
+      await reload(); // re-sync to canonical state on failure
     } finally {
       setPending(null);
     }
