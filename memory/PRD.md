@@ -183,4 +183,21 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Payload prima: `{name:"Marco Rossi"}` → dopo: `{first_name:"Marco", last_name:"Rossi"}`
 - Test: 8/8 PASS (backend + frontend)
 
+### FASE 2 Design Journey Alignment (completato — 2026-06-10)
+- `BeginJourneyPage.jsx`: aggiunto campo `Cognome` (bj-last-name) in grid 2 colonne accanto a `Nome`; fallback `'Cognome'` se chiave editoriale assente dal DB
+- `journey_initiate.py / WelcomePayload`: `last_name` opzionale aggiunto
+- `journey_initiate.py`: `accounts.account_name = full_name`, `contacts.last_name`, `leads.last_name`, `projects.title = 'Conversazione di {full_name}'`
+- Backward compat: `last_name=null` → `account_name = first_name` (invariato)
+- Portal welcome non impattato (`users_profile.first_name`, non `contacts.first_name`)
+- Test: 13/13 PASS (backend + frontend)
+
+### MILESTONE OWNERSHIP CONSOLIDATION AUDIT FINAL (prodotto — 2026-06-10)
+- Router owner definitivo: `journeys.py`
+- Endpoint canonico: `PATCH /api/journeys/{jid}/milestones/{mid}` (da espandere con campi da Router A)
+- Unico chiamante frontend: `DesignJourneyTab.jsx:364` (PATCH) e `:375` (POST /open) — entrambi su Router A
+- Migrazione: sostituire `${m.id}` con `${m.journey_id}/milestones/${m.id}` nei 2 URL — `m.journey_id` già disponibile
+- SPRINT 1 approvazione richiesta prima dell'implementazione
+
+
+
 
