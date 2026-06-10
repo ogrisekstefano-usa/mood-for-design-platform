@@ -220,6 +220,7 @@ const AccountRow = ({
   account,
   onOpen
 }) => {
+  const { t } = useT();
   const primary = account.primary_contact;
   return <tr className="crm-row" data-testid={`crm-account-${account.id}`} onClick={() => onOpen(account)}>
       <td className="crm-td">
@@ -240,7 +241,7 @@ const AccountRow = ({
       <td className="crm-td crm-td--mono">{account.source || '—'}</td>
       <td className="crm-td">{formatRelativeTime(account.last_activity_at)}</td>
       <td className="crm-td">
-        {account.open_actions_count > 0 ? <span className="crm-actions-chip">{account.open_actions_count} aperti</span> : <span className="crm-empty">—</span>}
+        {account.open_actions_count > 0 ? <span className="crm-actions-chip">{account.open_actions_count} {t('crm.crm_accounts.chip_aperti')}</span> : <span className="crm-empty">—</span>}
       </td>
     </tr>;
 };
@@ -277,8 +278,8 @@ const AccountCard = ({
           <span>{t('crm.crm_accounts.nessun_contatto_primario_aggiungi_al_drawer')}</span>
         </div>}
       <div className="crm-card__foot">
-        <span className="crm-card__last">Ultima attività · {formatRelativeTime(account.last_activity_at)}</span>
-        {account.open_actions_count > 0 && <span className="crm-card__actions">{account.open_actions_count} follow-up</span>}
+        <span className="crm-card__last">{t('crm.crm_accounts.card_ultima_attivita')}{formatRelativeTime(account.last_activity_at)}</span>
+        {account.open_actions_count > 0 && <span className="crm-card__actions">{account.open_actions_count} {t('crm.crm_accounts.card_followup_count')}</span>}
       </div>
     </button>;
 };
@@ -296,7 +297,7 @@ const NewAccountModal = ({
   const [saving, setSaving] = useState(false);
   if (!open) return null;
   const submit = async () => {
-    if (!name.trim()) return toast.error('Nome obbligatorio');
+    if (!name.trim()) return toast.error(t('crm.crm_accounts.toast_nome_obbligatorio'));
     setSaving(true);
     try {
       const r = await api.post('/api/relationships/accounts', {
@@ -304,11 +305,11 @@ const NewAccountModal = ({
         account_type: type,
         lifecycle_stage: stage
       });
-      toast.success('Account creato');
+      toast.success(t('crm.crm_accounts.toast_account_creato'));
       onCreated?.(r.data?.account || r.data);
       onClose();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Creazione fallita');
+      toast.error(e?.response?.data?.detail || t('crm.crm_accounts.toast_creazione_fallita'));
     } finally {
       setSaving(false);
     }
@@ -325,13 +326,13 @@ const NewAccountModal = ({
           <button type="button" onClick={onClose}><X size={16} /></button>
         </header>
         <div className="crm-modal__body">
-          <label className="crm-label">Nome Account</label>
+          <label className="crm-label">{t('crm.crm_accounts.label_nome_account')}</label>
           <input value={name} onChange={e => setName(e.target.value)} data-testid="crm-new-account-name" placeholder="es. Studio Bianchi · Villa Padova · ABC SpA" className="crm-input" />
-          <label className="crm-label">Tipo</label>
+          <label className="crm-label">{t('crm.crm_accounts.label_tipo')}</label>
           <select value={type} onChange={e => setType(e.target.value)} data-testid="crm-new-account-type" className="crm-input">
             {Object.entries(ACCOUNT_TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
-          <label className="crm-label">Stage iniziale</label>
+          <label className="crm-label">{t('crm.crm_accounts.label_stage_iniziale')}</label>
           <select value={stage} onChange={e => setStage(e.target.value)} data-testid="crm-new-account-stage" className="crm-input">
             {CANONICAL_PIPELINE.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
@@ -397,7 +398,7 @@ const CrmAccountsPage = () => {
           setAccounts(r.data?.accounts || []);
         }
       } catch (e) {
-        if (!cancelled) toast.error('Caricamento fallito');
+        if (!cancelled) toast.error(t('crm.crm_accounts.toast_caricamento_fallito'));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -405,7 +406,7 @@ const CrmAccountsPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [activeTab.filter, searchQ, reload]);
+  }, [activeTab.filter, searchQ, reload, t]);
 
   // Auto-open drawer from URL ?id=
   useEffect(() => {
@@ -461,15 +462,15 @@ const CrmAccountsPage = () => {
       {!loading && activeTab.filter !== '__followups__' && filtered.length > 0 && <div className="crm-pulse" data-testid="crm-pulse">
           <div className="crm-pulse__cell">
             <span className="crm-pulse__num">{filtered.length}</span>
-            <span className="crm-pulse__lbl">{activeTab.id === 'accounts' ? 'Account in archivio' : `${activeTab.label} in vista`}</span>
+            <span className="crm-pulse__lbl">{activeTab.id === 'accounts' ? t('crm.crm_accounts.pulse_account_archivio') : `${activeTab.label} ${t('crm.crm_accounts.pulse_in_vista')}`}</span>
           </div>
           <div className="crm-pulse__cell">
             <span className="crm-pulse__num">{filtered.filter(a => a.lifecycle_stage === 'active_collaboration' || a.lifecycle_stage === 'long_term_relationship').length}</span>
-            <span className="crm-pulse__lbl">Relazioni attive</span>
+            <span className="crm-pulse__lbl">{t('crm.crm_accounts.pulse_relazioni_attive')}</span>
           </div>
           <div className="crm-pulse__cell">
             <span className="crm-pulse__num">{filtered.reduce((acc, a) => acc + (a.open_actions_count || 0), 0)}</span>
-            <span className="crm-pulse__lbl">Follow-up aperti</span>
+            <span className="crm-pulse__lbl">{t('crm.crm_accounts.pulse_followup_aperti')}</span>
           </div>
         </div>}
 
@@ -489,7 +490,7 @@ const CrmAccountsPage = () => {
             </button>
           </div>
           <button type="button" onClick={() => setShowNew(true)} data-testid="crm-new-account-btn" className="crm-btn crm-btn--primary">
-            <Plus size={11} /> Nuovo Account
+            <Plus size={11} /> {t('crm.crm_accounts.btn_nuovo_account')}
           </button>
         </div>
       </div>
@@ -505,12 +506,12 @@ const CrmAccountsPage = () => {
             {Object.entries(ACCOUNT_TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
           <select value={filterHealth} onChange={e => setFilterHealth(e.target.value)} data-testid="crm-filter-health">
-            <option value="">Health</option>
-            <option value="healthy">Sano</option>
-            <option value="stable">Stabile</option>
-            <option value="needs_support">Necessita supporto</option>
-            <option value="at_risk">A rischio</option>
-            <option value="dormant">Dormiente</option>
+            <option value="">{t('crm.crm_accounts.health_label')}</option>
+            <option value="healthy">{t('crm.crm_accounts.health_sano')}</option>
+            <option value="stable">{t('crm.crm_accounts.health_stabile')}</option>
+            <option value="needs_support">{t('crm.crm_accounts.health_necessita_supporto')}</option>
+            <option value="at_risk">{t('crm.crm_accounts.health_a_rischio')}</option>
+            <option value="dormant">{t('crm.crm_accounts.health_dormiente')}</option>
           </select>
         </div>}
 
@@ -544,12 +545,12 @@ const CrmAccountsPage = () => {
           <table className="crm-table" data-testid="crm-table">
             <thead>
               <tr>
-                <th>Account</th>
-                <th>Primary contact</th>
-                <th>Stage</th>
-                <th>Source</th>
-                <th>Last activity</th>
-                <th>Open follow-ups</th>
+                <th>{t('crm.crm_accounts.th_account')}</th>
+                <th>{t('crm.crm_accounts.th_primary_contact')}</th>
+                <th>{t('crm.crm_accounts.th_stage')}</th>
+                <th>{t('crm.crm_accounts.th_source')}</th>
+                <th>{t('crm.crm_accounts.th_last_activity')}</th>
+                <th>{t('crm.crm_accounts.th_open_followups')}</th>
               </tr>
             </thead>
             <tbody>

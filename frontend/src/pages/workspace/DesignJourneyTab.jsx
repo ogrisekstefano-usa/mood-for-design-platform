@@ -69,9 +69,11 @@ const fmtDate = (iso) => {
 
 
 // ─── Left column · Milestones list ──────────────────────────────────
-const TimelineRail = ({ milestones, currentId, onPick }) => (
+const TimelineRail = ({ milestones, currentId, onPick }) => {
+  const { t: tt } = useT();
+  return (
   <aside className="dj-rail" data-testid="dj-rail">
-    <p className="dj-rail__eyebrow">Pietre miliari</p>
+    <p className="dj-rail__eyebrow">{tt('journey.tab.rail_eyebrow')}</p>
     <ol className="dj-rail__list">
       {milestones.map((m, i) => {
         const Icon = MILESTONE_ICON[m.milestone_type] || Icons.Circle;
@@ -103,7 +105,8 @@ const TimelineRail = ({ milestones, currentId, onPick }) => (
       })}
     </ol>
   </aside>
-);
+  );
+};
 
 
 // ─── Center · Active milestone focus panel ──────────────────────────
@@ -113,7 +116,7 @@ const InlinePanel = ({ milestone, project }) => {
   if (t === 'brief') {
     return (
       <div className="dj-inline" data-testid="dj-inline-brief">
-        <p className="dj-inline__eyebrow">Brief Cliente</p>
+        <p className="dj-inline__eyebrow">{tt('journey.tab.brief_eyebrow')}</p>
         <h3 className="dj-inline__title">
           <em>{tt('journey.tab.first_conversation')}</em>
         </h3>
@@ -131,7 +134,7 @@ const InlinePanel = ({ milestone, project }) => {
   if (t === 'site_evolution') {
     return (
       <div className="dj-inline" data-testid="dj-inline-site-evolution">
-        <p className="dj-inline__eyebrow">Site Evolution™</p>
+        <p className="dj-inline__eyebrow">{tt('journey.tab.site_evolution_eyebrow')}</p>
         <h3 className="dj-inline__title">
           <em>{tt('journey.tab.evolution_real')}</em>
         </h3>
@@ -176,7 +179,7 @@ const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
         <span className="dj-focus__icon"><Icon size={18} /></span>
         <div className="dj-focus__meta">
           <p className="dj-focus__eyebrow">
-            Pietra miliare · <span className={`dj-pill dj-pill--${meta.tone}`}>{meta.label}</span>
+            {tt('journey.tab.focus_milestone_label')} · <span className={`dj-pill dj-pill--${meta.tone}`}>{meta.label}</span>
           </p>
           <h2 className="dj-focus__title">
             <em>{milestone.title}</em>
@@ -194,7 +197,7 @@ const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
       {openMode === 'navigate' && (
         <div className="dj-focus__hero" data-testid="dj-focus-hero">
           <div className="dj-focus__hero-inner">
-            <p className="dj-focus__hero-eyebrow">L'ambiente dedicato è pronto</p>
+            <p className="dj-focus__hero-eyebrow">{tt('journey.tab.workspace_ready_head')}</p>
             <p className="dj-focus__hero-text">
               {milestone.title} si svolge in uno spazio dedicato.
               Aprilo per continuare la direzione progettuale.
@@ -207,7 +210,7 @@ const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
               data-testid="dj-focus-open"
             >
               <Icons.ArrowUpRight size={14} />
-              <span>Apri {milestone.title}</span>
+              <span>{tt('journey.tab.open_btn_prefix')}{milestone.title}</span>
             </button>
           </div>
         </div>
@@ -246,25 +249,26 @@ const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
 
 // ─── Right · Details panel ──────────────────────────────────────────
 const DetailsPanel = ({ milestone }) => {
+  const { t: tt } = useT();
   if (!milestone) return null;
   return (
     <aside className="dj-details" data-testid="dj-details">
-      <p className="dj-details__eyebrow">Dettagli pietra miliare</p>
+      <p className="dj-details__eyebrow">{tt('journey.tab.details_eyebrow')}</p>
       <dl className="dj-details__list">
         <div>
-          <dt>Iniziata</dt>
+          <dt>{tt('journey.tab.detail_started')}</dt>
           <dd>{fmtDate(milestone.started_at) || '—'}</dd>
         </div>
         <div>
-          <dt>Presentata</dt>
+          <dt>{tt('journey.tab.detail_presented')}</dt>
           <dd>{fmtDate(milestone.presented_at) || '—'}</dd>
         </div>
         <div>
-          <dt>Approvata</dt>
+          <dt>{tt('journey.tab.detail_approved')}</dt>
           <dd>{fmtDate(milestone.approved_at) || '—'}</dd>
         </div>
         <div>
-          <dt>Chiusa</dt>
+          <dt>{tt('journey.tab.detail_closed')}</dt>
           <dd>{fmtDate(milestone.closed_at) || '—'}</dd>
         </div>
       </dl>
@@ -314,6 +318,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
   const [busy, setBusy] = useState(false);
 
   const { locale } = useBlueprint();
+  const { t: tt } = useT();
   const load = useCallback(() => {
     setLoading(true);
     api.get(`/api/projects/${projectId}/journey`, { params: { locale: locale || 'en-US' } })
@@ -323,9 +328,9 @@ const DesignJourneyTab = ({ projectId, project }) => {
           || r.data.milestones?.[0]?.id;
         setActiveId(prev => prev || cur);
       })
-      .catch(() => setError('Impossibile caricare il Design Journey™'))
+      .catch(() => setError(tt('journey.tab.load_error')))
       .finally(() => setLoading(false));
-  }, [projectId, locale]);
+  }, [projectId, locale, tt]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -365,7 +370,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
       toast.success(`${m.title} · ${STATUS_META[newStatus].label}`);
       await load();
     } catch (e) {
-      toast.error('Aggiornamento non riuscito');
+      toast.error(tt('journey.tab.status_change_error'));
     } finally { setBusy(false); }
   };
 
@@ -406,12 +411,12 @@ const DesignJourneyTab = ({ projectId, project }) => {
         navigate(withCtx);
       } else {
         // Inline mode → just stay on the focus panel (already showing inline body)
-        toast.success(`${m.title} aperta`);
+        toast.success(`${m.title}${tt('journey.tab.opened_suffix')}`);
       }
       // Refresh journey to pick up the auto-transition not_started → in_progress
       load();
     } catch {
-      toast.error('Apertura non riuscita');
+      toast.error(tt('journey.tab.open_error'));
     } finally { setBusy(false); }
   };
 
@@ -419,7 +424,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
     return (
       <div className="dj-shell dj-shell--loading" data-testid="dj-loading">
         <p className="dj-loading-text">
-          Sto preparando il Design Journey™…
+          {tt('journey.tab.loading_text')}
         </p>
       </div>
     );
@@ -428,7 +433,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
     return (
       <div className="dj-shell dj-shell--error" data-testid="dj-error">
         <Icons.AlertCircle size={20} />
-        <p>{error || 'Errore'}</p>
+        <p>{error || tt('journey.tab.error_fallback')}</p>
       </div>
     );
   }
@@ -460,7 +465,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
                 />
               )}
               <div className="dj-shell__advisor-meta">
-                <span className="dj-shell__advisor-eyebrow">Seguito da</span>
+                <span className="dj-shell__advisor-eyebrow">{tt('journey.tab.designer_eyebrow')}</span>
                 <span className="dj-shell__advisor-name">
                   {designer.first_name} {designer.last_name || ''}
                 </span>

@@ -11,20 +11,22 @@
  * The action list is derived from the user's role + the API's /members/roles
  * response — NO hardcoded role list in this file (extensible for showroom
  * managers, sales reps, A&D partners, fabricators when added to permissions.py).
+ *
+ * i18n: useT() from i18n/useT.jsx (same pickString engine as the rest of FASE 2).
  */
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ArrowLeft, UserPlus, MoreHorizontal, Mail, Pause, Play, Trash2, Send, ShieldCheck, X, Check, Loader2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useT } from '../../i18n/useT';
 import { useAuth } from '../../contexts/AuthContext';
 import { refreshLicense } from '../../hooks/useLicense';
 import api from '../../lib/api';
 
 const STATUS_STYLES = {
-  active:    { label: 'Active',    cls: 'text-[var(--bp-primary)] bg-[var(--bp-primary)]/10 border-[var(--bp-primary)]/25' },
-  invited:   { label: 'Invited',   cls: 'text-amber-300 bg-amber-300/10 border-amber-300/25' },
-  suspended: { label: 'Suspended', cls: 'text-rose-300 bg-rose-300/10 border-rose-300/25' },
+  active:    { cls: 'text-[var(--bp-primary)] bg-[var(--bp-primary)]/10 border-[var(--bp-primary)]/25' },
+  invited:   { cls: 'text-amber-300 bg-amber-300/10 border-amber-300/25' },
+  suspended: { cls: 'text-rose-300 bg-rose-300/10 border-rose-300/25' },
 };
 
 const ROLE_LABEL = {
@@ -70,18 +72,20 @@ const Avatar = ({ m }) => (
 );
 
 const StatusBadge = ({ status }) => {
+  const { t } = useT();
   const s = STATUS_STYLES[status] || STATUS_STYLES.active;
   return (
     <span data-testid={`member-status-${status}`}
           className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-body uppercase tracking-[0.16em] ${s.cls}`}>
       <span className="w-1 h-1 rounded-full bg-current" />
-      {s.label}
+      {t('members.status_' + status)}
     </span>
   );
 };
 
 // ── Action menu ────────────────────────────────────────────────────────────
 const ActionMenu = ({ m, currentProfileId, onResend, onSuspend, onReactivate, onChangeRole, onRemove, roles }) => {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const [roleMenu, setRoleMenu] = useState(false);
   const isSelf = m.id === currentProfileId;
@@ -97,15 +101,15 @@ const ActionMenu = ({ m, currentProfileId, onResend, onSuspend, onReactivate, on
           <div className="fixed inset-0 z-30" onClick={() => { setOpen(false); setRoleMenu(false); }} />
           <div className="absolute right-0 top-full mt-1 w-56 z-40 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] shadow-2xl py-1.5" data-testid={`member-menu-${m.id}`}>
             {m.status === 'invited' && (
-              <MenuItem icon={Mail} label="Resend invite" testid={`menu-resend-${m.id}`}
+              <MenuItem icon={Mail} label={t('members.menu_resend')} testid={`menu-resend-${m.id}`}
                         onClick={() => { setOpen(false); onResend(m); }} />
             )}
             {!isSelf && m.status !== 'suspended' && (
-              <MenuItem icon={Pause} label="Suspend" testid={`menu-suspend-${m.id}`}
+              <MenuItem icon={Pause} label={t('members.menu_suspend')} testid={`menu-suspend-${m.id}`}
                         onClick={() => { setOpen(false); onSuspend(m); }} />
             )}
             {!isSelf && m.status === 'suspended' && (
-              <MenuItem icon={Play} label="Reactivate" testid={`menu-reactivate-${m.id}`}
+              <MenuItem icon={Play} label={t('members.menu_reactivate')} testid={`menu-reactivate-${m.id}`}
                         onClick={() => { setOpen(false); onReactivate(m); }} />
             )}
             {!isSelf && (
@@ -114,7 +118,7 @@ const ActionMenu = ({ m, currentProfileId, onResend, onSuspend, onReactivate, on
                         data-testid={`menu-change-role-${m.id}`}
                         className="w-full px-3 py-2 flex items-center gap-2 text-left text-[12px] font-body text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 transition-colors">
                   <ShieldCheck size={13} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" />
-                  Change role…
+                  {t('members.menu_change_role')}
                 </button>
                 {roleMenu && (
                   <div className="absolute right-full top-0 mr-1 w-48 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] shadow-2xl py-1.5">
@@ -135,12 +139,12 @@ const ActionMenu = ({ m, currentProfileId, onResend, onSuspend, onReactivate, on
             {!isSelf && (
               <>
                 <div className="my-1 border-t border-[var(--bp-border)]" />
-                <MenuItem icon={Trash2} label="Remove from tenant" danger testid={`menu-remove-${m.id}`}
+                <MenuItem icon={Trash2} label={t('members.menu_remove')} danger testid={`menu-remove-${m.id}`}
                           onClick={() => { setOpen(false); onRemove(m); }} />
               </>
             )}
             {isSelf && (
-              <p className="px-3 py-2 text-[10px] font-body text-[var(--bp-text-muted)] italic">Self-management blocked</p>
+              <p className="px-3 py-2 text-[10px] font-body text-[var(--bp-text-muted)] italic">{t('members.menu_self_blocked')}</p>
             )}
           </div>
         </>
@@ -162,6 +166,7 @@ const MenuItem = ({ icon: Icon, label, onClick, testid, danger }) => (
 
 // ── Invite drawer ──────────────────────────────────────────────────────────
 const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
+  const { t } = useT();
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
   const [email, setEmail] = useState('');
@@ -178,7 +183,7 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
   const submit = async (e) => {
     e?.preventDefault();
     if (!first.trim() || !last.trim() || !email.trim()) {
-      toast.error('First name, last name, and email are required');
+      toast.error(t('members.toast_required_fields'));
       return;
     }
     setSubmitting(true);
@@ -196,10 +201,10 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
       <div className="w-[460px] bg-[var(--bp-surface-1)] border-l border-[var(--bp-border)] flex flex-col">
         <header className="flex items-start justify-between p-6 border-b border-[var(--bp-border)]">
           <div>
-            <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">Member Studio</p>
-            <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] mt-0.5">Invite a member</h2>
+            <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">{t('members.invite_eyebrow')}</p>
+            <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] mt-0.5">{t('members.invite_title')}</h2>
             <p className="text-[var(--bp-text-muted)] text-[12px] font-body mt-1 max-w-sm">
-              A magic-link email will be sent so they can set their own password.
+              {t('members.invite_subtitle')}
             </p>
           </div>
           <button onClick={onClose} data-testid="invite-close"
@@ -209,12 +214,12 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
         </header>
 
         <form onSubmit={submit} className="flex-1 overflow-y-auto p-6 space-y-5">
-          <Field label="First name" value={first} onChange={setFirst} testid="invite-first" autoFocus />
-          <Field label="Last name"  value={last}  onChange={setLast}  testid="invite-last" />
-          <Field label="Email"      value={email} onChange={setEmail} type="email" testid="invite-email" />
+          <Field label={t('members.invite_first')} value={first} onChange={setFirst} testid="invite-first" autoFocus />
+          <Field label={t('members.invite_last')}  value={last}  onChange={setLast}  testid="invite-last" />
+          <Field label={t('members.invite_email')} value={email} onChange={setEmail} type="email" testid="invite-email" />
 
           <div>
-            <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">Role</label>
+            <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">{t('members.invite_role')}</label>
             <div className="grid grid-cols-2 gap-2">
               {roles.map((r) => (
                 <button type="button" key={r.key}
@@ -225,7 +230,11 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
                             ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/8 text-[var(--bp-text-primary)]'
                             : 'border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:border-[var(--bp-border-strong)]'}`}>
                   <p className="font-body text-[12px]">{ROLE_LABEL[r.key] || r.key}</p>
-                  <p className="text-[10px] text-[var(--bp-text-muted)] mt-1 line-clamp-1">{r.permissions.length} permission{r.permissions.length === 1 ? '' : 's'}</p>
+                  <p className="text-[10px] text-[var(--bp-text-muted)] mt-1 line-clamp-1">
+                    {r.permissions.length === 1
+                      ? t('members.permission_single', { n: r.permissions.length })
+                      : t('members.permission_plural', { n: r.permissions.length })}
+                  </p>
                 </button>
               ))}
             </div>
@@ -235,13 +244,13 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
         <footer className="flex items-center justify-end gap-2 p-6 border-t border-[var(--bp-border)]">
           <button onClick={onClose} className="px-4 py-2 text-[11px] font-body uppercase tracking-[0.2em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
                   data-testid="invite-cancel">
-            Cancel
+            {t('members.btn_cancel')}
           </button>
           <button onClick={submit} disabled={submitting}
                   data-testid="invite-submit"
                   className="flex items-center gap-2 px-4 py-2 rounded-[var(--bp-radius-xs)] bg-[var(--bp-primary)] text-black text-[11px] font-body uppercase tracking-[0.2em] hover:brightness-110 disabled:opacity-50 transition-all">
             {submitting ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} strokeWidth={1.8} />}
-            Send invite
+            {t('members.btn_send_invite')}
           </button>
         </footer>
       </div>
@@ -253,6 +262,7 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
 const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
                             onClose, onSave, onSuspend, onReactivate,
                             onResend, onRemove }) => {
+  const { t } = useT();
   const [first, setFirst] = useState('');
   const [last,  setLast]  = useState('');
   const [role,  setRole]  = useState('');
@@ -292,7 +302,7 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
             <Avatar m={member} />
             <div className="min-w-0">
               <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">
-                Member · {STATUS_STYLES[member.status]?.label || member.status}
+                {t('members.status_member_eyebrow', { status: t('members.status_' + member.status) })}
               </p>
               <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] truncate">
                 {(member.first_name || '') + ' ' + (member.last_name || '') || member.email}
@@ -311,18 +321,16 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
           {isSelf && (
             <div className="px-3 py-2.5 rounded-[var(--bp-radius-xs)] border border-[var(--bp-border)] bg-[var(--bp-surface-2)]/40 text-[11px] text-[var(--bp-text-secondary)] font-body leading-relaxed"
                  data-testid="edit-member-self-hint">
-              Stai modificando il tuo profilo. Per cambiare la foto, ruolo o
-              biografia visibili ai clienti usa <strong>“Presentazione al
-              cliente”</strong> in Impostazioni → Account.
+              {t('members.edit_self_hint')}
             </div>
           )}
 
-          <Field label="Nome"    value={first} onChange={setFirst} testid="edit-member-first" autoFocus />
-          <Field label="Cognome" value={last}  onChange={setLast}  testid="edit-member-last" />
+          <Field label={t('members.edit_label_first')} value={first} onChange={setFirst} testid="edit-member-first" autoFocus />
+          <Field label={t('members.edit_label_last')}  value={last}  onChange={setLast}  testid="edit-member-last" />
 
           {/* Role */}
           <div>
-            <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">Ruolo</label>
+            <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">{t('members.edit_label_role')}</label>
             <div className="grid grid-cols-2 gap-2">
               {(roles || []).map((r) => (
                 <button type="button" key={r.key}
@@ -336,7 +344,9 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
                           disabled:opacity-40 disabled:cursor-not-allowed`}>
                   <p className="font-body text-[12px]">{ROLE_LABEL[r.key] || r.key}</p>
                   <p className="text-[10px] text-[var(--bp-text-muted)] mt-1 line-clamp-1">
-                    {r.permissions.length} permission{r.permissions.length === 1 ? '' : 's'}
+                    {r.permissions.length === 1
+                      ? t('members.permission_single', { n: r.permissions.length })
+                      : t('members.permission_plural', { n: r.permissions.length })}
                   </p>
                 </button>
               ))}
@@ -345,28 +355,28 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
 
           {/* Metadata */}
           <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[var(--bp-border)]">
-            <Meta label="Last login"  value={fmtDate(member.last_login_at, { withTime: true })} />
-            <Meta label="Invitato il"  value={fmtDate(member.invited_at)} />
-            <Meta label="Accettato il" value={fmtDate(member.accepted_at)} />
-            <Meta label="Creato il"    value={fmtDate(member.created_at)} />
+            <Meta label={t('members.meta_last_login')}  value={fmtDate(member.last_login_at, { withTime: true })} />
+            <Meta label={t('members.meta_invited_at')}  value={fmtDate(member.invited_at)} />
+            <Meta label={t('members.meta_accepted_at')} value={fmtDate(member.accepted_at)} />
+            <Meta label={t('members.meta_created_at')}  value={fmtDate(member.created_at)} />
           </div>
 
           {/* Operational actions — only for tenant_admin acting on others */}
           {canManage && !isSelf && (
             <div className="pt-4 border-t border-[var(--bp-border)] space-y-2">
               {member.status === 'invited' && (
-                <DrawerAction icon={Mail} label="Reinvia invito"
+                <DrawerAction icon={Mail} label={t('members.action_resend')}
                               testid="edit-member-resend" onClick={onResend} />
               )}
               {member.status === 'active' && (
-                <DrawerAction icon={Pause} label="Sospendi membro"
+                <DrawerAction icon={Pause} label={t('members.action_suspend')}
                               testid="edit-member-suspend" onClick={onSuspend} />
               )}
               {member.status === 'suspended' && (
-                <DrawerAction icon={Play} label="Riattiva membro"
+                <DrawerAction icon={Play} label={t('members.action_reactivate')}
                               testid="edit-member-reactivate" onClick={onReactivate} />
               )}
-              <DrawerAction icon={Trash2} danger label="Rimuovi dallo studio"
+              <DrawerAction icon={Trash2} danger label={t('members.action_remove')}
                             testid="edit-member-remove" onClick={onRemove} />
             </div>
           )}
@@ -375,13 +385,13 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
         <footer className="flex items-center justify-end gap-2 p-6 border-t border-[var(--bp-border)]">
           <button onClick={onClose} data-testid="edit-member-cancel"
                   className="px-4 py-2 text-[11px] font-body uppercase tracking-[0.2em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">
-            Annulla
+            {t('members.btn_cancel')}
           </button>
           <button onClick={submit} disabled={!dirty || submitting}
                   data-testid="edit-member-save"
                   className="flex items-center gap-2 px-4 py-2 rounded-[var(--bp-radius-xs)] bg-[var(--bp-primary)] text-black text-[11px] font-body uppercase tracking-[0.2em] hover:brightness-110 disabled:opacity-40 transition-all">
             {submitting ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} strokeWidth={1.8} />}
-            Salva modifiche
+            {t('members.btn_save')}
           </button>
         </footer>
       </div>
@@ -417,7 +427,8 @@ const Field = ({ label, value, onChange, type = 'text', testid, autoFocus }) => 
 );
 
 // ── Confirm dialog (minimal, cinematic) ────────────────────────────────────
-const Confirm = ({ open, title, message, danger, confirmLabel = 'Confirm', onConfirm, onClose }) => {
+const Confirm = ({ open, title, message, danger, confirmLabel, onConfirm, onClose }) => {
+  const { t } = useT();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center" data-testid="confirm-dialog">
@@ -434,7 +445,7 @@ const Confirm = ({ open, title, message, danger, confirmLabel = 'Confirm', onCon
         <div className="flex justify-end gap-2 mt-5">
           <button onClick={onClose} data-testid="confirm-cancel"
                   className="px-4 py-2 text-[11px] font-body uppercase tracking-[0.2em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">
-            Cancel
+            {t('members.confirm_cancel')}
           </button>
           <button onClick={onConfirm} data-testid="confirm-ok"
                   className={`px-4 py-2 rounded-[var(--bp-radius-xs)] text-[11px] font-body uppercase tracking-[0.2em] transition-colors
@@ -452,7 +463,7 @@ const Confirm = ({ open, title, message, danger, confirmLabel = 'Confirm', onCon
 // ── Main page ──────────────────────────────────────────────────────────────
 const MembersPage = () => {
   const navigate = useNavigate();
-  const { t } = useBlueprint();
+  const { t } = useT();
   const { user } = useAuth();
   const [members, setMembers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -460,7 +471,7 @@ const MembersPage = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(false);
-  const [editing, setEditing] = useState(null); // member being edited via right-side drawer
+  const [editing, setEditing] = useState(null);
   const [confirm, setConfirm] = useState(null);
   const [license, setLicense] = useState(null);
 
@@ -468,8 +479,7 @@ const MembersPage = () => {
   const myRole = user?.role;
   const canManage = myRole === 'super_admin' || myRole === 'tenant_admin';
 
-  // Live seat budget — used to disable Invite CTA + show usage chip
-  const seatLimit = license?.limits?.max_users;          // null = unlimited
+  const seatLimit = license?.limits?.max_users;
   const seatUsage = license?.usage?.users || 0;
   const atSeatCap = seatLimit != null && seatUsage >= seatLimit;
 
@@ -487,15 +497,15 @@ const MembersPage = () => {
     } catch (e) {
       const status = e?.response?.status;
       if (status === 403) {
-        toast.error('You do not have permission to manage members');
+        toast.error(t('members.toast_permission_denied'));
         navigate('/settings');
       } else {
-        toast.error('Failed to load members');
+        toast.error(t('members.toast_load_error'));
       }
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, t]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
@@ -503,16 +513,15 @@ const MembersPage = () => {
   const invite = async (payload) => {
     try {
       await api.post('/api/members/invite', payload);
-      toast.success('Invite sent — magic link delivered to ' + payload.email);
+      toast.success(t('members.toast_invite_sent', { email: payload.email }));
       refreshLicense();
       await loadAll();
     } catch (e) {
       const detail = e?.response?.data?.detail;
-      // License-aware error formatting
       if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
-        toast.error(`Seat limit reached (${detail.current}/${detail.limit}). Upgrade your ${detail.plan || ''} plan to invite more.`);
+        toast.error(t('members.toast_seat_limit', { current: detail.current, limit: detail.limit, plan: detail.plan || '' }));
       } else {
-        toast.error(typeof detail === 'string' ? detail : 'Invite failed');
+        toast.error(typeof detail === 'string' ? detail : t('members.toast_invite_failed'));
       }
       throw e;
     }
@@ -521,9 +530,9 @@ const MembersPage = () => {
   const resend = async (m) => {
     try {
       await api.post(`/api/members/${m.id}/resend-invite`);
-      toast.success('Invite resent to ' + m.email);
+      toast.success(t('members.toast_resent', { email: m.email }));
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Could not resend invite');
+      toast.error(e?.response?.data?.detail || t('members.toast_resend_failed'));
     }
   };
 
@@ -533,17 +542,17 @@ const MembersPage = () => {
       toast.success(successMsg);
       await loadAll();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Operation failed');
+      toast.error(e?.response?.data?.detail || t('members.toast_op_failed'));
     }
   };
 
   const remove = async (m) => {
     try {
       await api.delete(`/api/members/${m.id}`);
-      toast.success(`${m.email} removed from tenant`);
+      toast.success(t('members.toast_removed', { email: m.email }));
       await loadAll();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Could not remove member');
+      toast.error(e?.response?.data?.detail || t('members.toast_remove_failed'));
     }
   };
 
@@ -577,12 +586,12 @@ const MembersPage = () => {
           <button onClick={() => navigate('/settings')}
                   data-testid="members-back"
                   className="flex items-center gap-1.5 text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] text-[10px] font-body uppercase tracking-[0.22em] mb-4">
-            <ArrowLeft size={11} strokeWidth={1.5} /> {t('common.back', null, 'Back')}
+            <ArrowLeft size={11} strokeWidth={1.5} /> {t('common.back')}
           </button>
-          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">Tenant · Members</p>
-          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none">People</h1>
+          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">{t('members.eyebrow')}</p>
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none">{t('members.title')}</h1>
           <p className="text-[var(--bp-text-muted)] text-[13px] font-body mt-2 max-w-xl">
-            Invite collaborators and assign roles. Every action is audit-logged.
+            {t('members.subtitle')}
           </p>
         </div>
         {canManage && (
@@ -593,7 +602,7 @@ const MembersPage = () => {
                       ${atSeatCap
                         ? 'border-rose-500/30 text-rose-300 bg-rose-500/8'
                         : 'border-[var(--bp-border)] text-[var(--bp-text-muted)]'}`}>
-                Seats {seatUsage}/{seatLimit == null ? '∞' : seatLimit}
+                {t('members.seats_chip', { used: seatUsage, limit: seatLimit == null ? '∞' : seatLimit })}
               </span>
             )}
             <button onClick={() => atSeatCap ? navigate('/settings/plan') : setDrawer(true)}
@@ -603,7 +612,7 @@ const MembersPage = () => {
                         ? 'bg-[var(--bp-surface-2)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:border-[var(--bp-border-strong)]'
                         : 'bg-[var(--bp-primary)] text-black hover:brightness-110'}`}>
               <UserPlus size={13} strokeWidth={1.8} />
-              {atSeatCap ? 'Upgrade to invite' : 'Invite member'}
+              {atSeatCap ? t('members.btn_upgrade') : t('members.btn_invite')}
             </button>
           </div>
         )}
@@ -620,14 +629,14 @@ const MembersPage = () => {
                       ${statusFilter === s
                         ? 'bg-[var(--bp-surface-2)] text-[var(--bp-text-primary)]'
                         : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
-              {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+              {t('members.filter_' + s)}
               <span className="ml-1.5 text-[var(--bp-text-subtle)] font-mono tabular-nums">{counts[s]}</span>
             </button>
           ))}
         </div>
         <input value={search}
                onChange={(e) => setSearch(e.target.value)}
-               placeholder="Search by name or email"
+               placeholder={t('members.search_placeholder')}
                data-testid="members-search"
                className="w-64 px-3 py-2 bg-transparent border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)] text-[var(--bp-text-primary)] text-[12px] font-body outline-none focus:border-[var(--bp-primary)] transition-colors placeholder:text-[var(--bp-text-subtle)]" />
       </div>
@@ -635,22 +644,22 @@ const MembersPage = () => {
       {/* Table */}
       <div className="border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] overflow-hidden">
         <div className="grid grid-cols-[1fr_140px_120px_120px_60px] gap-4 px-5 py-3 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 text-[10px] font-body uppercase tracking-[0.18em] text-[var(--bp-text-muted)]">
-          <p>Person</p>
-          <p>Role</p>
-          <p>Status</p>
-          <p>Last login</p>
+          <p>{t('members.th_person')}</p>
+          <p>{t('members.th_role')}</p>
+          <p>{t('members.th_status')}</p>
+          <p>{t('members.th_last_login')}</p>
           <p className="text-right">—</p>
         </div>
 
         {loading && (
           <div className="p-12 flex items-center justify-center text-[var(--bp-text-muted)]">
-            <Loader2 size={16} className="animate-spin mr-2" /> Loading…
+            <Loader2 size={16} className="animate-spin mr-2" /> {t('members.loading')}
           </div>
         )}
 
         {!loading && filtered.length === 0 && (
           <div className="p-12 text-center text-[var(--bp-text-muted)] text-[12px] font-body italic" data-testid="members-empty">
-            No members match the current filters.
+            {t('members.empty')}
           </div>
         )}
 
@@ -658,7 +667,6 @@ const MembersPage = () => {
           <div key={m.id}
                data-testid={`member-row-${m.id}`}
                onClick={(e) => {
-                 // Don't trigger when an inner button (ActionMenu) was clicked.
                  if (e.target.closest('button')) return;
                  setEditing(m);
                }}
@@ -668,7 +676,7 @@ const MembersPage = () => {
               <div className="min-w-0">
                 <p className="text-[var(--bp-text-primary)] text-[13px] font-body truncate">
                   {(m.first_name || '') + ' ' + (m.last_name || '') || '—'}
-                  {m.id === myProfileId && <span className="ml-2 text-[10px] text-[var(--bp-text-muted)] uppercase tracking-[0.18em]">You</span>}
+                  {m.id === myProfileId && <span className="ml-2 text-[10px] text-[var(--bp-text-muted)] uppercase tracking-[0.18em]">{t('members.you_label')}</span>}
                 </p>
                 <p className="text-[var(--bp-text-muted)] text-[11px] font-mono truncate">{m.email}</p>
               </div>
@@ -688,8 +696,8 @@ const MembersPage = () => {
                             roles={roles}
                             onResend={resend}
                             onSuspend={(x) => setConfirm({ kind: 'suspend', m: x })}
-                            onReactivate={(x) => patch(x, { status: 'active' }, `${x.email} reactivated`)}
-                            onChangeRole={(x, role) => patch(x, { role }, `Role updated to ${ROLE_LABEL[role] || role}`)}
+                            onReactivate={(x) => patch(x, { status: 'active' }, t('members.toast_reactivated', { email: x.email }))}
+                            onChangeRole={(x, role) => patch(x, { role }, t('members.toast_role_updated', { role: ROLE_LABEL[role] || role }))}
                             onRemove={(x) => setConfirm({ kind: 'remove', m: x })} />
               )}
             </div>
@@ -709,27 +717,27 @@ const MembersPage = () => {
         onClose={() => setEditing(null)}
         onSave={async (body) => {
           if (!editing) return;
-          await patch(editing, body, `${editing.email} aggiornato`);
+          await patch(editing, body, t('members.toast_updated', { email: editing.email }));
           setEditing(null);
         }}
         onSuspend={() => { setConfirm({ kind: 'suspend', m: editing }); setEditing(null); }}
-        onReactivate={() => { patch(editing, { status: 'active' }, `${editing.email} riattivato`); setEditing(null); }}
+        onReactivate={() => { patch(editing, { status: 'active' }, t('members.toast_reactivated', { email: editing.email })); setEditing(null); }}
         onResend={() => { resend(editing); setEditing(null); }}
         onRemove={() => { setConfirm({ kind: 'remove', m: editing }); setEditing(null); }}
       />
 
       <Confirm open={!!confirm && confirm.kind === 'suspend'}
-               title="Suspend member?"
-               message={`${confirm?.m?.email} will lose access until reactivated.`}
-               confirmLabel="Suspend"
+               title={t('members.confirm_suspend_title')}
+               message={t('members.confirm_suspend_msg', { email: confirm?.m?.email })}
+               confirmLabel={t('members.confirm_suspend_btn')}
                onClose={() => setConfirm(null)}
-               onConfirm={async () => { const m = confirm.m; setConfirm(null); await patch(m, { status: 'suspended' }, `${m.email} suspended`); }} />
+               onConfirm={async () => { const m = confirm.m; setConfirm(null); await patch(m, { status: 'suspended' }, t('members.toast_suspended', { email: m.email })); }} />
 
       <Confirm open={!!confirm && confirm.kind === 'remove'}
                danger
-               title="Remove from tenant?"
-               message={`${confirm?.m?.email} will be removed from this tenant. Their authentication account is preserved.`}
-               confirmLabel="Remove"
+               title={t('members.confirm_remove_title')}
+               message={t('members.confirm_remove_msg', { email: confirm?.m?.email })}
+               confirmLabel={t('members.confirm_remove_btn')}
                onClose={() => setConfirm(null)}
                onConfirm={async () => { const m = confirm.m; setConfirm(null); await remove(m); }} />
     </div>

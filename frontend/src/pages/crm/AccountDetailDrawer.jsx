@@ -13,41 +13,33 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import { useT } from '../../i18n/useT';
+
 const TABS = [{
   id: 'overview',
-  label: 'Overview',
   icon: FileText
 }, {
   id: 'contacts',
-  label: 'Contacts',
   icon: UserCircle
 }, {
   id: 'timeline',
-  label: 'Timeline',
   icon: Clock
 }, {
   id: 'projects',
-  label: 'Projects',
   icon: Folder
 }, {
   id: 'moodboards',
-  label: 'Moodboards',
   icon: Layers
 }, {
   id: 'files',
-  label: 'Files',
   icon: Compass
 }, {
   id: 'followups',
-  label: 'Follow-ups',
   icon: BellRing
 }, {
   id: 'notes',
-  label: 'Notes',
   icon: NotebookPen
 }, {
   id: 'style',
-  label: 'Style',
   icon: Palette
 }];
 
@@ -78,7 +70,6 @@ const STAGE_COLOR = {
   long_term_relationship: '#10B981',
   archived: '#6B7280'
 };
-const initialsOfLocal = name => initialsOf(name); // re-export reference
 const relativeTime = iso => {
   if (!iso) return '—';
   try {
@@ -108,18 +99,21 @@ const Field = ({
 const OverviewPane = ({
   account,
   primary
-}) => <div className="adr-grid">
-    <Field label="Account name" value={account.account_name} />
-    <Field label="Tipo" value={account.account_type} mono />
-    <Field label="Lifecycle stage" value={account.lifecycle_stage} mono />
-    <Field label="Source" value={account.source} mono />
-    <Field label="Owner" value={account.primary_owner_id || account.owner_email} mono />
-    <Field label="Città" value={account.city} />
-    <Field label="Paese" value={account.country} mono />
-    <Field label="Telefono" value={account.phone || primary?.phone} mono />
-    <Field label="Email" value={account.email || primary?.email} mono />
-    <Field label="Ultima attività" value={account.last_activity_at ? new Date(account.last_activity_at).toLocaleString('it-IT') : '—'} mono />
+}) => {
+  const { t } = useT();
+  return <div className="adr-grid">
+    <Field label={t('crm.account_detail.field.account_name')} value={account.account_name} />
+    <Field label={t('crm.account_detail.field.tipo')} value={account.account_type} mono />
+    <Field label={t('crm.account_detail.field.lifecycle_stage')} value={account.lifecycle_stage} mono />
+    <Field label={t('crm.account_detail.field.source')} value={account.source} mono />
+    <Field label={t('crm.account_detail.field.owner')} value={account.primary_owner_id || account.owner_email} mono />
+    <Field label={t('crm.account_detail.field.city')} value={account.city} />
+    <Field label={t('crm.account_detail.field.country')} value={account.country} mono />
+    <Field label={t('crm.account_detail.field.phone')} value={account.phone || primary?.phone} mono />
+    <Field label={t('crm.account_detail.field.email')} value={account.email || primary?.email} mono />
+    <Field label={t('crm.account_detail.field.last_activity')} value={account.last_activity_at ? new Date(account.last_activity_at).toLocaleString('it-IT') : '—'} mono />
   </div>;
+};
 
 // ─── Contacts pane ─────────────────────────────────────────────────
 const ContactsPane = ({
@@ -141,7 +135,6 @@ const ContactsPane = ({
   const load = async () => {
     setLoading(true);
     try {
-      // Contacts are embedded in GET /accounts/{id} — no dedicated GET endpoint exists.
       const r = await api.get(`/api/relationships/accounts/${accountId}`);
       setContacts(r.data?.contacts || []);
     } catch {
@@ -154,10 +147,10 @@ const ContactsPane = ({
     load();
   }, [accountId]);
   const submit = async () => {
-    if (!form.first_name && !form.last_name) return toast.error('Inserisci almeno nome o cognome');
+    if (!form.first_name && !form.last_name) return toast.error(t('crm.account_detail.toast_insert_name'));
     try {
       await api.post(`/api/relationships/accounts/${accountId}/contacts`, form);
-      toast.success('Contact aggiunto');
+      toast.success(t('crm.account_detail.toast_contact_added'));
       setShowAdd(false);
       setForm({
         first_name: '',
@@ -168,7 +161,7 @@ const ContactsPane = ({
       });
       load();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Salvataggio fallito');
+      toast.error(e?.response?.data?.detail || t('crm.account_detail.toast_save_failed'));
     }
   };
   return <div data-testid="adr-contacts-pane">
@@ -182,7 +175,7 @@ const ContactsPane = ({
             <div className="adr-card__head">
               <p className="adr-card__title">
                 {c.full_name || `${c.first_name || ''} ${c.last_name || ''}`.trim() || '—'}
-                {c.primary_contact && <span className="adr-chip">primary</span>}
+                {c.primary_contact && <span className="adr-chip">{t('crm.account_detail.chip_primary')}</span>}
               </p>
               <p className="adr-card__meta">{c.role_title || '—'}</p>
             </div>
@@ -196,24 +189,24 @@ const ContactsPane = ({
           <Plus size={11} /> {t("crm.account_detail.aggiungi_contact")}
         </button> : <div className="adr-form" data-testid="adr-contact-form">
           <div className="adr-form__row">
-            <input className="crm-input" placeholder="Nome" value={form.first_name} onChange={e => setForm({
+            <input className="crm-input" placeholder={t('crm.account_detail.placeholder_nome')} value={form.first_name} onChange={e => setForm({
           ...form,
           first_name: e.target.value
         })} />
-            <input className="crm-input" placeholder="Cognome" value={form.last_name} onChange={e => setForm({
+            <input className="crm-input" placeholder={t('crm.account_detail.placeholder_cognome')} value={form.last_name} onChange={e => setForm({
           ...form,
           last_name: e.target.value
         })} />
           </div>
-          <input className="crm-input" placeholder="Email" value={form.email} onChange={e => setForm({
+          <input className="crm-input" placeholder={t('crm.account_detail.field.email')} value={form.email} onChange={e => setForm({
         ...form,
         email: e.target.value
       })} />
-          <input className="crm-input" placeholder="Telefono" value={form.phone} onChange={e => setForm({
+          <input className="crm-input" placeholder={t('crm.account_detail.placeholder_telefono')} value={form.phone} onChange={e => setForm({
         ...form,
         phone: e.target.value
       })} />
-          <input className="crm-input" placeholder="Ruolo (es. Founder, Specifier, …)" value={form.role_title} onChange={e => setForm({
+          <input className="crm-input" placeholder={t('crm.account_detail.placeholder_ruolo')} value={form.role_title} onChange={e => setForm({
         ...form,
         role_title: e.target.value
       })} />
@@ -242,7 +235,7 @@ const TimelinePane = ({
         {items.map(it => <li key={it.id} className="adr-timeline__item">
             <span className="adr-timeline__dot" />
             <div className="adr-timeline__body">
-              <p className="adr-timeline__title">{it.subject || it.interaction_type || 'Interazione'}</p>
+              <p className="adr-timeline__title">{it.subject || it.interaction_type || t('crm.account_detail.interaction_fallback')}</p>
               <p className="adr-timeline__meta">{it.occurred_at ? new Date(it.occurred_at).toLocaleString('it-IT') : ''} · {it.channel || '—'}</p>
               {it.summary && <p className="adr-timeline__body-text">{it.summary}</p>}
             </div>
@@ -255,12 +248,13 @@ const TimelinePane = ({
 const ProjectsPane = ({
   accountId
 }) => {
+  const { t } = useT();
   const [links, setLinks] = useState([]);
   useEffect(() => {
     api.get(`/api/relationships/accounts/${accountId}/projects`).then(r => setLinks(r.data?.links || [])).catch(() => setLinks([]));
   }, [accountId]);
   return <div data-testid="adr-projects-pane">
-      {links.length === 0 && <p className="adr-empty">Nessun progetto collegato.</p>}
+      {links.length === 0 && <p className="adr-empty">{t('crm.account_detail.nessun_progetto')}</p>}
       {links.map(l => <div key={l.id} className="adr-card" data-testid={`adr-project-${l.id}`}>
           <p className="adr-card__title">Project · {l.project_id?.slice(0, 8)}</p>
           <p className="adr-card__meta">role · {l.role} {l.collaboration_stage ? `· stage @ link · ${l.collaboration_stage}` : ''}</p>
@@ -290,22 +284,29 @@ const FilesPane = () => {
   } = useT();
   return <div data-testid="adr-files-pane"><p className="adr-empty">{t('crm.account_detail.files_allegati_arriva_con_il_media_library_inspect')}</p></div>;
 };
-const NotesPane = () => <div data-testid="adr-notes-pane"><p className="adr-empty">Notes editor in P1.</p></div>;
+
+const NotesPane = () => {
+  const { t } = useT();
+  return <div data-testid="adr-notes-pane"><p className="adr-empty">{t('crm.account_detail.notes_placeholder')}</p></div>;
+};
+
 const FollowUpsPane = ({
   accountId
 }) => {
+  const { t } = useT();
   const [items, setItems] = useState([]);
   useEffect(() => {
     api.get(`/api/relationships/accounts/${accountId}/actions`).then(r => setItems(r.data?.actions || [])).catch(() => setItems([]));
   }, [accountId]);
   return <div data-testid="adr-followups-pane">
-      {items.length === 0 && <p className="adr-empty">Nessun follow-up programmato.</p>}
+      {items.length === 0 && <p className="adr-empty">{t('crm.account_detail.nessun_followup_programmato')}</p>}
       {items.map(a => <div key={a.id} className="adr-card">
           <p className="adr-card__title">{a.title}</p>
           <p className="adr-card__meta">{a.action_type} · {a.due_date ? new Date(a.due_date).toLocaleDateString('it-IT') : '—'} · status {a.status}</p>
         </div>)}
     </div>;
 };
+
 const StylePane = ({
   accountId
 }) => {
@@ -319,9 +320,9 @@ const StylePane = ({
   return <div data-testid="adr-style-pane">
       {!style && <p className="adr-empty">{t('crm.account_detail.style_dna_non_ancora_compilato_per_questo_account')}</p>}
       {style && <>
-          <Field label="Atmosphere" value={(style.atmosphere_tags || []).join(' · ')} />
-          <Field label="Materials" value={(style.preferred_materials || []).join(' · ')} />
-          <Field label="Budget range" value={style.budget_range} mono />
+          <Field label={t('crm.account_detail.field.atmosphere')} value={(style.atmosphere_tags || []).join(' · ')} />
+          <Field label={t('crm.account_detail.field.materials')} value={(style.preferred_materials || []).join(' · ')} />
+          <Field label={t('crm.account_detail.field.budget_range')} value={style.budget_range} mono />
         </>}
     </div>;
 };
@@ -369,7 +370,7 @@ const AccountDetailDrawer = ({
             borderColor: pal.border
           }} aria-hidden>{initialsOf(displayName)}</span>
             <div className="adr__head-text">
-              <p className="adr__eyebrow">CRM · Account</p>
+              <p className="adr__eyebrow">{t('crm.account_detail.eyebrow')}</p>
               <h2 className="adr__title">{displayName}</h2>
               <p className="adr__sub">{full?.account_type || account.account_type || '—'}</p>
             </div>
@@ -382,7 +383,7 @@ const AccountDetailDrawer = ({
         {/* Quick facts row — sempre visibile */}
         <div className="adr__facts" data-testid="adr-quick-facts">
           <div className="adr__fact">
-            <span className="adr__fact-lbl">Stage</span>
+            <span className="adr__fact-lbl">{t('crm.account_detail.fact_stage')}</span>
             <span className="adr__fact-val">
               <span className="adr__stage-pill" style={{
               borderColor: stageCol
@@ -395,33 +396,33 @@ const AccountDetailDrawer = ({
             </span>
           </div>
           <div className="adr__fact">
-            <span className="adr__fact-lbl">Owner</span>
-            <span className="adr__fact-val">{owner || <em className="adr-empty">non assegnato</em>}</span>
+            <span className="adr__fact-lbl">{t('crm.account_detail.fact_owner')}</span>
+            <span className="adr__fact-val">{owner || <em className="adr-empty">{t('crm.account_detail.non_assegnato')}</em>}</span>
           </div>
           <div className="adr__fact">
-            <span className="adr__fact-lbl">Ultima attività</span>
+            <span className="adr__fact-lbl">{t('crm.account_detail.fact_last_activity')}</span>
             <span className="adr__fact-val">{relativeTime(lastAct)}</span>
           </div>
           <div className="adr__fact">
-            <span className="adr__fact-lbl">Next step</span>
+            <span className="adr__fact-lbl">{t('crm.account_detail.fact_next_step')}</span>
             <span className="adr__fact-val">
               {openCount > 0 ? <button type="button" className="adr__fact-action" data-testid="adr-jump-followups" onClick={() => setTab('followups')}>
                   {openCount} follow-up{openCount === 1 ? '' : ''} {nextDue ? `· ${new Date(nextDue).toLocaleDateString('it-IT', {
                 day: '2-digit',
                 month: 'short'
               })}` : ''}
-                </button> : <em className="adr-empty">nessun follow-up</em>}
+                </button> : <em className="adr-empty">{t('crm.account_detail.nessun_followup')}</em>}
             </span>
           </div>
         </div>
 
         <nav className="adr__tabs" role="tablist">
-          {TABS.map(t => {
-          const Icon = t.icon;
-          const active = tab === t.id;
-          return <button key={t.id} role="tab" aria-selected={active} onClick={() => setTab(t.id)} data-testid={`adr-tab-${t.id}`} className={`adr__tab ${active ? 'is-active' : ''}`}>
+          {TABS.map(tabDef => {
+          const Icon = tabDef.icon;
+          const active = tab === tabDef.id;
+          return <button key={tabDef.id} role="tab" aria-selected={active} onClick={() => setTab(tabDef.id)} data-testid={`adr-tab-${tabDef.id}`} className={`adr__tab ${active ? 'is-active' : ''}`}>
                 <Icon size={11} strokeWidth={1.6} />
-                <span>{t.label}</span>
+                <span>{t('crm.account_detail.tab.' + tabDef.id)}</span>
               </button>;
         })}
         </nav>
