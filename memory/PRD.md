@@ -327,7 +327,7 @@ See `/app/memory/test_credentials.md`. Default super_admin:
   - D4: Roadmap P0/P1/P2/P3
 - **P0-A** ⬜ Decisione motore canonico (documento di policy)
 - **P0-B** ⬜ Identificazione 13 missing key via GovernanceOverlay
-- **P0-C** ⬜ Fix `EditorialOverridesProvider` locale prop (1 riga in App.js)
+- **P0-C** ✅ Fix `EditorialOverridesProvider` locale-aware (10 Jun 2026) — usa `useLocaleRuntime()` per derivare locale, deps `[localeCode, localeProp]`; 6/6 scenari PASS; EN users ora vedono override EN ("Begin your journey") invece di IT ("Inizia il tuo viaggio")
 - **P1-B** ⬜ Fix `setLocaleInternal` opts.silent (3 righe)
 - **P1-C** ⬜ Persistenza mfd_locale da LocaleRuntime path (2 righe)
 - **P1-D** ⬜ 24 chiavi JSON de-sync IT/EN rimanenti
