@@ -152,3 +152,20 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - 111+ file con stringhe hardcodate (admin/storefront UI) — deferred P2 per decisione utente.
 
 ### Next: DJ-MACRO-001 · Design Journey Macro Steps (sbloccato)
+
+
+---
+## Sessione corrente — Fix eseguiti
+
+### RESET-FIX (completato)
+- `onReset()` in `LanguagesPage.jsx` ora chiama `bootstrapLanguagesFromDB()` invece di `setRegistry(LANGUAGE_REGISTRY)` statico
+- `LANGUAGE_REGISTRY` rimosso dall'import di `LanguagesPage.jsx`
+- Aggiunto stato `resetting` + button `disabled` durante il fetch
+- Comportamento post-fix: RESET → DB fetch → contatore esatto DB (7/7), niente ar/zh/ja
+
+### LANGUAGES-ROUTE-MIGRATION (completato)
+- `/admin/languages` → `/settings/languages` spostato dentro `DashboardLayout` con `SuperAdminRoute`
+- Vecchio URL `/admin/languages` mantiene un `<Navigate replace>` verso `/settings/languages`
+- Aggiornati: `SettingsPage.jsx` (tile link), `BlueprintGovernancePages.jsx` (AdminIndexEntry link)
+- Test: 7/7 PASS — sidebar presente, redirect funzionante, contatore 7/7 da DB
+
