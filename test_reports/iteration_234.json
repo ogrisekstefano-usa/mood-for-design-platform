@@ -1,0 +1,88 @@
+{
+  "summary": "P0-C Fix verification: EditorialOverridesProvider locale-aware fix tested. All 4 scenarios PASS. The provider now correctly loads locale-specific CMS overrides (IT for IT_IT users, EN for EN_US users) instead of hardcoded 'it' overrides. Locale switcher IT→EN correctly triggers re-fetch of EN overrides. No regressions found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "CRM page - nav.client_relations_accounts key",
+        "issue": "PRE-EXISTING: CRM page shows literal key token 'nav.client_relations_accounts' as heading - missing i18n key, not related to P0-C fix",
+        "selector": "h1, h2",
+        "priority": "LOW (pre-existing)"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "scenario_a_IT_locale": {
+      "result": "PASS",
+      "description": "IT user (admin@moodfordesign.com) → locale resolves to IT_IT. Backend API /api/editorial-copy/runtime?locale=it returns 3 IT overrides including nav.new_journey='Inizia il tuo viaggio'",
+      "api_verified": true
+    },
+    "scenario_b_EN_locale": {
+      "result": "PASS",
+      "description": "After switching to EN_US via locale-switcher: 'Inizia il tuo viaggio' NOT visible in UI. Backend API /api/editorial-copy/runtime?locale=en returns 3 EN overrides including nav.new_journey='Begin your journey'",
+      "it_override_shown_in_en_mode": false,
+      "en_override_available": true
+    },
+    "scenario_c_locale_switch": {
+      "result": "PASS",
+      "description": "Locale switcher IT→EN works. After clicking 'English (US)', the locale switcher shows 'EN', debug overlay still shows runtime 3 (EN overrides loaded). The effect dependency [localeCode, localeProp] triggers re-fetch correctly.",
+      "locale_switcher_functional": true
+    },
+    "regressione_IT_overrides": {
+      "result": "PASS",
+      "description": "IT overrides correctly loaded on initial login (IT_IT locale). nav.new_journey='Inizia il tuo viaggio' confirmed via API. No IT regression.",
+      "api_response": {"nav.new_journey": "Inizia il tuo viaggio", "atelier.dashboard.kpi.active_journeys": "Design Journey™ attivi"}
+    },
+    "regressione_governance_overlay": {
+      "result": "PASS",
+      "description": "Debug overlay shows 'EDITORIAL · DEBUG runtime 3 · missing 25' (IT) and 'runtime 3 · missing 2' (EN on CRM page). No new errors introduced by the fix. Missing keys are all pre-existing.",
+      "new_errors": false
+    },
+    "regressione_login_dashboard_crm": {
+      "result": "PASS",
+      "description": "Login works, Dashboard loads, CRM page loads (navigated to /crm in EN mode). App functional after P0-C fix."
+    }
+  },
+  "api_verification": {
+    "locale_it": {
+      "endpoint": "/api/editorial-copy/runtime?locale=it",
+      "response": {
+        "nav.new_journey": "Inizia il tuo viaggio",
+        "atelier.dashboard.kpi.active_journeys": "Design Journey™ attivi",
+        "atelier.dashboard.hero.summary_template": "{active} Design Journey™ in respiro · {voices} voci ricevute oggi"
+      },
+      "count": 3
+    },
+    "locale_en": {
+      "endpoint": "/api/editorial-copy/runtime?locale=en",
+      "response": {
+        "nav.new_journey": "Begin your journey",
+        "atelier.dashboard.kpi.active_journeys": "Active Design Journeys™",
+        "atelier.dashboard.hero.summary_template": "{active} Design Journey™ alive · {voices} voices received today"
+      },
+      "count": 3
+    }
+  },
+  "test_report_links": ["/app/test_reports/iteration_234.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EditorialOverridesProvider P0-C fix is correctly implemented: useLocaleRuntime() used to derive localeCode, base language derived as localeCode.split('_')[0].toLowerCase(), deps array [localeCode, localeProp] correctly triggers re-fetch on locale change",
+    "OBSERVATION: Dashboard content still shows Italian ('Buonasera, Stefano', 'LO STUDIO · OGGI') after EN switch - this is because dashboard uses static i18n JSON keys (not CMS overrides). This is expected behavior for static strings vs. CMS runtime overrides",
+    "PRE-EXISTING: CRM page shows literal 'nav.client_relations_accounts' token - missing i18n key unrelated to P0-C"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "100% - All P0-C scenarios pass"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "P0-C fix in EditorialOverridesProvider.jsx VERIFIED COMPLETE. Fix correctly: 1) Uses useLocaleRuntime() to get localeCode 2) Derives base lang (IT_IT→'it', EN_US→'en') 3) Calls /api/editorial-copy/runtime?locale=<correct_lang> 4) Re-fetches on locale switch via deps [localeCode, localeProp]. Pre-existing issues: 'nav.client_relations_accounts' token visible on CRM page (missing key). Dashboard shows Italian static strings in EN mode (separate issue, not CMS overrides).",
+  "rca_of_issue": "PRE-FIX: EditorialOverridesProvider used hardcoded 'it' as default locale for the API call, meaning EN/FR/DE users always loaded Italian CMS overrides (e.g., nav.new_journey='Inizia il tuo viaggio' shown to EN users). POST-FIX: Provider reads localeCode from LocaleRuntimeContext (e.g., 'EN_US'), splits on '_', lowercases to get 'en', calls /api/editorial-copy/runtime?locale=en which returns correct EN overrides. The useEffect deps include [localeCode, localeProp] so switching locale re-triggers the fetch. Fix is minimal (1 file) and correct."
+}
