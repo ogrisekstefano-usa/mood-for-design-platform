@@ -19,10 +19,15 @@ const DEFAULT_LOCALE = getDefaultLocale();
 
 // FALLBACK_LOCALES is now sourced from the GLOBAL LANGUAGE REGISTRY.
 // Public site & Blueprint both read from /site/content/languages.js.
-function getFallbackLocales() {
-  return blueprintLanguages().map((l) => ({ code: l.code, label: l.name, native: l.native_name }));
+// NOTE (I18N-STABILIZATION-P0): do NOT freeze as a module-level const —
+// the registry may still be loading from DB cache at import time.
+// availableLocales state is initialised lazily inside the Provider instead.
+function mapToLocaleShape(l) {
+  return { code: l.code, label: l.name, native: l.native_name };
 }
-const FALLBACK_LOCALES = getFallbackLocales();
+function getBlueprintLocales() {
+  return blueprintLanguages().map(mapToLocaleShape);
+}
 
 function detectInitialLocale() {
   const stored = localStorage.getItem(LOCALE_KEY);
@@ -218,16 +223,14 @@ export const BlueprintProvider = ({ children }) => {
   const [impersonating, setImpersonating] = useState(() => sessionStorage.getItem(IMPERSONATE_KEY));
   const [locale, setLocaleState] = useState(detectInitialLocale());
   const [messages, setMessages] = useState({});
-  const [availableLocales, setAvailableLocales] = useState(FALLBACK_LOCALES);
+  const [availableLocales, setAvailableLocales] = useState(() => getBlueprintLocales());
   const [loading, setLoading] = useState(true);
 
-  // Single source of truth for available locales = local registry (shared with public site).
-  // Listen to runtime registry changes (toggles in /settings/languages) so Blueprint
-  // switcher reflects them instantly without a page reload.
+  // Single source of truth for available locales = DB-driven registry.
+  // Listen to runtime registry changes (from bootstrapLanguagesFromDB())
+  // so Blueprint switcher reflects them instantly without a page reload.
   useEffect(() => {
-    const refresh = () => setAvailableLocales(
-      blueprintLanguages().map((l) => ({ code: l.code, label: l.name, native: l.native_name }))
-    );
+    const refresh = () => setAvailableLocales(getBlueprintLocales());
     refresh();
     window.addEventListener('mfd:languages:change', refresh);
     return () => window.removeEventListener('mfd:languages:change', refresh);

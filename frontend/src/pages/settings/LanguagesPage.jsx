@@ -6,9 +6,8 @@
  *   • Blueprint authenticated app
  *   • future CMS, AI translation, tenant overrides
  *
- * Currently writes overrides to localStorage (`mfd_language_registry_override`)
- * which immediately propagates via `mfd:languages:change` event. Future:
- * persist to backend table `platform_languages`.
+ * Persists changes to the DB table `platform_languages` and propagates
+ * via bootstrapLanguagesFromDB() → _dbMirror → mfd:languages:change event.
  */
 import React, { useState } from 'react';
 import { ArrowLeft, Globe, Save, RotateCcw } from 'lucide-react';
@@ -17,7 +16,6 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   LANGUAGE_REGISTRY,
   getLanguageRegistry,
-  setLanguageRegistry,
   BLUEPRINT_OPERATIONAL_CODES,
   isBlueprintOperational,
 } from '../../site/content/languages';
@@ -130,13 +128,9 @@ const LanguagesPage = () => {
       const { bootstrapLanguagesFromDB } = await import('../../site/content/languages');
       const fresh = await bootstrapLanguagesFromDB();
       if (fresh && fresh.length) setRegistry(fresh);
-      // Notify mirror listeners
-      try {
-        window.dispatchEvent(new CustomEvent('mfd:languages:change',
-          { detail: { source: 'admin_save', registry: fresh } }));
-      } catch (_) {}
-      // Also write to legacy override key for back-compat
-      setLanguageRegistry(fresh);
+      // bootstrapLanguagesFromDB() already dispatches mfd:languages:change and
+      // writes the DB cache — no further notification needed.
+      // NOTE: setLanguageRegistry() is NOT called here (DEPRECATED no-op — was root cause of override bug).
       setDirty(false);
     } catch (err) {
       console.error('[LanguagesPage] save failed', err);
@@ -147,8 +141,9 @@ const LanguagesPage = () => {
   };
 
   const onReset = () => {
+    // Reset UI state to static registry defaults (admin preview only).
+    // Does NOT persist to DB — use Save to persist.
     setRegistry(LANGUAGE_REGISTRY);
-    setLanguageRegistry(LANGUAGE_REGISTRY);
     setDirty(false);
   };
 

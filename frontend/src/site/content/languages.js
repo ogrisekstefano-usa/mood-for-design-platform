@@ -31,51 +31,49 @@
  */
 
 /**
- * BLUEPRINT_OPERATIONAL_CODES — HARDENING-I18N · 21 Mag 2026.
+ * BLUEPRINT_OPERATIONAL_CODES — I18N-STABILIZATION-P0.
  *
  * The Blueprint Command Center™ admin UI is LOCKED to exactly 6 operational
- * languages. This whitelist is enforced by `blueprintLanguages()` regardless
- * of what an admin (or a localStorage override) sets `blueprint_enabled` to.
+ * languages. This whitelist uses full BCP-47 codes as canonical form.
  *
  * Public site, Client Companion, onboarding, and AI translation pipelines
  * remain free to use the full Global Language Registry below (e.g. ar, zh, ja).
- *
- * Mapping: user spec → registry codes (we keep canonical short forms already
- * in use across the codebase):
- *   it-IT  → 'it'
- *   en-US  → 'en-US'
- *   en-GB  → 'en-GB'
- *   fr-FR  → 'fr'
- *   de-DE  → 'de'
- *   es-ES  → 'es'
- *   es-MX  → 'es-MX'  ← P0-B I18N-RECOVERY-001
  */
 export const BLUEPRINT_OPERATIONAL_CODES = Object.freeze([
-  'it', 'en-US', 'en-GB', 'fr', 'de', 'es',
+  'it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES',
 ]);
 
-/** True if a language code is one of the 6 Blueprint operational languages. */
-export const isBlueprintOperational = (code) =>
-  BLUEPRINT_OPERATIONAL_CODES.includes(code);
+/**
+ * True if a language code is one of the 6 Blueprint operational languages.
+ * Accepts both full BCP-47 ('it-IT') and legacy short forms ('it') so that
+ * old localStorage values and any DB rows with short codes remain compatible.
+ */
+export const isBlueprintOperational = (code) => {
+  if (!code) return false;
+  if (BLUEPRINT_OPERATIONAL_CODES.includes(code)) return true;
+  // backward compat: 'it' matches 'it-IT', 'fr' matches 'fr-FR', etc.
+  const base = String(code).split('-')[0].toLowerCase();
+  return BLUEPRINT_OPERATIONAL_CODES.some((c) => c.split('-')[0].toLowerCase() === base);
+};
 
 /** @type {LanguageEntry[]} */
 export const LANGUAGE_REGISTRY = [
-  { code: 'it',    region: 'IT', dial_code: '+39',  name: 'Italian',         native_name: 'Italiano',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: true,  rtl: false, fallback_locale: 'en-US', sort_order: 10, ai_translation_enabled: true,  short: 'IT',    base: 'it' },
-  { code: 'en-US', region: 'US', dial_code: '+1',   name: 'English (US)',    native_name: 'English (US)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 20, ai_translation_enabled: true,  short: 'EN-US', base: 'en' },
-  { code: 'en-GB', region: 'GB', dial_code: '+44',  name: 'English (UK)',    native_name: 'English (UK)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 30, ai_translation_enabled: true,  short: 'EN-UK', base: 'en' },
-  { code: 'fr',    region: 'FR', dial_code: '+33',  name: 'French',          native_name: 'Français',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 40, ai_translation_enabled: true,  short: 'FR',    base: 'fr' },
-  { code: 'de',    region: 'DE', dial_code: '+49',  name: 'German',          native_name: 'Deutsch',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 50, ai_translation_enabled: true,  short: 'DE',    base: 'de' },
-  { code: 'es',    region: 'ES', dial_code: '+34',  name: 'Spanish (Spain)', native_name: 'Español (ES)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 60, ai_translation_enabled: true,  short: 'ES',    base: 'es' },
-  { code: 'es-MX', region: 'MX', dial_code: '+52',  name: 'Spanish (Mexico)',native_name: 'Español (MX)',  enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'es',    sort_order: 65, ai_translation_enabled: true,  short: 'ES-MX', base: 'es' },
-  // Non-operational languages: visible/usable on public site + Client Companion ONLY.
-  // `blueprint_enabled` is forced to false at registry level; admin UI cannot flip
-  // it (toggle is locked — see LanguagesPage.jsx + blueprintLanguages() whitelist).
-  { code: 'ar',    region: 'AE', dial_code: '+971', name: 'Arabic (UAE)',    native_name: 'العربية',        enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: true,  fallback_locale: 'en-US', sort_order: 70, ai_translation_enabled: true,  short: 'AE',    base: 'ar' },
-  { code: 'zh',    region: 'CN', dial_code: '+86',  name: 'Chinese (Simpl.)',native_name: '中文',           enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 80, ai_translation_enabled: true,  short: 'ZH',    base: 'zh' },
-  { code: 'ja',    region: 'JP', dial_code: '+81',  name: 'Japanese',        native_name: '日本語',         enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 90, ai_translation_enabled: true,  short: 'JA',    base: 'ja' },
+  { code: 'it-IT',  region: 'IT', dial_code: '+39',  name: 'Italian',          native_name: 'Italiano',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: true,  rtl: false, fallback_locale: 'en-US', sort_order: 10, ai_translation_enabled: true,  short: 'IT',    base: 'it' },
+  { code: 'en-US',  region: 'US', dial_code: '+1',   name: 'English (US)',     native_name: 'English (US)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 20, ai_translation_enabled: true,  short: 'EN-US', base: 'en' },
+  { code: 'en-GB',  region: 'GB', dial_code: '+44',  name: 'English (UK)',     native_name: 'English (UK)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 30, ai_translation_enabled: true,  short: 'EN-UK', base: 'en' },
+  { code: 'fr-FR',  region: 'FR', dial_code: '+33',  name: 'French',           native_name: 'Français',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 40, ai_translation_enabled: true,  short: 'FR',    base: 'fr' },
+  { code: 'de-DE',  region: 'DE', dial_code: '+49',  name: 'German',           native_name: 'Deutsch',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 50, ai_translation_enabled: true,  short: 'DE',    base: 'de' },
+  { code: 'es-ES',  region: 'ES', dial_code: '+34',  name: 'Spanish (Spain)',  native_name: 'Español (ES)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 60, ai_translation_enabled: true,  short: 'ES',    base: 'es' },
+  { code: 'es-MX',  region: 'MX', dial_code: '+52',  name: 'Spanish (Mexico)', native_name: 'Español (MX)',  enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'es-ES', sort_order: 65, ai_translation_enabled: true,  short: 'ES-MX', base: 'es' },
+  // Non-operational: public site + Client Companion ONLY.
+  { code: 'ar',     region: 'AE', dial_code: '+971', name: 'Arabic (UAE)',     native_name: 'العربية',        enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: true,  fallback_locale: 'en-US', sort_order: 70, ai_translation_enabled: true,  short: 'AE',    base: 'ar' },
+  { code: 'zh',     region: 'CN', dial_code: '+86',  name: 'Chinese (Simpl.)', native_name: '中文',           enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 80, ai_translation_enabled: true,  short: 'ZH',    base: 'zh' },
+  { code: 'ja',     region: 'JP', dial_code: '+81',  name: 'Japanese',         native_name: '日本語',         enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 90, ai_translation_enabled: true,  short: 'JA',    base: 'ja' },
 ];
 
-const RUNTIME_OVERRIDE_KEY = 'mfd_language_registry_override';
+// I18N-STABILIZATION-P0: RUNTIME_OVERRIDE_KEY is removed.
+// The only admitted runtime source of truth is the DB (via _dbMirror / DB cache).
+// mfd_language_registry_override was the root cause of the "7/9 on refresh" bug.
 const DB_CACHE_KEY = 'mfd_language_registry_db_cache_v1';
 
 // In-memory mirror populated by `bootstrapLanguagesFromDB()`. Until that
@@ -83,14 +81,8 @@ const DB_CACHE_KEY = 'mfd_language_registry_db_cache_v1';
 // (prevents flash of empty switcher on first render).
 let _dbMirror = null;
 
-// SuperAdmin/tenant override — when set, replaces the static registry at runtime.
-function readOverride() {
-  try {
-    const raw = localStorage.getItem(RUNTIME_OVERRIDE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return null;
-}
+// SuperAdmin/tenant override — REMOVED (I18N-STABILIZATION-P0).
+// setLanguageRegistry() is now a DEPRECATED no-op. Do not use for runtime state.
 
 /** Read a previously-cached DB snapshot (localStorage). Survives reloads. */
 function readDbCache() {
@@ -159,6 +151,12 @@ export async function bootstrapLanguagesFromDB(apiBase = null) {
   }
 }
 
+// I18N-STABILIZATION-P0 — one-shot cleanup of the legacy override key.
+// This key was the root cause of the "7/9 languages on refresh" bug.
+// Removing it unconditionally at module load time ensures no stale override
+// can corrupt getLanguageRegistry() before the first DB fetch completes.
+try { localStorage.removeItem('mfd_language_registry_override'); } catch (_) {}
+
 // Eagerly try the cached DB snapshot at module import time so the first
 // synchronous getLanguageRegistry() call returns the freshest data.
 try {
@@ -167,18 +165,29 @@ try {
 } catch (_) {}
 
 export function getLanguageRegistry() {
-  // Priority: explicit override (localStorage) > DB mirror > static fallback
-  const override = readOverride();
-  if (Array.isArray(override) && override.length > 0) return override;
+  // I18N-STABILIZATION-P0: single source of truth hierarchy.
+  // Priority: DB mirror (in-memory) → DB cache (localStorage) → static fallback.
+  // localStorage.mfd_language_registry_override is REMOVED from this chain.
   if (Array.isArray(_dbMirror) && _dbMirror.length > 0) return _dbMirror;
+  const cached = readDbCache();
+  if (Array.isArray(cached) && cached.length > 0) return cached;
   return LANGUAGE_REGISTRY;
 }
 
-export function setLanguageRegistry(next) {
-  try {
-    localStorage.setItem(RUNTIME_OVERRIDE_KEY, JSON.stringify(next));
-    window.dispatchEvent(new CustomEvent('mfd:languages:change', { detail: { registry: next } }));
-  } catch (_) {}
+/**
+ * @deprecated I18N-STABILIZATION-P0 — do not use for runtime language state.
+ * Writing to localStorage.mfd_language_registry_override was the root cause
+ * of the "7/9 languages on refresh" race condition bug.
+ * After a LanguagesPage save, state propagates via bootstrapLanguagesFromDB()
+ * → _dbMirror → mfd:languages:change event. No override key needed.
+ */
+export function setLanguageRegistry(_next) {
+  // DEPRECATED no-op — preserved only to avoid a runtime crash on any
+  // residual call site that has not yet been migrated.
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    console.warn('[I18N] setLanguageRegistry() is DEPRECATED and is now a no-op. Remove call site.');
+  }
 }
 
 export function getDefaultLocale() {
@@ -199,11 +208,9 @@ export const blueprintLanguages = () => {
   return reg
     .filter((l) => {
       if (!l.enabled || !l.blueprint_enabled) return false;
-      // Base-code matching: 'it-IT' must match operational code 'it'.
-      // DB may store 'it-IT' while BLUEPRINT_OPERATIONAL_CODES has 'it'.
-      return BLUEPRINT_OPERATIONAL_CODES.some(
-        (c) => l.code === c || l.code === `${c}-${l.region}` || l.code.startsWith(c + '-')
-      );
+      // Direct match on full BCP-47 code (I18N-STABILIZATION-P0).
+      // isBlueprintOperational handles both 'it-IT' and legacy 'it' for compat.
+      return isBlueprintOperational(l.code);
     })
     .sort((a, b) => a.sort_order - b.sort_order);
 };

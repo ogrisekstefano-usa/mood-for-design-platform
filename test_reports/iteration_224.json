@@ -1,0 +1,50 @@
+{
+  "summary": "I18N-STABILIZATION-P0 full verification. All 8 test cases PASS. LocaleSwitcher now shows exactly 2 options (IT + EN-US) from DB. Override key is absent at boot and after save. Locale persists on refresh. LanguagesPage shows 2/2 DB languages and Save does not create override. No runtime crashes.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "test_results": {
+    "TEST-I18N-01": "PASS - After reload, LocaleSwitcher still shows exactly 2 options (not 7/9). No race condition.",
+    "TEST-I18N-02": "PASS - LocaleSwitcher shows exactly 2 options: Italiano (IT) and English (US). Both have blueprint_enabled=true in DB.",
+    "TEST-I18N-03": "PASS - IT/Italiano is always visible in LocaleSwitcher, present before and after reload.",
+    "TEST-I18N-04": "PASS - After switching IT→EN-US, localStorage.mfd_locale='en-US' persists after page reload. LocaleSwitcher shows EN after reload.",
+    "TEST-I18N-05": "PASS - localStorage.mfd_language_registry_override is null/absent on load and after reload. One-shot cleanup works.",
+    "TEST-I18N-06": "PASS - LanguagesPage (/admin/languages) shows 2 DB languages (it-IT, en-US) with toggle controls. Blueprint operational codes shown: it-IT, en-US, en-GB, fr-FR, de-DE, es-ES. Counter shows '2/2 Lingue attive'.",
+    "TEST-I18N-07": "PASS - After clicking Save (Salva), localStorage.mfd_language_registry_override remains null. setLanguageRegistry() is a DEPRECATED no-op.",
+    "TEST-I18N-08": "PASS - App loads without crashes. No React error overlays. Dashboard and LanguagesPage render correctly."
+  },
+
+  "key_findings": [
+    "BLUEPRINT_OPERATIONAL_CODES updated to full BCP-47 codes: ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES'] — fixes the core bug from iter223 where 'it-IT' was not matched against 'it'",
+    "isBlueprintOperational() has both exact BCP-47 match AND base-code fallback for backward compat",
+    "getLanguageRegistry() now follows: _dbMirror → DB cache → LANGUAGE_REGISTRY (no override chain)",
+    "DB cache (mfd_language_registry_db_cache_v1) has 2 entries: ['it-IT', 'en-US'] — matches expected DB state",
+    "One-shot cleanup at languages.js:158 removes mfd_language_registry_override on module load"
+  ],
+
+  "test_report_links": ["/app/test_reports/iteration_224.json"],
+
+  "action_items": [],
+
+  "updated_files": [],
+
+  "success_rate": {
+    "backend": "N/A (frontend only)",
+    "frontend": "100% (8/8 tests pass)"
+  },
+
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+
+  "retest_needed": false,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "I18N-STABILIZATION-P0 is fully working. LocaleSwitcher shows 2 options (IT+EN-US). Override key is always absent. All 8 i18n stabilization tests pass. Previous bug (iter223: LocaleSwitcher showing only 1 locale EN-US) is fixed by updating BLUEPRINT_OPERATIONAL_CODES to full BCP-47 codes."
+}

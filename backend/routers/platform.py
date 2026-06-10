@@ -163,8 +163,14 @@ class LanguagePatch(BaseModel):
     base_code:              Optional[str]  = None
 
 
-# Blueprint operational whitelist (hard-coded canon; mirrors languages.js)
-BLUEPRINT_OPERATIONAL_CODES = frozenset({"it", "en-US", "en-GB", "fr", "de", "es"})
+# Blueprint operational whitelist (hard-coded canon; mirrors languages.js).
+# Uses full BCP-47 codes as canonical form (I18N-STABILIZATION-P0).
+# Short forms kept for backward compat during any transition window.
+BLUEPRINT_OPERATIONAL_CODES = frozenset({
+    "it-IT", "en-US", "en-GB", "fr-FR", "de-DE", "es-ES",
+    # backward-compat short forms (DB may still carry them during migration)
+    "it", "fr", "de", "es",
+})
 
 
 def _require_super_admin(current_user: dict = Depends(get_current_user)) -> dict:
