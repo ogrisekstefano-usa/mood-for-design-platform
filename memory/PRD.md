@@ -198,6 +198,26 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Migrazione: sostituire `${m.id}` con `${m.journey_id}/milestones/${m.id}` nei 2 URL — `m.journey_id` già disponibile
 - SPRINT 1 approvazione richiesta prima dell'implementazione
 
+### DJ-STABILIZATION SPRINT 1 — Milestone Ownership Consolidation (completato — 2026-06-10)
+**FASE A** — Router B (`journeys.py`) espanso:
+- `PATCH /{jid}/milestones/{mid}` — full field update: status + title + description + owner_user_id + linked_entity + metadata merge + entity_refs (KE-005B) + auto-advance current_milestone_id + certified_closure auto-close
+- `POST /{jid}/milestones/{mid}/open` — CTA resolver migrato da Router A
+- `STATUS_NARRATIVE` dict aggiunto; `_ke_hooks` importato
+**FASE B** — Frontend migrato:
+- `DesignJourneyTab.jsx:364+375`: URL aggiornati a `/${m.journey_id}/milestones/${m.id}`
+**FASE C** — Soft-deprecation Router A:
+- `PATCH /journeys/milestones/{mid}` → ancora funzionante + `logger.warning("DEPRECATED …")`
+- `POST /journeys/milestones/{mid}/open` → ancora funzionante + `logger.warning("DEPRECATED …")`
+**Rischio residuo documentato**: `event_canon` è NULL per nuovi eventi milestone (DB constraint `journey_timeline_events_canon_chk` permette solo NULL/brief_started/journey_created — estendere in futuro migration script)
+**Test**: 8/8 PASS (8 backend curl + code review frontend)
+
+**Piano di rimozione definitivo Router A:**
+1. Monitorare log `DEPRECATED endpoint called` per 1 sprint (zero chiamate = safe)
+2. Verificare che nessun altro client chiami i vecchi URL (via log search)
+3. Rimuovere `PATCH /journeys/milestones/{mid}` e `POST /journeys/milestones/{mid}/open` da `design_journey.py`
+
+
+
 
 
 
