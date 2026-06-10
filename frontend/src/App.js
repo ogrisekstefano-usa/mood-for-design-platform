@@ -717,6 +717,7 @@ function App() {
                   <Route path="/settings/plan" element={<StudioAdminRoute><PlanPage /></StudioAdminRoute>} />
                   <Route path="/settings/team" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
                   <Route path="/settings/members" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
+                  <Route path="/settings/languages" element={<SuperAdminRoute><LanguagesPage /></SuperAdminRoute>} />
 
                   {/* Editorial Review — variant approval inbox (P0.2.D hardening). */}
                   <Route path="/editorial/inbox" element={<StudioAdminRoute><VariantApprovalInboxPage /></StudioAdminRoute>} />
@@ -899,11 +900,8 @@ function App() {
                 <Route path="/superadmin/modules" element={<Navigate to="/admin/modules" replace />} />
                 <Route path="/superadmin/audit" element={<Navigate to="/admin/audit" replace />} />
                 <Route path="/superadmin/languages" element={<Navigate to="/admin/language-governance" replace />} />
-                {/* ITER147 · /admin/languages restored — full registry editor
-                    with per-locale toggles (enabled / public / blueprint /
-                    default_locale / RTL / ai_translation). The newer
-                    LanguageCommandCenter lives at /admin/language-governance. */}
-                <Route path="/admin/languages" element={<LanguagesPage />} />
+                {/* ITER147 · /admin/languages → moved inside DashboardLayout as /settings/languages */}
+                <Route path="/admin/languages" element={<Navigate to="/settings/languages" replace />} />
 
                 {/* ITER157.E · Pages Admin (Command Center) — full-screen,
                     OUTSIDE DashboardLayout, like a true CMS console. */}

@@ -170,7 +170,7 @@ const SettingsPage = () => {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {isSuper && (
-            <SettingsTile testid="tile-languages-registry" icon={Globe} to="/admin/languages"
+            <SettingsTile testid="tile-languages-registry" icon={Globe} to="/settings/languages"
               accent="core"
               title="Language Registry"
               description="Master locale switchboard — enable / disable per surface (public, Blueprint, AI translation) and pick the platform default."

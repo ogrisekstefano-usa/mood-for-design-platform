@@ -1,0 +1,31 @@
+{
+  "summary": "Tested LanguagesPage route migration from /admin/languages to /settings/languages inside DashboardLayout, plus RESET (REIMPOSTA) button DB behavior. All key scenarios PASS.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "sidebar_present_at_settings_languages": "PASS - data-testid='sidebar-nav' ASIDE element found, page renders inside DashboardLayout with full sidebar and navbar",
+    "admin_languages_redirect": "PASS - /admin/languages correctly redirects to /settings/languages",
+    "counter_shows_7_of_7": "PASS - Counter shows '7 / 7 Lingue attive' (DB data), NOT 8/10 from static LANGUAGE_REGISTRY",
+    "no_static_extras_ar_zh_ja": "PASS - Only 7 languages shown (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES, es-MX), no ar/zh/ja",
+    "reimposta_button_present": "PASS - REIMPOSTA button found and functional",
+    "settings_tile_to_settings_languages": "PASS - Settings page contains link to /settings/languages",
+    "reset_restores_7_7": "PASS - After REIMPOSTA click, counter remains 7/7 from DB"
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Toggles in the language table do not use standard role='switch' attribute - they are custom CSS toggle buttons. This is cosmetic/a11y concern but functional."
+  ],
+  "updated_files": [],
+  "success_rate": {"frontend": "100%"},
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "LanguagesPage is now at /settings/languages inside DashboardLayout with sidebar. /admin/languages redirects correctly. Counter shows 7/7 from DB. REIMPOSTA button works. Toggle elements are custom CSS (not role=switch). Login: admin@moodfordesign.com / Blueprint2024!"
+}

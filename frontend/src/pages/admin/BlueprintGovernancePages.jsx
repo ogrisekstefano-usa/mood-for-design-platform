@@ -760,7 +760,7 @@ export const AdminIndexPage = () => (
         testid="bp-admin-link-modules"
       />
       <AdminIndexEntry
-        to="/admin/languages"
+        to="/settings/languages"
         eyebrow="10"
         title="Lingue"
         sub="Registry pubblico + Blueprint operational"
