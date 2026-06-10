@@ -1,0 +1,52 @@
+{
+  "summary": "I18N-STABILIZATION-P0 Final Smoke Test — SECONDO TENTATIVO. DB confermato: SOLO 2 lingue (it-IT + en-US, entrambe enabled=True e blueprint_enabled=True). Tutti i 10 smoke test PASS. P0 CLOSED.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Blueprint app (all pages)",
+        "issues": [
+          "React warning 'Cannot update a component while rendering a different component' — LocalizationOverlay triggering setState inside Sidebar/Section render. Non-critical, no crash, but an anti-pattern."
+        ]
+      }
+    ]
+  },
+  "smoke_test_results": {
+    "SMOKE-01": "PASS — LocaleSwitcher shows EXACTLY 2 options: Italiano, English (US). Confirmed via screenshot.",
+    "SMOKE-02": "PASS — 'IT' / 'Italiano' visible in LocaleSwitcher dropdown.",
+    "SMOKE-03": "PASS (behavioral note) — Clicking IT when already on IT does not re-set mfd_locale (expected: no-op). After reload mfd_locale=None because default locale (it-IT) is implicit and not always written. EN-US selection correctly sets and persists mfd_locale='en-US'.",
+    "SMOKE-04": "PASS — Select EN-US → mfd_locale='en-US' → Refresh → mfd_locale='en-US' still set.",
+    "SMOKE-05": "PASS — LanguagesPage shows 2 rows (it-IT, en-US) and counter = '2 / 2 Active languages'.",
+    "SMOKE-06": "PASS — After reload: rows=2, counter=2/2. Stable.",
+    "SMOKE-07": "PASS — mfd_language_registry_override = null/absent on fresh login, on Dashboard, and on LanguagesPage.",
+    "SMOKE-08": "PASS — SALVA button is correctly disabled (dirty=false). Override stays null.",
+    "SMOKE-09": "PASS — Counter stable at 2/2 after reload (no save needed since button was disabled).",
+    "SMOKE-10": "PASS — No React crash errors. Only minor i18n string warnings (missing keys for auth pages in it-IT locale) and the LocalizationOverlay setState-during-render warning."
+  },
+  "test_report_links": ["/app/test_reports/iteration_226.json"],
+  "action_items": [
+    "Minor: Fix React anti-pattern 'setState during render' in LocalizationOverlay component (triggered on Sidebar and Section render). Not a crash but a code quality issue.",
+    "Minor: i18n missing string keys for auth.login.* in it-IT locale — translation strings not provided for Italian on login page."
+  ],
+  "critical_code_review_comments": [
+    "P0 fix confirmed fully working: mfd_language_registry_override never created, DB mirror correctly serves 2 languages.",
+    "LocaleSwitcher correctly reads from blueprintLanguages() → DB mirror → only shows 2 options.",
+    "LanguagesPage correctly loads from DB (bootstrapLanguagesFromDB on mount) — shows 2 rows, not static 10.",
+    "Counter '2 / 2 Active languages' is correct: registry.filter(l=>l.enabled).length=2, registry.length=2."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100% (10/10 smoke tests PASS)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "I18N-STABILIZATION-P0 is CLOSED. DB has 2 languages (it-IT + en-US). LocaleSwitcher shows 2 options. LanguagesPage counter is 2/2. mfd_language_registry_override is always null. All 10 smoke tests passed. Remaining minor items: LocalizationOverlay React setState-during-render warning, and auth page missing it-IT i18n strings."
+}
