@@ -256,11 +256,43 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 ---
 
+## I18N FASE 2 — AccountDetailDrawer · CrmAccountsPage · MembersPage · DesignJourneyTab (10 Jun 2026)
+
+**PRE-CHECK useBlueprint().t:** Sistema B — distinto. Superset che consulta dizionario backend prima di pickString. MembersPage **migrato da useBlueprint().t → useT() (i18n/useT.jsx)** come gli altri 3 file.
+
+**File modificati:** 4 componenti React + 2 JSON (it-IT.json + en-US.json)
+
+**Stringhe hardcoded eliminate:** ~130
+- AccountDetailDrawer: ~35 (10 field label, 4 tab label, 4 toast, 5 placeholder, 4 fact row, 5 empty state/chip, 3 pane messages)
+- CrmAccountsPage: ~20 (3 toast, 3 form label, 1 button, 6 table header, 3 chip/card, 4 pulse label, 6 health option)
+- MembersPage: ~60 (eyebrow, title, subtitle, seats, 2 CTA, 4 filter, placeholder, 4 th, loading, empty, you, 6 menu item, invite drawer ×6, edit drawer ×10, confirm ×6, toast ×14)
+- DesignJourneyTab: ~15 (3 eyebrow, focus label, workspace head, open btn, details eyebrow, 4 date label, loading, error, advisor, opened_suffix)
+
+**Nuove chiavi create:** 119 (27 crm_accounts + 74 members + 18 journey.tab) — aggiunte in entrambi i JSON
+
+**Chiavi riutilizzate:** `crm.account_detail.*` (50+, da precedente agent), `common.back`, `crm.crm_accounts.annulla`, `journey.tab.update_direction`/`.evolution`/`.story`/`.brief_editor_coming` ecc.
+
+**Coverage aggiornato:** debug overlay MembersPage = 0 missing. CRM pages = 13 pre-esistenti (stesso baseline FASE 1). FASE 2 aggiunge +0 chiavi mancanti a runtime.
+
+**Bug trovato/fixato in test:** AccountRow in CrmAccountsPage usava t() senza useT() → TypeError crash in table view. Fixato dal testing agent.
+
+### EDITORIAL_CONTENT_INVENTORY (FASE 2 — non convertire)
+
+| # | File | Stringa | Motivo esclusione |
+|---|------|---------|-------------------|
+| 1 | DesignJourneyTab | `progressNarrative` — 6 varianti ("Chiusura certificata · capitolo concluso", "Il viaggio è appena iniziato", "Direzione in avvio · {title}", "Tutte le pietre miliari sono state approvate", "{n} pietra/pietre miliare/miliari completate", "{n} pietre miliari completate · ora {title}") | Journey Absorption™ narrativa computata — copy editoriale |
+| 2 | DesignJourneyTab | InlinePanel `brief` sub-text: "Raccogli obiettivi, atmosfera desiderata, ambienti e timing. Il Brief è il seme da cui tutto il Design Journey™ prende forma." | Brand narrative del prodotto |
+| 3 | DesignJourneyTab | InlinePanel `site_evolution` sub-text: "Fotografie di avanzamento, prima/dopo, dettagli materiali, sopralluoghi — il progetto raccontato per immagini, in ordine cronologico." | Brand narrative del prodotto |
+| 4 | DesignJourneyTab | FocusPanel hero-text: "{milestone.title} si svolge in uno spazio dedicato. Aprilo per continuare la direzione progettuale." | Editorial product copy |
+| 5 | DesignJourneyTab | DetailsPanel hint: "Riscontri cliente e varianti compariranno qui nei prossimi capitoli." | "Capitoli" — linguaggio narrativo editoriale |
+
+---
+
 ## Backlog I18N
 
-- **P0 FASE 2** (prossima): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
-- **P1** Translation Management Layer Blueprint (DB schema + Context Menu UI)
-- **P2** Normalizzare le 27 editorial copy nel sistema i18n quando Translation Management Layer è pronto
+- **P0 FASE 2** ✅ COMPLETATA (10 Jun 2026): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
+- **P1** Translation Management Layer Blueprint (DB schema + Context Menu UI) — in attesa istruzione utente
+- **P2** Normalizzare le 27+5 editorial copy nel sistema i18n quando Translation Management Layer è pronto
 
 
 
