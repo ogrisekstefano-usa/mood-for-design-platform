@@ -505,7 +505,19 @@
     "workspace_switcher": "Workspace",
     "new_journey": "New Lead",
     "new_relationship": "New Lead",
-    "studio_library": "Studio Library"
+    "studio_library": "Studio Library",
+    "client_relations_accounts": "Accounts",
+    "client_relations_leads": "Leads",
+    "client_relations_prospects": "Prospects",
+    "client_relations_memory": "Memory",
+    "client_relations_voice_log": "Voice Log",
+    "journey_index": "Design Journey",
+    "new_lead": "New Lead",
+    "new_contact": "New Contact",
+    "settings_workspace": "Workspace Settings",
+    "runtime": {
+      "loading": "Loading module…"
+    }
   },
   "projects": {
     "tabs": {
@@ -2248,13 +2260,19 @@
         },
         "eyebrow": "Blueprint Dashboard · Project Rhythm",
         "summary_template": "{active} Journeys unfolding · {voices} voices received today",
-        "signature": "Let's shape beautiful spaces."
+        "signature": "Let's shape beautiful spaces.",
+        "eyebrow_v2": "Operational Dashboard",
+        "summary_template_v2": "{leads} Leads · {prospects} Prospects · {journeys} Active Journeys"
       },
       "kpi": {
         "active_journeys": "Active Journeys",
         "dossier_in_progress": "Dossier in progress",
         "awaiting_feedback": "Awaiting feedback",
-        "deliveries_week": "Deliveries this week"
+        "deliveries_week": "Deliveries this week",
+        "leads": "Leads",
+        "prospects": "Prospects",
+        "customers": "Clients",
+        "active_journeys_v2": "Active Journeys"
       },
       "card": {
         "status": {
@@ -2277,13 +2295,22 @@
         "daily_inspiration": "Daily inspiration",
         "activity_empty": "No movement yet. The studio breathes in silence.",
         "milestones_empty": "Awaiting the next chapter.",
-        "inspiration_empty": "No quote curated yet."
+        "inspiration_empty": "No quote curated yet.",
+        "recent_activity_v2": "Recent activity",
+        "upcoming_milestones_v2": "Upcoming milestones",
+        "activity_empty_v2": "No activity recorded. Activities will appear here when you start managing Leads and Design Journeys.",
+        "milestones_empty_v2": "No upcoming milestones. Milestones will appear here when you have an active Journey with configured chapters.",
+        "activity_empty_v3": "No activity recorded.",
+        "milestones_empty_v3": "No upcoming milestones."
       },
       "projects": {
         "title": "Journeys unfolding",
         "see_all": "See all",
         "empty": "Your atelier is in silence. The next journey is waiting to begin.",
-        "empty_cta": "Begin a new journey"
+        "empty_cta": "Begin a new journey",
+        "title_v2": "Active Design Journeys",
+        "empty_v2": "No active Journey. Journeys will appear here when you convert a Prospect.",
+        "empty_v3": "No active Design Journey."
       },
       "time": {
         "just_now": "just now",
@@ -2428,7 +2455,17 @@
     },
     "modal": {
       "title": "Create new",
-      "subtitle": "Choose what to create"
+      "subtitle": "Choose what to create",
+      "hero_prefix": "Start a new",
+      "hero_caption": "Select an entity to add to your studio library. Everything is automatically organised in your workspace.",
+      "title_mobile": "Create new",
+      "hero_caption_short": "Select an entity to add to your studio library."
+    },
+    "word": {
+      "vision": "Vision",
+      "legacy": "Legacy",
+      "masterpiece": "Masterpiece",
+      "journey": "Journey"
     },
     "designJourney": {
       "title": "New Design Journey",

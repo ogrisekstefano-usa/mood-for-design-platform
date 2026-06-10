@@ -2455,7 +2455,17 @@
     },
     "modal": {
       "title": "Crea nuovo",
-      "subtitle": "Scegli cosa vuoi creare"
+      "subtitle": "Scegli cosa vuoi creare",
+      "hero_prefix": "Inizia una nuova",
+      "hero_caption": "Seleziona un'entità da aggiungere alla libreria del tuo studio. Tutto viene organizzato automaticamente nel tuo workspace.",
+      "title_mobile": "Crea nuovo",
+      "hero_caption_short": "Seleziona un'entità da aggiungere alla libreria."
+    },
+    "word": {
+      "vision": "Visione",
+      "legacy": "Eredità",
+      "masterpiece": "Capolavoro",
+      "journey": "Journey"
     },
     "designJourney": {
       "title": "Nuovo Design Journey",
