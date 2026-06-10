@@ -1,0 +1,64 @@
+{
+  "summary": "I18N-STABILIZATION-P0 Final Smoke Test. P0 fix (localStorage override removal) is working correctly — mfd_language_registry_override is always NULL. However, SMOKE-01 and SMOKE-05 FAIL because DB now has 6 languages with blueprint_enabled=True (not 2 as expected). DB state has drifted since iter_224 which showed only 2 active. Core smoke tests: 8/10.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/platform/languages?scope=all",
+        "issue": "Returns 6 languages with blueprint_enabled=True (en-GB, fr-FR, de-DE, es-ES in addition to it-IT, en-US). Iter 224 had only 2. DB state has changed."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LocaleSwitcher",
+        "issue": "Shows 6 language options (IT, EN-US, EN-GB, FR, DE, ES) instead of expected 2. Caused by DB having 6 blueprint_enabled languages.",
+        "selector": "[data-testid='locale-switcher-btn']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "LanguagesPage route",
+        "issue": "/settings/languages returns 404. Correct path is /admin/languages.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": []
+  },
+  "smoke_test_results": {
+    "SMOKE-01": "FAIL — LocaleSwitcher shows 6 options (expected 2). Options: it-IT (Italiano), en-US (English US), en-GB, fr-FR, de-DE, es-ES.",
+    "SMOKE-02": "PASS — IT/Italiano is visible in LocaleSwitcher",
+    "SMOKE-03": "PASS — Select IT -> mfd_locale='it-IT' persists after reload",
+    "SMOKE-04": "PASS — Select EN-US -> mfd_locale='en-US' persists after reload",
+    "SMOKE-05": "FAIL — LanguagesPage counter shows '6 / 6 Lingue attive', expected 2/2 or 2/10",
+    "SMOKE-06": "PASS — Language counter stable (6/6 → 6/6 after reload). Onboarding wizard counter changed (unrelated to language count).",
+    "SMOKE-07": "PASS — mfd_language_registry_override is NULL/ABSENT always (fresh login, after reload, after save)",
+    "SMOKE-08": "PASS — Override stays NULL after clicking SALVA on LanguagesPage",
+    "SMOKE-09": "PASS — Counter stable (6/6) after Save + reload",
+    "SMOKE-10": "PASS — No React errors, no i18n crashes, no resolveLanguage errors"
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_225.json"
+  ],
+  "action_items": [
+    "DB state investigation: /api/platform/languages returns 6 languages with blueprint_enabled=True. Iter 224 had only 2. Determine when/how en-GB, fr-FR, de-DE, es-ES got blueprint_enabled=True in DB, and reset to only it-IT + en-US if that is the desired state.",
+    "Route /settings/languages returns 404 — either add redirect to /admin/languages or update documentation/nav links."
+  ],
+  "critical_code_review_comments": [
+    "P0 fix confirmed working: localStorage.mfd_language_registry_override never created (line 158 in languages.js runs at import time)",
+    "blueprintLanguages() correctly filters by enabled && blueprint_enabled && isBlueprintOperational — logic is sound",
+    "DB state drift: between iter_224 (2 active) and iter_225 (6 active) something changed the DB — investigate if a test saved the LanguagesPage with 6 enabled"
+  ],
+  "rca_of_issue": "SMOKE-01/05 fail because the DB (/api/platform/languages) now returns 6 languages with blueprint_enabled=True. The P0 code fix (removal of mfd_language_registry_override from getLanguageRegistry() chain) is intact and functioning. The expected DB state from iter_224 was 2 active languages; current state is 6. Most likely cause: a test agent in iter_224 or an intermediate session saved all 6 blueprint operational languages as active via LanguagesPage /admin/languages. The SALVA button in LanguagesPage persists the toggle state to DB.",
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only)",
+    "frontend": "80% (8/10 smoke tests pass; SMOKE-01 and SMOKE-05 fail due to DB state)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "P0 code fix (override removal) is working. SMOKE-01 fails because DB has 6 blueprint_enabled languages instead of 2. To restore expected state: go to /admin/languages, disable blueprint toggle for en-GB, fr-FR, de-DE, es-ES, click SALVA. Then re-run all 10 smoke tests. SMOKE-07/08 always pass. mfd_language_registry_override is never created."
+}
