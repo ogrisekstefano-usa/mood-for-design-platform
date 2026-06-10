@@ -17,6 +17,7 @@ import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
 import UserMenu from '../common/UserMenu';
 import NotificationBell from '../notifications/NotificationBell';
 import DesignerPresencePicker from '../presence/DesignerPresencePicker';
+import LocaleSwitcher from '../common/LocaleSwitcher';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -136,6 +137,7 @@ const Topbar = () => {
         )}
 
         <DesignerPresencePicker locale="it" compact />
+        <LocaleSwitcher align="right" />
         <NotificationBell locale="it" />
 
         <IdentityChip />
