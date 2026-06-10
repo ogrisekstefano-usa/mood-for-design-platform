@@ -314,7 +314,20 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 ## Backlog I18N
 
 - **P0 FASE 2** ✅ COMPLETATA (10 Jun 2026): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
-- **P1** Translation Management Layer Blueprint (DB schema + Context Menu UI) — in attesa istruzione utente
+- **I18N RCA** ✅ COMPLETATO (10 Jun 2026): Report D0/D1/D2/D3/D4 → `/app/memory/I18N_RCA_REPORT.md`
+  - D0: Source of Truth Map — 7 layer mappati, 5 split-brain risk identificati
+  - D1: Engine map — E1 (`i18n/useT.jsx`) vs E3 (`BlueprintContext.t`) — firme incompatibili, locale source divergenti
+  - D2: Missing key capture plan — nessuna modifica codice, GovernanceOverlay + DevTools Console
+  - D3: Refresh investigation — 4 fatti confermati (F1-F4), 2 ipotesi supportate (H1-H2), 2 non verificate (H3-H4)
+  - D4: Roadmap P0/P1/P2/P3
+- **P0-A** ⬜ Decisione motore canonico (documento di policy)
+- **P0-B** ⬜ Identificazione 13 missing key via GovernanceOverlay
+- **P0-C** ⬜ Fix `EditorialOverridesProvider` locale prop (1 riga in App.js)
+- **P1-B** ⬜ Fix `setLocaleInternal` opts.silent (3 righe)
+- **P1-C** ⬜ Persistenza mfd_locale da LocaleRuntime path (2 righe)
+- **P1-D** ⬜ 24 chiavi JSON de-sync IT/EN rimanenti
+- **P1-E** ⬜ Journey 88c072b7 dangling current_milestone_id (SQL cleanup)
+- **P2** Translation Management Layer Blueprint (DB schema + Context Menu UI) — in attesa istruzione utente
 - **P2** Normalizzare le 27+5 editorial copy nel sistema i18n quando Translation Management Layer è pronto
 
 
