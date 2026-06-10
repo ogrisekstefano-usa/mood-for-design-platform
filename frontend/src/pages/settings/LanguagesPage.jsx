@@ -14,8 +14,8 @@ import { ArrowLeft, Globe, Save, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
-  LANGUAGE_REGISTRY,
   getLanguageRegistry,
+  bootstrapLanguagesFromDB,
   BLUEPRINT_OPERATIONAL_CODES,
   isBlueprintOperational,
 } from '../../site/content/languages';
@@ -68,6 +68,7 @@ const LanguagesPage = () => {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
+  const [resetting, setResetting] = useState(false);
 
   // Refresh from DB on mount (admin sees authoritative state, not localStorage)
   React.useEffect(() => {
@@ -140,11 +141,17 @@ const LanguagesPage = () => {
     }
   };
 
-  const onReset = () => {
-    // Reset UI state to static registry defaults (admin preview only).
-    // Does NOT persist to DB — use Save to persist.
-    setRegistry(LANGUAGE_REGISTRY);
-    setDirty(false);
+  const onReset = async () => {
+    // Reload authoritative state from DB — "Annulla modifiche e ricarica dal DB".
+    // NEVER reads LANGUAGE_REGISTRY (static catalogue): only the DB is the source of truth.
+    setResetting(true);
+    try {
+      const rows = await bootstrapLanguagesFromDB();
+      if (rows && rows.length) setRegistry(rows);
+    } finally {
+      setDirty(false);
+      setResetting(false);
+    }
   };
 
   return (
@@ -281,10 +288,11 @@ const LanguagesPage = () => {
         </button>
         <button
           onClick={onReset}
-          className="bg-transparent border border-[var(--bp-border)] text-[var(--bp-text-secondary)] px-5 py-2.5 text-xs font-body uppercase tracking-[0.2em] inline-flex items-center gap-2 hover:border-[var(--bp-border-strong)] transition-colors"
+          disabled={resetting}
+          className="bg-transparent border border-[var(--bp-border)] text-[var(--bp-text-secondary)] px-5 py-2.5 text-xs font-body uppercase tracking-[0.2em] inline-flex items-center gap-2 hover:border-[var(--bp-border-strong)] transition-colors disabled:opacity-40"
           data-testid="languages-reset"
         >
-          <RotateCcw size={12} /> {t('common.reset', null, 'Reset to defaults')}
+          <RotateCcw size={12} /> {resetting ? 'Ricaricamento…' : t('common.reset', null, 'Reset to defaults')}
         </button>
         <span className="text-[var(--bp-text-muted)] text-xs font-body ml-auto inline-flex items-center gap-2">
           <Globe size={12} /> {registry.filter((l) => l.enabled).length} / {registry.length} {t('settings.languages.active', null, 'active')}
