@@ -37,6 +37,7 @@ const BeginJourneyForm = () => {
   const [materials, setMaterials] = useState([]);
   const [ambiance, setAmbiance] = useState(null);
   const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName]   = useState('');  // FASE-2: added
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   // ITER167 R4 · Phone Country Prefix — DB-driven from /admin/languages.
@@ -111,6 +112,7 @@ const BeginJourneyForm = () => {
         },
         welcome: {
           first_name: firstName.trim(),
+          last_name:  lastName.trim() || null,   // FASE-2
           email: email.trim(),
           phone: phone.trim() || null,
           // ITER167 R4 · structured phone payload (future routing/Chameleon/timezone)
@@ -353,16 +355,31 @@ const BeginJourneyForm = () => {
               </h1>
               <p className="bj-subtitle">{get(k('step3.subtitle'))}</p>
 
-              <div className="bj-field">
-                <label className="bj-field__label">
-                  {get(k('step3.field.first_name.label'))}
-                </label>
-                <input
-                  className="bj-input"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  data-testid="bj-first-name"
-                />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="bj-field">
+                  <label className="bj-field__label">
+                    {get(k('step3.field.first_name.label'))}
+                  </label>
+                  <input
+                    className="bj-input"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    data-testid="bj-first-name"
+                    autoComplete="given-name"
+                  />
+                </div>
+                <div className="bj-field">
+                  <label className="bj-field__label">
+                    {get(k('step3.field.last_name.label'), 'Cognome')}
+                  </label>
+                  <input
+                    className="bj-input"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    data-testid="bj-last-name"
+                    autoComplete="family-name"
+                  />
+                </div>
               </div>
 
               <div className="bj-field">

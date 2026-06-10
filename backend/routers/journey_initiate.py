@@ -38,6 +38,7 @@ class LifestylePayload(BaseModel):
 
 class WelcomePayload(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=80)
+    last_name:  Optional[str] = Field(default=None, max_length=80)   # FASE-2: added
     email:      EmailStr
     phone:      Optional[str] = None
     # ITER167 R4 · Phone Country Prefix — DB-driven structured payload
@@ -171,6 +172,9 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     c = db()
     tid = _resolve_tenant_id(c, body.tenant_slug)
     first_name = body.welcome.first_name.strip()
+    last_name  = (body.welcome.last_name or '').strip() or None  # FASE-2
+    # Full name helper — used for account_name, project title, narratives
+    full_name  = f"{first_name} {last_name}".strip() if last_name else first_name
     email = body.welcome.email.lower()
 
     now = _now()
@@ -194,7 +198,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     c.table('accounts').insert({
         "id":              account_id,
         "tenant_id":       tid,
-        "account_name":    first_name,
+        "account_name":    full_name,    # FASE-2: first_name + last_name
         "account_type":    "private_client",
         "lifecycle_stage": "prospect",
         "source":          "begin_journey_ritual",
@@ -215,6 +219,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "tenant_id":       tid,
         "account_id":      account_id,
         "first_name":      first_name,
+        "last_name":       last_name,    # FASE-2: saved if provided
         "email":           email,
         "phone":           _phone_normalized,
         "metadata_json":   _phone_meta or {},
@@ -234,7 +239,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     c.table('projects').insert({
         "id":            project_id,
         "tenant_id":     tid,
-        "title":         f"Conversazione di {first_name}",
+        "title":         f"Conversazione di {full_name}",   # FASE-2: full name
         "description":   "Avviata dal rituale di accoglienza · Begin Design Journey™.",
         "status":        "new",
         "language":      "it",
@@ -311,7 +316,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
             "milestone_id":   None,
             "event_type":     "journey_started",
             "event_canon":    "journey_created",
-            "narrative_text": f"Il Design Journey™ di {first_name} ha avuto inizio. Una conversazione apre il viaggio.",
+            "narrative_text": f"Il Design Journey™ di {full_name} ha avuto inizio. Una conversazione apre il viaggio.",
             "metadata":       {},
             "created_at":     now,
         },
@@ -339,6 +344,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
             "journey_id":         journey_id,
             "closed_answers":     {"atmosphere": atmo, "lifestyle": life,
                                      "welcome": {"first_name": first_name,
+                                                  "last_name":  last_name,  # FASE-2
                                                   "email": email}},
             "atmosphere_signals": [],
             "material_signals":   [],
@@ -403,6 +409,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
             "onboarding_path":  "begin_journey",
             "pipeline_stage":   "lead_captured",
             "first_name":       first_name,
+            "last_name":        last_name,       # FASE-2: saved
             "email":            email,
             "phone":            body.welcome.phone,
             "language":         "it",
