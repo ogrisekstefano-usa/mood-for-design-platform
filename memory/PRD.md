@@ -315,6 +315,11 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 - **P0 FASE 2** ✅ COMPLETATA (10 Jun 2026): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
 - **I18N RCA** ✅ COMPLETATO (10 Jun 2026): Report D0/D1/D2/D3/D4 → `/app/memory/I18N_RCA_REPORT.md`
+- **I18N Decision Gate Memo** ✅ COMPLETATO (10 Jun 2026): R1/R2/R3/R4 → `/app/memory/I18N_DECISION_GATE_MEMO.md`
+  - R2 CONFERMATO: 3 CMS override italiani attivi → utenti EN vedono "Inizia il tuo viaggio" su `nav.new_journey`
+  - R3: F1-F8 provati; H1-H2 supportati; H3-H4 non verificati; refresh permanente NON provato
+  - R4: P0-C priorità più alta (impatto produzione attivo); ordine corretto: P0-C > P1-D > P1-C > P1-B > P1-E
+  - Architettura A/B/C: matrice comparativa prodotta senza raccomandazione (gate DG-3)
   - D0: Source of Truth Map — 7 layer mappati, 5 split-brain risk identificati
   - D1: Engine map — E1 (`i18n/useT.jsx`) vs E3 (`BlueprintContext.t`) — firme incompatibili, locale source divergenti
   - D2: Missing key capture plan — nessuna modifica codice, GovernanceOverlay + DevTools Console
