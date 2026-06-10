@@ -352,14 +352,14 @@ const DesignJourneyTab = ({ projectId, project }) => {
         .includes(m.status));
     const journeyClosed = data.journey?.overall_status === 'closed';
 
-    if (journeyClosed) return 'Chiusura certificata · capitolo concluso';
-    if (completed === 0 && !inProgress) return 'Il viaggio è appena iniziato';
-    if (completed === 0 && inProgress) return `Direzione in avvio · ${inProgress.title}`;
-    if (completed === total) return 'Tutte le pietre miliari sono state approvate';
-    const noun = completed === 1 ? 'pietra miliare completata' : 'pietre miliari completate';
-    if (inProgress) return `${completed} ${noun} · ora ${inProgress.title}`;
+    if (journeyClosed) return tt('journey.tab.narrative_closed');
+    if (completed === 0 && !inProgress) return tt('journey.tab.narrative_not_started');
+    if (completed === 0 && inProgress) return tt('journey.tab.narrative_in_avvio', { title: inProgress.title });
+    if (completed === total) return tt('journey.tab.narrative_all_done');
+    const noun = tt(completed === 1 ? 'journey.tab.narrative_milestone_one' : 'journey.tab.narrative_milestone_many');
+    if (inProgress) return `${completed} ${noun} · ${inProgress.title}`;
     return `${completed} ${noun}`;
-  }, [data]);
+  }, [data, tt]);
 
   const onPick = (mid) => setActiveId(mid);
 

@@ -462,7 +462,12 @@
       "platform": "Platform",
       "workspace": "Workspace",
       "studio_pulse": "Blueprint Dashboard",
-      "content": "Contenuti"
+      "content": "Contenuti",
+      "studio": "Studio",
+      "growth": "Crescita",
+      "knowledge": "Conoscenza",
+      "showroom": "Showroom",
+      "intelligence": "Intelligence"
     },
     "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "I tuoi Design Journey",
@@ -477,6 +482,18 @@
     "runtime": {
       "loading": "Caricamento del modulo…"
     },
+    "projects": "Progetti",
+    "moodboards": "Moodboard",
+    "leads": "Lead",
+    "proposals": "Proposte",
+    "calendar": "Calendario",
+    "content_studio": "Content Studio",
+    "design_journeys": "Design Journey",
+    "material_boards": "Material Board",
+    "specifications": "Specifiche",
+    "project_stories": "Project Story",
+    "knowledge_engine": "Knowledge Engine",
+    "client_relations": "Relazioni con i clienti",
     "inspirations": "Inspirations",
     "brand_atlas": "Brand Atlas",
     "material_view": "Material View",
@@ -1212,7 +1229,13 @@
       "status_change_error": "Aggiornamento non riuscito",
       "open_error": "Apertura non riuscita",
       "designer_eyebrow": "Seguito da",
-      "opened_suffix": " aperta"
+      "opened_suffix": " aperta",
+      "narrative_closed": "Journey concluso · capitolo certificato.",
+      "narrative_not_started": "Il viaggio è appena iniziato.",
+      "narrative_in_avvio": "Direzione in avvio · {title}",
+      "narrative_all_done": "Tutte le pietre miliari sono state approvate.",
+      "narrative_milestone_one": "pietra miliare completata",
+      "narrative_milestone_many": "pietre miliari completate"
     },
     "closure": {
       "title_label": "Titolo definitivo del Journey",

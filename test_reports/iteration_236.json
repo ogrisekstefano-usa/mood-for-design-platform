@@ -1,0 +1,64 @@
+{
+  "summary": "I18N-CLOSURE-SPRINT finale testing. TASK 1 (missing keys), TASK 2 (DesignJourneyTab), TASK 3 (engine audit). All TASK 1 pass: EN + IT locale CRM navigation shows 0 missing. CreateModal shows correct EN text. TASK 2 mostly passes: DesignJourneyTab IT narrative shows 'Direzione in avvio' (correct IT), EN governance = 0. TASK 2E BUG: invalid journey does NOT redirect to /dashboard. TASK 3: E1=85 files, E3=72 files, no other i18n engines, 0 missing after full CRM navigation.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "JourneyOperatingPage / StudioJourneyView",
+        "issue": "TASK 2E: Invalid journey /studio/journey/00000000-0000-0000-0000-000000000000 does NOT redirect to /dashboard. Instead renders 'Untitled Journey' with null data + 12 missing keys. JourneyOperatingPage.jsx line 170: .catch() sets loading=false but never calls navigate('/dashboard'). The redirect logic only exists in the legacy path (isLegacyFallback=true, line 83-84), not in the new JourneyOperatingPage.",
+        "selector": "[data-testid='journey-operating']",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Auth/Login page",
+        "issue": "Auth login page (it-IT locale) shows 13 missing keys. Pre-existing from before this sprint. Keys: auth.login.*, auth.access.* etc. The sprint fixed studio/CRM pages but not the auth pages.",
+        "selector": "[data-testid='editorial-debug-chip']",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tasks": {
+    "TASK_1A_EN": "PASS - EN locale: Dashboard + CRM Accounts + Leads + Prospects + Settings/Members = 0 missing keys each",
+    "TASK_1B_IT": "PASS - IT locale: Same CRM navigation = 0 missing keys each",
+    "TASK_1C_CreateModal_EN": "PASS - CreateModal shows 'Choose what to create', 'Start a new', 'Vision' etc. - correct EN text",
+    "TASK_2A_IT_Journey": "PASS - Journey 88c072b7 loads via ?_legacy=1: milestone rail visible (Brief Cliente=IN LAVORAZIONE, 8+ milestones), progress narrative = 'Direzione in avvio · Brief Cliente' (correct IT), governance missing=0",
+    "TASK_2B_EN_Journey": "PASS - EN locale on same journey, governance missing=0, EN text displayed",
+    "TASK_2C_Loading_State": "PASS - Loading state visible: 'Disponendo il silenzio...' (IT) shown at 500ms before journey loads",
+    "TASK_2D_Journey2": "SKIP - Session expired before testing journey 976a4948. Could not confirm empty state.",
+    "TASK_2E_Invalid_Journey": "FAIL - /studio/journey/00000000... shows 'Untitled Journey' with empty data and 12 missing keys. Does NOT redirect to /dashboard as expected.",
+    "TASK_3_Engine_Audit": "INFO - E1 (useT from i18n/useT): 85 files. E2 (useT from BlueprintContext): 15 files. E3 (useBlueprint): 72 files. E4 (EditorialOverridesProvider): 3 files. No react-i18next or other engines. No duplicate engines beyond intentional E1/E3 coexistence.",
+    "TASK_3_Final_Missing": "PASS - After CRM navigation (EN and IT) missing=0. Auth pages (login) show 13 pre-existing missing keys (auth.*) which are from pre-sprint state."
+  },
+
+  "rca_invalid_journey": {
+    "bug": "TASK 2E: Invalid journey ID shows empty content instead of redirecting to /dashboard",
+    "root_cause": "StudioJourneyView (JourneyCanonicalRoutes.jsx line 76-81) renders JourneyOperatingPage for all non-legacy requests. JourneyOperatingPage (line 148-170) calls /api/journeys/:jid/overview, and on 404 catch, only sets setLoading(false) but does NOT navigate to /dashboard. The redirect logic exists ONLY in the legacy fallback path (line 83-84). Solution: Add useNavigate in JourneyOperatingPage and in the .catch() handler, if error.response.status === 404, call navigate('/dashboard', { replace: true })",
+    "affected_file": "/app/frontend/src/pages/journey-operating/JourneyOperatingPage.jsx",
+    "fix": "In the catch block (line 170), add: if (e?.response?.status === 404) { navigate('/dashboard', { replace: true }); return; }. Import useNavigate from react-router-dom."
+  },
+
+  "test_report_links": [],
+  "action_items": [
+    "TASK 2E FIX: Add 404 redirect to /dashboard in JourneyOperatingPage.jsx catch block (useNavigate on 404 from /api/journeys/:jid/overview)",
+    "OPTIONAL: Fix auth page (login/access) missing keys for it-IT locale (auth.login.*, auth.access.*) - pre-existing issue"
+  ],
+  "critical_code_review_comments": [
+    "JourneyOperatingPage.jsx: Missing 404 error handling - .catch() only sets setLoading(false), doesn't redirect to /dashboard for invalid journey IDs (lines 148-170)",
+    "Engine audit: E1 has 85 files (more than expected ~30) and E3 has 72 files (more than expected ~20). Coexistence is intentional but scale is larger than documented."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A", "frontend": "85%" },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use ?_legacy=1 to test DesignJourneyTab (it's inside ProjectDetailPage, not JourneyOperatingPage). The /studio/journey/:jid route uses JourneyOperatingPage for non-legacy. Use ?qa=1 to activate GovernanceOverlay with clear button. The session is fragile - login fresh each test script. The auth login page always shows 13 missing keys in IT locale (pre-existing, not from this sprint)."
+}

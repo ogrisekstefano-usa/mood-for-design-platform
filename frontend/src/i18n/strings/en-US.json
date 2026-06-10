@@ -461,8 +461,13 @@
       "studio_os": "Studio OS",
       "platform": "Platform",
       "workspace": "Workspace",
-      "studio_pulse": "Blueprint Dashboard",
-      "content": "Content"
+      "studio_pulse": "Studio Pulse",
+      "content": "Content",
+      "studio": "Studio",
+      "growth": "Growth",
+      "knowledge": "Knowledge",
+      "showroom": "Showroom",
+      "intelligence": "Intelligence"
     },
     "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "Your Journeys",
@@ -515,6 +520,18 @@
     "new_lead": "New Lead",
     "new_contact": "New Contact",
     "settings_workspace": "Workspace Settings",
+    "projects": "Projects",
+    "moodboards": "Moodboards",
+    "leads": "Leads",
+    "proposals": "Proposals",
+    "calendar": "Calendar",
+    "content_studio": "Content Studio",
+    "design_journeys": "Design Journeys",
+    "material_boards": "Material Boards",
+    "specifications": "Specifications",
+    "project_stories": "Project Stories",
+    "knowledge_engine": "Knowledge Engine",
+    "client_relations": "Client Relations",
     "runtime": {
       "loading": "Loading module…"
     }
@@ -1212,7 +1229,13 @@
       "status_change_error": "Update failed",
       "open_error": "Could not open",
       "designer_eyebrow": "Followed by",
-      "opened_suffix": " opened"
+      "opened_suffix": " opened",
+      "narrative_closed": "Journey concluded · chapter certified.",
+      "narrative_not_started": "The journey has just begun.",
+      "narrative_in_avvio": "Direction opening · {title}",
+      "narrative_all_done": "All milestones have been approved.",
+      "narrative_milestone_one": "milestone completed",
+      "narrative_milestone_many": "milestones completed"
     },
     "closure": {
       "title_label": "Definitive Journey title",
