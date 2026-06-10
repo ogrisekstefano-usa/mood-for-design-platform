@@ -23,7 +23,8 @@
       "moments_ago": "moments ago",
       "minutes_ago": "{n} min ago",
       "hours_ago": "{n} hours ago",
-      "days_ago": "{n} days ago"
+      "days_ago": "{n} days ago",
+      "ago": "ago"
     },
     "workspace": "Workspace",
     "editorial_media_field": {
@@ -92,7 +93,8 @@
     "noResults": "No results.",
     "reset": "Reset",
     "submit": "Submit",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "backToList": "Back to list"
   },
   "relationships": {
     "eyebrow": "CRM Workspace",
@@ -2445,6 +2447,93 @@
       "products_section": "products signed",
       "no_products_title": "Products indexing",
       "no_products": "No products attributed to this designer."
+    }
+  },
+  "clientRelations": {
+    "common": {
+      "openMemoryAria": "Open the relationship memory"
+    },
+    "health": {
+      "thriving": "Thriving",
+      "stable": "Stable",
+      "at_risk": "At risk"
+    },
+    "register": {
+      "editorial": "Editorial",
+      "concierge": "Concierge",
+      "consultative": "Consultative",
+      "discovery": "Discovery"
+    },
+    "tier": {
+      "atelier": "Atelier",
+      "couture": "Couture",
+      "pret_a_porter": "Prêt-à-porter"
+    },
+    "accounts": {
+      "searchPlaceholder": "Search accounts…",
+      "resultbar_one": "active studio relationship",
+      "resultbar_many": "active studio relationships",
+      "emptyTitle": "No active accounts.",
+      "emptyCta": "Go to Prospects to convert",
+      "card": {
+        "fallback": "Account",
+        "moodboardPaletteAria": "Moodboard palette",
+        "usedInLabel": "Used in this relationship",
+        "moodboard_one": "moodboard",
+        "moodboard_many": "moodboards",
+        "proposal_one": "proposal",
+        "proposal_many": "proposals",
+        "memory_one": "memory",
+        "memory_many": "memories",
+        "lastConversation": "last conversation",
+        "confirmCustomer": "Confirm as customer",
+        "rollbackProspect": "Rollback to prospect"
+      }
+    },
+    "leads": {
+      "searchPlaceholder": "Search by name or email…",
+      "resultbar_one": "Lead registered",
+      "resultbar_many": "Leads registered",
+      "emptyTitle": "No Leads registered.",
+      "emptyCta": "Create the first Lead",
+      "card": {
+        "signalLabel": "signal",
+        "atmosphereLabel": "Atmosphere",
+        "temp": {
+          "early": "Early",
+          "firstContact": "First contact"
+        },
+        "registerSuffix": "register",
+        "intakeCaptured": "intake captured"
+      }
+    },
+    "prospects": {
+      "searchPlaceholder": "Search prospects…",
+      "resultbar_one": "relationship in cultivation",
+      "resultbar_many": "relationships in cultivation",
+      "emptyTitle": "No qualified Prospects.",
+      "emptyCta": "Go to Leads to qualify",
+      "card": {
+        "fallback": "Unnamed",
+        "savedInspirations": "saved inspirations",
+        "returns_one": "return",
+        "returns_many": "returns",
+        "lastInterviewLabel": "last interview answered",
+        "promoteCta": "Promote to account",
+        "continueCta": "Continue interview"
+      }
+    },
+    "leadDetail": {
+      "eyebrow": "CRM · Lead",
+      "loading": "Loading Lead…",
+      "unavailableTitle": "Lead unavailable.",
+      "notFoundError": "Lead not found",
+      "fallback": "Lead",
+      "registeredOn": "registered on",
+      "cta": {
+        "openJourney": "Open Design Journey",
+        "createJourney": "Create Design Journey™"
+      }
     }
   }
 }

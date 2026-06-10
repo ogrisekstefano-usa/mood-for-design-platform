@@ -23,6 +23,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronLeft, Loader2, Mail, Phone, Calendar, Tag, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 import DiscoveryInterviewPanel from '../../components/relations/DiscoveryInterviewPanel';
 import QualificationModal from '../lead-conversion/QualificationModal';
 
@@ -40,6 +41,7 @@ const formatDate = (iso) => {
 };
 
 const LeadDetailPage = () => {
+  const { t } = useT();
   const { leadId } = useParams();
   const navigate = useNavigate();
   const [lead, setLead] = useState(null);
@@ -84,7 +86,7 @@ const LeadDetailPage = () => {
         const { data } = await api.get(`/api/leads/${leadId}`);
         if (!cancel) setLead(data);
       } catch (e) {
-        if (!cancel) setError(e?.response?.data?.detail?.message || 'Lead non trovato');
+        if (!cancel) setError(e?.response?.data?.detail?.message || null);
       } finally {
         if (!cancel) setLoading(false);
       }
@@ -93,7 +95,7 @@ const LeadDetailPage = () => {
   }, [leadId]);
 
   const name = lead
-    ? `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || lead.email || 'Lead'
+    ? `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || lead.email || t('clientRelations.leadDetail.fallback')
     : '';
 
   return (
@@ -118,7 +120,7 @@ const LeadDetailPage = () => {
             display: 'inline-flex', alignItems: 'center', gap: 4, padding: 0,
           }}
         >
-          <ChevronLeft size={14} /> Leads
+          <ChevronLeft size={14} /> {t('nav.client_relations_leads')}
         </button>
         <span style={{ color: '#c0c2c7' }}>/</span>
         <span data-testid="lead-detail-name-crumb" style={{ color: '#0c0e12' }}>{name || '…'}</span>
@@ -126,7 +128,7 @@ const LeadDetailPage = () => {
 
       {loading && (
         <div data-testid="lead-detail-loading" style={{ color: '#7a7d83', padding: 32, textAlign: 'center' }}>
-          <Loader2 className="animate-spin" size={20} /> Caricamento Lead…
+          <Loader2 className="animate-spin" size={20} /> {t('clientRelations.leadDetail.loading')}
         </div>
       )}
 
@@ -138,10 +140,10 @@ const LeadDetailPage = () => {
             borderRadius: 10, color: '#991b1b',
           }}
         >
-          <strong>Lead non disponibile.</strong>
-          <div style={{ fontSize: 13, marginTop: 4 }}>{error}</div>
+          <strong>{t('clientRelations.leadDetail.unavailableTitle')}</strong>
+          <div style={{ fontSize: 13, marginTop: 4 }}>{error || t('clientRelations.leadDetail.notFoundError')}</div>
           <Link to="/relations/leads" style={{ color: '#0c0e12', textDecoration: 'underline', fontSize: 13 }}>
-            Torna alla lista
+            {t('common.backToList')}
           </Link>
         </div>
       )}
@@ -157,7 +159,7 @@ const LeadDetailPage = () => {
             }}
           >
             <p style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7a7d83', margin: 0 }}>
-              CRM · Lead
+              {t('clientRelations.leadDetail.eyebrow')}
             </p>
             <h1
               data-testid="lead-detail-name"
@@ -184,7 +186,7 @@ const LeadDetailPage = () => {
                 </li>
               )}
               <li data-testid="lead-detail-created" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3a3d44' }}>
-                <Calendar size={14} strokeWidth={1.6} /> registrato il {formatDate(lead.created_at)}
+                <Calendar size={14} strokeWidth={1.6} /> {t('clientRelations.leadDetail.registeredOn')} {formatDate(lead.created_at)}
               </li>
             </ul>
           </header>
@@ -224,7 +226,7 @@ const LeadDetailPage = () => {
                   textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
                 }}
               >
-                <Sparkles size={14} strokeWidth={2} /> Apri Design Journey
+                <Sparkles size={14} strokeWidth={2} /> {t('clientRelations.leadDetail.cta.openJourney')}
               </Link>
             ) : (
               <button
@@ -239,7 +241,7 @@ const LeadDetailPage = () => {
                   cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8,
                 }}
               >
-                <Sparkles size={14} strokeWidth={2} /> {starting ? 'Creazione…' : 'Create Design Journey™'}
+                <Sparkles size={14} strokeWidth={2} /> {starting ? t('common.creating') : t('clientRelations.leadDetail.cta.createJourney')}
               </button>
             )}
           </div>

@@ -17,19 +17,10 @@ import useDesigners from './useDesigners';
 import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
 import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
+import { useT } from '../../i18n/useT';
 
-const REGISTERS = [
-  { v: 'editorial',    l: 'Editorial'    },
-  { v: 'concierge',    l: 'Concierge'    },
-  { v: 'consultative', l: 'Consultative' },
-  { v: 'discovery',    l: 'Discovery'    },
-];
-
-const TIERS = [
-  { v: 'atelier',       l: 'Atelier'        },
-  { v: 'couture',       l: 'Couture'        },
-  { v: 'pret_a_porter', l: 'Prêt-à-porter'  },
-];
+const REGISTER_VALUES = ['editorial', 'concierge', 'consultative', 'discovery'];
+const TIER_VALUES = ['atelier', 'couture', 'pret_a_porter'];
 
 const formatAgo = (iso) => {
   if (!iso) return null;
@@ -51,14 +42,15 @@ const deriveSignals = (lead) => {
   // Saved inspirations ≈ count of atmosphere+material signals captured.
   const saved   = atmos.length * 3 + materials.length * 2;
   // Returns: derived from has_returned-like tags.
-  const returns = tags.filter(t => t.includes('returning') || t.includes('high_engagement')).length + 1;
+  const returns = tags.filter(tag => tag.includes('returning') || tag.includes('high_engagement')).length + 1;
   // Last interview answered approx — when did intake complete.
   const lastTouch = lead.intake_completed_at || lead.updated_at || lead.created_at;
   return { saved, returns, lastTouch };
 };
 
 const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
-  const name = `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email || 'Untitled';
+  const { t } = useT();
+  const name = `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email || t('clientRelations.prospects.card.fallback');
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const temp = Number(p.relationship_temperature || 0);
   const score = Number(p.progression_score || 0);
@@ -105,17 +97,17 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
         <div className="prospect-lane__momentum-row">
           <span className="prospect-metric">
             <Heart size={15} strokeWidth={1.6} />
-            <span><strong>{saved}</strong> saved inspirations</span>
+            <span><strong>{saved}</strong> {t('clientRelations.prospects.card.savedInspirations')}</span>
           </span>
           <span className="prospect-metric">
             <Repeat size={15} strokeWidth={1.6} />
-            <span><strong>{returns}</strong> return{returns === 1 ? '' : 's'}</span>
+            <span><strong>{returns}</strong> {returns === 1 ? t('clientRelations.prospects.card.returns_one') : t('clientRelations.prospects.card.returns_many')}</span>
           </span>
         </div>
         <div className="prospect-lane__last-touch">
           <MessageCircle size={14} strokeWidth={1.6} />
           {lastTouch
-            ? <>last interview answered <strong>{formatAgo(lastTouch)} ago</strong></>
+            ? <>{t('clientRelations.prospects.card.lastInterviewLabel')} <strong>{formatAgo(lastTouch)} {t('common.time.ago')}</strong></>
             : <>continuation pending</>}
         </div>
         <div className="prospect-lane__chips">
@@ -139,7 +131,7 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
           onClick={() => onPromote(p)}
           data-testid={`prospect-promote-${p.id}`}
         >
-          {ready ? 'Promote to account' : 'Continue interview'} <ArrowRight size={15} strokeWidth={2} />
+          {ready ? t('clientRelations.prospects.card.promoteCta') : t('clientRelations.prospects.card.continueCta')} <ArrowRight size={15} strokeWidth={2} />
         </button>
       </div>
     </article>
@@ -147,6 +139,7 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
 };
 
 const ProspectsPage = () => {
+  const { t } = useT();
   const [q, setQ] = useState('');
   const [register, setRegister] = useState(null);
   const [tier, setTier] = useState(null);
@@ -180,33 +173,33 @@ const ProspectsPage = () => {
         <Search size={16} />
         <input
           type="search"
-          placeholder="Cerca prospect…"
+          placeholder={t('clientRelations.prospects.searchPlaceholder')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           data-testid="prospects-search"
         />
       </div>
-      {REGISTERS.map((r) => (
+      {REGISTER_VALUES.map((rv) => (
         <button
-          key={r.v}
+          key={rv}
           type="button"
-          className={`cr-chip cr-chip--teal ${register === r.v ? 'is-active' : ''}`}
-          onClick={() => setRegister(register === r.v ? null : r.v)}
-          data-testid={`prospects-filter-${r.v}`}
-        >{r.l}</button>
+          className={`cr-chip cr-chip--teal ${register === rv ? 'is-active' : ''}`}
+          onClick={() => setRegister(register === rv ? null : rv)}
+          data-testid={`prospects-filter-${rv}`}
+        >{t(`clientRelations.register.${rv}`)}</button>
       ))}
-      {TIERS.map((t) => (
+      {TIER_VALUES.map((tv) => (
         <button
-          key={t.v}
+          key={tv}
           type="button"
-          className={`cr-chip cr-chip--teal ${tier === t.v ? 'is-active' : ''}`}
-          onClick={() => setTier(tier === t.v ? null : t.v)}
-          data-testid={`prospects-filter-${t.v}`}
-        >{t.l}</button>
+          className={`cr-chip cr-chip--teal ${tier === tv ? 'is-active' : ''}`}
+          onClick={() => setTier(tier === tv ? null : tv)}
+          data-testid={`prospects-filter-${tv}`}
+        >{t(`clientRelations.tier.${tv}`)}</button>
       ))}
       {(q || register || tier) && (
         <button type="button" className="cr-chip cr-chip--reset" onClick={() => { setQ(''); setRegister(null); setTier(null); }}>
-          <X size={13} /> Reset
+          <X size={13} /> {t('common.reset')}
         </button>
       )}
     </>
@@ -216,13 +209,13 @@ const ProspectsPage = () => {
     <ClientRelationsLayout
       stage="prospect"
       eyebrow="CLIENT RELATIONS™ · CULTIVATION"
-      title="Prospects"
+      title={t('nav.client_relations_prospects')}
       lede="Relazioni in movimento. Qui il dialogo è iniziato: continua l'intervista, condividi una moodboard, suggerisci il prossimo passo. Quando il momento è giusto, promuovi ad Account."
       counts={counts}
       toolbar={toolbar}
     >
       <p className="cr-resultbar" data-testid="prospects-resultbar">
-        <strong>{total}</strong> relationship{total === 1 ? '' : 's'} in cultivation
+        <strong>{total}</strong> {total === 1 ? t('clientRelations.prospects.resultbar_one') : t('clientRelations.prospects.resultbar_many')}
       </p>
 
       {loading && (
@@ -238,7 +231,7 @@ const ProspectsPage = () => {
           style={{ textAlign: 'center', padding: '48px 24px' }}
         >
           <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
-            Nessun Prospect qualificato.
+            {t('clientRelations.prospects.emptyTitle')}
           </p>
           <p
             className="cr-empty__sub"
@@ -260,7 +253,7 @@ const ProspectsPage = () => {
               borderRadius: 8, textDecoration: 'none',
             }}
           >
-            <ArrowRight size={14} strokeWidth={2} /> Vai ai Leads da qualificare
+            <ArrowRight size={14} strokeWidth={2} /> {t('clientRelations.prospects.emptyCta')}
           </Link>
         </div>
       )}

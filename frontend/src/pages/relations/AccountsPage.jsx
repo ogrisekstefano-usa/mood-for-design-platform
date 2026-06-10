@@ -18,12 +18,9 @@ import WelcomeDrawer from './WelcomeDrawer';
 import ConvertToCustomerModal from '../../components/relations/ConvertToCustomerModal';
 import RevertToProspectModal from '../../components/relations/RevertToProspectModal';
 import { useNewRelationship } from '../../hooks/useNewRelationship';
+import { useT } from '../../i18n/useT';
 
-const HEALTHS = [
-  { v: 'thriving', l: 'Thriving' },
-  { v: 'stable',   l: 'Stable'   },
-  { v: 'at_risk',  l: 'At risk'  },
-];
+const HEALTH_VALUES = ['thriving', 'stable', 'at_risk'];
 
 const formatAgo = (iso) => {
   if (!iso) return '—';
@@ -60,7 +57,8 @@ const isCustomerStage = (s) =>
   ['customer', 'active_project', 'existing_client', 'repeat_client'].includes(String(s || '').toLowerCase());
 
 const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney }) => {
-  const name = a.account_name || a.email || 'Account';
+  const { t } = useT();
+  const name = a.account_name || a.email || t('clientRelations.accounts.card.fallback');
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const score = Math.max(0, Math.min(100, Math.round(Number(a.relationship_score || 0))));
   const ringDeg = (score / 100) * 360;
@@ -110,29 +108,29 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
         <p className="account-card__tone-line">{tone}</p>
       </div>
 
-      <div className="account-card__moodstrip" aria-label="Moodboard palette" data-testid={`account-mood-${a.id}`}>
+      <div className="account-card__moodstrip" aria-label={t('clientRelations.accounts.card.moodboardPaletteAria')} data-testid={`account-mood-${a.id}`}>
         {swatches.map((c, i) => (
           <span key={i} className="account-card__swatch" style={{ background: c }} />
         ))}
         <span className="account-card__moodlabel">studio palette</span>
       </div>
 
-      <div className="account-card__usedin" data-testid={`account-usedin-${a.id}`} aria-label="Used in this relationship">
-        <span className="account-card__usedin-eyebrow">Used in this relationship</span>
+      <div className="account-card__usedin" data-testid={`account-usedin-${a.id}`} aria-label={t('clientRelations.accounts.card.usedInLabel')}>
+        <span className="account-card__usedin-eyebrow">{t('clientRelations.accounts.card.usedInLabel')}</span>
         <ul className="account-card__usedin-list">
           <li className="account-card__usedin-item" data-testid={`account-usedin-moodboards-${a.id}`}>
             <strong>{usedIn.moodboards}</strong>
-            <span>moodboard{usedIn.moodboards === 1 ? '' : 's'}</span>
+            <span>{usedIn.moodboards === 1 ? t('clientRelations.accounts.card.moodboard_one') : t('clientRelations.accounts.card.moodboard_many')}</span>
           </li>
           <li className="account-card__usedin-divider" aria-hidden="true">·</li>
           <li className="account-card__usedin-item" data-testid={`account-usedin-proposals-${a.id}`}>
             <strong>{usedIn.proposals}</strong>
-            <span>proposal{usedIn.proposals === 1 ? '' : 's'}</span>
+            <span>{usedIn.proposals === 1 ? t('clientRelations.accounts.card.proposal_one') : t('clientRelations.accounts.card.proposal_many')}</span>
           </li>
           <li className="account-card__usedin-divider" aria-hidden="true">·</li>
           <li className="account-card__usedin-item" data-testid={`account-usedin-memories-${a.id}`}>
             <strong>{usedIn.memories}</strong>
-            <span>memor{usedIn.memories === 1 ? 'y' : 'ies'}</span>
+            <span>{usedIn.memories === 1 ? t('clientRelations.accounts.card.memory_one') : t('clientRelations.accounts.card.memory_many')}</span>
           </li>
         </ul>
       </div>
@@ -140,15 +138,15 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
       <footer className="account-card__meta">
         <DesignerChip designer={designer} size="sm" contextId={`account-${a.id}`} />
         <span className="account-card__meta-spacer" />
-        <span>last conversation <strong>{formatAgo(a.last_activity_at)} ago</strong></span>
+        <span>{t('clientRelations.accounts.card.lastConversation')} <strong>{formatAgo(a.last_activity_at)} {t('common.time.ago')}</strong></span>
         <Link
           to={`/relations/memory/${a.id}`}
           className="account-card__memory-link"
           onClick={(e) => e.stopPropagation()}
           data-testid={`account-memory-link-${a.id}`}
-          aria-label="Open the relationship's memory"
+          aria-label={t('clientRelations.common.openMemoryAria')}
         >
-          <BookOpen size={14} strokeWidth={1.6} /> memory
+          <BookOpen size={14} strokeWidth={1.6} /> {t('nav.memory')}
         </Link>
       </footer>
 
@@ -176,7 +174,7 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(214, 180, 138, 0.1)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
           >
-            <CheckCircle2 size={12} /> Conferma cliente
+            <CheckCircle2 size={12} /> {t('clientRelations.accounts.card.confirmCustomer')}
           </button>
         )}
         {isCustomerStage(a.lifecycle_stage) && (
@@ -195,7 +193,7 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
               onMouseEnter={(e) => { e.currentTarget.style.background = '#1f2530'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = '#0c0e12'; }}
             >
-              <Compass size={12} /> Nuovo Design Journey
+              <Compass size={12} /> {t('nav.new_journey')}
             </button>
             <button
               type="button"
@@ -211,7 +209,7 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(155, 157, 163, 0.08)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
             >
-              <RotateCcw size={12} /> Rollback prospect
+              <RotateCcw size={12} /> {t('clientRelations.accounts.card.rollbackProspect')}
             </button>
           </>
         )}
@@ -221,6 +219,7 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
 };
 
 const AccountsPage = () => {
+  const { t } = useT();
   const [q, setQ] = useState('');
   const [health, setHealth] = useState(null);
   const filters = useMemo(() => ({ q, health }), [q, health]);
@@ -248,24 +247,24 @@ const AccountsPage = () => {
         <Search size={16} />
         <input
           type="search"
-          placeholder="Cerca account…"
+          placeholder={t('clientRelations.accounts.searchPlaceholder')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           data-testid="accounts-search"
         />
       </div>
-      {HEALTHS.map((h) => (
+      {HEALTH_VALUES.map((hv) => (
         <button
-          key={h.v}
+          key={hv}
           type="button"
-          className={`cr-chip cr-chip--gold ${health === h.v ? 'is-active' : ''}`}
-          onClick={() => setHealth(health === h.v ? null : h.v)}
-          data-testid={`accounts-filter-${h.v}`}
-        >{h.l}</button>
+          className={`cr-chip cr-chip--gold ${health === hv ? 'is-active' : ''}`}
+          onClick={() => setHealth(health === hv ? null : hv)}
+          data-testid={`accounts-filter-${hv}`}
+        >{t(`clientRelations.health.${hv}`)}</button>
       ))}
       {(q || health) && (
         <button type="button" className="cr-chip cr-chip--reset" onClick={() => { setQ(''); setHealth(null); }}>
-          <X size={13} /> Reset
+          <X size={13} /> {t('common.reset')}
         </button>
       )}
     </>
@@ -275,13 +274,13 @@ const AccountsPage = () => {
     <ClientRelationsLayout
       stage="account"
       eyebrow="CLIENT RELATIONS™ · ACTIVE STUDIO"
-      title="Accounts"
+      title={t('nav.client_relations_accounts')}
       lede="Progetti vivi. Ogni account è un ecosistema in movimento — moodboard, proposte, approvazioni, conversazioni. La memoria del progetto vive qui."
       counts={counts}
       toolbar={toolbar}
     >
       <p className="cr-resultbar" data-testid="accounts-resultbar">
-        <strong>{total}</strong> active studio relationship{total === 1 ? '' : 's'}
+        <strong>{total}</strong> {total === 1 ? t('clientRelations.accounts.resultbar_one') : t('clientRelations.accounts.resultbar_many')}
       </p>
 
       {loading && (
@@ -297,7 +296,7 @@ const AccountsPage = () => {
           style={{ textAlign: 'center', padding: '48px 24px' }}
         >
           <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
-            Nessun account attivo.
+            {t('clientRelations.accounts.emptyTitle')}
           </p>
           <p
             className="cr-empty__sub"
@@ -317,7 +316,7 @@ const AccountsPage = () => {
               borderRadius: 8, textDecoration: 'none',
             }}
           >
-            Vai ai Prospects da convertire
+            {t('clientRelations.accounts.emptyCta')}
           </Link>
         </div>
       )}

@@ -16,6 +16,7 @@ import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
 import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
 import { useNewRelationship } from '../../hooks/useNewRelationship';
+import { useT } from '../../i18n/useT';
 
 const ATMOSPHERES = []; // ITER181.C: filtri fake rimossi (nessun filtro reale dietro)
 
@@ -41,6 +42,7 @@ const tempLabel = (t) => {
 };
 
 const LeadCard = ({ lead, designer, onOpen }) => {
+  const { t } = useT();
   const name = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || lead.email || 'Anonymous';
   const initials = name.split(' ').map(p => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const atmos    = Array.isArray(lead.atmosphere_signals) ? lead.atmosphere_signals : [];
@@ -49,7 +51,7 @@ const LeadCard = ({ lead, designer, onOpen }) => {
   const temp     = Number(lead.relationship_temperature || 0);
 
   // Hero atmosphere — the signal that defines this lead.
-  const hero = atmos[0] || (tags.find(t => t.endsWith('_register')) || '').replace(/_register$/, '') || 'silent_signal';
+  const hero = atmos[0] || (tags.find(tag => tag.endsWith('_register')) || '').replace(/_register$/, '') || 'silent_signal';
 
   return (
     <article
@@ -69,13 +71,13 @@ const LeadCard = ({ lead, designer, onOpen }) => {
           {lead.email && <div className="lead-card__email">{lead.email}</div>}
         </div>
         <div className="lead-card__when">
-          <span className="lead-card__when-label">signal</span>
-          <span className="lead-card__when-value">{formatAgo(lead.updated_at || lead.created_at)} ago</span>
+          <span className="lead-card__when-label">{t('clientRelations.leads.card.signalLabel')}</span>
+          <span className="lead-card__when-value">{formatAgo(lead.updated_at || lead.created_at)} {t('common.time.ago')}</span>
         </div>
       </header>
 
       <div className="lead-card__hero">
-        <span className="lead-card__hero-eyebrow">Atmosphere</span>
+        <span className="lead-card__hero-eyebrow">{t('clientRelations.leads.card.atmosphereLabel')}</span>
         <h4 className="lead-card__hero-title">
           {String(hero).replace(/_/g, ' ')}
         </h4>
@@ -92,9 +94,9 @@ const LeadCard = ({ lead, designer, onOpen }) => {
               · {String(m).replace(/_/g, ' ')}
             </li>
           ))}
-          {tags.filter(t => t.endsWith('_register')).slice(0, 2).map((t, i) => (
+          {tags.filter(tag => tag.endsWith('_register')).slice(0, 2).map((tag, i) => (
             <li key={`r${i}`} className="lead-card__sig lead-card__sig--register">
-              · {String(t).replace(/_register$/, '').replace(/_/g, ' ')} register
+              · {String(tag).replace(/_register$/, '').replace(/_/g, ' ')} {t('clientRelations.leads.card.registerSuffix')}
             </li>
           ))}
         </ul>
@@ -116,16 +118,16 @@ const LeadCard = ({ lead, designer, onOpen }) => {
         <DesignerChip designer={designer} size="sm" contextId={`lead-${lead.id}`} />
         <span className="lead-card__meta-spacer" />
         <span className="lead-card__meta-status">
-          {lead.intake_completed_at ? 'intake captured' : 'awaiting first interview'}
+          {lead.intake_completed_at ? t('clientRelations.leads.card.intakeCaptured') : 'awaiting first interview'}
         </span>
         <Link
           to={`/relations/memory/${lead.id}`}
           className="lead-card__memory-link"
           onClick={(e) => e.stopPropagation()}
           data-testid={`lead-memory-link-${lead.id}`}
-          aria-label="Open the relationship's memory"
+          aria-label={t('clientRelations.common.openMemoryAria')}
         >
-          <BookOpen size={14} strokeWidth={1.6} /> memory
+          <BookOpen size={14} strokeWidth={1.6} /> {t('nav.memory')}
         </Link>
       </footer>
     </article>
@@ -133,6 +135,7 @@ const LeadCard = ({ lead, designer, onOpen }) => {
 };
 
 const LeadsPage = () => {
+  const { t } = useT();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [q, setQ] = useState('');
@@ -186,13 +189,13 @@ const LeadsPage = () => {
         data-testid="leads-new-cta"
         onClick={handleNewLead}
       >
-        <Plus size={13} strokeWidth={1.8} /> Nuovo Lead
+        <Plus size={13} strokeWidth={1.8} /> {t('relationships.ctaNew')}
       </button>
       <div className="cr-search">
         <Search size={16} />
         <input
           type="search"
-          placeholder="Cerca per nome o email…"
+          placeholder={t('clientRelations.leads.searchPlaceholder')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           data-testid="leads-search"
@@ -200,7 +203,7 @@ const LeadsPage = () => {
       </div>
       {q && (
         <button type="button" className="cr-chip cr-chip--reset" onClick={() => setQ('')} data-testid="leads-reset">
-          <X size={13} /> Reset
+          <X size={13} /> {t('common.reset')}
         </button>
       )}
     </>
@@ -210,13 +213,13 @@ const LeadsPage = () => {
     <ClientRelationsLayout
       stage="lead"
       eyebrow="CRM · DISCOVERY"
-      title="Leads"
+      title={t('nav.client_relations_leads')}
       lede="Contatti da qualificare. I Lead rappresentano persone o aziende che hanno manifestato un interesse verso lo studio, un progetto o un servizio. Registra, organizza e qualifica ogni contatto prima di trasformarlo in Prospect."
       counts={counts}
       toolbar={toolbar}
     >
       <p className="cr-resultbar" data-testid="leads-resultbar">
-        <strong>{total}</strong> Lead {total === 1 ? 'registrato' : 'registrati'}
+        <strong>{total}</strong> {total === 1 ? t('clientRelations.leads.resultbar_one') : t('clientRelations.leads.resultbar_many')}
       </p>
 
       {loading && (
@@ -232,7 +235,7 @@ const LeadsPage = () => {
           style={{ textAlign: 'center', padding: '48px 24px' }}
         >
           <p className="cr-empty__title" style={{ fontSize: 18, fontWeight: 600, color: '#0c0e12', marginBottom: 8 }}>
-            Nessun Lead registrato.
+            {t('clientRelations.leads.emptyTitle')}
           </p>
           <p
             className="cr-empty__sub"
@@ -254,7 +257,7 @@ const LeadsPage = () => {
               borderRadius: 8, cursor: 'pointer',
             }}
           >
-            <Plus size={14} strokeWidth={2} /> Crea il primo Lead
+            <Plus size={14} strokeWidth={2} /> {t('clientRelations.leads.emptyCta')}
           </button>
         </div>
       )}
