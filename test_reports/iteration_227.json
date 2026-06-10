@@ -1,0 +1,102 @@
+{
+  "summary": "I18N-STABILIZATION-P0 — VALIDAZIONE METODOLOGICA DEFINITIVA. Full CHAIN-01 through CHAIN-06 executed. PREREQUISITE DISCREPANCY: DB initial state was NOT it-IT+en-US+es-MX as required — actual DB had es-ES (not es-MX) as 3rd blueprint language. State was corrected manually (disabled es-ES, enabled es-MX, then confirmed 3-lang state). After correct setup, ALL 6 CHAIN tests PASS. Dynamic chain confirmed: enable es-MX → appears in switcher; disable es-MX → disappears. STALE CACHE NOTE: without clearing mfd_language_registry_db_cache_v1, old state may persist until bootstrapLanguagesFromDB runs on load.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "All Blueprint pages",
+        "issues": [
+          "React warning 'Cannot update a component while rendering a different component' — LocalizationOverlay triggering setState inside Sidebar/Section/LoginPage render. Pre-existing known issue."
+        ]
+      }
+    ]
+  },
+
+  "chain_test_results": {
+    "prerequisite_discrepancy": {
+      "status": "WARNING",
+      "note": "DB initial state WAS NOT as specified. Required: [it-IT, en-US, es-MX]. Actual found: [it-IT, en-US, es-ES]. es-MX had blueprint_enabled=false. es-ES had blueprint_enabled=true. Test was conducted after correcting state: disabled es-ES, enabled es-MX via PATCH API."
+    },
+    "CHAIN-01": {
+      "status": "PASS",
+      "db_count": 3,
+      "db_codes": ["it-IT", "en-US", "es-MX"],
+      "switcher_count": 3,
+      "switcher_codes": ["it-IT", "en-US", "es-MX"],
+      "diff": "none",
+      "note": "After clearing stale localStorage cache and correct DB setup"
+    },
+    "CHAIN-02": {
+      "status": "PASS",
+      "detail": "es-MX visible in LocaleSwitcher as 'Español (MX)' (data-testid=locale-option-es-MX)"
+    },
+    "CHAIN-03": {
+      "status": "PASS",
+      "detail": "es-MX persists after page reload. LocaleSwitcher still shows 3 options: [it-IT, en-US, es-MX]"
+    },
+    "CHAIN-04": {
+      "status": "PASS",
+      "action": "PATCH /api/platform/admin/languages/es-MX {blueprint_enabled: false} via curl (Playwright PATCH timed out due to Cloudflare)",
+      "db_after": ["it-IT", "en-US"],
+      "switcher_after_reload": ["it-IT", "en-US"],
+      "detail": "LocaleSwitcher shows ONLY 2 options after disable + reload. es-MX removed."
+    },
+    "CHAIN-05": {
+      "status": "PASS",
+      "detail": "Final invariant confirmed: LocaleSwitcher === DB blueprint_enabled=true === ['it-IT','en-US']"
+    },
+    "CHAIN-06": {
+      "status": "PASS",
+      "detail": "localStorage.mfd_language_registry_override = null in ALL test steps. Override key never created."
+    }
+  },
+
+  "rca_of_issues": {
+    "initial_db_discrepancy": {
+      "issue": "DB had es-ES (blueprint_enabled=true) not es-MX as initial state",
+      "cause": "Likely leftover from previous test iterations where es-ES was set instead of es-MX",
+      "mitigation": "Corrected manually: PATCH es-ES blueprint_enabled=false, PATCH es-MX blueprint_enabled=true"
+    },
+    "stale_cache_bug": {
+      "issue": "When loaded with stale mfd_language_registry_db_cache_v1 (from prev session showing es-ES), LocaleSwitcher initially showed es-ES instead of es-MX even though DB had es-MX",
+      "cause": "bootstrapLanguagesFromDB() is async — first render uses localStorage cache. If cache is stale (from different DB state), switcher shows stale data until bootstrap completes",
+      "severity": "MEDIUM — causes brief flash of wrong locale options on first load",
+      "mitigation": "Cache auto-refreshes after bootstrapLanguagesFromDB() resolves and dispatches mfd:languages:change event. Full page reload shows correct data."
+    }
+  },
+
+  "dynamic_chain_summary": {
+    "enable_es_mx_appears": "CONFIRMED PASS",
+    "disable_es_mx_disappears": "CONFIRMED PASS",
+    "db_as_source_of_truth": "CONFIRMED — LocaleSwitcher mirrors DB blueprint_enabled=true state exactly after reload"
+  },
+
+  "test_report_links": ["/app/test_reports/iteration_227.json"],
+  "action_items": [
+    "SETUP: E1 must ensure DB initial state is correctly set to [it-IT, en-US, es-MX] before each test run. Currently DB had es-ES instead of es-MX.",
+    "MEDIUM: Stale localStorage cache (mfd_language_registry_db_cache_v1) can cause LocaleSwitcher to show old language list on first render. Consider invalidating cache when DB is known to have changed.",
+    "MINOR: Fix React setState-during-render anti-pattern in LocalizationOverlay (pre-existing)."
+  ],
+  "critical_code_review_comments": [
+    "blueprintLanguages() correctly filters DB mirror by blueprint_enabled=true — working as designed",
+    "isBlueprintOperational() whitelist includes both es-ES and es-MX — correct, supports both Spanish variants",
+    "mfd:languages:change event dispatch from bootstrapLanguagesFromDB() correctly triggers BlueprintContext to refresh availableLocales",
+    "CACHE STALENESS: bootstrapLanguagesFromDB uses scope=all which fetches ALL languages. The cache accurately reflects the full DB state including blueprint_enabled flags. If DB state changed externally, stale cache will be shown until next bootstrap call."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100% (6/6 CHAIN tests PASS after correct DB setup)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Corrected DB state: disabled es-ES blueprint_enabled, enabled es-MX blueprint_enabled. After CHAIN-04, DB left with [it-IT, en-US] as blueprint languages (es-MX disabled, es-ES disabled).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "CHAIN tests validated. DB left in state: it-IT blueprint=true, en-US blueprint=true, es-MX blueprint=false, es-ES blueprint=false. Dynamic chain WORKS: enable language → appears in LocaleSwitcher after reload; disable → disappears. Key finding: Playwright PATCH requests to admin API timeout (Cloudflare), use curl for PATCH calls. Stale localStorage cache (mfd_language_registry_db_cache_v1) can cause initial mismatch — clear it for clean test runs."
+}

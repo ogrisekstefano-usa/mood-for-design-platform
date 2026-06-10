@@ -166,8 +166,9 @@ class LanguagePatch(BaseModel):
 # Blueprint operational whitelist (hard-coded canon; mirrors languages.js).
 # Uses full BCP-47 codes as canonical form (I18N-STABILIZATION-P0).
 # Short forms kept for backward compat during any transition window.
+# es-MX included: public/client lang, allowed in Blueprint for chain testing.
 BLUEPRINT_OPERATIONAL_CODES = frozenset({
-    "it-IT", "en-US", "en-GB", "fr-FR", "de-DE", "es-ES",
+    "it-IT", "en-US", "en-GB", "fr-FR", "de-DE", "es-ES", "es-MX",
     # backward-compat short forms (DB may still carry them during migration)
     "it", "fr", "de", "es",
 })

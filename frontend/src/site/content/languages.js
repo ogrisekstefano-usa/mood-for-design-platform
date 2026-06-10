@@ -40,7 +40,7 @@
  * remain free to use the full Global Language Registry below (e.g. ar, zh, ja).
  */
 export const BLUEPRINT_OPERATIONAL_CODES = Object.freeze([
-  'it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES',
+  'it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'es-MX',
 ]);
 
 /**
