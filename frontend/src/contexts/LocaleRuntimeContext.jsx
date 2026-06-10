@@ -46,6 +46,7 @@ const BCP47_TO_COMPOSITE = {
   'de-DE': 'DE_DE',
   'es':    'ES_ES',
   'es-ES': 'ES_ES',
+  'es-MX': 'ES_MX',  // P0-B I18N-RECOVERY-001
   'ar':    'AR_AE',
   'ar-AE': 'AR_AE',
 };
@@ -57,6 +58,7 @@ const COMPOSITE_TO_BCP47 = {
   'FR_FR': 'fr',
   'DE_DE': 'de',
   'ES_ES': 'es',
+  'ES_MX': 'es-MX',  // P0-B I18N-RECOVERY-001
   'AR_AE': 'ar',
 };
 const bcp47ToComposite = (c) => BCP47_TO_COMPOSITE[c] || null;
@@ -104,7 +106,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
         ? SYSTEM_FALLBACK_PROFILE
         : { ...SYSTEM_FALLBACK_PROFILE, locale_code: initial },
       source:     'storage',
-      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
+      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'ES_MX', 'AR_AE'],
       loading:    true,
       error:      null,
       anonymous:  !user,
@@ -268,7 +270,7 @@ export const useLocaleRuntime = () => {
       localeCode: 'IT_IT',
       profile:    SYSTEM_FALLBACK_PROFILE,
       source:     'system',
-      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
+      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'ES_MX', 'AR_AE'],
       loading:    false,
       error:      null,
       anonymous:  true,

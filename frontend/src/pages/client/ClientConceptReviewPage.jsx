@@ -20,6 +20,7 @@ import {
   Heart, Compass, Star, MessageSquare, Loader2, Check, X, ArrowLeft,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../contexts/BlueprintContext';
 import './client-concept-review.css';
 
 const ACTIONS = [
@@ -31,6 +32,7 @@ const ACTIONS = [
 
 const ClientConceptReviewPage = () => {
   const { jid } = useParams();
+  const t = useT();
   const [sets, setSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(null);            // {mbId, action}
@@ -119,7 +121,7 @@ const ClientConceptReviewPage = () => {
   if (loading) {
     return (
       <div className="ccr-shell" data-testid="ccr-loading">
-        <div className="ccr-loading"><Loader2 size={20} className="ccr-spin" /> Loading your design directions…</div>
+        <div className="ccr-loading"><Loader2 size={20} className="ccr-spin" /> {t('client.loading_directions', null, 'Loading your design directions…')}</div>
       </div>
     );
   }
@@ -128,13 +130,13 @@ const ClientConceptReviewPage = () => {
     return (
       <div className="ccr-shell" data-testid="ccr-empty">
         <div className="ccr-empty">
-          <p className="ccr-empty__eyebrow">Concept Review</p>
-          <h2 className="ccr-empty__title">No directions shared yet.</h2>
+          <p className="ccr-empty__eyebrow">{t('client.concept_review_eyebrow', null, 'Concept Review')}</p>
+          <h2 className="ccr-empty__title">{t('client.no_directions_yet', null, 'No directions shared yet.')}</h2>
           <p className="ccr-empty__hint">
-            When your studio shares design directions with you, they will appear here for your review.
+            {t('client.no_directions_hint', null, 'When your studio shares design directions with you, they will appear here for your review.')}
           </p>
           <Link to={`/client`} className="ccr-btn ccr-btn--ghost">
-            <ArrowLeft size={14} /> Back to my journey
+            <ArrowLeft size={14} /> {t('client.back_to_journey', null, 'Back to my journey')}
           </Link>
         </div>
       </div>
@@ -145,12 +147,12 @@ const ClientConceptReviewPage = () => {
     <div className="ccr-shell" data-testid="ccr-shell">
       <header className="ccr-top">
         <Link to={`/client`} className="ccr-top__back" data-testid="ccr-back">
-          <ArrowLeft size={14} /> My journey
+          <ArrowLeft size={14} /> {t('client.my_journey', null, 'My journey')}
         </Link>
         <div className="ccr-top__title">
-          <p className="ccr-top__eyebrow">Concept Review</p>
-          <h1 className="ccr-top__heading">Design Directions for you</h1>
-          <p className="ccr-top__hint">Your studio shared {totals} concept{totals === 1 ? '' : 's'} for your reaction. Choose one as your preferred direction, or share your thoughts.</p>
+          <p className="ccr-top__eyebrow">{t('client.concept_review_eyebrow', null, 'Concept Review')}</p>
+          <h1 className="ccr-top__heading">{t('client.design_directions_heading', null, 'Design Directions for you')}</h1>
+          <p className="ccr-top__hint">{t('client.design_directions_hint', {count: totals}, `Your studio shared ${totals} concept${totals === 1 ? '' : 's'} for your reaction. Choose one as your preferred direction, or share your thoughts.`)}</p>
         </div>
       </header>
 
@@ -172,8 +174,8 @@ const ClientConceptReviewPage = () => {
                   data-testid={`ccr-card-${d.moodboard_id}`}
                 >
                   {d.is_preferred && (
-                    <span className="ccr-card__preferred-flag" title="Your preferred direction">
-                      <Star size={12} strokeWidth={2.5} /> Preferred direction
+                    <span className="ccr-card__preferred-flag" title={t('client.preferred_direction', null, 'Your preferred direction')}>
+                      <Star size={12} strokeWidth={2.5} /> {t('client.preferred_direction', null, 'Preferred direction')}
                     </span>
                   )}
                   <header className="ccr-card__hdr">
@@ -262,7 +264,7 @@ const ClientConceptReviewPage = () => {
             <textarea
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              placeholder="What do you like, what would you change, what should we explore?"
+              placeholder={t('client.comment_placeholder', null, 'What do you like, what would you change, what should we explore?')}
               rows={5}
               className="ccr-modal__textarea"
               data-testid="ccr-comment-text"
@@ -270,7 +272,7 @@ const ClientConceptReviewPage = () => {
             />
             <footer className="ccr-modal__footer">
               <button type="button" className="ccr-btn ccr-btn--ghost" onClick={() => setCommentTarget(null)} data-testid="ccr-comment-cancel">
-                Cancel
+                {t('common.cancel', null, 'Cancel')}
               </button>
               <button
                 type="button"
@@ -279,7 +281,7 @@ const ClientConceptReviewPage = () => {
                 disabled={!commentText.trim() || !!pending}
                 data-testid="ccr-comment-submit"
               >
-                {pending ? <><Loader2 size={14} className="ccr-spin" /> Sending…</> : 'Send comment'}
+                {pending ? <><Loader2 size={14} className="ccr-spin" /> {t('common.sending', null, 'Sending…')}</> : t('client.send_comment', null, 'Send comment')}
               </button>
             </footer>
           </div>

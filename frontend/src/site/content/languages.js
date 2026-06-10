@@ -48,6 +48,7 @@
  *   fr-FR  → 'fr'
  *   de-DE  → 'de'
  *   es-ES  → 'es'
+ *   es-MX  → 'es-MX'  ← P0-B I18N-RECOVERY-001
  */
 export const BLUEPRINT_OPERATIONAL_CODES = Object.freeze([
   'it', 'en-US', 'en-GB', 'fr', 'de', 'es',
@@ -64,7 +65,8 @@ export const LANGUAGE_REGISTRY = [
   { code: 'en-GB', region: 'GB', dial_code: '+44',  name: 'English (UK)',    native_name: 'English (UK)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 30, ai_translation_enabled: true,  short: 'EN-UK', base: 'en' },
   { code: 'fr',    region: 'FR', dial_code: '+33',  name: 'French',          native_name: 'Français',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 40, ai_translation_enabled: true,  short: 'FR',    base: 'fr' },
   { code: 'de',    region: 'DE', dial_code: '+49',  name: 'German',          native_name: 'Deutsch',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 50, ai_translation_enabled: true,  short: 'DE',    base: 'de' },
-  { code: 'es',    region: 'ES', dial_code: '+34',  name: 'Spanish',         native_name: 'Español',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 60, ai_translation_enabled: true,  short: 'ES',    base: 'es' },
+  { code: 'es',    region: 'ES', dial_code: '+34',  name: 'Spanish (Spain)', native_name: 'Español (ES)',  enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 60, ai_translation_enabled: true,  short: 'ES',    base: 'es' },
+  { code: 'es-MX', region: 'MX', dial_code: '+52',  name: 'Spanish (Mexico)',native_name: 'Español (MX)',  enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'es',    sort_order: 65, ai_translation_enabled: true,  short: 'ES-MX', base: 'es' },
   // Non-operational languages: visible/usable on public site + Client Companion ONLY.
   // `blueprint_enabled` is forced to false at registry level; admin UI cannot flip
   // it (toggle is locked — see LanguagesPage.jsx + blueprintLanguages() whitelist).

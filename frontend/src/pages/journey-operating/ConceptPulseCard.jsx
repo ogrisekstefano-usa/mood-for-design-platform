@@ -18,6 +18,7 @@ import {
   ChevronRight, RefreshCw, Loader2,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import './concept-pulse.css';
 
 const BAND_CLASS = { high: 'cp-band--high', medium: 'cp-band--medium', low: 'cp-band--low' };
@@ -38,6 +39,7 @@ const ConceptPulseCard = ({ journeyId }) => {
   const [pulse, setPulse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const { locale, tenant } = useBlueprint();
 
   const reload = async () => {
     try {
@@ -114,7 +116,10 @@ const ConceptPulseCard = ({ journeyId }) => {
               // If no Working Moodboard exists yet, generate then navigate.
               if (!pulse.preferred_has_working) {
                 e.preventDefault();
-                api.post(`/api/journeys/${journeyId}/working-moodboards/from-concept/${pulse.preferred_direction.moodboard_id}`, {})
+                api.post(`/api/journeys/${journeyId}/working-moodboards/from-concept/${pulse.preferred_direction.moodboard_id}`, {
+                  target_locale: locale,
+                  tenant_primary_locale: tenant?.locales?.default || locale,
+                })
                   .then((r) => {
                     const wid = r.data?.moodboard_id;
                     if (wid) window.location.href = `/studio/moodboards/working/${wid}`;

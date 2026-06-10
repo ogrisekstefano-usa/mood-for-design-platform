@@ -5,7 +5,9 @@
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowUpRight, Plus, Trash2, FileText, Sparkles, Check } from 'lucide-react';import api from '../../lib/api';
+import { ArrowLeft, ArrowUpRight, Plus, Trash2, FileText, Sparkles, Check } from 'lucide-react';
+import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import EntityPicker from '../../components/knowledge/EntityPicker';
 import EntityContextPanel from '../../components/knowledge/EntityContextPanel';
 import './specifications.css';
@@ -81,6 +83,7 @@ export const SpecificationsListPage = () => {
 export const SpecificationWorkspace = () => {
   const { id } = useParams();
   const nav = useNavigate();
+  const { locale, tenant } = useBlueprint();
   const [pkg, setPkg]       = useState(null);
   const [items, setItems]   = useState([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +144,10 @@ export const SpecificationWorkspace = () => {
                   style={{ background: 'linear-gradient(135deg, rgba(232,178,98,0.14), rgba(111,228,210,0.10))', borderColor: 'rgba(232,178,98,0.40)', color: '#E8B262' }}
                   data-testid="generate-project-story"
                   onClick={() => {
-                    api.post(`/api/project-stories/generate-from-specification/${id}`)
+                    api.post(`/api/project-stories/generate-from-specification/${id}`, {
+                      target_locale: locale,
+                      tenant_primary_locale: tenant?.locales?.default || locale,
+                    })
                       .then((r) => { if (r?.data?.id) window.location.assign(`/project-stories/${r.data.id}`); })
                       .catch(() => {});
                   }}>

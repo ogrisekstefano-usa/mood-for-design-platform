@@ -102,6 +102,10 @@ const IdentityChip = () => (
 // ── Main Topbar ──────────────────────────────────────────────────
 const Topbar = () => {
   const { slots } = useTopbarSlots();
+  const { locale } = useBlueprint();
+  // Map BCP-47 locale to the binary 'it'/'en' expected by legacy sub-components.
+  // Once those components are fully i18n-aware this mapping can be removed.
+  const langKey = locale?.startsWith('it') ? 'it' : 'en';
 
   return (
     <header data-testid="topbar" className="atelier-header" style={{ position: 'relative', zIndex: 50 }}>
@@ -136,9 +140,9 @@ const Topbar = () => {
           </>
         )}
 
-        <DesignerPresencePicker locale="it" compact />
+        <DesignerPresencePicker locale={langKey} compact />
         <LocaleSwitcher align="right" />
-        <NotificationBell locale="it" />
+        <NotificationBell locale={langKey} />
 
         <IdentityChip />
       </div>

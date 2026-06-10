@@ -29,6 +29,49 @@ class StoryPatch(BaseModel):
     sections: Optional[Dict[str, Any]] = None
 
 
+class GenerateFromSpecBody(BaseModel):
+    # Locale propagation — I18N-RECOVERY-001.
+    # Fallback chain: target_locale → tenant_primary_locale → "it"
+    target_locale: Optional[str] = None
+    tenant_primary_locale: Optional[str] = None
+
+
+# ────────────────────────────────────────────────────────────
+#  Locale-aware section copy for AI-generated Project Stories
+# ────────────────────────────────────────────────────────────
+_STORY_COPY: Dict[str, Dict[str, str]] = {
+    "it":    {"vision_headline": "La direzione del progetto",
+              "vision_body": "Una visione costruita su materie, luce e proporzione · curata dal Brand Atlas.",
+              "closing": "Un progetto pronto per essere abitato."},
+    "en":    {"vision_headline": "Project direction",
+              "vision_body": "A vision built on materials, light and proportion · curated from the Brand Atlas.",
+              "closing": "A project ready to be inhabited."},
+    "fr":    {"vision_headline": "Direction du projet",
+              "vision_body": "Une vision construite sur les matériaux, la lumière et la proportion · curatée par le Brand Atlas.",
+              "closing": "Un projet prêt à être habité."},
+    "es":    {"vision_headline": "Dirección del proyecto",
+              "vision_body": "Una visión construida sobre materiales, luz y proporción · curada desde el Brand Atlas.",
+              "closing": "Un proyecto listo para ser habitado."},
+    "de":    {"vision_headline": "Projektrichtung",
+              "vision_body": "Eine Vision aus Materialien, Licht und Proportion · kuratiert aus dem Brand Atlas.",
+              "closing": "Ein Projekt, bereit bewohnt zu werden."},
+}
+
+
+def _resolve_story_copy(target_locale: Optional[str], tenant_primary_locale: Optional[str]) -> Dict[str, str]:
+    """Resolve locale-aware copy. Fallback chain: target_locale → tenant_primary_locale → 'it'."""
+    for code in [target_locale, tenant_primary_locale, "it"]:
+        if not code:
+            continue
+        # Try exact match first, then base language prefix
+        if code in _STORY_COPY:
+            return _STORY_COPY[code]
+        base = code.split("-")[0].split("_")[0].lower()
+        if base in _STORY_COPY:
+            return _STORY_COPY[base]
+    return _STORY_COPY["it"]
+
+
 def _now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -106,7 +149,8 @@ def delete_story(story_id: str, ctx=Depends(get_tenant_context)):
 
 
 @router.post("/project-stories/generate-from-specification/{spec_id}")
-def generate_from_specification(spec_id: str, ctx=Depends(get_tenant_context)):
+def generate_from_specification(spec_id: str, body: GenerateFromSpecBody = GenerateFromSpecBody(),
+                                ctx=Depends(get_tenant_context)):
     """Genera la Project Story leggendo Specification → Material Board → Moodboard.
     Auto-popola le 6 sezioni in <5 secondi.
     """
@@ -152,6 +196,8 @@ def generate_from_specification(spec_id: str, ctx=Depends(get_tenant_context)):
     # Hydrate entities
     all_eids = list(set(spec_eids + mb_eids + mat_eids))
     ent_map = _entity_brief(c, all_eids)
+    # Locale-aware copy
+    copy = _resolve_story_copy(body.target_locale, body.tenant_primary_locale)
     # Project / Journey context
     project_meta = {}
     if s.get("project_id"):
@@ -167,8 +213,8 @@ def generate_from_specification(spec_id: str, ctx=Depends(get_tenant_context)):
             "studio":     None,  # editable
         },
         "vision": {
-            "headline":    "La direzione del progetto",
-            "body":        s.get("notes") or "Una visione costruita su materie, luce e proporzione · curata dal Brand Atlas.",
+            "headline":    copy["vision_headline"],
+            "body":        s.get("notes") or copy["vision_body"],
         },
         "moodboard": {
             "source_id":   s.get("source_moodboard_id"),
@@ -199,7 +245,7 @@ def generate_from_specification(spec_id: str, ctx=Depends(get_tenant_context)):
             "items_count":     len(items),
             "moodboard_count": len(mb_eids),
             "material_count":  len(mat_eids),
-            "closing":         "Un progetto pronto per essere abitato.",
+            "closing":         copy["closing"],
         },
     }
     payload = {
@@ -215,6 +261,7 @@ def generate_from_specification(spec_id: str, ctx=Depends(get_tenant_context)):
         "sections":    sections,
         "status":      "draft",
         "created_by":  ctx.get("profile_id"),
+        "target_locale": body.target_locale or body.tenant_primary_locale or "it",
     }
     r = db().table("project_stories").insert(payload).execute()
     return r.data[0] if r.data else payload

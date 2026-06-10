@@ -53,6 +53,13 @@ DECISION_STAGES = ("inspiration", "evaluation", "selection", "approved", "specif
 WORKING_SECTIONS = ("vision", "materials", "products", "atmosphere", "notes")
 
 
+class GenerateWorkingBody(BaseModel):
+    # Locale propagation — I18N-RECOVERY-001.
+    # Fallback chain: target_locale → tenant_primary_locale → "it"
+    target_locale: Optional[str] = None
+    tenant_primary_locale: Optional[str] = None
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -261,6 +268,7 @@ def _fetch_media(c, tid: str, ids: List[str]) -> Dict[str, Dict[str, Any]]:
 
 @router.post("/journeys/{jid}/working-moodboards/from-concept/{concept_mb_id}")
 def generate_working_moodboard(jid: str, concept_mb_id: str,
+                               body: GenerateWorkingBody = GenerateWorkingBody(),
                                ctx=Depends(get_tenant_context)):
     """Derive a Working Moodboard from a Concept Board (idempotent)."""
     c = db()
@@ -309,6 +317,8 @@ def generate_working_moodboard(jid: str, concept_mb_id: str,
     derived_at = _now()
     mb_id = str(uuid.uuid4())
     title = f"{direction_name} · Working Moodboard"
+    # Resolve effective locale: target_locale → tenant_primary_locale → "it"
+    effective_locale = body.target_locale or body.tenant_primary_locale or "it"
 
     ai_metadata = {
         "working_seed": {
@@ -323,6 +333,8 @@ def generate_working_moodboard(jid: str, concept_mb_id: str,
             "color_palette":     palette,
             "generator":         "store-012b",
             "generator_version": 1,
+            "target_locale":     effective_locale,
+            "tenant_primary_locale": body.tenant_primary_locale,
         }
     }
 

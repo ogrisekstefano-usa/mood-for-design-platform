@@ -1,0 +1,112 @@
+{
+  "summary": "I18N-RECOVERY-001 full-stack testing. Backend P0-A (locale fields on 3 AI endpoints) all pass. Frontend P0-C, P1 pages pass. One HIGH bug found: LocaleSwitcher dropdown shows only 1 locale (EN-US) because DB stores Italian as 'it-IT' but BLUEPRINT_OPERATIONAL_CODES has 'it' (strict mismatch → Italian filtered out). P0-B es-MX is in static JS files but NOT in DB and not shown in any UI (blueprint_enabled:false by design, but test expected visibility).",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/platform/languages",
+        "issue": "Only returns 2 languages (it-IT, en-US). DB platform_languages table missing en-GB, fr, de, es. Pre-existing DB state issue.",
+        "priority": "MEDIUM"
+      },
+      {
+        "endpoint": "GET /api/locale-runtime/resolve",
+        "issue": "supported list does not include ES_MX: ['IT_IT','EN_US','EN_GB','EN_AE','DE_DE','FR_FR','ES_ES']. Backend reads from DB, not from frontend static LocaleRuntimeContext. P0-B only updated frontend JS, not backend DB.",
+        "priority": "MEDIUM"
+      }
+    ]
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LocaleSwitcher",
+        "issue": "Dropdown shows only 1 locale (English US). Italian and all other operational locales are absent. Root cause: DB stores Italian as code 'it-IT', but BLUEPRINT_OPERATIONAL_CODES (languages.js:54) has 'it'. blueprintLanguages() uses BLUEPRINT_OPERATIONAL_CODES.includes(l.code) (strict match). 'it-IT' !== 'it' → Italian filtered out. DB bootstrap (bootstrapLanguagesFromDB) overrides static LANGUAGE_REGISTRY with DB codes. Since DB only has 2 entries (it-IT, en-US) and it-IT fails the filter, only en-US shows.",
+        "selector": "[data-testid='locale-switcher-menu']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "LocaleSwitcher / P0-B",
+        "issue": "es-MX not visible in LocaleSwitcher dropdown or admin language settings (/admin/languages). es-MX was added to static LANGUAGE_REGISTRY (blueprint_enabled: false) and LocaleRuntimeContext but NOT to DB platform_languages table and NOT to BLUEPRINT_OPERATIONAL_CODES. Admin /admin/languages shows only it-IT and en-US from DB. es-MX comment in BLUEPRINT_OPERATIONAL_CODES is present but the value is NOT in the array (lines 53-55 show only 6 codes, es-MX excluded).",
+        "selector": "[data-testid='locale-option-es-MX']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "LocaleSwitcher → Language Bootstrap",
+        "issue": "bootstrapLanguagesFromDB() overwrites static LANGUAGE_REGISTRY with DB data. DB has it-IT vs. static registry 'it'. blueprintLanguages() strict code match causes Italian to disappear from dropdown. Fix: either normalize DB codes in bootstrap OR update blueprintLanguages() filter to do base-code matching (e.g. BLUEPRINT_OPERATIONAL_CODES.some(c => l.code === c || l.code.startsWith(c+'-'))).",
+        "affected_selectors": ["[data-testid='locale-switcher-menu']", "[data-testid='locale-switcher-btn']"]
+      }
+    ],
+    "design_issues": []
+  },
+
+  "features_verified": {
+    "P0-A_concept_directions_locale_fields": "PASS - endpoint accepts target_locale and tenant_primary_locale without 422",
+    "P0-A_working_moodboards_locale_fields": "PASS - endpoint accepts locale fields without 422",
+    "P0-A_project_stories_locale_fields": "PASS - endpoint accepts locale fields without 422",
+    "P0-B_es_mx_in_language_registry": "PARTIAL - added to static LANGUAGE_REGISTRY (blueprint_enabled:false) and LocaleRuntimeContext JS files. NOT in DB, not visible in Blueprint LocaleSwitcher or admin languages settings. Not in BLUEPRINT_OPERATIONAL_CODES array.",
+    "P0-C_designer_presence_picker_locale_dynamic": "PASS - Topbar.jsx line 108: langKey = locale?.startsWith('it') ? 'it' : 'en'. Dynamic from BlueprintContext locale.",
+    "P0-C_notification_bell_locale_dynamic": "PASS - NotificationBell receives langKey prop dynamically from BlueprintContext.",
+    "locale_switcher_visible_in_topbar": "PASS - visible between DesignerPresencePicker and NotificationBell",
+    "locale_switcher_shows_current_locale": "PASS - shows 'en-US' (current session locale)",
+    "locale_switcher_dropdown_opens": "PASS - dropdown opens",
+    "locale_switcher_shows_multiple_locales": "FAIL - only shows 1 locale (English US)",
+    "P1_editorial_autopilot_no_hardcoded_italian": "PASS - hero 'Blueprint AI keeps you visible.' uses t()",
+    "P1_proofreading_inbox_no_hardcoded_italian": "PASS - header 'Awaiting approval' uses t(), action buttons in English",
+    "P1_journey_operating_meta_labels": "PASS - CLIENT, STATUS, NEXT ACTION in English from t()",
+    "P1_discover_brief_page": "PASS - page renders, no hardcoded Italian strings",
+    "governance_overlay_shows_missing_keys": "PASS - shows 'EDITORIAL DEBUG runtime 3 · missing 25' (expected)",
+    "app_no_crash_all_pages": "PASS - editorial, inbox, dashboard, journey operating all load without React error overlay"
+  },
+
+  "test_report_links": [
+    "/app/backend/tests/test_i18n_recovery_001.py",
+    "/app/test_reports/pytest/iter223_i18n_recovery.xml"
+  ],
+
+  "action_items": [
+    "HIGH: Fix blueprintLanguages() filter in languages.js to handle base-code matching. Current: BLUEPRINT_OPERATIONAL_CODES.includes(l.code). Proposed: BLUEPRINT_OPERATIONAL_CODES.some(c => l.code === c || l.code.startsWith(c + '-')). This would match 'it-IT' against 'it' and allow Italian to appear in LocaleSwitcher.",
+    "MEDIUM: Update DB platform_languages to include all 6 Blueprint operational languages (en-GB, fr, de, es, and use 'it' not 'it-IT' as code). Currently only it-IT and en-US are in DB.",
+    "MEDIUM: P0-B es-MX visibility - if es-MX should be visible somewhere in Blueprint UI (e.g., admin languages settings), add it to DB platform_languages table. If it's purely public site/client companion, update test expectations and documentation.",
+    "INFO: The backend /api/locale-runtime/resolve does not return ES_MX in supported list (reads from DB). If P0-B requires backend awareness of es-MX, update the locale-runtime-context configuration in the database."
+  ],
+
+  "critical_code_review_comments": [
+    "languages.js:190-192 - blueprintLanguages() strict BLUEPRINT_OPERATIONAL_CODES.includes(l.code) fails when DB uses 'it-IT' vs static registry 'it'. Should use base-code matching.",
+    "languages.js:114-153 - bootstrapLanguagesFromDB() sets _dbMirror directly from DB response codes (it-IT) without normalizing to match BLUEPRINT_OPERATIONAL_CODES. The DB codes and operational codes are inconsistent.",
+    "BlueprintContext.jsx:25 - FALLBACK_LOCALES computed at module load time. If localStorage DB cache already has it-IT data, FALLBACK_LOCALES will be just [en-US] on first render. This could cause a brief empty-locale state.",
+    "The comment in BLUEPRINT_OPERATIONAL_CODES (languages.js:51) says 'es-MX → es-MX ← P0-B I18N-RECOVERY-001' but es-MX is NOT added to the array (line 54 only has 6 codes). Either the comment is misleading or es-MX was meant to be added but wasn't."
+  ],
+
+  "updated_files": [
+    "/app/backend/tests/test_i18n_recovery_001.py"
+  ],
+
+  "success_rate": {
+    "backend": "89% (17/19 tests pass — 2 fail on es-MX DB/API presence which is expected partial-implementation)",
+    "frontend": "70% (LocaleSwitcher shows 1 locale instead of 6 — critical usability bug; all P1 pages and P0-A/C pass)"
+  },
+
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+
+  "seed_data_creation": "Created test journey via /api/public/journeys/initiate. journey_id=8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622 (client: TEST_I18N, email: test_i18n_recovery@example.com). Used for JourneyOperatingPage and DiscoverBriefPage testing.",
+
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+
+  "context_for_next_testing_agent": "Main bug: LocaleSwitcher dropdown only shows English (US). Italian and other operational locales are filtered out because DB stores Italian as 'it-IT' but BLUEPRINT_OPERATIONAL_CODES has 'it'. Fix blueprintLanguages() in /app/frontend/src/site/content/languages.js line 191. After fix, verify LocaleSwitcher shows IT, EN-US, EN-GB, FR, DE, ES (6 options). Also check if es-MX should be in BLUEPRINT_OPERATIONAL_CODES per P0-B requirements. Backend P0-A tests all pass. P1 pages all render correctly.",
+
+  "rca_of_issue": {
+    "bug": "LocaleSwitcher shows only 1 locale",
+    "reproduction_steps": [
+      "1. Login to Blueprint studio",
+      "2. Navigate to /blueprint/editorial (or any Blueprint page)",
+      "3. Click LocaleSwitcher (EN-US globe icon) in topbar",
+      "4. Dropdown shows only 'English (US)'"
+    ],
+    "root_cause": "DB platform_languages table stores Italian code as 'it-IT'. bootstrapLanguagesFromDB() sets _dbMirror = [{code:'it-IT',...},{code:'en-US',...}]. blueprintLanguages() filters with BLUEPRINT_OPERATIONAL_CODES.includes(l.code) where BLUEPRINT_OPERATIONAL_CODES=['it','en-US','en-GB','fr','de','es']. 'it-IT' is NOT in this array → Italian filtered out. Only 'en-US' passes → 1 locale in dropdown.",
+    "mitigation": "In languages.js line 191, change strict includes to: BLUEPRINT_OPERATIONAL_CODES.some(c => l.code === c || l.code.startsWith(c + '-')). This would match 'it-IT' against operational code 'it' via prefix check."
+  }
+}

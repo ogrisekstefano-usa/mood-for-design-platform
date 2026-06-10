@@ -10,19 +10,8 @@ import {
   Loader2, Inbox,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../contexts/BlueprintContext';
 import './proofreading-inbox.css';
-
-const fmtDate = (iso) => {
-  if (!iso) return '—';
-  try {
-    const d = new Date(iso);
-    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-    if (days === 0) return 'oggi';
-    if (days === 1) return 'ieri';
-    if (days < 7) return `${days}g fa`;
-    return d.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
-  } catch { return '—'; }
-};
 
 const STATUS_TO_CARD_CLS = {
   in_proofreading: '',
@@ -38,6 +27,20 @@ const STATUS_TO_CARD_CLS = {
 const ProofreadingInboxPage = () => {
   const [params] = useSearchParams();
   const statusFilter = params.get('status') || 'in_proofreading';
+  const t = useT();
+
+  // Locale-aware date formatter built from t() fallbacks
+  const fmtDate = (iso) => {
+    if (!iso) return '—';
+    try {
+      const d = new Date(iso);
+      const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+      if (days === 0) return t('common.today', null, 'today');
+      if (days === 1) return t('common.yesterday', null, 'yesterday');
+      if (days < 7)  return `${days}d`;
+      return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+    } catch { return '—'; }
+  };
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -91,14 +94,14 @@ const ProofreadingInboxPage = () => {
   };
   const onApprove        = () => act('approve');
   const onRequestRevision = () => {
-    const notes = window.prompt('Quali modifiche chiedere a Blueprint AI?');
+    const notes = window.prompt(t('proofreading.request_revision_prompt', null, 'What changes should Blueprint AI make?'));
     if (notes !== null) act('request-revision', { notes });
   };
   const onRegenerate     = () => {
-    if (window.confirm('Rigenero il contenuto da capo?')) act('regenerate');
+    if (window.confirm(t('proofreading.confirm_regenerate', null, 'Regenerate this content from scratch?'))) act('regenerate');
   };
   const onPublish        = () => {
-    if (window.confirm('Pubblicare ora?')) act('publish');
+    if (window.confirm(t('proofreading.confirm_publish', null, 'Publish now?'))) act('publish');
   };
 
   const isBlocked = detail?.is_blocked;
@@ -144,19 +147,19 @@ const ProofreadingInboxPage = () => {
       <header className="epi-header">
         <div>
           <p className="epi-header__eyebrow">Proofreading Inbox™</p>
-          <h1 className="epi-header__title">In attesa di approvazione</h1>
+          <h1 className="epi-header__title">{t('proofreading.awaiting_approval', null, 'Awaiting approval')}</h1>
         </div>
-        <span className="epi-header__count">{items.length} {statusFilter === 'in_proofreading' ? 'da revisionare' : 'risultati'}</span>
+        <span className="epi-header__count">{items.length} {statusFilter === 'in_proofreading' ? t('proofreading.to_review', null, 'to review') : t('common.results', null, 'results')}</span>
       </header>
 
       <div className="epi-body">
         {/* LIST */}
         <div className="epi-list" data-testid="epi-list">
-          {loading && <div className="epi-list-empty"><Loader2 size={16} className="epi-spin" /> Loading…</div>}
+          {loading && <div className="epi-list-empty"><Loader2 size={16} className="epi-spin" /> {t('common.loading', null, 'Loading…')}</div>}
           {!loading && items.length === 0 && (
             <div className="epi-list-empty">
               <Inbox size={28} strokeWidth={1.5} style={{ opacity: 0.4 }} />
-              <p style={{ marginTop: 12 }}>Nessun contenuto in {statusFilter === 'in_proofreading' ? 'proofreading' : statusFilter}.</p>
+              <p style={{ marginTop: 12 }}>{t('proofreading.no_content', {status: statusFilter}, `No content in ${statusFilter}.`)}</p>
             </div>
           )}
           {items.map((it) => (
@@ -186,11 +189,11 @@ const ProofreadingInboxPage = () => {
         {!detail && !detailLoading && (
           <div className="epi-empty">
             <Inbox size={36} strokeWidth={1.2} style={{ opacity: 0.4 }} />
-            <p className="epi-empty__title">Seleziona un contenuto</p>
-            <p>La revisione bilingue apparirà qui.</p>
+            <p className="epi-empty__title">{t('proofreading.select_content', null, 'Select a content item')}</p>
+            <p>{t('proofreading.bilingual_review_hint', null, 'The bilingual review will appear here.')}</p>
           </div>
         )}
-        {detailLoading && <div className="epi-empty"><Loader2 size={18} className="epi-spin" /> Loading…</div>}
+        {detailLoading && <div className="epi-empty"><Loader2 size={18} className="epi-spin" /> {t('common.loading', null, 'Loading…')}</div>}
         {detail && (
           <div className="epi-detail">
             {/* LEFT · target market version */}
@@ -201,10 +204,9 @@ const ProofreadingInboxPage = () => {
                   <div className="epi-target__hero-veil" />
                   {isBlocked && (
                     <div className="epi-blocked-banner" data-testid="epi-media-required">
-                      <p className="epi-blocked-banner__title">⚠ Media Required</p>
+                      <p className="epi-blocked-banner__title">⚠ {t('proofreading.media_required', null, 'Media Required')}</p>
                       <p className="epi-blocked-banner__sub">
-                        Blueprint AI non pubblica con stock photos.
-                        Seleziona immagini autorizzate dalla Media Library.
+                        {t('proofreading.media_required_hint', null, 'Blueprint AI does not publish with stock photos. Select authorised images from the Media Library.')}
                       </p>
                     </div>
                   )}
@@ -216,19 +218,19 @@ const ProofreadingInboxPage = () => {
 
                 <div className="epi-target__meta">
                   <div className="epi-meta">
-                    <span className="epi-meta__label">Mercato</span>
+                    <span className="epi-meta__label">{t('proofreading.meta_market', null, 'Market')}</span>
                     <span className="epi-meta__value">{detail.market?.code?.replace(/_/g, ' ') || '—'}</span>
                   </div>
                   <div className="epi-meta">
-                    <span className="epi-meta__label">Tono</span>
+                    <span className="epi-meta__label">{t('proofreading.meta_tone', null, 'Tone')}</span>
                     <span className="epi-meta__value">{detail.tone || detail.locale_profile?.editorial_tone || '—'}</span>
                   </div>
                   <div className="epi-meta">
-                    <span className="epi-meta__label">Stato</span>
+                    <span className="epi-meta__label">{t('proofreading.meta_status', null, 'Status')}</span>
                     <span className="epi-meta__value">{detail.status_label}</span>
                   </div>
                   <div className="epi-meta">
-                    <span className="epi-meta__label">Aggiornato</span>
+                    <span className="epi-meta__label">{t('proofreading.meta_updated', null, 'Updated')}</span>
                     <span className="epi-meta__value">{fmtDate(detail.updated_at)}</span>
                   </div>
                 </div>
@@ -244,29 +246,29 @@ const ProofreadingInboxPage = () => {
             {/* RIGHT · explanation in tenant language */}
             <div className="epi-detail__col" data-testid="epi-explanation">
               <div className="epi-expl-block">
-                <p className="epi-expl-block__label">Spiegazione in italiano · perché esiste questo contenuto</p>
+                <p className="epi-expl-block__label">{t('proofreading.explanation_label', null, 'Explanation in tenant language · why this content exists')}</p>
                 <p className={`epi-expl-block__body ${detail.explanation_local ? '' : 'epi-expl-block__body--mute'}`}>
-                  {detail.explanation_local || 'Blueprint AI sta ancora preparando la motivazione per questo contenuto.'}
+                  {detail.explanation_local || t('proofreading.explanation_preparing', null, 'Blueprint AI is still preparing the motivation for this content.')}
                 </p>
               </div>
 
               {detail.ai_motivation && (
                 <div className="epi-expl-block">
-                  <p className="epi-expl-block__label">Motivazione strategica</p>
+                  <p className="epi-expl-block__label">{t('proofreading.strategic_motivation', null, 'Strategic motivation')}</p>
                   <p className="epi-expl-block__body">{detail.ai_motivation}</p>
                 </div>
               )}
 
               {detail.ai_audience && (
                 <div className="epi-expl-block">
-                  <p className="epi-expl-block__label">Audience target</p>
+                  <p className="epi-expl-block__label">{t('proofreading.target_audience', null, 'Target audience')}</p>
                   <p className="epi-expl-block__body">{detail.ai_audience}</p>
                 </div>
               )}
 
               {detail.ai_keywords && detail.ai_keywords.length > 0 && (
                 <div className="epi-expl-block">
-                  <p className="epi-expl-block__label">Parole chiave</p>
+                  <p className="epi-expl-block__label">{t('proofreading.keywords', null, 'Keywords')}</p>
                   <div className="epi-keywords">
                     {detail.ai_keywords.map((k, i) => <span key={i} className="epi-kw">{k}</span>)}
                   </div>
@@ -275,7 +277,7 @@ const ProofreadingInboxPage = () => {
 
               {detail.ai_notes && detail.ai_notes.length > 0 && (
                 <div className="epi-expl-block">
-                  <p className="epi-expl-block__label">Note AI</p>
+                  <p className="epi-expl-block__label">{t('proofreading.ai_notes', null, 'AI Notes')}</p>
                   <ul className="epi-notes-list">
                     {detail.ai_notes.map((n, i) => <li key={i}>{typeof n === 'string' ? n : (n.text || JSON.stringify(n))}</li>)}
                   </ul>
@@ -284,7 +286,7 @@ const ProofreadingInboxPage = () => {
 
               {detail.ai_sources && detail.ai_sources.length > 0 && (
                 <div className="epi-expl-block">
-                  <p className="epi-expl-block__label">Fonti utilizzate</p>
+                  <p className="epi-expl-block__label">{t('proofreading.sources_used', null, 'Sources used')}</p>
                   <ul className="epi-notes-list">
                     {detail.ai_sources.map((s, i) => <li key={i}>{s.label || s.type || JSON.stringify(s)}</li>)}
                   </ul>
@@ -292,9 +294,9 @@ const ProofreadingInboxPage = () => {
               )}
 
               <div className="epi-expl-block">
-                <p className="epi-expl-block__label">Hotspot proposti</p>
+                <p className="epi-expl-block__label">{t('proofreading.proposed_hotspots', null, 'Proposed hotspots')}</p>
                 {(!detail.proposed_hotspots || detail.proposed_hotspots.length === 0)
-                  ? <p className="epi-expl-block__body epi-expl-block__body--mute">Nessun hotspot proposto · review only nel MVP.</p>
+                  ? <p className="epi-expl-block__body epi-expl-block__body--mute">{t('proofreading.no_hotspots', null, 'No hotspots proposed · review only in MVP.')}</p>
                   : (
                     <div className="epi-hotspots">
                       {detail.proposed_hotspots.slice(0, 6).map((h, i) => (
@@ -317,9 +319,9 @@ const ProofreadingInboxPage = () => {
                   data-testid="epi-action-approve"
                   onClick={onApprove}
                   disabled={acting || isBlocked || localeMismatch || detail.status === 'approved' || detail.status === 'published'}
-                  title={isBlocked ? 'Sblocca i media richiesti prima di approvare' : (localeMismatch ? 'Rigenera nella lingua target prima di approvare' : '')}
+                  title={isBlocked ? t('proofreading.unblock_media_first', null, 'Unblock required media before approving') : (localeMismatch ? t('proofreading.regenerate_in_target_locale', null, 'Regenerate in target locale before approving') : '')}
                 >
-                  <CheckCircle2 size={13} strokeWidth={2} /> Approva
+                  <CheckCircle2 size={13} strokeWidth={2} /> {t('proofreading.action_approve', null, 'Approve')}
                 </button>
                 <button
                   type="button"
@@ -328,7 +330,7 @@ const ProofreadingInboxPage = () => {
                   onClick={onRequestRevision}
                   disabled={acting || detail.status === 'published'}
                 >
-                  <MessageSquare size={13} strokeWidth={2} /> Chiedi modifica
+                  <MessageSquare size={13} strokeWidth={2} /> {t('proofreading.action_request_changes', null, 'Request changes')}
                 </button>
                 <button
                   type="button"
@@ -337,7 +339,7 @@ const ProofreadingInboxPage = () => {
                   onClick={onRegenerate}
                   disabled={acting || detail.status === 'published'}
                 >
-                  <RefreshCw size={13} strokeWidth={2} /> Rigenera
+                  <RefreshCw size={13} strokeWidth={2} /> {t('proofreading.action_regenerate', null, 'Regenerate')}
                 </button>
                 <button
                   type="button"
@@ -346,7 +348,7 @@ const ProofreadingInboxPage = () => {
                   onClick={onPublish}
                   disabled={acting || isBlocked || detail.status === 'published'}
                 >
-                  <Send size={13} strokeWidth={2} /> Pubblica
+                  <Send size={13} strokeWidth={2} /> {t('proofreading.action_publish', null, 'Publish')}
                 </button>
               </div>
             </div>

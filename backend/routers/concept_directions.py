@@ -316,6 +316,8 @@ def _create_concept_board(
     materials: List[Dict[str, Any]],
     products: List[Dict[str, Any]],
     images: List[Dict[str, Any]],
+    target_locale: Optional[str] = None,
+    tenant_primary_locale: Optional[str] = None,
 ) -> Dict[str, Any]:
     tid = ctx["tenant_id"]
     uid = ctx.get("profile_id")
@@ -331,6 +333,9 @@ def _create_concept_board(
         needs_flags.append("NEEDS_MEDIA")
 
     mb_id = str(uuid.uuid4())
+    # Resolve effective locale for this generation:
+    # Fallback chain: target_locale → tenant_primary_locale → "it"
+    effective_locale = target_locale or tenant_primary_locale or "it"
     ai_metadata = {
         "concept_seed": {
             "journey_id":          jid,
@@ -348,6 +353,8 @@ def _create_concept_board(
             "needs_flags":         needs_flags,
             "generator":           "store-012a",
             "generator_version":   1,
+            "target_locale":       effective_locale,
+            "tenant_primary_locale": tenant_primary_locale,
         }
     }
 
@@ -414,6 +421,13 @@ def _create_concept_board(
 # ════════════════════════════════════════════════════════════════════
 class GenerateBody(BaseModel):
     force: bool = False  # reserved for future use
+    # Locale propagation — I18N-RECOVERY-001.
+    # target_locale: the designer's active UI locale (BCP-47, e.g. "en-US", "it", "es-MX").
+    # tenant_primary_locale: the tenant's configured primary language (fallback when
+    #   target_locale is absent).
+    # Fallback chain: target_locale → tenant_primary_locale → "it"
+    target_locale: Optional[str] = None
+    tenant_primary_locale: Optional[str] = None
 
 
 @router.post("/journeys/{jid}/concept-directions/generate")
@@ -510,6 +524,8 @@ def generate_concept_directions(jid: str, body: GenerateBody = GenerateBody(),
             materials=_slice_for_direction(materials_pool, 5, m_offset),
             products=_slice_for_direction(products_pool, 5, p_offset),
             images=_slice_for_direction(media_pool, 8, i_offset),
+            target_locale=body.target_locale,
+            tenant_primary_locale=body.tenant_primary_locale,
         )
         directions.append(direction)
 

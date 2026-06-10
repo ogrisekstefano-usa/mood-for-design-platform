@@ -21,6 +21,7 @@ import {
   Check, ArrowLeft, ArrowRight, X, Loader2, Plus, Upload, Globe,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import './discover-brief.css';
 
 const STEPS = [
@@ -41,6 +42,7 @@ const DEFAULT_INSPIRATIONS = { website_urls: [], pinterest_urls: [], instagram_u
 const DiscoverBriefPage = () => {
   const { jid } = useParams();
   const navigate = useNavigate();
+  const { locale, tenant, t } = useBlueprint();
 
   const [catalog, setCatalog] = useState(null);
   const [state, setState] = useState(null);          // server state
@@ -620,7 +622,10 @@ const SummaryView = ({ intel, jid, onBack }) => {
   const handleGenerate = async () => {
     setGenerating(true);
     try {
-      await api.post(`/api/journeys/${jid}/concept-directions/generate`, {});
+      await api.post(`/api/journeys/${jid}/concept-directions/generate`, {
+        target_locale: locale,
+        tenant_primary_locale: tenant?.locales?.default || locale,
+      });
       const r = await api.get(`/api/journeys/${jid}/concept-directions`);
       setSets(r.data.sets || []);
     } catch (e) {
@@ -648,10 +653,10 @@ const SummaryView = ({ intel, jid, onBack }) => {
   return (
     <div className="dbe-summary" data-testid="dbe-summary">
       <header className="dbe-summary__hdr">
-        <p className="dbe-summary__eyebrow">Discovery complete</p>
-        <h2 className="dbe-summary__title">Design Intelligence™ is ready.</h2>
+        <p className="dbe-summary__eyebrow">{t('discover.summary_eyebrow', null, 'Discovery complete')}</p>
+        <h2 className="dbe-summary__title">{t('discover.summary_title', null, 'Design Intelligence™ is ready.')}</h2>
         <p className="dbe-summary__subtitle">
-          Blueprint AI prepared the foundations. Let it now compose three Concept Directions you can refine instead of starting from a blank canvas.
+          {t('discover.summary_subtitle', null, 'Blueprint AI prepared the foundations. Let it now compose three Concept Directions you can refine instead of starting from a blank canvas.')}
         </p>
       </header>
 
@@ -660,9 +665,9 @@ const SummaryView = ({ intel, jid, onBack }) => {
         <section className="dbe-gencta" data-testid="dbe-gencta">
           <div className="dbe-gencta__copy">
             <p className="dbe-gencta__eyebrow">Blueprint AI · Next Step</p>
-            <h3 className="dbe-gencta__title">Generate Concept Directions™</h3>
+            <h3 className="dbe-gencta__title">{t('discover.generate_cta_title', null, 'Generate Concept Directions™')}</h3>
             <p className="dbe-gencta__hint">
-              Three ready-to-edit Concept Boards in seconds — preloaded with materials from your Brand Atlas, images from your Media Library and a tailored color palette.
+              {t('discover.generate_cta_hint', null, 'Three ready-to-edit Concept Boards in seconds — preloaded with materials from your Brand Atlas, images from your Media Library and a tailored color palette.')}
             </p>
           </div>
           <button
@@ -672,7 +677,9 @@ const SummaryView = ({ intel, jid, onBack }) => {
             disabled={generating}
             data-testid="dbe-generate-concepts"
           >
-            {generating ? <><Loader2 size={16} className="dbe-spin" /> Composing 3 Concept Boards…</> : <><Sparkles size={16} /> Generate Concept Directions™</>}
+            {generating
+              ? <><Loader2 size={16} className="dbe-spin" /> {t('discover.composing_boards', null, 'Composing 3 Concept Boards…')}</>
+              : <><Sparkles size={16} /> {t('discover.generate_cta_title', null, 'Generate Concept Directions™')}</>}
           </button>
         </section>
       )}
@@ -688,8 +695,8 @@ const SummaryView = ({ intel, jid, onBack }) => {
                 <p className="dbe-set__date">{s.set_created_at ? new Date(s.set_created_at).toLocaleString() : ''}</p>
                 <div className="dbe-set__share" data-testid={`dbe-set-share-${s.set_index}`}>
                   {s.shared_at ? (
-                    <span className="dbe-set__shared-pill" title={`Shared on ${new Date(s.shared_at).toLocaleString()}`}>
-                      <Check size={11} strokeWidth={3} /> Shared with client
+                    <span className="dbe-set__shared-pill" title={`${t('discover.shared_on', null, 'Shared on')} ${new Date(s.shared_at).toLocaleString()}`}>
+                      <Check size={11} strokeWidth={3} /> {t('discover.shared_with_client', null, 'Shared with client')}
                     </span>
                   ) : (
                     <button
@@ -699,7 +706,9 @@ const SummaryView = ({ intel, jid, onBack }) => {
                       disabled={sharingSetId === s.set_id}
                       data-testid={`dbe-share-${s.set_index}`}
                     >
-                      {sharingSetId === s.set_id ? <><Loader2 size={12} className="dbe-spin" /> Sharing…</> : <>Send to client for review</>}
+                      {sharingSetId === s.set_id
+                        ? <><Loader2 size={12} className="dbe-spin" /> {t('discover.sharing', null, 'Sharing…')}</>
+                        : <>{t('discover.send_to_client', null, 'Send to client for review')}</>}
                     </button>
                   )}
                 </div>
@@ -711,7 +720,7 @@ const SummaryView = ({ intel, jid, onBack }) => {
                       <span className="dbe-concept__letter">{d.direction_letter}</span>
                       <p className="dbe-concept__name">{d.direction_name}</p>
                       {d.is_preferred && (
-                        <span className="dbe-concept__preferred" title="Client preferred direction">
+                        <span className="dbe-concept__preferred" title={t('discover.client_preferred_direction', null, 'Client preferred direction')}>
                           ★
                         </span>
                       )}

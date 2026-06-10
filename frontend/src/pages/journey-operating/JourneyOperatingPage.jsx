@@ -23,6 +23,7 @@ import {
   Briefcase, Calendar, Wallet, Activity,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../contexts/BlueprintContext';
 import ConceptPulseCard from './ConceptPulseCard';
 import './journey-operating.css';
 
@@ -82,15 +83,15 @@ const currentPhaseFromMilestones = (milestonesByPhase) => {
 /* ════════════════════════════════════════════════════════════════════
  *  Utilities
  * ════════════════════════════════════════════════════════════════════ */
-const fmtDate = (iso) => {
+const fmtDate = (iso, t) => {
   if (!iso) return '—';
   try {
     const d = new Date(iso);
     const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-    if (days === 0) return 'oggi';
-    if (days === 1) return 'ieri';
-    if (days < 7)  return `${days}g fa`;
-    return d.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+    if (days === 0) return t ? t('common.today', null, 'today') : 'today';
+    if (days === 1) return t ? t('common.yesterday', null, 'yesterday') : 'yesterday';
+    if (days < 7)  return `${days}d`;
+    return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
   } catch { return '—'; }
 };
 
@@ -131,6 +132,7 @@ const safeList = (resp) => {
  * ════════════════════════════════════════════════════════════════════ */
 const JourneyOperatingPage = () => {
   const { jid } = useParams();
+  const t = useT();
   const [overview, setOverview] = useState(null);
   const [project, setProject]   = useState(null);
   const [moodboards, setMoodboards] = useState([]);
@@ -239,17 +241,17 @@ const JourneyOperatingPage = () => {
         <h1 className="jop-hero__title" data-testid="jop-project-title">{projectTitle}</h1>
         <div className="jop-hero__meta">
           <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Client</span>
+            <span className="jop-hero__meta-label">{t('journey.meta_client', null, 'Client')}</span>
             <span className="jop-hero__meta-value" data-testid="jop-client-name">{clientName}</span>
           </div>
           <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Status</span>
+            <span className="jop-hero__meta-label">{t('journey.meta_status', null, 'Status')}</span>
             <span className="jop-hero__meta-value jop-hero__meta-value--amber" data-testid="jop-current-phase">
               {statusLabel}
             </span>
           </div>
           <div className="jop-hero__meta-item">
-            <span className="jop-hero__meta-label">Next Action</span>
+            <span className="jop-hero__meta-label">{t('journey.meta_next_action', null, 'Next Action')}</span>
             <span className="jop-hero__meta-value jop-hero__meta-value--cyan" data-testid="jop-next-action">{nextAction}</span>
           </div>
         </div>
@@ -286,7 +288,7 @@ const JourneyOperatingPage = () => {
       <div className="jop-body">
         {/* LEFT · Roadmap */}
         <aside className="jop-roadmap" data-testid="jop-roadmap">
-          <p className="jop-roadmap__title">Journey Roadmap</p>
+          <p className="jop-roadmap__title">{t('journey.roadmap_title', null, 'Journey Roadmap')}</p>
           {PHASES.map((p) => {
             const status = computePhaseStatus(p.key, milestonesByPhase);
             const isCurrent = currentPhase === p.key;
@@ -294,12 +296,12 @@ const JourneyOperatingPage = () => {
             if (isCurrent) cls.push('jop-phase-item--current');
             const list = milestonesByPhase[p.key] || [];
             const sub = isCurrent
-              ? 'In progress'
+              ? t('journey.phase_in_progress', null, 'In progress')
               : status === 'done'
-              ? `${list.length} step${list.length !== 1 ? 's' : ''} done`
+              ? `${list.length} ${t('journey.steps_done', null, 'steps done')}`
               : status === 'pending'
-              ? 'Upcoming'
-              : 'Open';
+              ? t('journey.phase_upcoming', null, 'Upcoming')
+              : t('journey.phase_open', null, 'Open');
             return (
               <button key={p.key} className={cls.join(' ')} onClick={() => setActivePhase(p.key)}>
                 <span className="jop-phase-item__icon">
@@ -338,10 +340,10 @@ const JourneyOperatingPage = () => {
               }}>
                 <div>
                   <p style={{ margin: 0, fontSize: 14, color: '#f1f4f9', fontWeight: 500 }}>
-                    Open the first design conversation.
+                    {t('journey.open_first_conversation', null, 'Open the first design conversation.')}
                   </p>
                   <p style={{ margin: '4px 0 0', fontSize: 12, color: '#8c95a5' }}>
-                    Visual-first wizard · 5–8 minutes · generates Style DNA™, Material DNA™ and AI Recommendations.
+                    {t('journey.wizard_hint', null, 'Visual-first wizard · 5–8 minutes · generates Style DNA™, Material DNA™ and AI Recommendations.')}
                   </p>
                 </div>
                 <Link
@@ -355,7 +357,7 @@ const JourneyOperatingPage = () => {
                     textDecoration: 'none', letterSpacing: '0.02em',
                   }}
                 >
-                  <Sparkles size={14} /> Open Discovery Engine
+                  <Sparkles size={14} /> {t('journey.open_discovery_engine', null, 'Open Discovery Engine')}
                 </Link>
               </div>
             </section>
@@ -375,7 +377,7 @@ const JourneyOperatingPage = () => {
             </header>
             <ul className="jop-checklist">
               {(milestonesByPhase[currentPhase] || []).length === 0 && (
-                <li className="jop-empty">No checklist items yet for this phase.</li>
+                <li className="jop-empty">{t('journey.no_checklist_items', null, 'No checklist items yet for this phase.')}</li>
               )}
               {(milestonesByPhase[currentPhase] || []).map(m => {
                 const done = isMilestoneDone(m);
@@ -391,8 +393,8 @@ const JourneyOperatingPage = () => {
                       {milestoneTitleMap[m.milestone_type] || m.title || m.milestone_type}
                     </span>
                     <span className="jop-checklist__when">
-                      {done ? `Done ${fmtDate(m.approved_at || m.closed_at)}` :
-                       active ? `Started ${fmtDate(m.started_at)}` : '—'}
+                      {done ? `${t('journey.done', null, 'Done')} ${fmtDate(m.approved_at || m.closed_at, t)}` :
+                       active ? `${t('journey.started', null, 'Started')} ${fmtDate(m.started_at, t)}` : '—'}
                     </span>
                   </li>
                 );
@@ -403,10 +405,10 @@ const JourneyOperatingPage = () => {
           {/* Related Assets */}
           <section className="jop-block" data-testid="jop-assets">
             <header className="jop-block__hdr">
-              <h3 className="jop-block__title">Related Assets</h3>
+              <h3 className="jop-block__title">{t('journey.related_assets', null, 'Related Assets')}</h3>
             </header>
             {relatedAssets.length === 0 ? (
-              <div className="jop-empty">No assets are linked to this phase yet.</div>
+              <div className="jop-empty">{t('journey.no_assets', null, 'No assets are linked to this phase yet.')}</div>
             ) : (
               <div className="jop-assets">
                 {relatedAssets.map((a) => (
@@ -418,7 +420,7 @@ const JourneyOperatingPage = () => {
                     <div className="jop-asset__body">
                       <p className="jop-asset__title">{a.title || a.name || 'Untitled'}</p>
                       <span className="jop-asset__meta">{(a.status || 'draft').replace('_', ' ')} · upd. {fmtDate(a.updated_at)}</span>
-                      <span className="jop-asset__cta">Open <ArrowUpRight size={12} strokeWidth={2} /></span>
+                      <span className="jop-asset__cta">{t('common.open', null, 'Open')} <ArrowUpRight size={12} strokeWidth={2} /></span>
                     </div>
                   </Link>
                 ))}
