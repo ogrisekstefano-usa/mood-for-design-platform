@@ -216,6 +216,53 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 2. Verificare che nessun altro client chiami i vecchi URL (via log search)
 3. Rimuovere `PATCH /journeys/milestones/{mid}` e `POST /journeys/milestones/{mid}/open` da `design_journey.py`
 
+---
+
+## I18N ADOPTION P0 — FASE 1 (completata — 2026-06-10)
+
+### Stringhe UI convertite (non-editoriali)
+
+**File modificati:**
+- `AccountsPage.jsx` · `LeadsPage.jsx` · `ProspectsPage.jsx` · `LeadDetailPage.jsx`
+- `it-IT.json` · `en-US.json` (aggiunte chiavi `clientRelations.*`, `common.time.ago`, `common.backToList`)
+
+**Chiavi riutilizzate (esistenti):**
+- `common.reset` (×3) · `common.creating` (×1)
+- `nav.client_relations_accounts/leads/prospects` (×3) · `nav.memory` (×2) · `nav.new_journey` (×1)
+- `relationships.ctaNew` (×1) · `moodboards.untitled` (rimpiazzato da chiave specifica)
+
+**Nuove chiavi create:** 61 totali
+- `common.time.ago` + `common.backToList` (2)
+- `clientRelations.common.openMemoryAria` (1 condivisa)
+- `clientRelations.health.*` (3: thriving/stable/at_risk)
+- `clientRelations.register.*` (4: editorial/concierge/consultative/discovery)
+- `clientRelations.tier.*` (3: atelier/couture/pret_a_porter)
+- `clientRelations.accounts.*` (23) · `clientRelations.leads.*` (18) · `clientRelations.prospects.*` (22) · `clientRelations.leadDetail.*` (10) — per namespace
+
+**Stringhe hardcoded eliminate:** 69
+**Stringhe editoriali escluse (restano hardcoded):** 27 — candidate al Translation Management Layer
+
+### Stringhe EDITORIALI escluse da FASE 1 (invariate nel JSX)
+
+**AccountsPage:** tone lines (full conversation/settling/listening/opening) · "Where we are" · "studio palette" · eyebrow "CLIENT RELATIONS™ · ACTIVE STUDIO" · lede · emptyBody
+
+**LeadsPage:** temp labels (Warm·ready/Engaged/Curious) · "awaiting first interview" · eyebrow "CRM · DISCOVERY" · lede · emptyBody
+
+**ProspectsPage:** momentum labels (arriving at the threshold/gathering momentum/finding its voice/early dialogue/first whispers) · "Relationship momentum" · "cultivated by" · "continuation pending" · eyebrow "CLIENT RELATIONS™ · CULTIVATION" · lede · emptyBody
+
+**LeadDetailPage:** "Pronto a trasformarlo in progetto?" · "Rispondi a 4 domande in <90 secondi…"
+
+**Test:** 4/4 pagine PASS · 0 token mancanti (⟦key⟧) · debug overlay +0 su tutte le pagine
+
+---
+
+## Backlog I18N
+
+- **P0 FASE 2** (prossima): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
+- **P1** Translation Management Layer Blueprint (DB schema + Context Menu UI)
+- **P2** Normalizzare le 27 editorial copy nel sistema i18n quando Translation Management Layer è pronto
+
+
 
 
 
