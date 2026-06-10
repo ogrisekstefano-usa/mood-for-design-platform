@@ -167,7 +167,7 @@ Returns:
 
 Open the workspace UI:
 ```
-https://content-hub-pro-22.preview.emergentagent.com/inspirations/knowledge-engine/catalog-sets/00e33d7f-bcc4-47ae-914f-617d049906a7
+https://i18n-recovery-1.preview.emergentagent.com/inspirations/knowledge-engine/catalog-sets/00e33d7f-bcc4-47ae-914f-617d049906a7
 ```
 
 The page polls every 2s; you can leave it open or close it — state

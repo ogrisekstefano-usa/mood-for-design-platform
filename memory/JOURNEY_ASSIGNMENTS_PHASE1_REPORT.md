@@ -77,7 +77,7 @@ Append-only · indici su `(assignment_id, created_at)`, `(journey_id, created_at
 ### Verificato dal smoke test
 ```
 Begin Journey (public) → 201
-  journey_id=6664904c-56c4-4527-bf88-4aebbe782efd
+  journey_id=i18n-recovery-1
   ✅ auto-created 1 owner row at journey init
      rows=[('58d93d46', 'owner', 'ff66feac')] (Designer A by priority)
 ```

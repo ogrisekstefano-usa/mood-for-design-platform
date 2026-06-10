@@ -1,7 +1,7 @@
 """Iteration 83 — Moodboards Inspirations Flow™ (MoodPanel + Quick Add) backend regression."""
 import os, uuid, pytest, requests
 
-BASE_URL = (os.environ.get('REACT_APP_BACKEND_URL') or 'https://content-hub-pro-22.preview.emergentagent.com').rstrip('/')
+BASE_URL = (os.environ.get('REACT_APP_BACKEND_URL') or 'https://i18n-recovery-1.preview.emergentagent.com').rstrip('/')
 EMAIL = 'demo@moodfordesign.com'
 PWD = 'Blueprint2024!'
 

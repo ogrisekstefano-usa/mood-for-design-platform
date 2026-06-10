@@ -8,7 +8,7 @@ Validates:
 """
 import os, json, pytest, requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://content-hub-pro-22.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://i18n-recovery-1.preview.emergentagent.com").rstrip("/")
 WMB_ID = "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
 ADMIN_EMAIL = "admin@moodfordesign.com"
 ADMIN_PWD = "Blueprint2024!"

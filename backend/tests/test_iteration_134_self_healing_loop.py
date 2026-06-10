@@ -27,7 +27,7 @@ import requests
 
 BASE_URL = os.environ.get(
     "REACT_APP_BACKEND_URL",
-    "https://content-hub-pro-22.preview.emergentagent.com",
+    "https://i18n-recovery-1.preview.emergentagent.com",
 ).rstrip("/")
 API = f"{BASE_URL}/api"
 

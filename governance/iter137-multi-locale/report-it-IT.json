@@ -1,7 +1,7 @@
 {
   "iteration": "ITER132",
   "locale": "it-IT",
-  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "base": "https://i18n-recovery-1.preview.emergentagent.com",
   "generated_at": "2026-05-22T07:12:05+00:00",
   "routes_crawled": 21,
   "summary": {
@@ -78,25 +78,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=it",
       "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=it",
       "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
     },
     {
@@ -114,37 +114,37 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
@@ -246,25 +246,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/inspirations/archive?",
       "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/p"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/inspirations/archive?",
       "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/p"
     },
     {
@@ -294,13 +294,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
@@ -312,13 +312,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
@@ -342,133 +342,133 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
       "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
       "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
@@ -480,31 +480,31 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"IT_IT\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"l"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
@@ -582,37 +582,37 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/moodboards",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/moodboards",
       "body_excerpt": "{\"data\":[{\"id\":\"a44cab81-6ebe-44f0-9fca-b140cc3d04a0\",\"tenant_id\":\"81a09ead-0306-4d71-a5c4-ca2b3956add2\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"created_by\":\"aaba9520-68e6-400b-8d11-06b6e4cfbfd8\",\"title\":\"Iter95 Context MB 653d"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/moodboards",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/moodboards",
       "body_excerpt": "{\"data\":[{\"id\":\"a44cab81-6ebe-44f0-9fca-b140cc3d04a0\",\"tenant_id\":\"81a09ead-0306-4d71-a5c4-ca2b3956add2\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"created_by\":\"aaba9520-68e6-400b-8d11-06b6e4cfbfd8\",\"title\":\"Iter95 Context MB 653d"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"languag"
     }
   ],
@@ -687,28 +687,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=it",
           "status": 200,
           "marker_hits": 203,
           "accent_hits": 20,
           "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_label\":\"Conversazione aperta\",\"current_milestone\":{\"id\":\"14c5fefe-324e-4662-adf4-0263bddfe51e\",\"type\":\"inspirations\",\"taxonomy_key\":\"inspirations_alignment\",\"label\":\"Allineamento Ispirazioni\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":10,\"milestones_done\":1,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"Brief Cliente approvata. Il progetto avanza.\",\"when\":\"2026-05-22T00:28:45.341984+00:00\"},\"days_silent\":0},{\"journey_id\":\"f886dff9-1f11-4d49-a8b8-9c68d41932d9\",\"project_id\":\"2dcfd214-f78d-470a-83b1-a0c7a4f81b63\",\"account_name\":\"G3_PQGZYK\",\"lifecycle_state\":\"in_progress\",\"lifecycle_key\":\"in_progress\",\"lifecycle_label\":\"Viaggio in corso\",\"current_milestone\":{\"id\":\"37debf78-5044-46a2-9cf2-e858cf5fe183\",\"type\":\"brief\",\"taxonomy_key\":\"client_brief\",\"label\":\"Brief Cliente\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":0,\"milestones_done\":0,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"Il Journey è stato riaperto per un nuovo capitolo. Test round-trip teardown\",\"when\":\"2026-05-22T00:19:43.806997+00:00\"},\"days_silent\":0},{\"journey_id\":\"0ec90999-2e47-46be-918e-6d50e8d21804\",\"project_id\":\"f69b82d8-c213-441b-a98d-e2fe6b36ccd0\",\"account_name\":\"G3_HIEFFV\",\"lifecycle_state\":\"conversation_open\",\"lifecycle"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=it",
           "status": 200,
           "marker_hits": 203,
           "accent_hits": 20,
@@ -751,14 +751,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -796,14 +796,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -849,14 +849,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -955,28 +955,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/inspirations/archive?",
           "status": 200,
           "marker_hits": 19,
           "accent_hits": 15,
           "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_kind\":\"url\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[\"warm_minimal\"],\"material_tags\":[\"wood_natural\"],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"display_meta\":{\"zoom\":1.4,\"focal_x\":0.33,\"focal_y\":0.66,\"crop_ratio\":\"4:5\",\"editorial_filter\":\"cinematic_dark\"},\"tags\":[\"inspiration\"],\"created_at\":\"2026-05-22T00:25:02.849284+00:00\",\"updated_at\":\"2026-05-22T00:26:58.385494+00:00\"},{\"id\":\"97770cde-856c-4e4f-b9c9-8daebc3c27e4\",\"title\":\"TEST_PinterestRef\",\"description\":null,\"image_url\":\"https://www.pinterest.com/pin/12345/\",\"source_url\":\"https://www.pinterest.com/pin/12345/\",\"source_kind\":\"pinterest\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[],\"material_tags\":[],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"displa"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/inspirations/archive?",
           "status": 200,
           "marker_hits": 19,
           "accent_hits": 15,
@@ -1027,14 +1027,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1073,14 +1073,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1127,28 +1127,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
           "status": 200,
           "marker_hits": 108,
           "accent_hits": 11,
           "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\"target_locale\":\"it-IT\",\"status\":\"draft\",\"created_at\":\"2026-05-22T00:26:29.482659+00:00\",\"updated_at\":\"2026-05-22T00:26:29.482668+00:00\",\"market_version\":{\"body\":\"L'appartamento Stefano nasce da una riflessione sul vivere contemporaneo: spazi misurati, gesti architettonici precisi, materiali che invecchiano con dignità. Ogni superficie dialoga con la luce naturale attraverso texture sobrie — pietra, legno, metallo brunito. Il progetto non cerca l'effetto, ma la coerenza: ogni elemento costruttivo è pensato per durare, per raccontare il tempo anziché subirlo. Un'architettura d'interni che rispetta il silenzio degli spazi domestici.\",\"lede\":\"Un intervento residenziale dove il dettaglio costruttivo diventa grammatica compositiva. Equilibrio tra funzione e materia.\",\"locale\":\"it-IT\",\"headline\":\"Abitare il rigore: appartamento Stefano\",\"cta_label\":\"Fissa una consulenza\",\"cta_subtext\":\"Discuti il tuo progetto residenziale\",\"imagery_notes\":\"Fotografia architettonica frontale, luce zenitale che evidenzia texture, inquadrature geometriche che esaltano giunti e dettagli costruttivi.\",\"cultural_notes\":\"Onorare la tradizione progettuale milanese: rigore compositivo, dettaglio artigiano, rifiuto dell'effimero.\",\"material_notes\":\"Palette cemento spatolato"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
           "status": 200,
           "marker_hits": 108,
           "accent_hits": 11,
@@ -1186,14 +1186,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1231,14 +1231,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1276,14 +1276,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1321,14 +1321,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1366,14 +1366,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1411,14 +1411,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1456,14 +1456,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1501,14 +1501,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1546,14 +1546,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1592,21 +1592,21 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1640,14 +1640,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
@@ -1730,28 +1730,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/moodboards",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/moodboards",
           "status": 200,
           "marker_hits": 21,
           "accent_hits": 8,
           "body_excerpt": "{\"data\":[{\"id\":\"a44cab81-6ebe-44f0-9fca-b140cc3d04a0\",\"tenant_id\":\"81a09ead-0306-4d71-a5c4-ca2b3956add2\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"created_by\":\"aaba9520-68e6-400b-8d11-06b6e4cfbfd8\",\"title\":\"Iter95 Context MB 653dff\",\"description\":null,\"template_id\":null,\"status\":\"draft\",\"current_version\":1,\"created_at\":\"2026-05-22T00:28:49.408812+00:00\",\"updated_at\":\"2026-05-22T00:28:49.733654+00:00\",\"cover_strategy\":\"auto\",\"cover_metadata\":{},\"presentation_metadata\":{},\"ai_metadata\":{},\"current_page_id\":\"9b59a3ef-875d-4716-af28-807c845b8b42\",\"archived_at\":null,\"deleted_at\":null,\"journey_id\":null,\"milestone_id\":null},{\"id\":\"416ef897-f770-4900-b613-3ad776973b05\",\"tenant_id\":\"81a09ead-0306-4d71-a5c4-ca2b3956add2\",\"project_id\":null,\"created_by\":\"aaba9520-68e6-400b-8d11-06b6e4cfbfd8\",\"title\":\"TEST_iter83\",\"description\":null,\"template_id\":null,\"status\":\"draft\",\"current_version\":1,\"created_at\":\"2026-05-22T00:26:46.614857+00:00\",\"updated_at\":\"2026-05-22T00:26:49.109294+00:00\",\"cover_strategy\":\"auto\",\"cover_metadata\":{},\"presentation_metadata\":{},\"ai_metadata\":{},\"current_page_id\":\"f0e527da-76ec-4f3d-b2ed-b35229de73e9\",\"archived_at\":null,\"deleted_at\":null,\"journey_id\":null,\"milestone_id\":null},{\"id\":\"58744061-5a30-4bb2-917f-d333018ff376\",\"tenant_id\":\"81a09ead-0306-4d71-a5c4-ca2b3956add2\",\"project_id\":\"aff8c424-0e02-414b-96d8-187ab9e18af6\",\"created_by\":\"aaba9520-68e6-400b-8d11-06b6e4cfbfd8\",\"title\":\"Iter95 Context MB 75a564\",\"description\":null,\"template_id\":null,\"status\":\"d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/moodboards",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/moodboards",
           "status": 200,
           "marker_hits": 21,
           "accent_hits": 8,
@@ -1772,14 +1772,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,
           "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"IT_IT\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and continuity with a long Italian d"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 10,
           "accent_hits": 7,

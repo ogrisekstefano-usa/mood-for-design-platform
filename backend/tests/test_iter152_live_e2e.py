@@ -4,7 +4,7 @@ import time
 import pytest
 import requests
 
-BASE = "https://content-hub-pro-22.preview.emergentagent.com"
+BASE = "https://i18n-recovery-1.preview.emergentagent.com"
 EMAIL = "admin@moodfordesign.com"
 PASSWORD = "Blueprint2024!"
 STUDIO_PROFILE_ID = "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e"

@@ -46,7 +46,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout  # no
 LOCALE   = os.environ.get("LOCALE", "en-US")
 BASE     = os.environ.get(
     "BASE_URL",
-    "https://content-hub-pro-22.preview.emergentagent.com",
+    "https://i18n-recovery-1.preview.emergentagent.com",
 ).rstrip("/")
 EMAIL    = os.environ.get("AUDIT_EMAIL", "demo@moodfordesign.com")
 PASSWORD = os.environ.get("AUDIT_PASSWORD", "Blueprint2024!")

@@ -14,7 +14,7 @@ from datetime import datetime, timezone, timedelta
 
 DB_URL = open("/app/backend/.env").read().split("DATABASE_URL=")[1].split("\n")[0]
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/") or \
-    "https://content-hub-pro-22.preview.emergentagent.com"
+    "https://i18n-recovery-1.preview.emergentagent.com"
 
 ADMIN_EMAIL = "admin@moodfordesign.com"
 ADMIN_PASS = "Blueprint2024!"

@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright
 
 OUT = "/app/test_reports/_screens"
 os.makedirs(OUT, exist_ok=True)
-BASE = "https://content-hub-pro-22.preview.emergentagent.com"
+BASE = "https://i18n-recovery-1.preview.emergentagent.com"
 
 async def login(page):
     await page.goto(f"{BASE}/auth/login", wait_until="domcontentloaded", timeout=30000)

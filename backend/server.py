@@ -34,7 +34,7 @@ _default_origins = [
     "https://www.moodfordesign.com",
     # Preview / emergent platform endpoints
     "https://content-hub-pro-22.emergent.host",
-    "https://content-hub-pro-22.preview.emergentagent.com",
+    "https://i18n-recovery-1.preview.emergentagent.com",
     # Local dev
     "http://localhost:3000",
     "http://127.0.0.1:3000",

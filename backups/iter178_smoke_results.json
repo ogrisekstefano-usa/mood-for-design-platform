@@ -45,7 +45,7 @@
     {
       "step": "admin POST change-owner \u2192 admin",
       "ok": true,
-      "detail": "HTTP 201, new_owner=caee7b92-34b4-4ecf-bdaa-8a3eda93a70e"
+      "detail": "HTTP 201, new_owner=i18n-recovery-1"
     },
     {
       "step": "DB: active owner is now admin",
@@ -115,7 +115,7 @@
     {
       "step": "client human_assignments referente assigned (Designer A by priority)",
       "ok": true,
-      "detail": "referente_user_id=ff66feac-d56f-43cf-9d60-cd4c9fba6ca6"
+      "detail": "referente_user_id=i18n-recovery-1"
     },
     {
       "step": "post-cleanup: Founder Only restored",

@@ -111,7 +111,7 @@ user must, on https://supabase.com/dashboard/project/<id>/auth/url-configuration
 | Setting | Value |
 |---|---|
 | Site URL | `https://blueprint.moodfordesign.com` |
-| Additional Redirect URLs | `https://blueprint.moodfordesign.com/auth/callback` · `https://*.moodfordesign.com/auth/callback` · `https://*.preview.emergentagent.com/auth/callback` (dev) |
+| Additional Redirect URLs | `https://blueprint.moodfordesign.com/auth/callback` · `https://*.moodfordesign.com/auth/callback` · `https://i18n-recovery-1.preview.emergentagent.com/auth/callback` (dev) |
 | Cookie domain (Auth → Settings → Advanced) | `.moodfordesign.com` |
 
 When done, every `redirect_to` we generate (already pointing at

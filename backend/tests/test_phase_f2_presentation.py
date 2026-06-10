@@ -3,7 +3,7 @@ import os
 import pytest
 import requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://content-hub-pro-22.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://i18n-recovery-1.preview.emergentagent.com").rstrip("/")
 DESIGNER = {"email": "designer@moodfordesign.com", "password": "Designer2024!"}
 STUDIO2 = {"email": "studio2@moodfordesign.com", "password": "Studio2024!"}
 MID = "85b93c6b-8de2-4b14-a977-a768ecc02309"

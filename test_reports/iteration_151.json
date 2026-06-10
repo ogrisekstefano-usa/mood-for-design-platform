@@ -57,7 +57,7 @@
   ],
   "updated_files": [],
   "success_rate": { "backend": "100%", "frontend": "100% (within E2E-reachable surface)" },
-  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=848354b9-a43e-4147-bdad-116fb93bd585 / slug=studio)",
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=i18n-recovery-1 / slug=studio)",
   "seed_data_creation": "Transiently set tenant_configuration.feature_flags={'dashboard':'hidden'} on the studio tenant, then reverted to {} after the CORE_AUTO_RECOVERED probe. Backend restarted twice (set + revert) to invalidate the resolver cache.",
   "retest_needed": false,
   "main_agent_can_self_test": true,

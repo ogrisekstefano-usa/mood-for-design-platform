@@ -22,7 +22,7 @@ import requests
 
 BASE_URL = os.environ.get(
     "REACT_APP_BACKEND_URL",
-    "https://content-hub-pro-22.preview.emergentagent.com",
+    "https://i18n-recovery-1.preview.emergentagent.com",
 ).rstrip("/")
 
 ADMIN_EMAIL = "admin@moodfordesign.com"
@@ -428,7 +428,7 @@ class TestResolverEndpoints:
     def test_resolve_unauthenticated_returns_401(self):
         r = requests.get(
             f"{BASE_URL}/api/journeys/resolve"
-            "?project_id=00000000-0000-0000-0000-000000000000")
+            "?project_id=i18n-recovery-1")
         assert r.status_code in (401, 403)
 
     def test_mine_for_admin_returns_404_no_journey(self, admin_session):
@@ -455,7 +455,7 @@ class TestResolverEndpoints:
         in /resolve, since archivio journeys are lifecycle_state=abandoned."""
         r = admin_session.get(
             f"{BASE_URL}/api/journeys/resolve"
-            "?project_id=00000000-0000-0000-0000-000000000000")
+            "?project_id=i18n-recovery-1")
         assert r.status_code == 200
         body = r.json()
         assert body["linked"] is False

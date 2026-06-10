@@ -1,7 +1,7 @@
 {
   "iteration": "ITER132",
   "locale": "en-US",
-  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "base": "https://i18n-recovery-1.preview.emergentagent.com",
   "generated_at": "2026-05-22T21:20:00+00:00",
   "routes_crawled": 21,
   "summary": {
@@ -18,25 +18,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
       "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
       "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
     },
     {
@@ -48,13 +48,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -66,13 +66,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -84,13 +84,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -102,13 +102,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -120,13 +120,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -138,13 +138,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -156,121 +156,121 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
       "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -282,13 +282,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"loc"
     },
     {
@@ -300,13 +300,13 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
@@ -318,25 +318,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"loc"
     }
   ],
@@ -383,28 +383,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 0,
           "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_label\":\"Opening Conversation\",\"current_milestone\":{\"id\":\"14c5fefe-324e-4662-adf4-0263bddfe51e\",\"type\":\"inspirations\",\"taxonomy_key\":\"inspirations_alignment\",\"label\":\"Inspirations Alignment\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":10,\"milestones_done\":1,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"Client brief approved. The project moves forward.\",\"when\":\"2026-05-22T00:28:45.341984+00:00\"},\"days_silent\":0},{\"journey_id\":\"f886dff9-1f11-4d49-a8b8-9c68d41932d9\",\"project_id\":\"2dcfd214-f78d-470a-83b1-a0c7a4f81b63\",\"account_name\":\"G3_PQGZYK\",\"lifecycle_state\":\"in_progress\",\"lifecycle_key\":\"in_progress\",\"lifecycle_label\":\"Journey unfolding\",\"current_milestone\":{\"id\":\"37debf78-5044-46a2-9cf2-e858cf5fe183\",\"type\":\"brief\",\"taxonomy_key\":\"client_brief\",\"label\":\"Client Brief\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":0,\"milestones_done\":0,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"The Journey has been reopened for a new chapter. Test round-trip teardown\",\"when\":\"2026-05-22T00:19:43.806997+00:00\"},\"days_silent\":0},{\"journey_id\":\"0ec90999-2e47-46be-918e-6d50e8d21804\",\"project_id\":\"f69b82d8-c213-441b-a98d-e2fe6b36ccd0\",\"account_name\":\"G3_HIEFFV\",\"lifecycle_state\":\"conversation_open\",\"lifecycl"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 0,
@@ -447,14 +447,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -509,14 +509,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -575,14 +575,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -637,14 +637,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -699,14 +699,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -761,14 +761,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -823,21 +823,21 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/cultural-editions/drafts",
           "status": 200,
           "marker_hits": 86,
           "accent_hits": 9,
@@ -875,14 +875,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -920,14 +920,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -969,7 +969,7 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1007,14 +1007,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1052,14 +1052,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1097,14 +1097,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1142,14 +1142,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1187,14 +1187,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1232,14 +1232,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1290,14 +1290,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1352,14 +1352,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1418,14 +1418,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
@@ -1446,14 +1446,14 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,
           "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"ES_ES\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor frami"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 3,
           "accent_hits": 3,

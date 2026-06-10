@@ -54,8 +54,8 @@ def test_begin_journey_unified_leads_row_has_full_runtime_identity():
         "locale": "it-IT",
     }
     headers = {
-        "Origin": "https://content-hub-pro-22.preview.emergentagent.com",
-        "Referer": "https://content-hub-pro-22.preview.emergentagent.com/begin-journey",
+        "Origin": "https://i18n-recovery-1.preview.emergentagent.com",
+        "Referer": "https://i18n-recovery-1.preview.emergentagent.com/begin-journey",
         "User-Agent": "ITER149-PytestParity/1.0",
         "Host": "content-hub-pro-22.preview.emergentagent.com",
         "X-Forwarded-Host": "content-hub-pro-22.preview.emergentagent.com",

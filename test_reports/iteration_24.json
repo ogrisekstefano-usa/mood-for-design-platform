@@ -1,5 +1,5 @@
 {
-  "summary": "Iteration 24 frontend-only validation of the UX Architecture Refactor sprint (MOOD for DESIGN). ALL 10 acceptance criteria from the review request PASSED. Verified on https://content-hub-pro-22.preview.emergentagent.com with designer@moodfordesign.com. Zero pageerrors, zero console errors during slider interaction. Editor screenshot confirms no Brand/back-btn/breadcrumb duplication inside the editor — only the moodboard title + status capsule (left) and action toolbar (right), while the global Topbar above hosts the deep breadcrumb 'Contenuti / Moodboard / TEST_F1_UI_lux'.",
+  "summary": "Iteration 24 frontend-only validation of the UX Architecture Refactor sprint (MOOD for DESIGN). ALL 10 acceptance criteria from the review request PASSED. Verified on https://i18n-recovery-1.preview.emergentagent.com with designer@moodfordesign.com. Zero pageerrors, zero console errors during slider interaction. Editor screenshot confirms no Brand/back-btn/breadcrumb duplication inside the editor — only the moodboard title + status capsule (left) and action toolbar (right), while the global Topbar above hosts the deep breadcrumb 'Contenuti / Moodboard / TEST_F1_UI_lux'.",
   "validation_results": {
     "T1_topbar_no_logo": {
       "result": "PASS",

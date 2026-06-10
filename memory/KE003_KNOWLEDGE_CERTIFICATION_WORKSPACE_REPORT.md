@@ -59,7 +59,7 @@ Quando warning critici = 0 → Certify button ATTIVO
 
 | # | Test | Esito | Evidenza |
 |---|------|-------|----------|
-| **P0-1** | Warning Deep-Link · click `Designer ambigui (26)` su RIVA1920 | ✅ PASS | URL post-click: `…/catalog-sets/{id}?type=designer_ambiguous&focus=2755198a-6b33-45be-a539-d8e7602f881e` · auto-scroll a `[data-testid="rw-v3-root"]` · toast "Apertura prima anomalia" |
+| **P0-1** | Warning Deep-Link · click `Designer ambigui (26)` su RIVA1920 | ✅ PASS | URL post-click: `…/catalog-sets/{id}?type=designer_ambiguous&focus=i18n-recovery-1` · auto-scroll a `[data-testid="rw-v3-root"]` · toast "Apertura prima anomalia" |
 | **P0-2** | Entity Inspector V3.1 · 4 CTAs + scope selector | ✅ PASS | Tutti i testid presenti: `rw-cert-approve`, `rw-cert-reject`, `rw-cert-merge-toggle`, `rw-cert-modify-toggle`, `rw-cert-scope-only_here`, `rw-cert-scope-catalog`, `rw-cert-scope-brand`, `rw-cert-merge-form`, `rw-cert-merge-submit` |
 | **P0-3** | Scope Correction · 3 ambiti selezionabili | ✅ PASS¹ | Click su `rw-cert-scope-catalog` → class `is-active` attivo · radio `checked=true` · stato React aggiornato |
 | **P0-4** | Knowledge Impact REALE post APPROVA | ✅ PASS | Backend `_compute_real_impact` calcola `occurrences = mention_count` per scope `catalog`, `mention_count × n_docs` per scope `brand` · query reale su `products` table per `products_improved` con `canonical_designer_id` / `canonical_material_id` |

@@ -12,7 +12,7 @@ import os
 import requests
 import pytest
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://content-hub-pro-22.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://i18n-recovery-1.preview.emergentagent.com").rstrip("/")
 TENANT_SLUG = "mood-demo-studio-81a09e"
 PUBLIC_MARKETS = f"{BASE_URL}/api/storefront/public/{TENANT_SLUG}/markets"
 LOCALE_RESOLVE = f"{BASE_URL}/api/locale-runtime/resolve/public"

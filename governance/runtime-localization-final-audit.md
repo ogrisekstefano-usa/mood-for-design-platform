@@ -3,7 +3,7 @@
 **Generated**: 2026-05-22 02:44 UTC
 **Locale crawled**: `en-US`
 **Routes**: 21
-**Base**: https://content-hub-pro-22.preview.emergentagent.com
+**Base**: https://i18n-recovery-1.preview.emergentagent.com
 
 ---
 

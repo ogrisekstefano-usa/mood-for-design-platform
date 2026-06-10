@@ -1,0 +1,135 @@
+<analysis>**original_problem_statement**: 
+The user is mandating a total freeze on all new feature development (including Sprint 1 and DJ-MACRO-001) due to a critical application state breakdown. The platform is currently displaying a mix of hardcoded Italian and English UI strings across the application, breaking the premium product experience. The immediate P0 objective is **I18N-RECOVERY-001 · MULTILINGUAL SYSTEM RECOVERY**. The goal is to audit, document, and utilize the *existing* custom multilingual architecture (Blueprint-managed localization) to replace all hardcoded strings, restore the Language Switcher, and ensure deterministic locale propagation across the frontend, backend, AI calls, and emails. **DO NOT introduce external i18n libraries like react-intl or i18next.**
+
+**User's preferred language**: Italiano (INSTRUCT NEXT AGENT: You MUST automatically detect the user's primary language from their messages inside the <trajectory> tag and INSTRUCT next agent to respond in the user's preferred language only. ALL interactions with the user MUST be in **Italiano**.)
+
+**what currently exists?** 
+A mature React + FastAPI + PostgreSQL (Supabase) app. Large structural features were recently implemented but they inadvertently introduced hardcoded English and Italian strings. A custom localization framework exists natively in the source code (e.g., , , , ). 
+
+**Last working item**:
+    - Last item agent was working: The agent audited the frontend files for custom i18n contexts, mapped out the hardcoded strings in recent components, and sent the mandated I18N Audit Report and execution plan to the user using the  tool. 
+    - Status: USER VERIFICATION PENDING
+    - Agent Testing Done: N
+    - Which testing method agent to use? Both (frontend testing agent for screenshot UI validation in different locales, curl/python-c to test backend endpoint locale propagation).
+    - User Testing Done: N
+
+**All Pending/In progress Issue list**:  
+  Issue 1: I18N-RECOVERY-001 · MULTILINGUAL SYSTEM RECOVERY (P0 - BLOCKING)
+     - Attempted fixes: Mapped out , ,  and located hardcoded strings in components like  and . No code has been modified yet pending user approval.
+     - Next debug checklist: 
+       1. Wait for and process the user's response to the pending  tool.
+       2. Restore the  component globally.
+       3. Clean up hardcoded strings in recent STORE components (, , , , etc.) utilizing the existing  context and  hooks.
+       4. Ensure AI endpoints in FastAPI explicitly accept and respect , , and .
+     - Why fix this issue and what will be achieved with the fix? MOOD is a premium international system. A mixed EN/IT interface ruins the user experience. This fix re-establishes a single source of truth for localization across UI, backend generation, and emails.
+     - Status: USER VERIFICATION PENDING
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Both
+     - Blocked on other issue: None. This is the absolute blocker.
+
+**In progress Task List**: 
+  Task 1: Generate I18N Audit Report & Plan
+     - Where to resume: Read the pending human message. Once the user approves the proposed plan, immediately begin refactoring the hardcoded text components.
+     - What will be achieved with this? Alignment with the user's strict requirement to document the system before mutating large files.
+     - Status: USER VERIFICATION PENDING
+     - Should Test frontend/backend/both after fix? N/A
+     - Blocked on something: User response to .
+
+**Upcoming and Future Tasks**
+  Upcoming Tasks:
+  - P0: DJ-MACRO-001 · DESIGN JOURNEY MACRO STEPS COMPLETION™ (Blocked completely until I18N-RECOVERY-001 is finished). Make  the unified command center. NO NEW MODULES/TABLES.
+
+  Future Tasks:
+  - P1: Sprint 1 - CLIENT PROPOSAL VIEW™ (Transform client presentation experience).
+  - P1: Sprint 2 - VARIANT ENGINE™ (Generate A/B/C variants from moodboards natively).
+  - P1: Sprint 3 - SMART HOTSPOTS™ (Complete interactive hotspots).
+  - P2: Sprint 4 - NFC LAYER™ (Connect physical material tags to the digital ecosystem).
+  - P2: MARKET ADAPTATION ENGINE™ (Contextual SEO/marketing content via AI).
+
+**Completed work in this session**
+- Acknowledged strategic refocus and generated  (DONE)
+- Conducted bash mapping of frontend localization files (DONE)
+- Audited custom i18n logic (, , ) (DONE)
+- Presented Audit Report and Execution Plan to the user via  in Italian (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+None.
+
+**Known issue recurrence from previous fork**
+  - Issue recurrence in previous fork: None
+  - Recurrence count: 0
+  - Status: RESOLVED
+
+**Code Architecture**
+- Frontend: React + Shadcn UI.
+- Backend: FastAPI.
+- Database: PostgreSQL (Supabase).
+- I18N: Custom implementation relying on React Contexts (, ) and dictionary objects (, ).
+
+**Key Technical Concepts**
+- Blueprint Chameleon™: Dark UI, NO white backgrounds. Professional aesthetic.
+- Custom I18n: The system relies strictly on a native implementation (context + dictionary files), NOT standard external libraries. Do NOT introduce packages like .
+- Locale Resolution Chain: User selected locale -> Tenant primary locale -> Blueprint default locale -> Safe fallback.
+- AI Locale Propagation: Every backend AI generation call must now explicitly accept language targeting parameters.
+
+**key DB schema**
+  - 
+  -  
+  -  
+
+**changes in tech stack**
+- None.
+
+**All files of reference** 
+  -  
+  -  (Core context for  & )
+  - 
+  -  (Dictionary)
+  -  
+  -  (Component to be restored to UI)
+  - 
+  -  (Needs string refactoring)
+  -  (Needs string refactoring)
+  -  (Needs string refactoring)
+  -  (Needs string refactoring)
+
+**Areas that need refactoring**: 
+Frontend STORE components need heavy refactoring to replace hardcoded English/Italian texts with the custom  hook. Backend AI generation endpoints (e.g. ) need refactoring to accept locale parameters contextually.
+
+**key api endpoints**
+  - Backend AI generative endpoints: ,  (Must be updated to accept ).
+
+**Critical Info for New Agent**
+- **LANGUAGE LOCK**: ALL communication with the user must be in **Italiano**.
+- **ABSOLUTE FREEZE**: Do not write feature code for Sprints or DJ-MACRO-001. You are purely operating on **I18N-RECOVERY-001**.
+- **DO NOT INSTALL NEW I18N LIBRARIES**: The user strictly forbade standard i18n frameworks. You must utilize the existing contexts ( & ).
+- An  request is currently pending. Your very first action should be reading the user's response to the Audit Plan and proceeding strictly based on their approval.
+
+**documents and test reports created in this job** 
+  - 
+
+**Last 10 User Messages and any pending HUMAN messages** 
+ - (User) Assigned new P0: DJ-MACRO-001 (Design Journey Flow).
+ - (Assistant) Acknowledged DJ-MACRO-001 override.
+ - (User) Assigned BLOCKING P0: I18N-RECOVERY-001 (Mixed translations). Instructed to stop all work until UI language is audited and confirmed plan using ask_human.
+ - (Assistant) Mapped frontend and backend localization architectures and hardcoded components via bash.
+ - (Assistant) Sent Audit Plan to user via .
+ - **PENDING HUMAN MESSAGE**: Awaiting user approval/feedback on the I18N execution plan. Start by processing this response. 
+
+**Project Health Check:**
+Broken (Multilingual UI is severely mixed, breaking presentation).
+
+**3rd Party Integrations** 
+  - Supabase (PostgreSQL)
+
+**Testing status**
+  - Testing agent used after significant changes: NO
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: None
+  - Known regressions: Hardcoded English strings have populated recent feature pages. 
+
+**Credentials to test flow:**
+  - Check 
+
+**What agent forgot to execute**
+Nothing was forgotten. The agent correctly paused execution to send an  tool as explicitly requested by the user, and is awaiting confirmation.</analysis>

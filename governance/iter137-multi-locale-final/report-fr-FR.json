@@ -1,7 +1,7 @@
 {
   "iteration": "ITER132",
   "locale": "fr-FR",
-  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "base": "https://i18n-recovery-1.preview.emergentagent.com",
   "generated_at": "2026-05-22T13:33:15+00:00",
   "routes_crawled": 21,
   "summary": {
@@ -12,25 +12,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/dashboard",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -72,25 +72,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/projects",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -132,25 +132,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/accounts",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -192,25 +192,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/crm/follow-ups",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -234,25 +234,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -270,25 +270,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -312,25 +312,25 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/materials",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
@@ -354,271 +354,271 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/workspace/cultural-editions",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/calendar",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/magazine",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/publishing",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/market",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/editorial/web-presence",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/studio-identity",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/integrations",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/team/insights",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/forms",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"loc"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/studio-voice",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/blueprint/language",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"loc"
     },
     {
@@ -684,49 +684,49 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/moodboards",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"languag"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     },
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/settings/locales",
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
       "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\""
     }
   ],
@@ -756,28 +756,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -848,28 +848,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -956,28 +956,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1068,28 +1068,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1148,28 +1148,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak w"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1216,28 +1216,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1296,28 +1296,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1372,28 +1372,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1435,28 +1435,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak w"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1498,21 +1498,21 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1550,28 +1550,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1613,21 +1613,21 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1665,28 +1665,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1724,28 +1724,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1783,28 +1783,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1846,28 +1846,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak w"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1909,21 +1909,21 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -1965,28 +1965,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":null,\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak w"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -2040,28 +2040,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -2160,28 +2160,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
@@ -2202,28 +2202,28 @@
       "page_errors": [],
       "api_leaks": [
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve/public",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"browser\",\"candidates\":{\"explicit\":null,\"saved\":null,\"browser\":\"FR_FR\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Speak with refined editorial regi"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,
           "body_excerpt": "{\"locale_code\":\"FR_FR\",\"requested\":\"FR_FR\",\"source\":\"user\",\"candidates\":{\"explicit\":null,\"user\":\"FR_FR\",\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"FR_FR\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"83a5fa0b-5ffc-4346-bdd7-fcf58c33f14e\",\"locale_code\":\"FR_FR\",\"language\":\"fr\",\"market\":\"FR\",\"display_name\":\"France\",\"emotional_style\":\"editorial sophistication\",\"luxury_style\":\"élégance discrète, sophistication culturelle, raffinement matériel\",\"hospitality_style\":\"art de recevoir, hospitalité raffinée, table comme rituel\",\"editorial_tone\":\"français soutenu, ton de magazine éditorial\",\"cta_style\":\"invitation discrète et culturelle — 'Échangeons quand le projet l'appellera'\",\"investment_language\":\"patrimoine, héritage culturel, valeur de continuité\",\"atmosphere_language\":\"tenue, lumière douce, équilibre culturel, matière noble\",\"focus\":[\"sophistication\",\"subtle elegance\",\"cultural refinement\",\"restrained luxury\"],\"vocabulary_rules\":[\"raffinement\",\"élégance discrète\",\"sophistication\",\"lumière douce\",\"équilibre culturel\",\"matière noble\",\"registre éditorial\",\"tenue\",\"tension juste\"],\"forbidden_patterns\":[\"lifestyle aspirationnel\",\"luxe ostentatoire\",\"iconic presence\",\"AI\",\"généré par\"],\"positioning_examples\":[\"Le projet trouve sa tenue dans la justesse du dessin et la matière retenue.\",\"Une élégance qui se laisse découvrir plutôt qu'annoncer.\"],\"system_brief\":\"Write for a French audience valuing editorial sophistication, subtle elegance, cultural refinement and restrained luxury. Spea"
         },
         {
-          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "url": "https://i18n-recovery-1.preview.emergentagent.com/api/locale-runtime/resolve",
           "status": 200,
           "marker_hits": 4,
           "accent_hits": 28,

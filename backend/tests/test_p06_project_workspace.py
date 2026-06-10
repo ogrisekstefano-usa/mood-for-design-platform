@@ -3,7 +3,7 @@ import os
 import pytest
 import requests
 
-BASE = os.environ.get('REACT_APP_BACKEND_URL', 'https://content-hub-pro-22.preview.emergentagent.com').rstrip('/')
+BASE = os.environ.get('REACT_APP_BACKEND_URL', 'https://i18n-recovery-1.preview.emergentagent.com').rstrip('/')
 
 DEMO_EMAIL = 'demo@moodfordesign.com'
 DEMO_PASS = 'Blueprint2024!'

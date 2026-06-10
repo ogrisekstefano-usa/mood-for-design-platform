@@ -147,7 +147,7 @@ def get_my_profile(user: Dict[str, Any] = Depends(get_current_user)):
     # Health breakdown for the overview card.
     counts = {"healthy": 0, "stable": 0, "needs_support": 0, "at_risk": 0, "dormant": 0, "pending": 0}
     for r in refs: counts[r.get("current_health_status") or "pending"] = counts.get(r.get("current_health_status") or "pending", 0) + 1
-    base_origin = "https://content-hub-pro-22.preview.emergentagent.com"
+    base_origin = "https://i18n-recovery-1.preview.emergentagent.com"
     return {
         "advisor": adv,
         "magic_link": f"{base_origin}/auth/signup?ref={adv['advisor_code']}",

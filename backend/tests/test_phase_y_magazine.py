@@ -15,7 +15,7 @@ import uuid
 import pytest
 import requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://content-hub-pro-22.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://i18n-recovery-1.preview.emergentagent.com").rstrip("/")
 DEMO_TENANT_SLUG = "mood-demo-studio-81a09e"
 DEMO_TENANT_ID = "81a09ead-0306-4d71-a5c4-ca2b3956add2"
 

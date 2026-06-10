@@ -73,7 +73,7 @@ PLATFORM_ROOT_DOMAIN=moodfordesign.com
 | `blueprint.moodfordesign.com` | same callback, `origin=blueprint.moodfordesign.com` | `blueprint.moodfordesign.com/auth/reset-password` |
 | `www.moodfordesign.com` / bare root | rejected by `_isAllowedHost` | fallback → `blueprint.moodfordesign.com/auth/login` |
 
-**Supabase whitelist**: only ONE URL needed in Supabase auth settings — `https://blueprint.moodfordesign.com/auth/callback` (plus `https://*.preview.emergentagent.com/auth/callback` for dev). The platform handles all tenant fan-out.
+**Supabase whitelist**: only ONE URL needed in Supabase auth settings — `https://blueprint.moodfordesign.com/auth/callback` (plus `https://i18n-recovery-1.preview.emergentagent.com/auth/callback` for dev). The platform handles all tenant fan-out.
 
 ---
 

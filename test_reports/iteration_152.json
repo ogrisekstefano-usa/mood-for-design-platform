@@ -69,7 +69,7 @@
     "/app/backend/tests/test_iter152_live_e2e.py (NEW — live E2E with real ALE)"
   ],
   "success_rate": {"backend": "96% (32/33 — 27/27 pytest + 6/7 live E2E)", "frontend": "100% (panel renders, editorial wording compliant, testids present)"},
-  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=848354b9-a43e-4147-bdad-116fb93bd585, profile_id=caee7b92-34b4-4ecf-bdaa-8a3eda93a70e)",
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=i18n-recovery-1, profile_id=i18n-recovery-1)",
   "seed_data_creation": "Used the existing admin profile. PATCH source set role_label='Fondatore' (Italian). ALE created en-us/fr-fr/de-de/es-es auto rows. Tests transiently set/unset manual + locked states on en-us; the row was left in status='auto' after restore-ale at the end of the live E2E run.",
   "retest_needed": true,
   "should_main_agent_self_test": true,
