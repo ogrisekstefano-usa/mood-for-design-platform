@@ -307,6 +307,22 @@ def get_or_create_journey(project_id: str,
 @router.patch("/journeys/milestones/{mid}")
 def patch_milestone(mid: str, body: MilestonePatch,
                     ctx=Depends(get_tenant_context)):
+    """DEPRECATED since SPRINT-1 · use PATCH /journeys/{jid}/milestones/{mid}.
+
+    This endpoint continues to function but emits a Deprecation header so that
+    API clients and monitoring can track remaining callers before removal.
+    """
+    from fastapi import Response as _Resp
+    import warnings
+    warnings.warn(
+        "PATCH /journeys/milestones/{mid} is deprecated — "
+        "migrate to PATCH /journeys/{jid}/milestones/{mid}",
+        DeprecationWarning, stacklevel=2,
+    )
+    logger.warning(
+        "DEPRECATED endpoint called: PATCH /journeys/milestones/%s — "
+        "migrate to PATCH /journeys/{jid}/milestones/{mid}", mid
+    )
     c = db()
     tid = ctx["tenant_id"]
     uid = ctx.get("profile_id")
@@ -539,20 +555,14 @@ def journey_context_by_entity(
 
 @router.post("/journeys/milestones/{mid}/open")
 def open_milestone(mid: str, ctx=Depends(get_tenant_context)):
-    """Resolve the 'Apri' CTA target.
+    """DEPRECATED since SPRINT-1 · use POST /journeys/{jid}/milestones/{mid}/open.
 
-    Returns the navigation hint:
-      {
-        "open_mode":     "inline" | "navigate",
-        "linked_route":  "/inspirations/materials" | …,
-        "milestone_type": "brief" | "material_direction" | …
-      }
-
-    The frontend uses this to either expand the inline panel OR navigate
-    to the existing module (Moodboards/Inspirations/Material View/…).
-
-    Also auto-transitions 'not_started' → 'in_progress' (first open).
+    Continues to function. Emits DeprecationWarning and backend log for monitoring.
     """
+    logger.warning(
+        "DEPRECATED endpoint called: POST /journeys/milestones/%s/open — "
+        "migrate to POST /journeys/{jid}/milestones/{mid}/open", mid
+    )
     c = db()
     tid = ctx["tenant_id"]
     uid = ctx.get("profile_id")

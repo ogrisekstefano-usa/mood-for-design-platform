@@ -49,6 +49,7 @@ from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
 from database import db
+from services import knowledge_usage_hooks as _ke_hooks  # KE-005B.1
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -63,6 +64,16 @@ VALID_MILESTONE_STATUSES = {
     'not_started', 'in_progress', 'presented', 'revision_requested',
     'partially_approved', 'approved', 'closed',
     'skipped', 'not_applicable', 'reopened', 'parallel_active',
+}
+
+# Narrative templates — editorial italiano, NO technical log.
+STATUS_NARRATIVE = {
+    "in_progress":         "{title} — in lavorazione.",
+    "presented":           "{title} presentata al cliente.",
+    "revision_requested":  "Cliente chiede una revisione su {title}.",
+    "partially_approved":  "{title} approvata parzialmente.",
+    "approved":            "{title} approvata. Il progetto avanza.",
+    "closed":              "{title} chiusa. Capitolo concluso.",
 }
 
 LIFECYCLE_NARRATIVE = {
@@ -127,8 +138,22 @@ class LifecyclePatch(BaseModel):
 
 
 class MilestoneStatusPatch(BaseModel):
+    """Legacy status-only patch — usato da PATCH /{jid}/milestones/{mid}/status."""
     status: str
     note: Optional[str] = None
+
+
+class MilestonePatch(BaseModel):
+    """SPRINT-1 canonical full patch — usato da PATCH /{jid}/milestones/{mid}."""
+    status:             Optional[str] = None
+    title:              Optional[str] = None
+    description:        Optional[str] = None
+    owner_user_id:      Optional[str] = None
+    linked_entity_type: Optional[str] = None
+    linked_entity_id:   Optional[str] = None
+    metadata:           Optional[Dict[str, Any]] = None
+    entity_refs:        Optional[List[str]] = None  # KE-005B canonical entity ids
+    note:               Optional[str] = None        # appended to timeline event
 
 
 class MilestoneSkip(BaseModel):
@@ -360,7 +385,181 @@ def patch_lifecycle(jid: str, body: LifecyclePatch,
     return {"journey": _slim(updated), "changed": True}
 
 
-# ─── PATCH milestone status (LAYER 2) ──────────────────────────────────
+# ─── PATCH milestone (CANONICAL · SPRINT-1) ────────────────────────────
+@router.patch("/{jid}/milestones/{mid}")
+def patch_milestone(jid: str, mid: str, body: MilestonePatch,
+                    ctx=Depends(get_tenant_context)):
+    """Canonical full-field milestone patch (SPRINT-1 · Router B owner).
+
+    Supports: status + title + description + owner_user_id +
+    linked_entity_type/id + metadata merge + entity_refs (KE-005B) + note.
+
+    Side-effects on status change:
+      • auto-advance design_journeys.current_milestone_id on approved/closed
+      • auto-close journey on certified_closure + approved
+    """
+    c   = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    _resolve_journey(c, tid, jid)  # ownership + existence check
+
+    rows = (c.table("journey_milestones").select("*")
+            .eq("id", mid).eq("journey_id", jid).eq("tenant_id", tid)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Pietra miliare non trovata")
+    cur = rows[0]
+
+    patch: Dict[str, Any] = {}
+    new_status: Optional[str] = None
+
+    # ── Status ──────────────────────────────────────────────────────────
+    if body.status is not None:
+        s = body.status.strip().lower()
+        if s not in VALID_MILESTONE_STATUSES:
+            raise HTTPException(400, f"status non valido: {s!r}")
+        if s != cur.get("status"):
+            new_status = s
+            patch["status"] = s
+            if s == "in_progress" and not cur.get("started_at"):
+                patch["started_at"] = _now()
+            if s == "presented":
+                patch["presented_at"] = _now()
+            if s == "approved":
+                patch["approved_at"] = _now()
+            if s == "closed":
+                patch["closed_at"] = _now()
+            if s == "reopened":
+                patch["reopened_at"] = _now()
+            if s in ("skipped", "not_applicable"):
+                patch["skipped_at"] = _now()
+                if s == "not_applicable":
+                    patch["is_applicable"] = False
+
+    # ── Field updates ────────────────────────────────────────────────────
+    if body.title is not None:
+        patch["title"] = body.title.strip()[:200]
+    if body.description is not None:
+        patch["description"] = body.description.strip() or None
+    if body.owner_user_id is not None:
+        patch["owner_user_id"] = body.owner_user_id or None
+    if body.linked_entity_type is not None:
+        patch["linked_entity_type"] = body.linked_entity_type or None
+    if body.linked_entity_id is not None:
+        patch["linked_entity_id"] = body.linked_entity_id or None
+    if body.metadata is not None:
+        merged = {**(cur.get("metadata") or {}), **(body.metadata or {})}
+        patch["metadata"] = merged
+    entity_refs_provided = body.entity_refs is not None
+    if entity_refs_provided:
+        patch["entity_refs"] = body.entity_refs or []
+
+    if not patch:
+        return {"milestone": _slim(cur), "changed": False}
+
+    patch["updated_at"] = _now()
+    c.table("journey_milestones").update(patch).eq("id", mid).execute()
+
+    # ── KE-005B entity_refs sync ─────────────────────────────────────────
+    if entity_refs_provided:
+        try:
+            prev = cur.get("entity_refs") or []
+            if not isinstance(prev, list):
+                prev = []
+            _ke_hooks.sync_entity_refs(
+                tenant_id=tid, surface_type="design_journey",
+                surface_id=mid, previous_ids=prev,
+                new_ids=body.entity_refs or [],
+                user_id=uid,
+            )
+        except Exception as ex:
+            logger.warning("KE-005B sync_entity_refs failed: %s", ex)
+
+    # ── Timeline event ────────────────────────────────────────────────────
+    if new_status:
+        narrative = STATUS_NARRATIVE.get(new_status, "{title} aggiornata.").format(
+            title=cur.get("title", ""))
+        _emit_event(
+            c, journey_id=jid, tenant_id=tid, milestone_id=mid,
+            event_type=f"milestone_{new_status}",
+            event_canon=None,  # constraint allows only specific values; extend in next DB migration
+            narrative=narrative,
+            created_by=uid,
+            meta={"note": body.note} if body.note else None,
+        )
+        # ── Auto-advance current_milestone_id ────────────────────────────
+        if new_status in ("approved", "closed"):
+            nxt = (c.table("journey_milestones").select("id,order_index,status")
+                   .eq("journey_id", jid).eq("tenant_id", tid)
+                   .gt("order_index", cur.get("order_index", 0))
+                   .order("order_index", desc=False).limit(1)
+                   .execute().data or [])
+            if nxt:
+                c.table("design_journeys").update(
+                    {"current_milestone_id": nxt[0]["id"], "updated_at": _now()}
+                ).eq("id", jid).execute()
+        # ── Certified Closure → auto-close journey ───────────────────────
+        if cur.get("milestone_type") == "certified_closure" and new_status == "approved":
+            c.table("design_journeys").update(
+                {"overall_status": "closed", "closed_at": _now(), "updated_at": _now()}
+            ).eq("id", jid).execute()
+            _emit_event(
+                c, journey_id=jid, tenant_id=tid, milestone_id=mid,
+                event_type="journey_closed",
+                event_canon=None,
+                narrative="Design Journey™ chiuso. Il progetto entra nella memoria firmata dello studio.",
+                created_by=uid,
+            )
+
+    upd = (c.table("journey_milestones").select("*")
+           .eq("id", mid).limit(1).execute().data or [])[0]
+    return {"milestone": _slim(upd), "changed": True}
+
+
+# ─── POST open (CANONICAL · SPRINT-1) ──────────────────────────────────
+@router.post("/{jid}/milestones/{mid}/open")
+def open_milestone(jid: str, mid: str, ctx=Depends(get_tenant_context)):
+    """Resolve CTA 'Apri' target. Auto-transitions not_started → in_progress.
+
+    Returns navigation hint:
+      { open_mode, linked_route, milestone_type, linked_entity_type/id }
+    """
+    c   = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    _resolve_journey(c, tid, jid)
+
+    rows = (c.table("journey_milestones").select("*")
+            .eq("id", mid).eq("journey_id", jid).eq("tenant_id", tid)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Pietra miliare non trovata")
+    m    = rows[0]
+    meta = m.get("metadata") or {}
+
+    if m["status"] == "not_started":
+        c.table("journey_milestones").update(
+            {"status": "in_progress", "started_at": _now(), "updated_at": _now()}
+        ).eq("id", mid).execute()
+        narrative = STATUS_NARRATIVE["in_progress"].format(title=m["title"])
+        _emit_event(
+            c, journey_id=jid, tenant_id=tid, milestone_id=mid,
+            event_type="milestone_in_progress",
+            event_canon=None,  # constraint allows only specific values; extend in next DB migration
+            narrative=narrative, created_by=uid,
+        )
+
+    return {
+        "milestone_id":       mid,
+        "milestone_type":     m["milestone_type"],
+        "open_mode":          meta.get("open_mode") or "inline",
+        "linked_route":       meta.get("linked_route"),
+        "linked_entity_type": m.get("linked_entity_type"),
+        "linked_entity_id":   m.get("linked_entity_id"),
+    }
+
+
+# ─── PATCH milestone status (LAYER 2 · legacy) ─────────────────────────
 @router.patch("/{jid}/milestones/{mid}/status")
 def patch_milestone_status(jid: str, mid: str, body: MilestoneStatusPatch,
                            ctx=Depends(get_tenant_context)):

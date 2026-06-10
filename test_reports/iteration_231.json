@@ -1,0 +1,44 @@
+{
+  "summary": "Sprint 1 Milestone Ownership Consolidation testing: 8/8 backend tests PASS. Canonical endpoints PATCH /journeys/{jid}/milestones/{mid} and POST /journeys/{jid}/milestones/{mid}/open work correctly. Legacy deprecated endpoints return valid responses and emit DEPRECATED logger.warning. Timeline events created. Frontend code confirmed using canonical URLs (m.journey_id in path).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "canonical_patch_milestone_status": "PASS - PATCH /journeys/{jid}/milestones/{mid} → status updated, changed:true",
+    "canonical_patch_milestone_fields": "PASS - metadata merge confirmed (custom_flag:True + test_key:sprint1 merged into existing metadata)",
+    "canonical_post_open_milestone": "PASS - POST /journeys/{jid}/milestones/{mid}/open → auto-transition not_started→in_progress + open_mode returned",
+    "timeline_event_created": "PASS - journey_timeline_events present in overview.timeline_recent after status change",
+    "legacy_patch_backward_compat": "PASS - PATCH /journeys/milestones/{mid} returns 200 with 'item' key",
+    "legacy_open_backward_compat": "PASS - POST /journeys/milestones/{mid}/open returns 200 with milestone_id + open_mode",
+    "journey_overview_loads": "PASS - GET /journeys/{jid}/overview returns journey + milestones_flat",
+    "canonical_patch_wrong_mid": "PASS - 404 returned for non-existent milestone id",
+    "deprecated_warnings_in_logs": "PASS - Backend logs show DEPRECATED warning for both legacy endpoints (confirmed in /var/log/supervisor/backend.err.log)",
+    "frontend_canonical_urls": "PASS (code review) - DesignJourneyTab.jsx line 364 uses /journeys/${m.journey_id}/milestones/${m.id} and line 375 uses /journeys/${m.journey_id}/milestones/${m.id}/open"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_sprint1_milestone_ownership.py",
+    "/app/test_reports/pytest/sprint1_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "event_canon is NULL for new timeline events — DB constraint allows only NULL/brief_started/journey_created. E1 has documented this for future DB migration (expected, not a bug).",
+    "Legacy endpoints in design_journey.py emit warnings but continue to function correctly — migration path is clear."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_sprint1_milestone_ownership.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8)",
+    "frontend": "PASS (code review — canonical URLs confirmed in DesignJourneyTab.jsx)"
+  },
+  "seed_data_creation": "None (used existing JID bba6e7e8-f31f-4c48-aab0-4ec4f3b34225)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Sprint-1 canonical endpoints: PATCH /api/journeys/{jid}/milestones/{mid} (full field patch + metadata merge + auto-advance + certified_closure) and POST /api/journeys/{jid}/milestones/{mid}/open (auto-transition not_started→in_progress). Legacy endpoints PATCH/POST /api/journeys/milestones/{mid}[/open] still work with DEPRECATED logger.warning. Frontend DesignJourneyTab.jsx uses m.journey_id for both canonical calls. event_canon=NULL for milestone events (DB constraint - future migration needed)."
+}

@@ -361,7 +361,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
   const onStatusChange = async (m, newStatus) => {
     setBusy(true);
     try {
-      await api.patch(`/api/journeys/milestones/${m.id}`, { status: newStatus });
+      await api.patch(`/api/journeys/${m.journey_id}/milestones/${m.id}`, { status: newStatus });
       toast.success(`${m.title} · ${STATUS_META[newStatus].label}`);
       await load();
     } catch (e) {
@@ -372,7 +372,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
   const onOpen = async (m) => {
     setBusy(true);
     try {
-      const r = await api.post(`/api/journeys/milestones/${m.id}/open`);
+      const r = await api.post(`/api/journeys/${m.journey_id}/milestones/${m.id}/open`);
       const { open_mode, linked_route, linked_entity_id, linked_entity_type } = r.data;
 
       // Sprint G.6 — Step-Anchored Artifact Pages™.
