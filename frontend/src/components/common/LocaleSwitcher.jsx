@@ -27,7 +27,7 @@ const LocaleSwitcher = ({ align = 'right' }) => {
         className="flex items-center gap-2 px-2.5 py-1.5 text-xs font-body text-[#A19D98] hover:text-[#EFEBE4] hover:bg-white/[0.04] rounded-[3px] transition-colors"
       >
         <Globe size={12} strokeWidth={1.5} />
-        <span className="uppercase tracking-wide">{current?.code}</span>
+        <span className="uppercase tracking-wide">{current?.short || current?.code?.split('-')[0]?.toUpperCase()}</span>
         <ChevronDown size={11} strokeWidth={1.5} />
       </button>
       {open && (
@@ -42,7 +42,7 @@ const LocaleSwitcher = ({ align = 'right' }) => {
               onClick={() => { setLocale(l.code); setOpen(false); }}
               className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-body text-[#A19D98] hover:bg-white/[0.04] hover:text-[#EFEBE4] transition-colors"
             >
-              <span>{l.native}</span>
+              <span>{l.native_name || l.native || l.name}</span>
               {locale === l.code && <Check size={11} className="text-[var(--bp-primary,#D4AF37)]" />}
             </button>
           ))}

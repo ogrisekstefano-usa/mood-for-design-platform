@@ -120,23 +120,30 @@ export async function bootstrapLanguagesFromDB(apiBase = null) {
     const r = await fetch(url, { credentials: 'omit' });
     if (!r.ok) throw new Error(`platform/languages ${r.status}`);
     const body = await r.json();
-    const rows = (body.languages || []).map((l) => ({
-      code:                    l.code,
-      name:                    l.name,
-      native_name:             l.native_name,
-      region:                  l.region,
-      dial_code:               l.dial_code,
-      enabled:                 !!l.enabled,
-      public_enabled:          !!l.public_enabled,
-      blueprint_enabled:       !!l.blueprint_enabled,
-      default_locale:          !!l.default_locale,
-      rtl:                     !!l.rtl,
-      fallback_locale:         l.fallback_locale,
-      sort_order:              l.sort_order ?? 100,
-      ai_translation_enabled:  !!l.ai_translation_enabled,
-      short:                   l.short_label,
-      base:                    l.base_code,
-    }));
+    const rows = (body.languages || []).map((l) => {
+      // Prefer the short label from the static registry (e.g. 'IT', 'EN-US')
+      // over the DB value which may be verbose (e.g. 'IT-IT').
+      const staticEntry = LANGUAGE_REGISTRY.find(
+        (s) => s.code === l.code || s.code === l.base_code || (s.base === l.base_code && !s.code.includes('-'))
+      );
+      return {
+        code:                    l.code,
+        name:                    l.name,
+        native_name:             l.native_name,
+        region:                  l.region,
+        dial_code:               l.dial_code,
+        enabled:                 !!l.enabled,
+        public_enabled:          !!l.public_enabled,
+        blueprint_enabled:       !!l.blueprint_enabled,
+        default_locale:          !!l.default_locale,
+        rtl:                     !!l.rtl,
+        fallback_locale:         l.fallback_locale,
+        sort_order:              l.sort_order ?? 100,
+        ai_translation_enabled:  !!l.ai_translation_enabled,
+        short:                   staticEntry?.short || l.short_label || l.code,
+        base:                    l.base_code,
+      };
+    });
     _dbMirror = rows;
     writeDbCache(rows);
     try {
@@ -187,9 +194,19 @@ export const enabledLanguages = () => getLanguageRegistry()
 export const publicLanguages = () => getLanguageRegistry()
   .filter((l) => l.enabled && l.public_enabled).sort((a, b) => a.sort_order - b.sort_order);
 
-export const blueprintLanguages = () => getLanguageRegistry()
-  .filter((l) => l.enabled && l.blueprint_enabled && BLUEPRINT_OPERATIONAL_CODES.includes(l.code))
-  .sort((a, b) => a.sort_order - b.sort_order);
+export const blueprintLanguages = () => {
+  const reg = getLanguageRegistry();
+  return reg
+    .filter((l) => {
+      if (!l.enabled || !l.blueprint_enabled) return false;
+      // Base-code matching: 'it-IT' must match operational code 'it'.
+      // DB may store 'it-IT' while BLUEPRINT_OPERATIONAL_CODES has 'it'.
+      return BLUEPRINT_OPERATIONAL_CODES.some(
+        (c) => l.code === c || l.code === `${c}-${l.region}` || l.code.startsWith(c + '-')
+      );
+    })
+    .sort((a, b) => a.sort_order - b.sort_order);
+};
 
 // Resolve any incoming code to its canonical registry entry (BCP-47 or 2-char)
 export function resolveLanguage(code) {
