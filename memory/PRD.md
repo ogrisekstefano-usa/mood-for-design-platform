@@ -169,3 +169,18 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Aggiornati: `SettingsPage.jsx` (tile link), `BlueprintGovernancePages.jsx` (AdminIndexEntry link)
 - Test: 7/7 PASS — sidebar presente, redirect funzionante, contatore 7/7 da DB
 
+
+### DJ-STABILIZATION-P0 SPRINT 0 (completato — 2026-06-10)
+**Metriche pre-fix**: 9 design_journeys — account_id NULL: 0 — lifecycle_state NULL: 0 (DB già pulito)
+- `design_journey.py/_ensure_journey()`: recupera account_id da `projects.metadata_json`, imposta `lifecycle_state='conversation_open'`
+- `lead_conversion.py/start_journey`: crea tutti 10 DEFAULT_MILESTONES (era solo 1 brief)
+- `journeys.py/mine` ×2: `.or_('lifecycle_state.neq.abandoned,lifecycle_state.is.null')` — NULL guard
+- Rischi residui: nessuno attivo
+
+### FASE 1 Quick Lead Alignment (completato — 2026-06-10)
+- `NewRelationshipModal.jsx`: `name` → `firstName`+`lastName` separati, `PhoneCountryPrefix` integrato
+- `leads.py/fast-capture`: accetta `{first_name, last_name}` direttamente O `{name}` legacy — nessun nuovo endpoint
+- Payload prima: `{name:"Marco Rossi"}` → dopo: `{first_name:"Marco", last_name:"Rossi"}`
+- Test: 8/8 PASS (backend + frontend)
+
+
