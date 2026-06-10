@@ -127,26 +127,46 @@ STATUS_NARRATIVE = {
 
 # ─── Helpers ───────────────────────────────────────────────────────────
 def _ensure_journey(c, tenant_id: str, project_id: str, user_id: Optional[str]) -> Dict[str, Any]:
-    """Find or create the journey for a project. Idempotent."""
+    """Find or create the journey for a project. Idempotent.
+
+    SPRINT-0 · P0-B fix:
+      - Reads account_id from projects.metadata_json so project-first journeys
+        are visible in the client portal (which resolves via account_id).
+      - Always sets lifecycle_state='conversation_open' so /mine query
+        (which excludes NULLs via neq) never loses this journey.
+    """
     rows = (c.table("design_journeys").select("*")
             .eq("tenant_id", tenant_id).eq("project_id", project_id)
             .limit(1).execute().data or [])
     if rows:
         return rows[0]
 
+    # Recover account_id from project metadata (P0-B: project-first path fix)
+    account_id: Optional[str] = None
+    try:
+        prows = (c.table("projects").select("metadata_json")
+                 .eq("id", project_id).eq("tenant_id", tenant_id)
+                 .limit(1).execute().data or [])
+        if prows:
+            account_id = (prows[0].get("metadata_json") or {}).get("account_id") or None
+    except Exception:
+        pass  # non-fatal: journey still created without account_id
+
     # Create journey
     jid = str(uuid.uuid4())
     j_row = {
-        "id":            jid,
-        "tenant_id":     tenant_id,
-        "project_id":    project_id,
+        "id":              jid,
+        "tenant_id":       tenant_id,
+        "project_id":      project_id,
+        "account_id":      account_id,            # P0-B: from project meta
+        "lifecycle_state": "conversation_open",   # P0-B: always explicit
         "current_milestone_id": None,
-        "overall_status": "in_progress",
-        "started_at":    _now(),
-        "closed_at":     None,
-        "created_by":    user_id,
-        "created_at":    _now(),
-        "updated_at":    _now(),
+        "overall_status":  "in_progress",
+        "started_at":      _now(),
+        "closed_at":       None,
+        "created_by":      user_id,
+        "created_at":      _now(),
+        "updated_at":      _now(),
     }
     c.table("design_journeys").insert(j_row).execute()
 

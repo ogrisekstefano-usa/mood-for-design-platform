@@ -115,11 +115,30 @@ def fast_capture(
     now = _now()
 
     # ── Validation ────────────────────────────────────────────────
-    name = (body.get('name') or '').strip()
-    if len(name) < 2:
+    # FASE-1: accept first_name/last_name directly (new payload from NewRelationshipModal)
+    # OR fall back to single `name` field (backward compat with old callers).
+    first_name_direct = (body.get('first_name') or '').strip()
+    last_name_direct  = (body.get('last_name')  or '').strip() or None
+
+    if first_name_direct:
+        first_name = first_name_direct
+        last_name  = last_name_direct
+        name       = f"{first_name} {last_name or ''}".strip()
+    else:
+        name = (body.get('name') or '').strip()
+        if len(name) < 2:
+            raise HTTPException(
+                status_code=400,
+                detail={"code": "LEAD-NAME-REQUIRED", "message": "name must be at least 2 characters (or provide first_name)."},
+            )
+        parts      = name.split(None, 1)
+        first_name = parts[0]
+        last_name  = parts[1] if len(parts) > 1 else None
+
+    if not first_name:
         raise HTTPException(
             status_code=400,
-            detail={"code": "LEAD-NAME-REQUIRED", "message": "Name must be at least 2 characters."},
+            detail={"code": "LEAD-NAME-REQUIRED", "message": "first_name (or name) is required."},
         )
 
     email = (body.get('email') or '').strip().lower() or None
@@ -170,11 +189,6 @@ def fast_capture(
                     "hint": "Re-submit with skip_dedup_check=true to create anyway.",
                 },
             )
-
-    # ── Split name (heuristic) ────────────────────────────────────
-    parts = name.split(None, 1)
-    first_name = parts[0]
-    last_name = parts[1] if len(parts) > 1 else None
 
     # ── INSERT lead ───────────────────────────────────────────────
     lead_id = str(uuid.uuid4())

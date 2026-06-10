@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, Body
 from pydantic import BaseModel
 from core.tenant_context import get_tenant_context
 from database import db
+from routers.design_journey import DEFAULT_MILESTONES
 
 router = APIRouter()
 
@@ -177,24 +178,43 @@ def start_journey(lead_id: str, body: Optional[DiscoverBody] = Body(default=None
     }
     c.table("design_journeys").insert(journey_payload).execute()
 
-    # 3) Brief milestone (DISCOVER phase entry point)
-    brief_milestone_id = str(uuid.uuid4())
-    c.table("journey_milestones").insert({
-        "id": brief_milestone_id,
-        "tenant_id": tid,
-        "journey_id": journey_id,
-        "milestone_type": "brief",
-        "title": "Brief & Discover",
-        "status": "in_progress",
-        "order_index": 1,
-        "started_at": _now(),
-        "metadata": {
-            "qualification": qual,
-            "discover": (body.model_dump(exclude_none=True) if body else {}),
-        },
-        "created_at": _now(),
-        "updated_at": _now(),
-    }).execute()
+    # 3) All 10 default milestones (SPRINT-0: was only brief — now full set)
+    # Carry qualification/discover metadata into the brief milestone.
+    milestones_to_insert = []
+    brief_milestone_id = None
+    for idx, m in enumerate(DEFAULT_MILESTONES):
+        is_brief = (m["type"] == "brief")
+        mid = str(uuid.uuid4())
+        if is_brief:
+            brief_milestone_id = mid
+        m_row = {
+            "id":             mid,
+            "tenant_id":      tid,
+            "journey_id":     journey_id,
+            "milestone_type": m["type"],
+            "title":          m["title"],
+            "description":    m.get("description", ""),
+            "order_index":    idx,
+            "status":         "in_progress" if is_brief else "not_started",
+            "started_at":     _now() if is_brief else None,
+            "metadata": {
+                "open_mode":    m["open_mode"],
+                "linked_route": m["linked_route"],
+                **({"qualification": qual,
+                    "discover": (body.model_dump(exclude_none=True) if body else {})}
+                   if is_brief else {}),
+            },
+            "created_at":     _now(),
+            "updated_at":     _now(),
+        }
+        milestones_to_insert.append(m_row)
+    c.table("journey_milestones").insert(milestones_to_insert).execute()
+
+    # Set current_milestone_id to brief
+    if brief_milestone_id:
+        c.table("design_journeys").update(
+            {"current_milestone_id": brief_milestone_id, "updated_at": _now()}
+        ).eq("tenant_id", tid).eq("id", journey_id).execute()
 
     # 4) link back to lead
     c.table("leads").update({

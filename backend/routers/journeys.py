@@ -618,7 +618,9 @@ def my_primary_journey(ctx=Depends(get_tenant_context)):
     for a in acc_rows:
         jrows = (c.table("design_journeys").select("id, lifecycle_state, project_id, created_by, updated_at")
                  .eq("tenant_id", tid).eq("account_id", a["id"])
-                 .neq("lifecycle_state", "abandoned")
+                 # SPRINT-0 · P0-B: neq alone silently drops NULL rows in PostgreSQL.
+                 # Include lifecycle_state IS NULL to recover project-first journeys.
+                 .or_("lifecycle_state.neq.abandoned,lifecycle_state.is.null")
                  .order("updated_at", desc=True).limit(1).execute().data or [])
         if jrows:
             j = jrows[0]
@@ -747,7 +749,10 @@ def resolve_journey(
     if not (project_id or account_id):
         raise HTTPException(400, "Either project_id or account_id required")
 
-    q = c.table("design_journeys").select("id, project_id, account_id, lifecycle_state").eq("tenant_id", tid).neq("lifecycle_state", "abandoned")
+    q = (c.table("design_journeys").select("id, project_id, account_id, lifecycle_state")
+         .eq("tenant_id", tid)
+         # SPRINT-0 · P0-B: include lifecycle_state IS NULL (PostgreSQL neq drops NULLs)
+         .or_("lifecycle_state.neq.abandoned,lifecycle_state.is.null"))
     if project_id:
         q = q.eq("project_id", project_id)
     if account_id:

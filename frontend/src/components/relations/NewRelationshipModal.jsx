@@ -23,6 +23,8 @@ import {
   AtelierCard,
 } from '../atelier/AtelierModal';
 import { getAuthHeader as auth } from '../../lib/authHeader';
+import PhoneCountryPrefix, { normalizePhone } from '../journey/PhoneCountryPrefix';
+import '../../styles/begin-journey.css';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -150,12 +152,19 @@ export default function NewRelationshipModal({ open, onClose, onCreated, prefill
 /* ───────────────────────── Forms ───────────────────────── */
 
 function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
-  const parsedName = useMemo(() => {
+  const parsedFirstName = useMemo(() => {
     if (!prefill) return '';
-    if (prefill.first_name || prefill.last_name) {
-      return [prefill.first_name, prefill.last_name].filter(Boolean).join(' ');
+    if (prefill.first_name) return prefill.first_name;
+    if (prefill.query && !prefill.query.includes('@')) return prefill.query.trim().split(' ')[0];
+    return '';
+  }, [prefill]);
+  const parsedLastName = useMemo(() => {
+    if (!prefill) return '';
+    if (prefill.last_name) return prefill.last_name;
+    if (prefill.query && !prefill.query.includes('@')) {
+      const parts = prefill.query.trim().split(' ');
+      return parts.length > 1 ? parts.slice(1).join(' ') : '';
     }
-    if (prefill.query && !prefill.query.includes('@')) return prefill.query.trim();
     return '';
   }, [prefill]);
   const parsedEmail = useMemo(() => {
@@ -164,31 +173,37 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
     return '';
   }, [prefill]);
 
-  const [name, setName] = useState(parsedName);
-  const [email, setEmail] = useState(parsedEmail);
-  const [phone, setPhone] = useState(prefill?.phone || '');
-  const [source, setSource] = useState('');
+  const [firstName, setFirstName]     = useState(parsedFirstName);
+  const [lastName, setLastName]       = useState(parsedLastName);
+  const [email, setEmail]             = useState(parsedEmail);
+  const [phone, setPhone]             = useState(prefill?.phone || '');
+  const [phoneCountry, setPhoneCountry] = useState(null);
+  const [source, setSource]           = useState('');
   const [sourceDetail, setSourceDetail] = useState('');
   const [dedupMatches, setDedupMatches] = useState([]);
 
   const canSubmit = useMemo(() => {
-    if (name.trim().length < 2) return false;
+    if (firstName.trim().length < 1) return false;
     if (!email.trim() && !phone.trim()) return false;
     if (!source) return false;
     if (source === 'other' && sourceDetail.trim().length < 3) return false;
     return true;
-  }, [name, email, phone, source, sourceDetail]);
+  }, [firstName, email, phone, source, sourceDetail]);
 
   const submit = async (skipDedup = false) => {
     if (!canSubmit || busy) return;
     setBusy(true);
+    const normalizedPhone = phone.trim()
+      ? normalizePhone(phoneCountry?.dial_code || '', phone)
+      : null;
     try {
       const r = await axios.post(
         `${API}/api/leads/fast-capture`,
         {
-          name: name.trim(),
-          email: email.trim().toLowerCase() || null,
-          phone: phone.trim() || null,
+          first_name: firstName.trim(),
+          last_name:  lastName.trim() || null,
+          email:      email.trim().toLowerCase() || null,
+          phone:      normalizedPhone || phone.trim() || null,
           source,
           source_detail: source === 'other' ? sourceDetail.trim() : null,
           skip_dedup_check: skipDedup,
@@ -212,15 +227,25 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
 
   return (
     <div data-testid="new-relationship-lead-form" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <AtelierField label="Nome" required>
-        <AtelierInput
-          data-testid="nr-lead-name"
-          value={name}
-          onChange={(e) => { setName(e.target.value); setDedupMatches([]); }}
-          placeholder="es. Marco Rossi"
-          autoFocus
-        />
-      </AtelierField>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <AtelierField label="Nome" required>
+          <AtelierInput
+            data-testid="nr-lead-first-name"
+            value={firstName}
+            onChange={(e) => { setFirstName(e.target.value); setDedupMatches([]); }}
+            placeholder="es. Marco"
+            autoFocus
+          />
+        </AtelierField>
+        <AtelierField label="Cognome">
+          <AtelierInput
+            data-testid="nr-lead-last-name"
+            value={lastName}
+            onChange={(e) => { setLastName(e.target.value); setDedupMatches([]); }}
+            placeholder="es. Rossi"
+          />
+        </AtelierField>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         <AtelierField label="Email" hint="Opzionale se hai il telefono">
@@ -233,12 +258,21 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
           />
         </AtelierField>
         <AtelierField label="Telefono" hint="Opzionale se hai l'email">
-          <AtelierInput
-            data-testid="nr-lead-phone"
-            value={phone}
-            onChange={(e) => { setPhone(e.target.value); setDedupMatches([]); }}
-            placeholder="+39…"
-          />
+          <div className="bj-phone-row" style={{ display: 'flex', gap: 6 }}>
+            <PhoneCountryPrefix
+              value={phoneCountry}
+              onChange={setPhoneCountry}
+              testid="nr-lead-phone-prefix"
+            />
+            <AtelierInput
+              data-testid="nr-lead-phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => { setPhone(e.target.value); setDedupMatches([]); }}
+              placeholder="0123 456 7890"
+              style={{ flex: 1 }}
+            />
+          </div>
         </AtelierField>
       </div>
 
