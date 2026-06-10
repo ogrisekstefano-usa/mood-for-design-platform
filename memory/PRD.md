@@ -288,6 +288,29 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 ---
 
+## I18N Consolidation Audit (10 Jun 2026) — Risultati
+
+### T1: Engine Map
+- **6 meccanismi** trovati: E1=useT(i18n/useT), E2=useT(BlueprintContext), E3=useBlueprint().t, E4=EditorialBundleProvider, E5=EditorialOverridesProvider, E6=LocaleRuntimeContext
+- **RISCHIO**: E1≠E2 — stessa firma visiva `useT`, semantica diversa (E1 ignora 3° arg, E2 ha fallback)
+- **E2=E3** (E2 è re-export di E3)
+
+### T2: Key Duplication Report
+- **it-IT: 1908 chiavi** | **en-US: 1883 chiavi** | De-sync: 25 solo in IT, 0 solo in EN
+- **De-sync fixato**: `members.toast_required_fields` aggiunto in en-US
+- Duplicato principale: "Annulla" ×11 chiavi — candidato a `common.cancel` canonico
+- 3 namespace CRM paralleli: `crm.*` (223) + `clientRelations.*` (59) + `leads.*` (18)
+
+### T3: DesignJourneyTab
+- Route: `/studio/journey/:jid?_legacy=1` (path LEGACY)
+- Journey `88c072b7` ha `milestones_flat: 0` (dangling milestone_id) → progressNarrative non testabile
+- **i18n**: missing 0 confermato su tutte le navigazioni, loading/error states tradotti ✅
+
+### T4: CRM Missing Keys  
+- Static analysis: **0 missing** (224 chiavi CRM+Workspace tutte presenti in JSON)
+- Runtime: **13 pre-esistenti** (origine dinamica, pre-datano FASE 1)
+- **1 de-sync rilevato e fixato**: members.toast_required_fields mancava in en-US
+
 ## Backlog I18N
 
 - **P0 FASE 2** ✅ COMPLETATA (10 Jun 2026): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
