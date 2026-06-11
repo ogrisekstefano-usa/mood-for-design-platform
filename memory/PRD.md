@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** 10 Jun 2026
-> **Status:** I18N-RECOVERY-001 COMPLETE · LocaleSwitcher restored · AI locale propagation fixed · ES-MX added · P1 STORE pages refactored
+> **Last update:** 11 Jun 2026
+> **Status:** NEXT-STABILIZATION-SPRINT IN PROGRESS · Journey Ownership P0 ✅ · I18N Real Closure ✅ (missing=0 in tutti i sections) · Team System Audit ✅
 
 ## Original problem statement
 
@@ -343,13 +343,32 @@ See `/app/memory/test_credentials.md`. Default super_admin:
   - D4: Roadmap P0/P1/P2/P3
 - **P0-A** ⬜ Decisione motore canonico (documento di policy)
 - **P0-B** ⬜ Identificazione 13 missing key via GovernanceOverlay
-- **P0-C** ✅ Fix `EditorialOverridesProvider` locale-aware (10 Jun 2026) — usa `useLocaleRuntime()` per derivare locale, deps `[localeCode, localeProp]`; 6/6 scenari PASS; EN users ora vedono override EN ("Begin your journey") invece di IT ("Inizia il tuo viaggio")
-- **P1-B** ⬜ Fix `setLocaleInternal` opts.silent (3 righe)
-- **P1-C** ⬜ Persistenza mfd_locale da LocaleRuntime path (2 righe)
-- **P1-D** ⬜ 24 chiavi JSON de-sync IT/EN rimanenti
-- **P1-E** ⬜ Journey 88c072b7 dangling current_milestone_id (SQL cleanup)
-- **P2** Translation Management Layer Blueprint (DB schema + Context Menu UI) — in attesa istruzione utente
-- **P2** Normalizzare le 27+5 editorial copy nel sistema i18n quando Translation Management Layer è pronto
+- **P0-C** ✅ Fix `EditorialOverridesProvider` locale-aware (10 Jun 2026)
+- **NEXT-STABILIZATION-SPRINT (11 Jun 2026)**:
+  - ✅ Journey Ownership P0: Path A (`journey_initiate.py`), B (`lead_conversion.py`), D (`design_journey.py → _ensure_journey()`) — tutti chiamano `ensure_owner()` dopo creazione. Path C già funzionante. Tutti i path verificati via SQL.
+  - ✅ I18N Real Closure: 28 chiavi auth/access + 27 chiavi editorial + 2 chiavi settings.presentation aggiunte a `it-IT.json` e `en-US.json`. Pannello debug = **missing 0** in tutte le 8 sezioni principali (Dashboard, Client Relations, Design Journeys, Members, Workspace Settings, Brand Atlas, Content Studio, Editorial Calendar). Verificato: refresh, cambio lingua, login/logout.
+  - ✅ Team System Audit: Report generato in `/app/memory/TEAM_SYSTEM_AUDIT.md` — mappatura completa di `users_profile`, `human_assignments`, `design_journey_assignments`, `projects`, assenza tabelle roles/permissions dedicate, gap competenze/mercati/lingue, routing già possibile senza nuove migrazioni.
+
+## Prioritized Backlog
+
+### P1 — Prossimo Sprint
+- Auth i18n Sprint: verifica chiavi auth in lingue non-IT (en-US, en-GB, es-ES, fr-FR)
+- Milestone owner assignment: richiede migrazione `milestone_assignments` o colonna `assigned_to` su `design_journey_milestones`
+- `proposals.account_id` migrazione colonna DB (disabilita security check)
+- Routing per `preferred_locale_code` in `_candidates_for()` (no migrazioni, solo codice)
+
+### P2 — Sprint futuri
+- `users_profile.metadata_json["specializations"]` + routing per project_type
+- Sync `projects.assigned_to` con `design_journey_assignments.owner`
+- `assignment_role` secondari in DJA (`lead_designer`, `reviewer`, `collaborator`)
+- Translation Management Layer Blueprint (DB schema + Context Menu UI)
+- 47 tenant demo da ripulire
+
+### P3 — Backlog
+- Timezone field in Identity Model
+- Auto-reassignment su revoca owner
+- Capacity score per membro (max concurrent journeys)
+- Engine i18n unification E3 → E1
 
 
 

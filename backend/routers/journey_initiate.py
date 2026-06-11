@@ -18,6 +18,8 @@ from pydantic import BaseModel, EmailStr, Field
 
 from database import db
 from routers.design_journey import DEFAULT_MILESTONES
+from core import journey_assignments as ja
+from core.human_assignment import _candidates_for as _ha_candidates
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -265,6 +267,19 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "created_at":            now,
         "updated_at":            now,
     }).execute()
+
+    # 4.5 JOURNEY OWNERSHIP · Assegna il primo membro disponibile del tenant come owner
+    try:
+        candidates = _ha_candidates(tid, 'client')
+        if candidates:
+            ja.ensure_owner(
+                tid,
+                journey_id,
+                user_id=candidates[0]['id'],
+                created_by=candidates[0]['id'],
+            )
+    except Exception:
+        logger.exception("journey_initiate: owner assignment failed (non-blocking)")
 
     # 5. 10 default milestones — Brief auto-started
     milestones = []

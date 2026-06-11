@@ -829,7 +829,44 @@
     },
     "intelligence": {
       "empty": "No critical operational alerts. The editorial cadence is balanced across active markets."
-    }
+    },
+    "hero_title": "Blueprint AI keeps you visible.",
+    "hero_sub": "Every week Blueprint AI prepares articles, LinkedIn posts, newsletters and social visuals for your target markets. You approve · we publish.",
+    "this_week": "This week",
+    "planned_by_market": "Planned content by market",
+    "no_active_market": "No active market",
+    "activate_market_hint": "Go to Settings to activate your target markets.",
+    "this_week_count": "{{ready}} of {{total}} prepared",
+    "frequency_not_set": "Frequency not set",
+    "content_status": "Content status",
+    "open_inbox": "Open inbox",
+    "approved": "Approved",
+    "ready_to_publish": "Ready for publication",
+    "published": "Published",
+    "history": "History",
+    "blocked": "Blocked",
+    "media_required": "Media required",
+    "content_opportunities": "Content opportunities",
+    "calculated_from_heritage": "Calculated from your heritage",
+    "generate_visibility": "Generate Visibility™",
+    "content_engine_sources": "Your content engine sources",
+    "markets": "Markets",
+    "current_coverage": "Current editorial coverage",
+    "covered_this_week": "Covered this week ({{n}})",
+    "first_cycle_preparing": "Blueprint AI is preparing the first cycle",
+    "contents": "contents",
+    "uncovered": "Uncovered ({{n}})",
+    "all_markets_covered": "All active markets are covered",
+    "preparing": "Blueprint is preparing",
+    "loading": "Loading Editorial Autopilot…",
+    "warming_up": "Editorial Autopilot is warming up. Please retry in a moment.",
+    "generate_from": "Generate Visibility from",
+    "brand_atlas_sub": "Articles, social and newsletters from your brand heritage.",
+    "design_journey_sub": "Automatic case studies from active projects.",
+    "moodboard_sub": "Pinterest and Instagram from aesthetic directions.",
+    "material_board_sub": "SEO articles from materials curated for the client.",
+    "specification_sub": "Landing pages and LinkedIn from commercial documents.",
+    "project_story_sub": "Newsletters and case studies from client presentations."
   },
   "clientpreview": {
     "client_preview": {
@@ -1706,6 +1743,10 @@
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
       "sub": "Curate hero imagery, editorial copy and inspiration quotes for Blueprint Dashboard. Per-locale overrides."
+    },
+    "presentation": {
+      "title": "Client presentation",
+      "sub": "Your photo, role and biography visible to every client — with international versions adapted to EN-US / FR / DE / ES markets."
     }
   },
   "site": {
@@ -2075,7 +2116,15 @@
       "subtitle": "Sign in to your Blueprint workspace.",
       "tagline": "The editorial workspace of design studios.",
       "taglineSub": "Blueprint OS™ for design excellence.",
-      "title": "Welcome back"
+      "title": "Welcome back",
+      "eyebrow": "PROFESSIONAL ACCESS",
+      "email_label": "Email",
+      "email_placeholder": "name@studio.com",
+      "password_label": "Password",
+      "password_placeholder": "········",
+      "cta": "Sign in to workspace",
+      "hero_image": "https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg",
+      "brand_logo": "https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png"
     },
     "signup": {
       "company": "Studio name",
@@ -2084,6 +2133,13 @@
       "submit": "Create workspace",
       "subtitle": "Start composing your editorial Blueprint.",
       "title": "Create your atelier"
+    },
+    "access": {
+      "quote": "Design is not just what you see. It’s how you live.",
+      "quote_author": "MOOD for DESIGN™",
+      "need_help": "Need help?",
+      "support": "Contact our studio",
+      "support_email": "support@moodfordesign.com"
     }
   },
   "brand": {
@@ -2761,5 +2817,22 @@
     "toast_suspended": "{email} suspended",
     "toast_role_updated": "Role updated to {role}",
     "toast_required_fields": "First name, last name, and email are required"
+  },
+  "access": {
+    "eyebrow": "RE-ENTER",
+    "title": "Access your project space",
+    "subtitle": "Enter your email. We’ll guide you in silently.",
+    "email_label": "Email",
+    "email_placeholder": "your-email@example.com",
+    "cta": "Continue",
+    "submitting": "Preparing your access…",
+    "confirm_title": "Check your inbox",
+    "confirm_body": "We’ve sent you a personal access link to your project space. Open the email and click the link to enter.",
+    "confirm_hint": "If you don’t find it in a few minutes, check your promotions or spam folder.",
+    "back_to_home": "Back to homepage",
+    "send_another": "Use a different email",
+    "new_journey": "Don’t have a Design Journey™ yet?",
+    "new_journey_cta": "Start now",
+    "error_generic": "Something went wrong. Please try again in a moment."
   }
 }

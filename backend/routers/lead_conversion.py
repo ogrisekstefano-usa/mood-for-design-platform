@@ -11,6 +11,8 @@ from pydantic import BaseModel
 from core.tenant_context import get_tenant_context
 from database import db
 from routers.design_journey import DEFAULT_MILESTONES
+from core import journey_assignments as ja
+from core.human_assignment import _candidates_for as _ha_candidates
 
 router = APIRouter()
 
@@ -177,6 +179,17 @@ def start_journey(lead_id: str, body: Optional[DiscoverBody] = Body(default=None
         "updated_at": _now(),
     }
     c.table("design_journeys").insert(journey_payload).execute()
+
+    # 2.5 JOURNEY OWNERSHIP · Assegna creator o primo membro disponibile come owner
+    try:
+        owner_id = profile_id
+        if not owner_id:
+            candidates = _ha_candidates(tid, 'client')
+            owner_id = candidates[0]['id'] if candidates else None
+        if owner_id:
+            ja.ensure_owner(tid, journey_id, user_id=owner_id, created_by=profile_id)
+    except Exception:
+        pass  # non-blocking
 
     # 3) All 10 default milestones (SPRINT-0: was only brief — now full set)
     # Carry qualification/discover metadata into the brief milestone.

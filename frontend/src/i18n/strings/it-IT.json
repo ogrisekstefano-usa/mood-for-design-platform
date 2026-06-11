@@ -829,7 +829,44 @@
     },
     "intelligence": {
       "empty": "Nessun avviso operativo critico. Il cadenza editoriale è in equilibrio sui mercati attivi."
-    }
+    },
+    "hero_title": "Blueprint AI ti mantiene visibile.",
+    "hero_sub": "Ogni settimana Blueprint AI prepara articoli, post LinkedIn, newsletter e visual social per i tuoi mercati target. Tu approvi · noi pubblichiamo.",
+    "this_week": "Questa settimana",
+    "planned_by_market": "Contenuti pianificati per mercato",
+    "no_active_market": "Nessun mercato attivo",
+    "activate_market_hint": "Vai nelle Impostazioni per attivare i tuoi mercati target.",
+    "this_week_count": "{{ready}} di {{total}} pronti",
+    "frequency_not_set": "Frequenza non impostata",
+    "content_status": "Stato contenuti",
+    "open_inbox": "Apri inbox",
+    "approved": "Approvati",
+    "ready_to_publish": "Pronti per la pubblicazione",
+    "published": "Pubblicati",
+    "history": "Cronologia",
+    "blocked": "Bloccati",
+    "media_required": "Media richiesti",
+    "content_opportunities": "Opportunità di contenuto",
+    "calculated_from_heritage": "Calcolato dal tuo heritage",
+    "generate_visibility": "Genera Visibilità™",
+    "content_engine_sources": "Le tue fonti di contenuto",
+    "markets": "Mercati",
+    "current_coverage": "Copertura editoriale attuale",
+    "covered_this_week": "Coperti questa settimana ({{n}})",
+    "first_cycle_preparing": "Blueprint AI sta preparando il primo ciclo",
+    "contents": "contenuti",
+    "uncovered": "Non coperti ({{n}})",
+    "all_markets_covered": "Tutti i mercati attivi sono coperti",
+    "preparing": "Blueprint sta preparando",
+    "loading": "Caricamento Editorial Autopilot…",
+    "warming_up": "Editorial Autopilot si sta avviando. Riprova tra un momento.",
+    "generate_from": "Genera Visibilità da",
+    "brand_atlas_sub": "Articoli, social e newsletter dal tuo brand heritage.",
+    "design_journey_sub": "Case study automatici dai progetti attivi.",
+    "moodboard_sub": "Pinterest e Instagram dalle direzioni estetiche.",
+    "material_board_sub": "Articoli SEO dai materiali selezionati per il cliente.",
+    "specification_sub": "Landing page e LinkedIn dai documenti commerciali.",
+    "project_story_sub": "Newsletter e case study dalle presentazioni cliente."
   },
   "clientpreview": {
     "client_preview": {
@@ -1706,6 +1743,10 @@
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
       "sub": "Cura immagini hero, copy  e citazioni per Blueprint Dashboard. Sovrascritture per lingua."
+    },
+    "presentation": {
+      "title": "Presentazione al cliente",
+      "sub": "La tua foto, ruolo e biografia visibili a ogni cliente — con versioni internazionali adattate ai mercati EN-US / FR / DE / ES."
     }
   },
   "site": {
@@ -2075,7 +2116,15 @@
       "subtitle": "Accedi al tuo workspace Blueprint.",
       "tagline": "Lo strumento editoriale degli studi di design.",
       "taglineSub": "Blueprint OS™ per l'eccellenza del design.",
-      "title": "Bentornato"
+      "title": "Bentornato",
+      "eyebrow": "ACCESSO PROFESSIONALE",
+      "email_label": "Email",
+      "email_placeholder": "nome@studio.com",
+      "password_label": "Password",
+      "password_placeholder": "········",
+      "cta": "Accedi al workspace",
+      "hero_image": "https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg",
+      "brand_logo": "https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png"
     },
     "signup": {
       "company": "Nome dello studio",
@@ -2084,6 +2133,13 @@
       "submit": "Crea workspace",
       "subtitle": "Inizia a comporre il tuo Blueprint editoriale.",
       "title": "Crea il tuo atelier"
+    },
+    "access": {
+      "quote": "Il design non è solo ciò che si vede. È il modo in cui si vive.",
+      "quote_author": "MOOD for DESIGN™",
+      "need_help": "Hai bisogno di assistenza?",
+      "support": "Scrivi al nostro studio",
+      "support_email": "support@moodfordesign.com"
     }
   },
   "brand": {
@@ -2761,5 +2817,22 @@
     "toast_suspended": "{email} sospeso",
     "toast_role_updated": "Ruolo aggiornato a {role}",
     "toast_required_fields": "Nome, cognome ed email sono obbligatori"
+  },
+  "access": {
+    "eyebrow": "RIENTRA",
+    "title": "Accedi al tuo spazio progettuale",
+    "subtitle": "Inserisci la tua email. Ti accompagneremo silenziosamente dentro.",
+    "email_label": "Email",
+    "email_placeholder": "la-tua-email@esempio.com",
+    "cta": "Continua",
+    "submitting": "Stiamo preparando il tuo accesso…",
+    "confirm_title": "Controlla la tua casella",
+    "confirm_body": "Ti abbiamo inviato un accesso personale al tuo spazio progettuale. Apri l’email e clicca il link per entrare.",
+    "confirm_hint": "Se non lo trovi tra qualche minuto, controlla anche le promozioni o spam.",
+    "back_to_home": "Torna alla homepage",
+    "send_another": "Usa un’altra email",
+    "new_journey": "Non hai ancora un Design Journey™?",
+    "new_journey_cta": "Inizia ora",
+    "error_generic": "Qualcosa è andato storto. Riprova tra un istante."
   }
 }

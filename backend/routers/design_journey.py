@@ -39,6 +39,8 @@ from pydantic import BaseModel
 from core.tenant_context import get_tenant_context
 from database import db
 from services import knowledge_usage_hooks as _ke_hooks  # KE-005B.1
+from core import journey_assignments as ja
+from core.human_assignment import _candidates_for as _ha_candidates
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -232,6 +234,18 @@ def _ensure_journey(c, tenant_id: str, project_id: str, user_id: Optional[str]) 
         },
     ]
     c.table("journey_timeline_events").insert(events).execute()
+
+    # JOURNEY OWNERSHIP · Assegna creator o primo membro disponibile come owner
+    try:
+        owner_id = user_id
+        if not owner_id:
+            candidates = _ha_candidates(tenant_id, 'client')
+            owner_id = candidates[0]['id'] if candidates else None
+        if owner_id:
+            ja.ensure_owner(tenant_id, jid, user_id=owner_id, created_by=user_id)
+    except Exception:
+        logger.exception("_ensure_journey: owner assignment failed (non-blocking)")
+
     return j_row
 
 
