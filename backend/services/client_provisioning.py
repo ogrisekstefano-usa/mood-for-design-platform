@@ -142,7 +142,18 @@ def _ensure_profile(
     existing = (c.table("users_profile").select("*")
                 .eq("auth_user_id", auth_user_id).limit(1).execute().data or [])
     if existing:
-        return existing[0]
+        p = existing[0]
+        # P0-IDENTITY-1 · Sync email if accounts.email differs from stored value.
+        if email and p.get("email", "").lower() != email.lower():
+            try:
+                c.table("users_profile").update(
+                    {"email": email, "updated_at": _now()}
+                ).eq("id", p["id"]).execute()
+                p["email"] = email
+                logger.info("[provisioning] users_profile.email synced: profile=%s", p["id"][:8])
+            except Exception:
+                logger.exception("users_profile email sync failed (non-fatal)")
+        return p
     pid = str(uuid.uuid4())
     now = _now()
     row = {
@@ -304,7 +315,26 @@ def provision_client_after_journey(
 
     profile_id = result["profile_id"]
 
-    # ── 2. Human assignment (referente principale) ───────────────────
+    # ── 1.b · P0-B · Link project to client profile ──────────────────
+    # Without this UPDATE the client portal returns zero_data for all
+    # journeys created via CRM paths (B/C/D) and even Begin Journey (A)
+    # because client_portal.py filters via projects.client_user_id.
+    try:
+        j_row = (c.table("design_journeys")
+                 .select("project_id")
+                 .eq("id", journey_id)
+                 .eq("tenant_id", tenant_id)
+                 .limit(1).execute().data or [])
+        if j_row and j_row[0].get("project_id"):
+            c.table("projects").update({"client_user_id": profile_id}) \
+             .eq("id", j_row[0]["project_id"]) \
+             .eq("tenant_id", tenant_id).execute()
+            logger.info(
+                "[provisioning] projects.client_user_id linked: project=%s → profile=%s",
+                j_row[0]["project_id"][:8], profile_id[:8],
+            )
+    except Exception:
+        logger.exception("projects.client_user_id link failed (non-fatal)")
     assignment_row = assign(tenant_id, "client", profile_id)
     hydrated = hydrate_assignee(assignment_row)
     result["assignee_profile"] = hydrated.get("assignee") if hydrated else None
