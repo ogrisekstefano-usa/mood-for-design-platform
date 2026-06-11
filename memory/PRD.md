@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 11 Jun 2026
-> **Status:** CORE MODEL CONSOLIDATION P0 SPRINT COMPLETATO · Fix: Begin Journey lingua IT, Discovery 409 handling, Notification badge + conv threads · 4 report prodotti · Prossimo: approvazione → implementazione P1 (CRM pages, client_user_id provisioning, proposal notifications)
+> **Status:** CORE PRODUCT STABILIZATION P0 EXECUTION SPRINT — P0-1 DONE (Prospects da 0→11 · Journey Source of Truth) · P0-2 DONE (Designer notification su concept feedback) · P0-4 DONE (Link mancante + CTA correta su ProspectsPage) · Testing iteration_239: 9/9 PASS
 
 ## Original problem statement
 
@@ -344,7 +344,15 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - **P0-A** ⬜ Decisione motore canonico (documento di policy)
 - **P0-B** ⬜ Identificazione 13 missing key via GovernanceOverlay
 - **P0-C** ✅ Fix `EditorialOverridesProvider` locale-aware (10 Jun 2026)
-- **NEXT-STABILIZATION-SPRINT (11 Jun 2026)**:
+- **CORE PRODUCT STABILIZATION P0 EXECUTION (11 Jun 2026)**:
+  - ✅ P0-1: Prospects page era vuota (leggeva leads.progression_state='prospect', 0 risultati). Fix: endpoint ora legge accounts.lifecycle_stage='prospect'. 11 prospects mostrati.
+  - ✅ P0-1: Accounts e Prospects enrichiti con design_journeys.lifecycle_state e project_id (Journey = Source of Truth).
+  - ✅ P0-1: AccountsPage mostra "Journey" link teal su ogni card (apre /workspace/projects/{project_id} → redirige al Journey Workspace).
+  - ✅ P0-2: client_portal.py concept feedback ora pubblica notifica al designer via notification_publisher (categoria message_received + unread_for_designer++).
+  - ✅ P0-4: ProspectsPage.jsx: Link import mancante fixato. CTA card cambiata da "Promuovi ad Account" (deprecated) a "Apri Journey". ProspectLane mostra journey_lifecycle_state badge.
+  - ✅ Testing Iteration 239: 9/9 PASS
+
+
   - ✅ Journey Ownership P0: Path A, B, D fixati. Tutti i path verificati via SQL.
   - ✅ I18N Real Closure: 57 chiavi aggiunte. Pannello debug = missing 0 in tutte le 8 sezioni.
   - ✅ Team System Audit: Report in `/app/memory/TEAM_SYSTEM_AUDIT.md`.
