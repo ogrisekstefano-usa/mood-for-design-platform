@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 11 Jun 2026
-> **Status:** CLIENT MODEL CONSOLIDATION SPRINT COMPLETATO — `CLIENT_MODEL_CONSOLIDATION_FINAL.md` prodotto · DESIGN JOURNEY come pivot centrale proposto · P0/P1/P2 classificati · Nessun codice scritto. Prossimo: approvazione modello → implementazione P0
+> **Status:** CORE MODEL CONSOLIDATION P0 SPRINT COMPLETATO · Fix: Begin Journey lingua IT, Discovery 409 handling, Notification badge + conv threads · 4 report prodotti · Prossimo: approvazione → implementazione P1 (CRM pages, client_user_id provisioning, proposal notifications)
 
 ## Original problem statement
 

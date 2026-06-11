@@ -1,0 +1,41 @@
+{
+  "summary": "Test Core Model Consolidation P0 — tutti e 3 i bug fix verificati con successo. Backend 8/8 pass. Frontend: badge notifiche = 6, /begin-journey in italiano, login admin funzionante.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_core_model_consolidation_p0.py",
+    "/app/test_reports/pytest/core_model_p0.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Fix 1 OK: SiteContext.jsx detectInitialCanonicalLocale() ritorna getDefaultLocale() direttamente — nessun navigator.languages nel codice attivo. Prima schermata /begin-journey mostra 'Quale atmosfera stai cercando?' in italiano.",
+    "Fix 2 OK: DiscoveryInterviewPanel.jsx start() catch block gestisce status 409 / DISCOVERY-INVALID-STATE con toast.info('Discovery già in corso') + reload stato. 'Impossibile aprire la Discovery' appare solo nel ramo else.",
+    "Fix 3 OK: /api/notifications/unread-count somma unread_for_designer da relationship_threads filtrando per primary_designer_id = pid. Badge UI mostra correttamente 6."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_core_model_consolidation_p0.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8)",
+    "frontend": "100%"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Nessuno",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Tutti e 3 i fix P0 verificati: (1) locale italiano su /begin-journey; (2) Discovery 409 gestito; (3) notification badge = 6. Login admin funziona su /auth/login (non /login). Editorial debug panel mostra 'runtime 3 · missing 0'.",
+  "fix_verification": {
+    "fix1_begin_journey_italian": "PASS — H1 = 'Quale atmosfera stai cercando?', chips = Casa/Showroom/Ufficio, nessun testo inglese",
+    "fix2_discovery_409": "PASS — codice catch block correttamente gestisce 409 con reload + toast.info, non toast.error",
+    "fix3_notification_unread_count": "PASS — API ritorna count > 0 (6), badge UI mostra 6",
+    "regression_admin_login": "PASS — login su /auth/login redirige a /dashboard correttamente",
+    "regression_begin_journey_flow": "PASS — tutti i campi step 1 visibili in italiano, editorial debug missing=0"
+  }
+}

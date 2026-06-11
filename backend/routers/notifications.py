@@ -111,6 +111,24 @@ def unread_count(ctx: dict = Depends(get_tenant_context)):
             .is_("read_at", "null")
             .eq("priority", "high")
             .execute().count or 0)
+
+    # Also include unread conversation messages for designer
+    try:
+        threads_r = (c.table("relationship_threads")
+                     .select("unread_for_designer")
+                     .eq("tenant_id", ctx["tenant_id"])
+                     .eq("primary_designer_id", pid)
+                     .execute())
+        conv_unread = sum(
+            (t.get("unread_for_designer") or 0)
+            for t in (threads_r.data or [])
+        )
+        total += conv_unread
+        if conv_unread > 0:
+            high += conv_unread
+    except Exception:
+        pass
+
     return {"count": total, "high_priority_count": high}
 
 

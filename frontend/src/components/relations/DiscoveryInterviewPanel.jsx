@@ -87,7 +87,17 @@ export default function DiscoveryInterviewPanel({ leadId, onAccountCreated }) {
       setDiscovery(r.data);
       toast.success('Discovery in corso');
     } catch (e) {
-      toast.error('Impossibile aprire la Discovery');
+      const code = e?.response?.data?.detail?.code || '';
+      if (e?.response?.status === 409 || code === 'DISCOVERY-INVALID-STATE') {
+        // Discovery already open — reload state rather than surfacing an error
+        try {
+          const current = await axios.get(`${API}/api/leads/${leadId}/discovery`, { headers: auth() });
+          setDiscovery(current.data);
+          toast.info('Discovery già in corso');
+        } catch (_) {}
+      } else {
+        toast.error('Impossibile aprire la Discovery');
+      }
     } finally {
       setBusy(false);
     }

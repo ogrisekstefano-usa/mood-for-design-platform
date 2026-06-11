@@ -46,37 +46,12 @@ function detectInitialCanonicalLocale() {
   } catch (_) {}
 
   // 3. Registry default — the studio's declared preferred language (`it`).
-  //    We prefer this over `navigator.languages` to avoid showing IT studios
-  //    in EN to anonymous visitors during the cold-boot before the tenant
-  //    config fetch arrives. Browser preference only wins for languages
-  //    *not* covered by the studio default.
-  const registryDefault = getDefaultLocale();
-
-  // 4. If the registry default is NOT the visitor's browser-base language,
-  //    consult browser prefs to honour visitors of OTHER nationalities.
-  //    (e.g. a French visitor on an IT studio site still sees FR — but the
-  //    initial paint is IT, then switches to FR after registry sync.)
-  try {
-    const reg = getSiteLocales().filter((l) => l.public_enabled !== false);
-    const registryBase = (resolveLanguage(registryDefault).base || '').toLowerCase();
-    const browserPrefs = (typeof navigator !== 'undefined' && Array.isArray(navigator.languages) && navigator.languages.length)
-      ? navigator.languages
-      : (typeof navigator !== 'undefined' && navigator.language ? [navigator.language] : []);
-    for (const raw of browserPrefs) {
-      const norm = String(raw || '').trim();
-      if (!norm) continue;
-      const base = norm.split('-')[0].toLowerCase();
-      // Browser pref matches the studio's default base → use registry default.
-      if (base === registryBase) return registryDefault;
-      // Otherwise honour the explicit browser preference if registered.
-      const exact = reg.find((l) => l.code.toLowerCase() === norm.toLowerCase());
-      if (exact) return exact.code;
-      const baseHit = reg.find((l) => (l.base || l.code.split('-')[0]).toLowerCase() === base);
-      if (baseHit) return baseHit.code;
-    }
-  } catch (_) {}
-
-  return registryDefault;
+  //    Always use the tenant's default locale for the initial paint.
+  //    Browser language preference is intentionally ignored here to prevent
+  //    Chromium's default `en-US` from overriding an Italian studio's locale
+  //    on the first anonymous visit. The async SiteProvider effect will honour
+  //    the tenant's runtime config after it loads.
+  return getDefaultLocale();
 }
 
 export const SiteProvider = ({ children }) => {
