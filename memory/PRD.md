@@ -345,24 +345,33 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - **P0-B** ⬜ Identificazione 13 missing key via GovernanceOverlay
 - **P0-C** ✅ Fix `EditorialOverridesProvider` locale-aware (10 Jun 2026)
 - **NEXT-STABILIZATION-SPRINT (11 Jun 2026)**:
-  - ✅ Journey Ownership P0: Path A (`journey_initiate.py`), B (`lead_conversion.py`), D (`design_journey.py → _ensure_journey()`) — tutti chiamano `ensure_owner()` dopo creazione. Path C già funzionante. Tutti i path verificati via SQL.
-  - ✅ I18N Real Closure: 28 chiavi auth/access + 27 chiavi editorial + 2 chiavi settings.presentation aggiunte a `it-IT.json` e `en-US.json`. Pannello debug = **missing 0** in tutte le 8 sezioni principali (Dashboard, Client Relations, Design Journeys, Members, Workspace Settings, Brand Atlas, Content Studio, Editorial Calendar). Verificato: refresh, cambio lingua, login/logout.
-  - ✅ Team System Audit: Report generato in `/app/memory/TEAM_SYSTEM_AUDIT.md` — mappatura completa di `users_profile`, `human_assignments`, `design_journey_assignments`, `projects`, assenza tabelle roles/permissions dedicate, gap competenze/mercati/lingue, routing già possibile senza nuove migrazioni.
+  - ✅ Journey Ownership P0: Path A, B, D fixati. Tutti i path verificati via SQL.
+  - ✅ I18N Real Closure: 57 chiavi aggiunte. Pannello debug = missing 0 in tutte le 8 sezioni.
+  - ✅ Team System Audit: Report in `/app/memory/TEAM_SYSTEM_AUDIT.md`.
+  - ✅ F1 Session Leakage Fix: `_ensure_profile()` con filtro tenant_id + role conflict guard + bypass link rimosso + AuthClientCallback role guard. Verificato su 4 scenari.
+  - ✅ F2 Email Delivery Audit: Report in `/app/memory/EMAIL_DELIVERY_AUDIT.md`. Resend API key non valida + dominio non verificato. Richiede azione utente.
+  - ✅ F3 Hardcoded Purge: Rimossi Marco Rossi, Maria Bianchi, Stefano Rossi da tutti i file attivi (tenant_email_governance.py, EmailTemplatesPage.jsx, leads.py docstring, form placeholders, commenti).
+  - ✅ F4 Messaging Chain: Catena message→notification→badge→email implementata in `relationship_conversation.py`. Categorie `message_received` e `designer_replied` aggiunte a `notification_categories`. Verificato via SQL.
+  - ✅ F5 Email Validation: Endpoint `GET /api/public/check-email` + frontend debounce + indicatori available/existing/invalid.
+  - ✅ CLIENT_MODEL_CONSOLIDATION.md prodotto: analisi tre sistemi paralleli + proposta Single Source of Truth.
 
 ## Prioritized Backlog
 
 ### P1 — Prossimo Sprint
+- **F2 Resend Sblocco** (azione utente): verificare dominio `mail.moodfordesign.com` su resend.com/domains + rigenerare API key (quella attuale è non valida). Vedi `/app/memory/EMAIL_DELIVERY_AUDIT.md`
+- **G2 Ownership unification**: deprecare `projects.assigned_to`, allineare con `design_journey_assignments.owner`
+- **G5 Brief Guidato**: modulo post-auth client portal (da `/app/memory/CLIENT_MODEL_CONSOLIDATION.md`)
 - Auth i18n Sprint: verifica chiavi auth in lingue non-IT (en-US, en-GB, es-ES, fr-FR)
-- Milestone owner assignment: richiede migrazione `milestone_assignments` o colonna `assigned_to` su `design_journey_milestones`
+- Milestone owner assignment: migrazione `milestone_assignments`
 - `proposals.account_id` migrazione colonna DB (disabilita security check)
-- Routing per `preferred_locale_code` in `_candidates_for()` (no migrazioni, solo codice)
+- Routing per `preferred_locale_code` in `_candidates_for()`
 
 ### P2 — Sprint futuri
 - `users_profile.metadata_json["specializations"]` + routing per project_type
-- Sync `projects.assigned_to` con `design_journey_assignments.owner`
 - `assignment_role` secondari in DJA (`lead_designer`, `reviewer`, `collaborator`)
 - Translation Management Layer Blueprint (DB schema + Context Menu UI)
 - 47 tenant demo da ripulire
+- Sync `accounts.email` ↔ `users_profile.email` automatica
 
 ### P3 — Backlog
 - Timezone field in Identity Model
