@@ -16,7 +16,7 @@
  * No new tables, no new APIs, no new entities.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   CheckCircle2, Circle, Loader2, ExternalLink, Compass,
   Sparkles, Palette, FileText, BookOpen, ArrowUpRight,
@@ -132,6 +132,7 @@ const safeList = (resp) => {
  * ════════════════════════════════════════════════════════════════════ */
 const JourneyOperatingPage = () => {
   const { jid } = useParams();
+  const navigate = useNavigate();
   const t = useT();
   const [overview, setOverview] = useState(null);
   const [project, setProject]   = useState(null);
@@ -167,9 +168,17 @@ const JourneyOperatingPage = () => {
         setProjectStories(safeList(ps?.data));
         setLoading(false);
       })
-      .catch(() => { if (!cancel) setLoading(false); });
+      .catch((e) => {
+        if (cancel) return;
+        /* Journey not found or access denied → redirect to dashboard */
+        if (e?.response?.status === 404 || e?.response?.status === 403) {
+          navigate('/dashboard', { replace: true });
+        } else {
+          setLoading(false);
+        }
+      });
     return () => { cancel = true; };
-  }, [jid]);
+  }, [jid, navigate]);
 
   /* Compute milestones grouped by phase */
   const milestonesByPhase = useMemo(() => {

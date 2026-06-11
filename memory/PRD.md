@@ -311,6 +311,22 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Runtime: **13 pre-esistenti** (origine dinamica, pre-datano FASE 1)
 - **1 de-sync rilevato e fixato**: members.toast_required_fields mancava in en-US
 
+## I18N-CLOSURE-SPRINT ✅ COMPLETATO (10 Jun 2026)
+
+**Deliverable prodotti:**
+- Engine Map → `/app/memory/I18N_CLOSURE_SPRINT_ENGINE_MAP.md`
+- Missing Keys Report → `/app/memory/I18N_CLOSURE_SPRINT_MISSING_KEYS_REPORT.md`
+- DesignJourneyTab Validation Report → `/app/memory/I18N_CLOSURE_SPRINT_DESIGNJOURNEYTAB_VALIDATION.md`
+- Final Coverage Report → `/app/memory/I18N_CLOSURE_SPRINT_FINAL_COVERAGE.md`
+
+**Fix applicato:** `JourneyOperatingPage.jsx` — redirect 404/403 → `/dashboard` (TASK 2E)
+
+**Metriche chiuse:**
+- JSON sync: 1939/1939 (0 de-sync)
+- CRM pages missing keys: 0
+- DesignJourneyTab missing keys: 0
+- Engine coesistenza: E1 (84 file) + E3 (72 file) documentata
+
 ## Backlog I18N
 
 - **P0 FASE 2** ✅ COMPLETATA (10 Jun 2026): AccountDetailDrawer, CrmAccountsPage, MembersPage, DesignJourneyTab
