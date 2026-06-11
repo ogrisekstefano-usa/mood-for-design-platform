@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 11 Jun 2026
-> **Status:** NEXT-STABILIZATION-SPRINT IN PROGRESS · Journey Ownership P0 ✅ · I18N Real Closure ✅ (missing=0 in tutti i sections) · Team System Audit ✅
+> **Status:** CORE FLOW CERTIFICATION SPRINT COMPLETATO — CERTIFICAZIONE FALLITA (8 blocchi P0) · Report generati: `CORE_FLOW_CERTIFICATION_REPORT.md` · `MODEL_CONSISTENCY_REPORT.md` · Prossimo: fix P0 solo dopo approvazione report utente
 
 ## Original problem statement
 
