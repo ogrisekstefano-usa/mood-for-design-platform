@@ -98,7 +98,9 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
           </p>
           <p className="account-card__stage" data-testid={`account-stage-${a.id}`}>
             <span className={`account-card__health account-card__health--${health}`} aria-hidden="true" />
-            {stageLabel(a.relationship_journey_stage || a.lifecycle_stage)}
+            {a.journey_lifecycle_state
+              ? String(a.journey_lifecycle_state).replace(/_/g, ' ')
+              : stageLabel(a.relationship_journey_stage || a.lifecycle_stage)}
           </p>
         </div>
       </header>
@@ -139,15 +141,28 @@ const AccountCard = ({ a, designer, onOpen, onConvert, onRevert, onNewJourney })
         <DesignerChip designer={designer} size="sm" contextId={`account-${a.id}`} />
         <span className="account-card__meta-spacer" />
         <span>{t('clientRelations.accounts.card.lastConversation')} <strong>{formatAgo(a.last_activity_at)} {t('common.time.ago')}</strong></span>
-        <Link
-          to={`/relations/memory/${a.id}`}
-          className="account-card__memory-link"
-          onClick={(e) => e.stopPropagation()}
-          data-testid={`account-memory-link-${a.id}`}
-          aria-label={t('clientRelations.common.openMemoryAria')}
-        >
-          <BookOpen size={14} strokeWidth={1.6} /> {t('nav.memory')}
-        </Link>
+        {a.journey_project_id ? (
+          <Link
+            to={`/workspace/projects/${a.journey_project_id}`}
+            className="account-card__memory-link"
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`account-journey-link-${a.id}`}
+            style={{ color: '#0d9488', borderColor: 'rgba(13,148,136,0.35)' }}
+            aria-label="Apri Design Journey"
+          >
+            <Compass size={14} strokeWidth={1.6} /> Journey
+          </Link>
+        ) : (
+          <Link
+            to={`/relations/memory/${a.id}`}
+            className="account-card__memory-link"
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`account-memory-link-${a.id}`}
+            aria-label={t('clientRelations.common.openMemoryAria')}
+          >
+            <BookOpen size={14} strokeWidth={1.6} /> {t('nav.memory')}
+          </Link>
+        )}
       </footer>
 
       {/* ITER185.P1 · Lifecycle CTAs (Convert / Revert) */}

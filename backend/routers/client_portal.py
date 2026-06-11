@@ -1106,6 +1106,53 @@ def client_concept_feedback(moodboard_id: str, body: ConceptFeedbackIn,
     except Exception:
         log.exception("timeline event insert failed (non-blocking)")
 
+    # ── Notify designer: client left feedback on a concept direction
+    try:
+        from services import notification_publisher
+        jr_rows = (c.table("design_journeys")
+                    .select("created_by, id")
+                    .eq("id", jid).eq("tenant_id", tenant_id)
+                    .limit(1).execute().data or [])
+        if jr_rows:
+            designer_id = jr_rows[0].get("created_by")
+            if designer_id:
+                reaction_labels = {
+                    "approved": "ha approvato",
+                    "preferred": "ha scelto come preferita",
+                    "revision_requested": "ha richiesto una revisione",
+                    "comment": "ha lasciato un commento su",
+                    "rejected": "ha rifiutato",
+                }
+                label = reaction_labels.get(body.reaction, "ha reagito a")
+                notification_publisher.publish(
+                    tenant_id=tenant_id,
+                    recipient_user_id=designer_id,
+                    category_key="message_received",
+                    narrative=f"Il cliente {label}: «{direction_name}»",
+                    sender_user_id=profile_id,
+                    sender_type="client",
+                    recipient_type="designer",
+                    payload={
+                        "journey_id": jid,
+                        "moodboard_id": moodboard_id,
+                        "reaction": body.reaction,
+                    },
+                    deep_link_url=f"/studio/journey/{jid}",
+                )
+        # Increment unread counter on the conversation thread for this journey
+        thread_rows = (c.table("conversation_threads")
+                        .select("id, unread_for_designer")
+                        .eq("tenant_id", tenant_id)
+                        .eq("journey_id", jid)
+                        .limit(1).execute().data or [])
+        if thread_rows:
+            cur_unread = int(thread_rows[0].get("unread_for_designer") or 0)
+            c.table("conversation_threads").update({
+                "unread_for_designer": cur_unread + 1,
+            }).eq("id", thread_rows[0]["id"]).execute()
+    except Exception:
+        log.exception("concept feedback notification failed (non-blocking)")
+
     return {
         "feedback":        reaction_record,
         "direction_name":  direction_name,

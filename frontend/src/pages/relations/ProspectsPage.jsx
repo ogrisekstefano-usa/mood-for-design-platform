@@ -10,7 +10,8 @@
  * Teal pulse accent. Operator-facing. NOT client-facing.
  */
 import React, { useMemo, useState } from 'react';
-import { Search, X, ArrowRight, MessageCircle, Heart, Repeat } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, X, ArrowRight, MessageCircle, Heart, Repeat, ExternalLink } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
@@ -48,7 +49,7 @@ const deriveSignals = (lead) => {
   return { saved, returns, lastTouch };
 };
 
-const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
+const ProspectLane = ({ p, designer, onOpen, onNavigate }) => {
   const { t } = useT();
   const name = `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email || t('clientRelations.prospects.card.fallback');
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
@@ -58,6 +59,16 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
   const { saved, returns, lastTouch } = deriveSignals(p);
   const register = p.cultural_register || 'discovery';
   const tier = (p.luxury_perception_tier || '').replace(/_/g, ' ') || '—';
+  const hasJourney = Boolean(p.journey_project_id || p.journey_id);
+
+  // Journey lifecycle label
+  const journeyStateLabel = {
+    conversation_open: 'Journey · In corso',
+    moodboard_phase: 'Journey · Moodboard',
+    concept_phase: 'Journey · Concept',
+    proposal_phase: 'Journey · Proposta',
+    closed: 'Journey · Chiuso',
+  }[p.journey_lifecycle_state] || (p.journey_lifecycle_state ? `Journey · ${p.journey_lifecycle_state}` : null);
 
   // Narrative momentum language — NO percentages.
   const momentumLabel =
@@ -85,6 +96,12 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
             <p className="prospect-lane__email">{p.email}</p>
           </div>
         </div>
+        {journeyStateLabel && (
+          <p className="prospect-lane__journey-state" data-testid={`prospect-journey-state-${p.id}`}
+             style={{ fontSize: 11, color: '#0d9488', fontWeight: 600, letterSpacing: '0.04em', marginTop: 4 }}>
+            {journeyStateLabel}
+          </p>
+        )}
         <p className="prospect-lane__designer-line">
           <span className="prospect-lane__pulse" />
           cultivated&nbsp;by
@@ -127,11 +144,16 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
         </div>
         <button
           type="button"
-          className={`prospect-lane__cta ${ready ? 'is-ready' : ''}`}
-          onClick={() => onPromote(p)}
-          data-testid={`prospect-promote-${p.id}`}
+          className={`prospect-lane__cta ${ready || hasJourney ? 'is-ready' : ''}`}
+          onClick={() => onNavigate(p)}
+          data-testid={`prospect-open-${p.id}`}
         >
-          {ready ? t('clientRelations.prospects.card.promoteCta') : t('clientRelations.prospects.card.continueCta')} <ArrowRight size={15} strokeWidth={2} />
+          {hasJourney
+            ? <><ExternalLink size={14} strokeWidth={2} /> Apri Journey</>
+            : ready
+              ? <>{t('clientRelations.prospects.card.promoteCta')} <ArrowRight size={15} strokeWidth={2} /></>
+              : <>{t('clientRelations.prospects.card.continueCta')} <ArrowRight size={15} strokeWidth={2} /></>
+          }
         </button>
       </div>
     </article>
@@ -140,32 +162,30 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
 
 const ProspectsPage = () => {
   const { t } = useT();
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [register, setRegister] = useState(null);
   const [tier, setTier] = useState(null);
   const filters = useMemo(() => ({ q, cultural_register: register, budget_tier: tier }), [q, register, tier]);
-  const { items, total, counts, loading, promote } = useRelations('/api/relations/prospects', filters);
+  const { items, total, counts, loading } = useRelations('/api/relations/prospects', filters);
   const { pickDesigner } = useDesigners();
 
   // Drawers (Sprint C)
   const [welcomeId, setWelcomeId] = useState(null);
   const [interviewLead, setInterviewLead] = useState(null);
 
-  const handlePromote = async (p) => {
-    try { await promote(p.id, 'account'); } catch (_) { /* TODO toast */ }
-  };
-  const handleOpen = (p) => setWelcomeId(p.id);
-  const handleWelcomeAction = (moment, lead) => {
-    if (moment.kind === 'continuation_interview') {
-      setInterviewLead(lead);
-      setWelcomeId(null);
-    } else if (moment.kind === 'promote_account') {
-      handlePromote(lead);
-      setWelcomeId(null);
+  // Journey = Source of Truth: navigate to journey workspace or account detail
+  const handleNavigate = (p) => {
+    if (p.journey_project_id) {
+      navigate(`/workspace/projects/${p.journey_project_id}`);
+    } else if (p.journey_id) {
+      navigate(`/workspace/projects?journey=${p.journey_id}`);
     } else {
-      setWelcomeId(null);
+      // No journey yet: open the account detail/welcome drawer
+      setWelcomeId(p.id);
     }
   };
+  const handleOpen = (p) => setWelcomeId(p.id);
 
   const toolbar = (
     <>
@@ -238,10 +258,9 @@ const ProspectsPage = () => {
             data-testid="prospects-empty-sub"
             style={{ fontSize: 13, color: '#5a5d63', marginBottom: 20, maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}
           >
-            Un Prospect è un Lead che ha completato la Discovery
-            (almeno 75% di progresso) ed è pronto per essere coltivato.
-            Apri un Lead, compila i signal (budget · timeline · stile · ambito)
-            e clicca "Qualifica" per promuoverlo.
+            Un Prospect è un Account in fase di avanzamento verso la commessa.
+            Viene creato automaticamente quando un Lead completa la Discovery.
+            Clicca "Apri Journey" per accedere al workspace del Design Journey collegato.
           </p>
           <Link
             to="/relations/leads"
@@ -265,7 +284,7 @@ const ProspectsPage = () => {
               key={p.id}
               p={p}
               designer={pickDesigner(p.id)}
-              onPromote={handlePromote}
+              onNavigate={handleNavigate}
               onOpen={handleOpen}
             />
           ))}
@@ -276,7 +295,7 @@ const ProspectsPage = () => {
         subjectId={welcomeId}
         open={Boolean(welcomeId)}
         onClose={() => setWelcomeId(null)}
-        onAction={handleWelcomeAction}
+        onAction={(_moment) => setWelcomeId(null)}
       />
       <ContinuationInterviewDrawer
         open={Boolean(interviewLead)}

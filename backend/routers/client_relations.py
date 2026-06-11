@@ -89,6 +89,94 @@ def _list_leads_by_state(
             "limit": limit, "offset": offset}
 
 
+def _list_prospects_from_accounts(
+    tenant_id: str,
+    q: str | None,
+    limit: int,
+    offset: int,
+):
+    """Journey = Source of Truth — Prospects are accounts.lifecycle_stage='prospect'
+    enriched with their Design Journey lifecycle_state."""
+    client = db()
+    query = (client.table('accounts').select(
+        'id, account_name, email, account_type, locale_code, language, '
+        'lifecycle_stage, relationship_health, relationship_score, '
+        'cultural_profile, luxury_perception_axis, primary_owner_id, '
+        'last_activity_at, created_at, updated_at',
+        count='exact'
+    ).eq('tenant_id', tenant_id).eq('lifecycle_stage', 'prospect'))
+
+    if q:
+        like = f"%{q.lower()}%"
+        query = query.or_(f"account_name.ilike.{like},email.ilike.{like}")
+
+    res = (query.order('updated_at', desc=True)
+           .range(offset, offset + limit - 1).execute())
+    rows = res.data or []
+
+    # Enrich with Design Journey lifecycle_state (Journey = Source of Truth)
+    account_ids = [r['id'] for r in rows]
+    journey_map: dict = {}
+    if account_ids:
+        try:
+            jr = (client.table('design_journeys')
+                  .select('id, account_id, lifecycle_state, current_milestone_id, project_id')
+                  .eq('tenant_id', tenant_id)
+                  .in_('account_id', account_ids)
+                  .execute())
+            for j in (jr.data or []):
+                aid = j.get('account_id')
+                if aid and aid not in journey_map:
+                    journey_map[aid] = j
+        except Exception:
+            logger.debug("journey enrichment failed for prospects")
+
+    # Mapping: account → ProspectLane-compatible format
+    _health_to_temp = {'thriving': 0.9, 'stable': 0.6, 'at_risk': 0.3}
+
+    normalized = []
+    for r in rows:
+        name = (r.get('account_name') or r.get('email') or '').strip()
+        parts = name.split(' ', 1)
+        first = parts[0] if parts else ''
+        last = parts[1] if len(parts) > 1 else ''
+        health = r.get('relationship_health') or 'stable'
+        raw_score = float(r.get('relationship_score') or 0)
+        # Normalize score: if > 1 treat as 0-100 scale
+        prog_score = raw_score / 100 if raw_score > 1 else raw_score
+        journey = journey_map.get(r['id']) or {}
+        cp = r.get('cultural_profile') or {}
+        register = cp.get('register') if isinstance(cp, dict) else None
+
+        normalized.append({
+            'id': r['id'],
+            'first_name': first,
+            'last_name': last,
+            'email': r.get('email'),
+            'locale_code': r.get('locale_code') or r.get('language') or 'it',
+            'lead_type': r.get('account_type') or 'private',
+            'progression_state': 'prospect',
+            'progression_score': prog_score,
+            'relationship_temperature': _health_to_temp.get(health, 0.4),
+            'cultural_register': register,
+            'luxury_perception_tier': r.get('luxury_perception_axis'),
+            'behavioral_tags': [],
+            'atmosphere_signals': [],
+            'material_signals': [],
+            'designer_assigned': r.get('primary_owner_id'),
+            'intake_completed_at': r.get('last_activity_at'),
+            'created_at': r.get('created_at'),
+            'updated_at': r.get('updated_at') or r.get('last_activity_at'),
+            # Journey enrichment — canonical source of truth
+            'journey_id': journey.get('id'),
+            'journey_lifecycle_state': journey.get('lifecycle_state'),
+            'journey_project_id': journey.get('project_id'),
+        })
+
+    return {"data": normalized, "total": res.count or 0,
+            "limit": limit, "offset": offset}
+
+
 # ── Stats · sidebar counts ────────────────────────────────────────────
 @router.get("/stats")
 def relationship_stats(
@@ -170,9 +258,9 @@ def list_prospects(
 ):
     if not db_available():
         raise HTTPException(503, "Database not configured")
-    return _list_leads_by_state(
-        'prospect', current_user['tenant_id'],
-        q, atmosphere, material, budget_tier, cultural_register, limit, offset)
+    # Journey = Source of Truth: prospects live in accounts.lifecycle_stage='prospect'
+    return _list_prospects_from_accounts(
+        current_user['tenant_id'], q, limit, offset)
 
 
 # ── Accounts · active project execution ──────────────────────────────
@@ -247,6 +335,28 @@ def list_accounts(
 
     for r in rows:
         r['used_in'] = usage_map.get(r['id'], {"moodboards": 0, "proposals": 0, "memories": 0})
+
+    # Journey = Source of Truth — enrich accounts with design_journeys.lifecycle_state
+    journey_map: dict = {}
+    if account_ids:
+        try:
+            jr = (client.table('design_journeys')
+                  .select('id, account_id, lifecycle_state, project_id')
+                  .eq('tenant_id', tenant_id)
+                  .in_('account_id', account_ids)
+                  .execute())
+            for j in (jr.data or []):
+                aid = j.get('account_id')
+                if aid and aid not in journey_map:
+                    journey_map[aid] = j
+        except Exception:
+            logger.debug("journey enrichment failed for accounts")
+
+    for r in rows:
+        journey = journey_map.get(r['id']) or {}
+        r['journey_id'] = journey.get('id')
+        r['journey_lifecycle_state'] = journey.get('lifecycle_state')
+        r['journey_project_id'] = journey.get('project_id')
 
     return {"data": rows, "total": res.count or 0,
             "limit": limit, "offset": offset}
