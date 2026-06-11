@@ -1,0 +1,3070 @@
+[
+  {
+    "id": "895400d4-e8f5-4d0a-b2b8-63a3e92b69a2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "78013d63-87fb-4be8-9bd7-03832d7f9d5a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "6cd7b145-8600-48d7-a226-616fae646391"
+    },
+    "created_at": "2026-06-01T16:56:43.644581+00:00"
+  },
+  {
+    "id": "f3b94fdf-c217-4f66-a2f4-21581cb41edd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1de27141-be43-455f-b404-ca31b8d2655d",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d30902c6-8aad-4009-a10b-052e6b2d9dad"
+    },
+    "created_at": "2026-06-01T16:56:45.23191+00:00"
+  },
+  {
+    "id": "a3a6bfe1-883f-4619-8a86-b2c83ebb97a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c4814f5-5210-401d-a780-3ecdea3868bc",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "1d75089f-6254-4118-ba69-e1e273dadf05"
+    },
+    "created_at": "2026-06-01T16:56:46.272673+00:00"
+  },
+  {
+    "id": "a04ee831-5c26-4586-9dc3-0c9665174b8a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5cbc9aa9-5083-411a-8e39-084e47bbff30",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "459eda22-9d14-45a9-bbd5-58390f2f8858",
+      "conducted_by": null,
+      "discovery_id": "016527f5-e111-46b5-9895-e55b71cbf5ed"
+    },
+    "created_at": "2026-06-01T16:56:52.828817+00:00"
+  },
+  {
+    "id": "ec1ab5f1-f418-4002-a781-3e728bf405c3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a231b29-f625-407f-b4fe-4a1ea6d8ea61",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "7065bf04-6ac4-400c-a215-7f0ab43086e5"
+    },
+    "created_at": "2026-06-01T16:56:53.499726+00:00"
+  },
+  {
+    "id": "ec4c63c2-a699-4152-acb8-75c2a8014487",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "068a45ca-1785-435a-9b70-5f0e3ecd9bcd",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "bcd3c015-f6fa-4dbe-a91f-7fd93414ff52",
+      "conducted_by": null,
+      "discovery_id": "baaaf42a-f799-43c0-871d-8677669be0c7"
+    },
+    "created_at": "2026-06-01T16:56:57.450324+00:00"
+  },
+  {
+    "id": "e2e0c151-4f5c-4ea5-9f58-cf60d1591fd0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "bcd3c015-f6fa-4dbe-a91f-7fd93414ff52",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T16:56:58.101811+00:00"
+  },
+  {
+    "id": "65c640e5-02c3-4512-8c61-42d110fbbe0d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "acac460d-42ab-44a5-b2f4-9f04a3624a74",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "2baad740-ce02-4c6c-ab61-48187367a39a"
+    },
+    "created_at": "2026-06-01T16:56:58.755362+00:00"
+  },
+  {
+    "id": "9c26b3ea-783a-4220-b3b1-0dd8fd558a38",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c1c7d064-2b68-4f15-8627-50f1fc91c56b",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "096c3b7e-5057-4422-a751-e1e1ed9685cb"
+    },
+    "created_at": "2026-06-01T16:57:01.365677+00:00"
+  },
+  {
+    "id": "fb5a68d1-b68b-4f47-83f6-eb00aa29b0b6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "92d4acee-e17c-4614-a51c-48108a62f205",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "acda2754-6df9-409d-a9b7-177880108915"
+    },
+    "created_at": "2026-06-01T17:24:15.404242+00:00"
+  },
+  {
+    "id": "c8b5ca8a-8ba4-4c38-98c6-23b8dc38199f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c7a3da30-6af1-451a-ab3e-f70cdf68112e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "0b400007-5460-4301-8d30-5e763dbf0c88"
+    },
+    "created_at": "2026-06-01T17:30:50.954849+00:00"
+  },
+  {
+    "id": "56f8cdae-8a24-4a5b-95d2-705121811c68",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6ec594e9-301b-4a90-93b4-6b345d0f1d8c",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "0627cfb8-97a2-48a5-8dd6-109be82f01ba"
+    },
+    "created_at": "2026-06-01T17:31:01.07051+00:00"
+  },
+  {
+    "id": "851f97af-897d-4682-84b4-5b25db49ead6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c9c63811-3ae2-456d-ad53-5ae59fd2eafd",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "f882b739-b8a1-4fe3-b8e4-44ad9cd3d226"
+    },
+    "created_at": "2026-06-02T00:15:00.687205+00:00"
+  },
+  {
+    "id": "a6c10892-3a0c-46e3-aa02-51bf5d8ce575",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "e267ae26-e40b-4ed5-a62a-a4b9808996f7",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "9d4557ea-1a1b-4598-9df5-e73d5872ba6a"
+    },
+    "created_at": "2026-06-02T00:15:02.285675+00:00"
+  },
+  {
+    "id": "ec4b1a07-82b8-480b-8861-3967fd076da3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35bbf22f-007b-49e3-9e8b-679bd931f734",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "0b88bc53-9c97-4c41-9e66-e5537a9d083d"
+    },
+    "created_at": "2026-06-02T00:15:03.333858+00:00"
+  },
+  {
+    "id": "04360521-2fd2-460f-9a4a-7e8e4f77aa17",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35bbf22f-007b-49e3-9e8b-679bd931f734",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "332b1dda-6a2f-451d-af96-8371ed48b6d4",
+      "conducted_by": null,
+      "discovery_id": "0b88bc53-9c97-4c41-9e66-e5537a9d083d"
+    },
+    "created_at": "2026-06-02T00:15:04.818221+00:00"
+  },
+  {
+    "id": "396d85c9-2680-40b7-9233-10394d996f5f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8479af57-cdaf-4c63-83f4-0e7aac568668",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "dfec24db-3d9f-4ec6-a954-b96874ebeff6"
+    },
+    "created_at": "2026-06-02T00:15:05.219824+00:00"
+  },
+  {
+    "id": "72048bc2-179f-4323-b572-d7068a7600d7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3e31a651-34ee-4946-a70f-c59bcc7d3756",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "7b4ffd4a-acec-4a48-98e3-f8c8af327baf"
+    },
+    "created_at": "2026-06-02T00:15:08.56794+00:00"
+  },
+  {
+    "id": "f4a8f37d-82a0-4f6d-adb3-b9a4387bbcbc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3f7a878c-f7e3-4536-83a7-eca8d4293555",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "a12263b9-88bd-4dca-abe2-e3ded38b6b1b"
+    },
+    "created_at": "2026-06-02T00:15:10.699309+00:00"
+  },
+  {
+    "id": "c6285ffe-7f0c-4df5-8da4-5cee0e2c1ebb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3f7a878c-f7e3-4536-83a7-eca8d4293555",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "8fa8a01e-0252-4975-aac2-00f97f3b2b50",
+      "conducted_by": null,
+      "discovery_id": "a12263b9-88bd-4dca-abe2-e3ded38b6b1b"
+    },
+    "created_at": "2026-06-02T00:15:12.220119+00:00"
+  },
+  {
+    "id": "7db1f797-9102-4b40-a47d-6b8d394db6b2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76096ebf-3fd4-49a1-bbf7-bc2dc86e917a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "32b5737c-5ab1-42bb-8af3-d58a2468a274"
+    },
+    "created_at": "2026-06-02T00:15:13.292952+00:00"
+  },
+  {
+    "id": "af7821d4-d618-4a8d-b531-94c3efef9bc4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "195df833-1fcd-40e5-8c5c-344c3be8f4df",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:15:15.428578+00:00"
+  },
+  {
+    "id": "8010749a-8181-458d-9482-782bcf3b6605",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7ca22188-1d08-4de5-8ab1-880c56bf0d92",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "21b5e5a4-30d0-4410-bd68-18b457683794"
+    },
+    "created_at": "2026-06-02T00:15:16.083282+00:00"
+  },
+  {
+    "id": "cd1afe7f-3bab-4af8-a039-a4ef3567cf56",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "fa9cb356-2bb1-4b72-821e-f3c70db0fa2c",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:15:18.211143+00:00"
+  },
+  {
+    "id": "a14672c3-2e5c-4622-bb4b-308fe5ad3870",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8af070b2-b805-4403-b914-1cc79aa19fb9",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "7c6ce3a0-127f-4424-8085-7cefb5495dac"
+    },
+    "created_at": "2026-06-02T00:15:18.758798+00:00"
+  },
+  {
+    "id": "55888fdd-da58-416e-9762-bd19be97be37",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8af070b2-b805-4403-b914-1cc79aa19fb9",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "7512b51c-7b80-44ab-82d8-993562cb7a97",
+      "conducted_by": null,
+      "discovery_id": "7c6ce3a0-127f-4424-8085-7cefb5495dac"
+    },
+    "created_at": "2026-06-02T00:15:20.204564+00:00"
+  },
+  {
+    "id": "28665adf-9f10-45ee-92c3-114ff2776433",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "7512b51c-7b80-44ab-82d8-993562cb7a97",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:15:20.897764+00:00"
+  },
+  {
+    "id": "a7809e79-2adf-4d4e-b247-933caeb6f178",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "7512b51c-7b80-44ab-82d8-993562cb7a97",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-02T00:15:21.709725+00:00"
+  },
+  {
+    "id": "780b1dd2-1e5f-4929-b588-0e43cef14d76",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "695fc08b-eb44-42fc-9c47-c98f4ffb8034",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "7674bc19-2ec9-4803-8218-d31d45cb564e"
+    },
+    "created_at": "2026-06-02T00:26:53.016568+00:00"
+  },
+  {
+    "id": "092a6e67-2e3a-4fd3-8dcf-da6514f86464",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "142b9f3e-a8e5-4951-880f-d0086b858f9a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d493afac-c7c4-4622-91f7-f83891628f30"
+    },
+    "created_at": "2026-06-02T00:26:53.652717+00:00"
+  },
+  {
+    "id": "8582b831-7488-479d-bfea-4d21a4bea7e8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "972ce589-3a7f-4ad0-bf2a-4c7632e46821",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "27d21dba-709f-49d5-9410-35cb1705dccc"
+    },
+    "created_at": "2026-06-02T00:26:55.009904+00:00"
+  },
+  {
+    "id": "59456e21-9a56-4a78-b5d5-d88f3470e424",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b21736b1-2aad-4112-a3d1-8572b5e270f4",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "38923891-3e2e-4343-b466-4f19fbcd3782"
+    },
+    "created_at": "2026-06-02T00:26:55.514798+00:00"
+  },
+  {
+    "id": "f23ca351-58b4-4dda-8bd5-6ee612b533a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c5fc080c-2b8a-4a8d-aad9-726536e87e20",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "6e2d23fb-7d87-4b7f-a578-ad175be00a0f"
+    },
+    "created_at": "2026-06-02T00:26:56.548486+00:00"
+  },
+  {
+    "id": "ea04022a-0cef-40e9-8c8e-9e887844c3fb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "68812d5a-071f-478a-9936-896699099ece",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "c2b5d921-d2ae-4ac6-aa87-aae0b6ad6149"
+    },
+    "created_at": "2026-06-02T00:26:58.066662+00:00"
+  },
+  {
+    "id": "bc87fbdf-a520-47a8-aaa8-81e83e23213e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a22dc1b4-ea97-4250-93e5-1f90208ffbeb",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "78fbaca0-286c-49a4-b6a2-4a2dc5fec92d"
+    },
+    "created_at": "2026-06-02T00:26:59.614418+00:00"
+  },
+  {
+    "id": "407326cc-a485-43ed-98f8-5ebd132604a8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0a69533d-dcb4-487b-8be0-12aae1e1941d",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d6e1cc86-1c8d-4aac-abc2-d8bf6d1dbe8a"
+    },
+    "created_at": "2026-06-02T00:27:00.910096+00:00"
+  },
+  {
+    "id": "c51860e8-ae66-4b66-b000-a591318577a8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "321e4289-b27f-467e-be61-3594f83f117a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "fb746352-96e2-450a-9756-8394b0c730a6"
+    },
+    "created_at": "2026-06-01T16:54:24.083186+00:00"
+  },
+  {
+    "id": "7389a975-8815-4114-bdae-bfa976dafe8f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "321e4289-b27f-467e-be61-3594f83f117a",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "eef8e879-17c8-4d91-86f9-14060c2949da",
+      "conducted_by": null,
+      "discovery_id": "fb746352-96e2-450a-9756-8394b0c730a6"
+    },
+    "created_at": "2026-06-01T16:55:03.04107+00:00"
+  },
+  {
+    "id": "d0d404e1-12d6-4c0a-a9a0-c0014694c5f0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "eef8e879-17c8-4d91-86f9-14060c2949da",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T16:55:22.098872+00:00"
+  },
+  {
+    "id": "e75a9d86-cc46-49b6-978a-2f9841ead093",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test rollback funzionalit\u00e0 ITER185 Phase 1",
+      "account_id": "eef8e879-17c8-4d91-86f9-14060c2949da",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-01T16:55:23.766569+00:00"
+  },
+  {
+    "id": "da997792-5ae1-4205-a740-0bc0c4954573",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "66961292-a009-46ac-a49d-7fbd82f7dda6",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "34cd8b13-dad7-43ba-9877-b606d0a7eb5a"
+    },
+    "created_at": "2026-06-01T16:56:36.79952+00:00"
+  },
+  {
+    "id": "5a89f965-5b4b-48ba-a87e-e2e74d7d2a4d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5e790119-abb3-403b-84ed-2961448c4aa3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "e6d4690a-4f15-4704-b788-c5c01c1a6237"
+    },
+    "created_at": "2026-06-01T16:56:37.532142+00:00"
+  },
+  {
+    "id": "3c68d93b-fc6c-44a7-93a3-5767edeb6a1f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0f3ba717-3eac-4e8f-8217-cefb53f3e022",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "929bd4cf-95c1-4086-b13c-7a5bc01e86eb"
+    },
+    "created_at": "2026-06-01T16:56:38.90238+00:00"
+  },
+  {
+    "id": "31eda5a3-98fe-43a2-88b8-95ceff6fff0a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bda13b0d-faeb-4103-833c-1ba2838cb978",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "23e466ff-36e6-4b25-a55f-a08c9d9fd382"
+    },
+    "created_at": "2026-06-01T16:56:39.576617+00:00"
+  },
+  {
+    "id": "9e1a3012-b7a4-4022-8937-9b22ed5a91d8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bd323597-2e3f-44ac-bc6b-4ca4a6f4ca8c",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "88290387-def1-44d4-92b5-629add35c514"
+    },
+    "created_at": "2026-06-01T16:56:40.489195+00:00"
+  },
+  {
+    "id": "e1565610-c070-487d-8800-66ad0d0827b2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "71b998c6-049c-4182-a0ce-03ab4dad1167",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "a5349eb4-1371-4d90-93f6-d2fce42b168b"
+    },
+    "created_at": "2026-06-01T16:56:41.023361+00:00"
+  },
+  {
+    "id": "c00bab10-d2a0-4947-b719-0d89ffdc3c18",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8ee584b9-dae9-4773-9d44-925e1e49e36e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "006561b4-5f09-4736-8281-a0dc852b3a3c"
+    },
+    "created_at": "2026-06-01T16:56:42.07629+00:00"
+  },
+  {
+    "id": "d2c05694-3a5e-4591-944c-5de2f0d6c3b9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c4814f5-5210-401d-a780-3ecdea3868bc",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "d6d96231-2097-4879-bf34-c0bccf0e1184",
+      "conducted_by": null,
+      "discovery_id": "1d75089f-6254-4118-ba69-e1e273dadf05"
+    },
+    "created_at": "2026-06-01T16:56:47.712815+00:00"
+  },
+  {
+    "id": "387dc967-a6b7-4e3d-a893-fcb35f702a9e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a619298-1583-4d19-90dd-0271041faf50",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "80ab1416-4e98-45ee-bc03-603f9ab0986c"
+    },
+    "created_at": "2026-06-01T16:56:48.101041+00:00"
+  },
+  {
+    "id": "87cf705b-a5ae-4db9-8cf3-802a580031a0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5cbc9aa9-5083-411a-8e39-084e47bbff30",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "016527f5-e111-46b5-9895-e55b71cbf5ed"
+    },
+    "created_at": "2026-06-01T16:56:51.412793+00:00"
+  },
+  {
+    "id": "1b7be3db-5d20-45f2-8548-15e436e0eb98",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a231b29-f625-407f-b4fe-4a1ea6d8ea61",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "0af061fd-ff46-465b-8480-e465bfd10cab",
+      "conducted_by": null,
+      "discovery_id": "7065bf04-6ac4-400c-a215-7f0ab43086e5"
+    },
+    "created_at": "2026-06-01T16:56:54.950163+00:00"
+  },
+  {
+    "id": "4c197a5f-1992-492c-96a1-f2cc4af23f3c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "0af061fd-ff46-465b-8480-e465bfd10cab",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T16:56:55.603298+00:00"
+  },
+  {
+    "id": "3b2d40f9-805a-4196-9d4a-dc6679509885",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "068a45ca-1785-435a-9b70-5f0e3ecd9bcd",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "baaaf42a-f799-43c0-871d-8677669be0c7"
+    },
+    "created_at": "2026-06-01T16:56:55.990982+00:00"
+  },
+  {
+    "id": "704bce89-cb01-467c-936e-829444cde21d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "acac460d-42ab-44a5-b2f4-9f04a3624a74",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "051bf61f-6ca9-41e2-bdd2-b449bd5f95eb",
+      "conducted_by": null,
+      "discovery_id": "2baad740-ce02-4c6c-ab61-48187367a39a"
+    },
+    "created_at": "2026-06-01T16:57:00.182948+00:00"
+  },
+  {
+    "id": "eb9f0a95-fa9e-4dd5-aa4e-505701cc4fe0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "051bf61f-6ca9-41e2-bdd2-b449bd5f95eb",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T16:57:00.83507+00:00"
+  },
+  {
+    "id": "e27e1f01-2058-4c83-8f82-cdafa0840347",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c1c7d064-2b68-4f15-8627-50f1fc91c56b",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "5fe07491-4fbb-46f8-b974-7c1f9c4a8660",
+      "conducted_by": null,
+      "discovery_id": "096c3b7e-5057-4422-a751-e1e1ed9685cb"
+    },
+    "created_at": "2026-06-01T16:57:02.794901+00:00"
+  },
+  {
+    "id": "8f87b74f-555a-469f-81f3-99b4acea31af",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "5fe07491-4fbb-46f8-b974-7c1f9c4a8660",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T16:57:03.438138+00:00"
+  },
+  {
+    "id": "5891ed8d-f7e5-41b6-9abb-5e1e391d258c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "5fe07491-4fbb-46f8-b974-7c1f9c4a8660",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-01T16:57:04.234728+00:00"
+  },
+  {
+    "id": "7372aa4f-ec8d-4f03-8fff-d2049bd5aea9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a619298-1583-4d19-90dd-0271041faf50",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "bb2b7418-d461-4170-a405-e0c1def464d5",
+      "conducted_by": null,
+      "discovery_id": "80ab1416-4e98-45ee-bc03-603f9ab0986c"
+    },
+    "created_at": "2026-06-01T16:56:50.04317+00:00"
+  },
+  {
+    "id": "f8b0f297-e98a-408a-b840-c0a97c10cba4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2790756b-70bc-42d4-96a8-a0d23077b1b1",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "b02bcf6b-febb-402a-8d9d-69775bfffc23"
+    },
+    "created_at": "2026-06-01T16:57:24.90596+00:00"
+  },
+  {
+    "id": "8ecd31bf-5933-421a-a167-40cba9864201",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8bded62b-cefa-4518-b177-8a63fd2032e8",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d1102c8d-1ce6-4d16-b760-b7e87f16d42d"
+    },
+    "created_at": "2026-06-01T16:57:25.922056+00:00"
+  },
+  {
+    "id": "d3f3ffc4-ced6-4ff0-9957-665cabde4e65",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8bded62b-cefa-4518-b177-8a63fd2032e8",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "a2f8b999-2ce6-4899-952b-159e633a8ea6",
+      "conducted_by": null,
+      "discovery_id": "d1102c8d-1ce6-4d16-b760-b7e87f16d42d"
+    },
+    "created_at": "2026-06-01T16:57:27.320961+00:00"
+  },
+  {
+    "id": "a4135550-4a5c-40eb-b771-de8b28b81740",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "345c4b3b-1f3e-4846-8e7c-3a2374851d1f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d935e243-38ef-43e6-a450-369a41955533"
+    },
+    "created_at": "2026-06-01T16:57:27.700105+00:00"
+  },
+  {
+    "id": "4edf3f75-5426-465b-90dc-dfe26afc873d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "345c4b3b-1f3e-4846-8e7c-3a2374851d1f",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "54590461-366b-4178-bb2c-9aadac171030",
+      "conducted_by": null,
+      "discovery_id": "d935e243-38ef-43e6-a450-369a41955533"
+    },
+    "created_at": "2026-06-01T16:57:29.622793+00:00"
+  },
+  {
+    "id": "79adc053-5cc3-480c-bf6a-18f142811a0b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d3c2dd8b-112c-46e0-91cf-63e505fcd9e5",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d433573e-1e47-4a40-b155-defffa2336cf"
+    },
+    "created_at": "2026-06-01T17:07:14.419613+00:00"
+  },
+  {
+    "id": "52f28646-db91-474d-af80-9697b7166d3d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9971ce50-f2c1-45fd-8fe1-5ad287084105",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "1948676a-0382-48b4-88b5-04274125ad29"
+    },
+    "created_at": "2026-06-01T17:07:15.152102+00:00"
+  },
+  {
+    "id": "98d242bd-c629-4ae1-aaa2-c20b7f69b13a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a85571ab-566a-44fc-a231-c878da8d65ef",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "d3060887-b4e5-4d7b-be7e-5553859c990b"
+    },
+    "created_at": "2026-06-01T17:07:16.457641+00:00"
+  },
+  {
+    "id": "245eb69a-ee8f-496d-b77e-b22016627f9b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f33b9bb4-c212-4713-a47c-7b485d0dd606",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "25499c3a-1de8-4596-8816-715738a3f0ad"
+    },
+    "created_at": "2026-06-01T17:07:17.103172+00:00"
+  },
+  {
+    "id": "3a1970c7-0216-4341-acd1-a39da638ac54",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "fb775030-29d8-44a7-bdaf-a1ad77ac95ee",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "b1bfeed0-2e7f-4e1f-bba2-5148a404f7c7"
+    },
+    "created_at": "2026-06-01T17:07:18.002381+00:00"
+  },
+  {
+    "id": "be1d2c79-ea4c-4d41-b82e-26e379d9d8c4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c6e986cd-af41-4a65-a381-010d5605d338",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "34a961e9-bfa7-4e41-82c7-9532ae85ba55"
+    },
+    "created_at": "2026-06-01T17:07:18.519152+00:00"
+  },
+  {
+    "id": "028a3a48-cd80-4a12-bcf3-50624c5a5d6a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7a0af572-4b6f-4717-a369-0e1ee9445d8b",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "dab5c64e-1d36-459e-9072-d0c64df7178a"
+    },
+    "created_at": "2026-06-01T17:07:19.556303+00:00"
+  },
+  {
+    "id": "aa4d629b-bf3a-489e-9156-697a31a67e07",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0b5e79d8-ca98-41cd-98e1-bc034e1bc676",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "6972f58c-80aa-429a-be54-1dcbedbb8545"
+    },
+    "created_at": "2026-06-01T17:07:21.091153+00:00"
+  },
+  {
+    "id": "94d167e8-21f5-405d-bcdd-c93008df102b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b969c226-558e-4e4c-a50b-4efac1a26106",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "5dc2de11-c2da-46eb-99bc-77c9f0945b98"
+    },
+    "created_at": "2026-06-01T17:07:22.620974+00:00"
+  },
+  {
+    "id": "51a1a397-7c7a-43a7-bf02-9f56738871d9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "69593f20-7f05-4fd7-a4c2-528517ed3422",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "b2974b7f-c401-4d3d-a999-dad0e912afc9"
+    },
+    "created_at": "2026-06-01T17:07:23.638093+00:00"
+  },
+  {
+    "id": "bab18f36-6030-4d38-b23c-5e7af484fb65",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "69593f20-7f05-4fd7-a4c2-528517ed3422",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "0d2d63a8-c05f-4060-b3a4-78cc89fcd0ac",
+      "conducted_by": null,
+      "discovery_id": "b2974b7f-c401-4d3d-a999-dad0e912afc9"
+    },
+    "created_at": "2026-06-01T17:07:25.061118+00:00"
+  },
+  {
+    "id": "7bc9359b-8e18-4b0d-9747-0e84333f8f7c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af71aa02-15bb-4419-a3d8-eb083a573ecb",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "0d14837b-d760-4309-b36b-fa9c8c3e8f8b"
+    },
+    "created_at": "2026-06-01T17:07:25.444775+00:00"
+  },
+  {
+    "id": "53e8277a-7c26-4c8e-9668-080f192f0a0a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af71aa02-15bb-4419-a3d8-eb083a573ecb",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "dbaec544-bd50-40fd-9f2b-0aac69353d50",
+      "conducted_by": null,
+      "discovery_id": "0d14837b-d760-4309-b36b-fa9c8c3e8f8b"
+    },
+    "created_at": "2026-06-01T17:07:27.358565+00:00"
+  },
+  {
+    "id": "7cd1fd1d-ee41-441b-8694-d66ca2a0f128",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3fab91e4-1eee-46a7-b91a-422182ae0a5f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "48c54808-7b1b-4ffc-a465-d1ee6d443498"
+    },
+    "created_at": "2026-06-01T17:07:28.65334+00:00"
+  },
+  {
+    "id": "c4e7cc3f-746f-4298-b5e8-387918ceded6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3fab91e4-1eee-46a7-b91a-422182ae0a5f",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "5fff0cc4-403c-42da-9ae6-ec616226134c",
+      "conducted_by": null,
+      "discovery_id": "48c54808-7b1b-4ffc-a465-d1ee6d443498"
+    },
+    "created_at": "2026-06-01T17:07:30.069469+00:00"
+  },
+  {
+    "id": "8c350c0f-565c-4e1b-adbf-f6439d8d1f9b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8ca9218a-be02-42e8-abf5-fea656a8b9a3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "41a2c1c7-9187-4eb2-834e-deef7c6dd9ac"
+    },
+    "created_at": "2026-06-01T17:07:30.710542+00:00"
+  },
+  {
+    "id": "d35ceb0a-0391-4878-a091-117f9d2c5780",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8ca9218a-be02-42e8-abf5-fea656a8b9a3",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "c8530cbc-978e-4f32-a27e-4f9841b571d8",
+      "conducted_by": null,
+      "discovery_id": "41a2c1c7-9187-4eb2-834e-deef7c6dd9ac"
+    },
+    "created_at": "2026-06-01T17:07:32.131126+00:00"
+  },
+  {
+    "id": "cced4a01-80ff-4295-b227-6bb50edf28df",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "c8530cbc-978e-4f32-a27e-4f9841b571d8",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:07:32.766264+00:00"
+  },
+  {
+    "id": "f7bfff88-5108-42b4-a8d8-f9864f07de69",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b6df984d-979a-4751-93c2-dbfeb531ff4f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "c0cff4e7-f5c3-423e-b5be-2f4e8e90c85f"
+    },
+    "created_at": "2026-06-01T17:07:33.150098+00:00"
+  },
+  {
+    "id": "0b6926cf-9e87-474d-96fc-e03f133bcbdc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b6df984d-979a-4751-93c2-dbfeb531ff4f",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "d254f4f6-e7a4-42d7-870c-4d1437cc61cd",
+      "conducted_by": null,
+      "discovery_id": "c0cff4e7-f5c3-423e-b5be-2f4e8e90c85f"
+    },
+    "created_at": "2026-06-01T17:07:34.557292+00:00"
+  },
+  {
+    "id": "3d13c003-7688-48a5-9f5d-8c0c143e5110",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "d254f4f6-e7a4-42d7-870c-4d1437cc61cd",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:07:35.19097+00:00"
+  },
+  {
+    "id": "a5db58d9-46f3-452a-a4f8-e6ec2727eafe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "97aa243f-25dc-432b-998f-b23770c0fe3f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "16f7db11-48a5-4ce8-b521-ea2df79d1f11"
+    },
+    "created_at": "2026-06-01T17:07:35.834373+00:00"
+  },
+  {
+    "id": "7592a58c-2327-4bbb-b3c1-a31766563496",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "97aa243f-25dc-432b-998f-b23770c0fe3f",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "61ff15ee-3c3c-4181-a09f-c267fa7cbc28",
+      "conducted_by": null,
+      "discovery_id": "16f7db11-48a5-4ce8-b521-ea2df79d1f11"
+    },
+    "created_at": "2026-06-01T17:07:37.242105+00:00"
+  },
+  {
+    "id": "ae86a8b8-e34f-4bfa-9c5e-dfc373879a0a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "61ff15ee-3c3c-4181-a09f-c267fa7cbc28",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:07:37.878287+00:00"
+  },
+  {
+    "id": "92d17c0f-edd8-4a56-b193-69d7c348fce8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "40859eb5-694a-43cc-a30e-f1e62ba76c06",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "b4df3226-32c9-4d32-adaf-a44653d673e0"
+    },
+    "created_at": "2026-06-01T17:07:38.388097+00:00"
+  },
+  {
+    "id": "58ef45fe-757c-41bb-9e6b-06285d9b076f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "40859eb5-694a-43cc-a30e-f1e62ba76c06",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "8a4cb6be-216f-4cd0-9cdb-16e583da6a56",
+      "conducted_by": null,
+      "discovery_id": "b4df3226-32c9-4d32-adaf-a44653d673e0"
+    },
+    "created_at": "2026-06-01T17:07:39.790646+00:00"
+  },
+  {
+    "id": "98f98f5b-11ab-4755-82d2-4f9acaf86f61",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "8a4cb6be-216f-4cd0-9cdb-16e583da6a56",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:07:40.421226+00:00"
+  },
+  {
+    "id": "d5212ac0-dc43-4bca-8129-b1f45211b3dd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "8a4cb6be-216f-4cd0-9cdb-16e583da6a56",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-01T17:07:41.199216+00:00"
+  },
+  {
+    "id": "6f3e3be8-09bf-4e4a-8714-595eddc8d22e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2c46d853-024e-4eb1-bfb2-68c5035b9512",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "440a802c-07aa-4bc9-a6bf-d5457517c934"
+    },
+    "created_at": "2026-06-01T17:22:03.456985+00:00"
+  },
+  {
+    "id": "ea63716c-858e-4718-b7a1-4703881283a1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "459eda22-9d14-45a9-bbd5-58390f2f8858",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:31:14.121349+00:00"
+  },
+  {
+    "id": "70b06426-68c1-4d35-95b3-19425684fbc0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "38bc7de3-07d9-4361-bceb-c15b3c60c7af",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "42cee924-ca3c-4fdc-a616-d509ad72f9ce"
+    },
+    "created_at": "2026-06-01T17:37:44.900476+00:00"
+  },
+  {
+    "id": "d12f0a01-33d5-4f78-82b8-c6156fb324cc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "dea72cb7-9fda-4f8c-ac0c-18cf6aea0eaf",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "527773c6-1284-4108-bb86-7845ead8e9fd"
+    },
+    "created_at": "2026-06-01T17:37:45.66204+00:00"
+  },
+  {
+    "id": "55505009-8c9e-4de4-96db-6f49cb375e7b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0e3fabe0-26f5-4f1f-be8b-4881a36fa5ef",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "e80b1399-536e-45fa-866a-384838ca2d82"
+    },
+    "created_at": "2026-06-01T17:37:47.577122+00:00"
+  },
+  {
+    "id": "4c2388b4-ea06-4a15-9b41-a03562ff551d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "fd9f3e0c-09a7-4b4d-a287-a0e4aed7d9b3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "1a1fce0d-26ae-4c59-94d3-ccc8ea6d4502"
+    },
+    "created_at": "2026-06-01T17:37:48.24082+00:00"
+  },
+  {
+    "id": "882ba113-48f3-472b-b4aa-c83cd31e8858",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7260cf33-baaf-48a2-8792-20fe9a31edba",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "a4d637e6-48a0-4618-b879-c553abab6db0"
+    },
+    "created_at": "2026-06-01T17:37:49.151276+00:00"
+  },
+  {
+    "id": "1e5d35a9-7045-4934-bc1d-9266cdd915c3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5a466b0c-c962-4302-8f95-d7eb7bcd8356",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "c162ae77-89df-4eaf-84b6-0d0349a8e973"
+    },
+    "created_at": "2026-06-01T17:37:49.67948+00:00"
+  },
+  {
+    "id": "4b04d45e-8de2-4f79-8c01-aaeac4f11eda",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "73705d09-f6a0-4bfd-9a29-6cf47e6f3d6c",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "0c0cd202-54b3-4159-87e0-2ab3fbe8667a"
+    },
+    "created_at": "2026-06-01T17:37:50.754889+00:00"
+  },
+  {
+    "id": "1b713b4e-2ae9-4e79-97e1-cd5274a5457f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3346fd2e-d9c4-470b-be18-b006d8876a77",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "2d166aca-6e36-4cce-ad3a-c3350dd1d6d1"
+    },
+    "created_at": "2026-06-01T17:37:52.317778+00:00"
+  },
+  {
+    "id": "2bc76b0e-40cd-4046-bd83-4baf850ada71",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c314463d-e314-4d00-996b-90eb707cebc6",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "16f33e3f-5cda-4947-b75d-aa9e5f3fa379"
+    },
+    "created_at": "2026-06-01T17:37:53.881472+00:00"
+  },
+  {
+    "id": "23f04791-08d2-46e1-a224-06488a77593b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "053bbd4f-2379-449f-b291-988c242b3b79",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "6185ef2a-5852-4aa3-9db9-229f34695fc2"
+    },
+    "created_at": "2026-06-01T17:37:54.964144+00:00"
+  },
+  {
+    "id": "86f084b5-bb6e-4c3c-b13f-25c5eaa6b428",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "053bbd4f-2379-449f-b291-988c242b3b79",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "e19371d7-1c50-4f64-99eb-7b150a166f5e",
+      "conducted_by": null,
+      "discovery_id": "6185ef2a-5852-4aa3-9db9-229f34695fc2"
+    },
+    "created_at": "2026-06-01T17:37:56.422572+00:00"
+  },
+  {
+    "id": "2d1bccbc-6a61-4bee-9233-862cce386229",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "170d739f-b8f5-4501-bdf6-9912b5733e25",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "da345f70-dc42-4806-98ca-abca01fd77b0"
+    },
+    "created_at": "2026-06-01T17:37:56.815925+00:00"
+  },
+  {
+    "id": "58ddc606-458a-4189-8eed-ffec4f77cd8b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "170d739f-b8f5-4501-bdf6-9912b5733e25",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "72713cff-6c4c-4f4f-ba73-984adc45641b",
+      "conducted_by": null,
+      "discovery_id": "da345f70-dc42-4806-98ca-abca01fd77b0"
+    },
+    "created_at": "2026-06-01T17:37:58.774463+00:00"
+  },
+  {
+    "id": "b7611de7-ee66-4523-b167-2fea1bbdfdcd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "19eabfe7-f3a0-4c99-a258-8d2daa3a5811",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "e09757a0-3aad-4378-a53b-2ac2cc2d4eef"
+    },
+    "created_at": "2026-06-01T17:38:00.110684+00:00"
+  },
+  {
+    "id": "e19b5ae0-af32-4857-8cce-4b625e7f8784",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "19eabfe7-f3a0-4c99-a258-8d2daa3a5811",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "5f052eb8-571b-4cc4-bb06-a97b4d23f314",
+      "conducted_by": null,
+      "discovery_id": "e09757a0-3aad-4378-a53b-2ac2cc2d4eef"
+    },
+    "created_at": "2026-06-01T17:38:01.58351+00:00"
+  },
+  {
+    "id": "4ee22544-014b-4136-bd5a-61284e0751ec",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "13694ea0-34a1-4727-a368-7b40301f232c",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "0ad614af-5ace-409b-969a-58e68f8b188a"
+    },
+    "created_at": "2026-06-01T17:38:02.230846+00:00"
+  },
+  {
+    "id": "a5c9efb5-64ee-4d03-bb5c-6c888a9c4511",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "13694ea0-34a1-4727-a368-7b40301f232c",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "cb3e5757-6ada-4f41-983e-6cddca8cae3a",
+      "conducted_by": null,
+      "discovery_id": "0ad614af-5ace-409b-969a-58e68f8b188a"
+    },
+    "created_at": "2026-06-01T17:38:03.806143+00:00"
+  },
+  {
+    "id": "f854fd49-5995-42dd-91be-508f71d4ea72",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "cb3e5757-6ada-4f41-983e-6cddca8cae3a",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:38:04.471482+00:00"
+  },
+  {
+    "id": "91b75a7e-dc48-4c00-ab3b-3d790d54fc67",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "4dcd728f-d56c-4604-bc17-6e6ca30a96ed",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "012d776d-91b8-4b9b-97d9-73c0e33564a5"
+    },
+    "created_at": "2026-06-01T17:38:04.860077+00:00"
+  },
+  {
+    "id": "4592a99f-9a25-499b-b130-35f6c564d821",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "4dcd728f-d56c-4604-bc17-6e6ca30a96ed",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "238d8269-dc72-4699-960b-fd1721e9512a",
+      "conducted_by": null,
+      "discovery_id": "012d776d-91b8-4b9b-97d9-73c0e33564a5"
+    },
+    "created_at": "2026-06-01T17:38:06.297845+00:00"
+  },
+  {
+    "id": "38b391f9-d1e8-4e41-8a6c-f4016e547727",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "238d8269-dc72-4699-960b-fd1721e9512a",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:38:06.943103+00:00"
+  },
+  {
+    "id": "34b3bd42-fcdb-449a-96f2-13cc4b96fbf4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c7d87c5-3374-4d10-9976-65278fa4a396",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "1b4b13fe-0b7a-4892-8be0-cbedb60fb436"
+    },
+    "created_at": "2026-06-01T17:38:07.613937+00:00"
+  },
+  {
+    "id": "fb5cd185-5c40-4f66-be27-f9a6de20f6c5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c7d87c5-3374-4d10-9976-65278fa4a396",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "60a1dc4d-14bb-42a0-b27e-3678695de55b",
+      "conducted_by": null,
+      "discovery_id": "1b4b13fe-0b7a-4892-8be0-cbedb60fb436"
+    },
+    "created_at": "2026-06-01T17:38:09.139199+00:00"
+  },
+  {
+    "id": "1550e1e8-48e7-4981-88c4-cc0eda8f4871",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "60a1dc4d-14bb-42a0-b27e-3678695de55b",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:38:09.879634+00:00"
+  },
+  {
+    "id": "b2c713f2-6990-4c62-a827-ddeb5733002d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f6a060ce-80fe-4b5f-9295-0f120684d88c",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "812690e0-ef48-4179-b624-ce087c8918cc"
+    },
+    "created_at": "2026-06-01T17:38:10.502707+00:00"
+  },
+  {
+    "id": "69f7a22b-696c-48f6-bbef-6815029596be",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f6a060ce-80fe-4b5f-9295-0f120684d88c",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "c8113943-f68f-4716-a8d5-f5b23fe2f9cf",
+      "conducted_by": null,
+      "discovery_id": "812690e0-ef48-4179-b624-ce087c8918cc"
+    },
+    "created_at": "2026-06-01T17:38:12.050794+00:00"
+  },
+  {
+    "id": "091c6df1-1239-4d10-bb2b-45d9f1d699fc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "c8113943-f68f-4716-a8d5-f5b23fe2f9cf",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-01T17:38:12.74699+00:00"
+  },
+  {
+    "id": "c42ca635-4d65-4ec4-8025-31a466fb8de4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "c8113943-f68f-4716-a8d5-f5b23fe2f9cf",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-01T17:38:13.704079+00:00"
+  },
+  {
+    "id": "cab60819-671e-43f1-b6b3-72744621d247",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c274a4c1-052a-440f-ab47-32eef161fca7",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "c6ecacbc-b9e5-4c86-8216-c98fa35bddd5"
+    },
+    "created_at": "2026-06-02T00:14:53.715465+00:00"
+  },
+  {
+    "id": "fe47f670-d8d7-43d6-85a1-a62a77983c77",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d467fc16-ff46-4dfa-bb1c-5d59b66ce1f7",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "51c665c4-2e98-4d51-8beb-b9c89ae15211"
+    },
+    "created_at": "2026-06-02T00:14:54.439295+00:00"
+  },
+  {
+    "id": "abba7758-ec29-4bc5-9e0d-5bd29c09d709",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1cc71b60-5eed-4b58-954b-77abfea08864",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "65fabf54-3014-4b2b-a6dc-4710b8c4c043"
+    },
+    "created_at": "2026-06-02T00:14:55.882675+00:00"
+  },
+  {
+    "id": "b7a77a15-052e-408f-8028-229430da46f1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "26574790-2042-4528-8155-95c56261d136",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "bdddd17d-ef64-4219-9a34-88be1533352b"
+    },
+    "created_at": "2026-06-02T00:14:56.553875+00:00"
+  },
+  {
+    "id": "0142490a-6855-4ff4-9d21-b3d524885512",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b3239a58-b15f-4cde-abde-dc1315d3e1e2",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "b83cd6a0-23be-46a1-9035-dcf5c14ff404"
+    },
+    "created_at": "2026-06-02T00:14:57.476543+00:00"
+  },
+  {
+    "id": "88a8695c-b2c6-4fa7-9d46-73f35bc6de3f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "94739a99-c0be-4f5d-83e2-9512ec1296fe",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "da2c942f-5622-4445-92ca-144a4b65014e"
+    },
+    "created_at": "2026-06-02T00:14:58.011042+00:00"
+  },
+  {
+    "id": "431b5892-6156-42c3-9155-973008167163",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "98df3138-9541-40a0-bb46-43f2f957ff8e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "f88711ab-1320-4694-a9b6-425fe3bb941a"
+    },
+    "created_at": "2026-06-02T00:14:59.064432+00:00"
+  },
+  {
+    "id": "eaf9b1e4-f63e-4187-a52a-6e1641fffbc7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8479af57-cdaf-4c63-83f4-0e7aac568668",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "96fddd37-e2fd-4f4b-b9e0-8afb357c1172",
+      "conducted_by": null,
+      "discovery_id": "dfec24db-3d9f-4ec6-a954-b96874ebeff6"
+    },
+    "created_at": "2026-06-02T00:15:07.204942+00:00"
+  },
+  {
+    "id": "e0843dfa-45b5-443a-95f8-cb03d7de7df2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3e31a651-34ee-4946-a70f-c59bcc7d3756",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "e1269ded-d7e9-447c-bec9-d4a1e18705b1",
+      "conducted_by": null,
+      "discovery_id": "7b4ffd4a-acec-4a48-98e3-f8c8af327baf"
+    },
+    "created_at": "2026-06-02T00:15:10.01679+00:00"
+  },
+  {
+    "id": "0d3b0578-2f1a-42b9-b5e7-c3ef058d0ecd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "8fa8a01e-0252-4975-aac2-00f97f3b2b50",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:15:12.893506+00:00"
+  },
+  {
+    "id": "569f5e29-4a27-445e-81ef-20267f6630fc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76096ebf-3fd4-49a1-bbf7-bc2dc86e917a",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "195df833-1fcd-40e5-8c5c-344c3be8f4df",
+      "conducted_by": null,
+      "discovery_id": "32b5737c-5ab1-42bb-8af3-d58a2468a274"
+    },
+    "created_at": "2026-06-02T00:15:14.752097+00:00"
+  },
+  {
+    "id": "9d885d9c-3ebd-42e8-b950-fd2dce99db56",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7ca22188-1d08-4de5-8ab1-880c56bf0d92",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "fa9cb356-2bb1-4b72-821e-f3c70db0fa2c",
+      "conducted_by": null,
+      "discovery_id": "21b5e5a4-30d0-4410-bd68-18b457683794"
+    },
+    "created_at": "2026-06-02T00:15:17.546816+00:00"
+  },
+  {
+    "id": "045431e2-5665-4bd0-b135-3b1880fff049",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a536e011-f681-4ecc-af08-1e085b4bb7c8",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "9ff1efc9-406d-4187-95ec-7b224c39aa7e"
+    },
+    "created_at": "2026-06-02T00:19:38.331626+00:00"
+  },
+  {
+    "id": "bea79dd3-779d-44e5-a3dc-132f8f87195e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0ad01d7f-f829-4c18-b4f7-7bce7fba147e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "4b5d6cd4-b20a-4265-946a-5dbc1b9e7f37"
+    },
+    "created_at": "2026-06-02T00:19:52.49317+00:00"
+  },
+  {
+    "id": "ef1dbc54-13bc-4aa6-af33-1cfb2ac5b561",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "74cff197-32ed-4c89-97fe-02028e08c559",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "03a6c670-99ec-4002-bd1d-293c60926c1d"
+    },
+    "created_at": "2026-06-02T00:19:53.174767+00:00"
+  },
+  {
+    "id": "62c5c415-1c5f-41aa-a6c5-d8429044202e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "49706a3d-bd63-4b0c-801b-08ba7e04206e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "other",
+      "discovery_id": "f4cf50ad-58f9-48c4-ba41-1b63488c19a2"
+    },
+    "created_at": "2026-06-02T00:19:54.516274+00:00"
+  },
+  {
+    "id": "6eab5b6b-062e-4f25-97f4-7d098e957fd8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "52936cc3-55b8-4662-a7d2-f8ad2be4b204",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d69c43e5-785d-475e-ac46-3740414ac3c3"
+    },
+    "created_at": "2026-06-02T00:19:55.205068+00:00"
+  },
+  {
+    "id": "d5852d52-bf72-45c8-b11c-4e34e6d0d574",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "91de9244-bc16-4ff5-b9c4-1b73de44bc16",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "3e286685-f8ad-4f1c-9908-6d14ae243076"
+    },
+    "created_at": "2026-06-02T00:19:56.135083+00:00"
+  },
+  {
+    "id": "2b063548-1c08-403c-8d25-d2cb894992e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "4edcd6be-76ef-400a-9ed8-eb5deebb9b8e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "239d215d-3da0-4e5f-877d-3bf4b18732c0"
+    },
+    "created_at": "2026-06-02T00:19:56.65677+00:00"
+  },
+  {
+    "id": "9c6cdede-7142-4441-97ec-4106318b5640",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f5b4dc50-0ad7-4f98-a788-6b22c15a49c1",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "153eaca2-d2b1-44b9-85b1-b03a63228ad2"
+    },
+    "created_at": "2026-06-02T00:19:57.726093+00:00"
+  },
+  {
+    "id": "123b9f85-e9e7-4005-ab00-9032840ea79c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "eb3b6c98-eb46-4711-a7a2-fbc126861c08",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "6aba8879-9ad3-4648-a65e-7d9ec5bcae0e"
+    },
+    "created_at": "2026-06-02T00:19:59.970558+00:00"
+  },
+  {
+    "id": "a446cef2-ac7b-41c4-aa29-7eeb130c3931",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d6471d81-d401-4905-8fc3-bd58e0e22cf7",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "d4edccea-c712-458d-b808-b332f5b7cee9"
+    },
+    "created_at": "2026-06-02T00:20:01.589392+00:00"
+  },
+  {
+    "id": "ee017ffd-3973-4899-aa38-2187fbb8f7f3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d24a5c8f-ff68-49e7-92dc-4aa58a2896c8",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "ef9b2c88-7076-410a-9621-88a7c86dc43a"
+    },
+    "created_at": "2026-06-02T00:20:02.667055+00:00"
+  },
+  {
+    "id": "7b293463-08b5-4260-a451-f365ea1f13b0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d24a5c8f-ff68-49e7-92dc-4aa58a2896c8",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "306932f8-f1dc-4175-8c92-7f44037f8657",
+      "conducted_by": null,
+      "discovery_id": "ef9b2c88-7076-410a-9621-88a7c86dc43a"
+    },
+    "created_at": "2026-06-02T00:20:04.129977+00:00"
+  },
+  {
+    "id": "c9691e5b-59fd-4177-8c88-e287c14919c2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7e736423-a65a-4cfe-8239-08634f5a308e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "4a74c9ca-6087-4e08-bd37-0810525416e4"
+    },
+    "created_at": "2026-06-02T00:20:04.5299+00:00"
+  },
+  {
+    "id": "9569e682-283a-49a3-9928-b5ee85c868b5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7e736423-a65a-4cfe-8239-08634f5a308e",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "27785768-6d75-4f3e-9d7e-8a0af1ca14d9",
+      "conducted_by": null,
+      "discovery_id": "4a74c9ca-6087-4e08-bd37-0810525416e4"
+    },
+    "created_at": "2026-06-02T00:20:06.525025+00:00"
+  },
+  {
+    "id": "51538179-9de6-47aa-a822-28aa90007e6d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "890eba32-e120-4a9a-ad52-07edb6276531",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "c4e94cbb-5cfb-4931-8758-8223b05c6c69"
+    },
+    "created_at": "2026-06-02T00:20:07.875665+00:00"
+  },
+  {
+    "id": "03761fb3-d107-4c61-9a89-d153005b712c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "890eba32-e120-4a9a-ad52-07edb6276531",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "1227096b-c09f-4db2-ac10-4e6930fdd278",
+      "conducted_by": null,
+      "discovery_id": "c4e94cbb-5cfb-4931-8758-8223b05c6c69"
+    },
+    "created_at": "2026-06-02T00:20:09.363972+00:00"
+  },
+  {
+    "id": "7c2ae55f-2436-465f-8d94-7b4fc4f5c393",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "454484c8-581d-45ef-83e3-3915e4fc9ddf",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "4300bdc2-4474-432f-bab7-b80b906fc978"
+    },
+    "created_at": "2026-06-02T00:20:10.019758+00:00"
+  },
+  {
+    "id": "352d3ec7-f458-4849-86ec-cc6f6623ebe8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "454484c8-581d-45ef-83e3-3915e4fc9ddf",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "3fde0e86-2bce-4cb7-8e91-93d938a17fed",
+      "conducted_by": null,
+      "discovery_id": "4300bdc2-4474-432f-bab7-b80b906fc978"
+    },
+    "created_at": "2026-06-02T00:20:11.50125+00:00"
+  },
+  {
+    "id": "cd67bc10-c25e-4b9c-89e5-fec662e63166",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "3fde0e86-2bce-4cb7-8e91-93d938a17fed",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:20:12.251937+00:00"
+  },
+  {
+    "id": "9eab4248-2f5d-4db5-9b80-7b5bee1c413a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "526998f0-3d00-4250-86d4-39e7ec1c1d30",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "3c9127a8-8f64-46f9-8289-e8b6cc412d0d"
+    },
+    "created_at": "2026-06-02T00:20:12.652085+00:00"
+  },
+  {
+    "id": "5cbb7d68-29f6-4374-b641-4824966a6295",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "526998f0-3d00-4250-86d4-39e7ec1c1d30",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "39361b8a-4930-496d-9b88-e721342d2e28",
+      "conducted_by": null,
+      "discovery_id": "3c9127a8-8f64-46f9-8289-e8b6cc412d0d"
+    },
+    "created_at": "2026-06-02T00:20:14.098546+00:00"
+  },
+  {
+    "id": "53bf037c-6ce3-4415-85d8-ba7733baff7e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "39361b8a-4930-496d-9b88-e721342d2e28",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:20:14.766872+00:00"
+  },
+  {
+    "id": "9f151d88-3d48-4504-9122-6b5200d2a693",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "cbb47ee1-4172-49db-87f3-297e6cce3a1f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "1e78bc3e-ebf6-4bc0-ab55-5009f0656893"
+    },
+    "created_at": "2026-06-02T00:20:15.452973+00:00"
+  },
+  {
+    "id": "b35b2949-7af1-4313-a8c3-e5a4aae244af",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "cbb47ee1-4172-49db-87f3-297e6cce3a1f",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "39fa415f-5a4a-49eb-9091-cc76a052ba25",
+      "conducted_by": null,
+      "discovery_id": "1e78bc3e-ebf6-4bc0-ab55-5009f0656893"
+    },
+    "created_at": "2026-06-02T00:20:16.935362+00:00"
+  },
+  {
+    "id": "3a980d85-e04d-48e4-9516-7af24f7f5a31",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "39fa415f-5a4a-49eb-9091-cc76a052ba25",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:20:17.613537+00:00"
+  },
+  {
+    "id": "9e3954b6-de2a-44bb-ba83-b87c04525e9b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a165942c-9e45-42b2-ad88-011540b9e7d3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "01ad8866-a2c1-42f6-af8b-310e25e23e6f"
+    },
+    "created_at": "2026-06-02T00:20:18.13875+00:00"
+  },
+  {
+    "id": "3686e6d5-3519-4c53-93bb-82bc434c4617",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a165942c-9e45-42b2-ad88-011540b9e7d3",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "e72554d2-3ec9-4fad-907e-64fb3bee993e",
+      "conducted_by": null,
+      "discovery_id": "01ad8866-a2c1-42f6-af8b-310e25e23e6f"
+    },
+    "created_at": "2026-06-02T00:20:19.603572+00:00"
+  },
+  {
+    "id": "8637684d-6966-4c16-af39-863daf1d39f0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "e72554d2-3ec9-4fad-907e-64fb3bee993e",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:20:20.255465+00:00"
+  },
+  {
+    "id": "ede09c9c-ef2c-49b7-ba7a-f3289ee28887",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "e72554d2-3ec9-4fad-907e-64fb3bee993e",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-02T00:20:21.09136+00:00"
+  },
+  {
+    "id": "ab8eee82-09b2-4ebb-b6a2-ef8daceae815",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "75fe3878-d0a3-4131-b263-c10ce4c71db2",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "c5bced3f-d91b-472c-beff-ebc704785309"
+    },
+    "created_at": "2026-06-02T00:23:09.402898+00:00"
+  },
+  {
+    "id": "806e8663-7258-4fd0-9345-ec1091290944",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7c2b6ca8-92d0-4f87-ba9e-17034ed3142b",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "ed547973-8047-4d62-abb1-d7fdbb8f64c7"
+    },
+    "created_at": "2026-06-02T00:26:51.068321+00:00"
+  },
+  {
+    "id": "c219bd53-9c53-431f-870b-de06e751bf2f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6a97dd30-3724-486e-9fab-7910ace0fb0b",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "9a2ec571-ec07-4ddd-8bbf-bf02445a7591"
+    },
+    "created_at": "2026-06-02T00:26:51.738398+00:00"
+  },
+  {
+    "id": "f796391f-67e8-4033-a5de-0742f6cff1ef",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0a69533d-dcb4-487b-8be0-12aae1e1941d",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "bf71f93a-d01c-472d-89de-78b54ad6dac4",
+      "conducted_by": null,
+      "discovery_id": "d6e1cc86-1c8d-4aac-abc2-d8bf6d1dbe8a"
+    },
+    "created_at": "2026-06-02T00:27:02.308529+00:00"
+  },
+  {
+    "id": "9fe14620-9205-4c57-ba96-b98949b5f64b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "10434a90-07d7-4301-b451-8658c4a559a1",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "33f16f36-53a5-4a22-8f6a-1cc4256d4c51"
+    },
+    "created_at": "2026-06-02T00:27:02.691897+00:00"
+  },
+  {
+    "id": "d715c4c2-585f-4acb-8aa6-41d73eab82f4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5161b505-579c-4688-b61a-45f889691da3",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "88984cac-d61b-4533-952b-c6218c8fcd6e",
+      "conducted_by": null,
+      "discovery_id": "3dff6f73-6baf-4da4-b732-a5fb86c2adb0"
+    },
+    "created_at": "2026-06-02T00:27:09.336164+00:00"
+  },
+  {
+    "id": "eafaf4d1-10f2-4143-ae17-39ac7ec5cdd7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "customer.reverted",
+    "metadata_json": {
+      "reason": "Test revert con motivazione valida",
+      "account_id": "08f66766-f39d-4a83-9213-d9bc76fe15d0",
+      "conducted_by": null,
+      "reverted_from": "customer"
+    },
+    "created_at": "2026-06-02T00:27:18.636977+00:00"
+  },
+  {
+    "id": "a7ac7e79-d0ef-4c9a-9c94-4c215dd3960a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "10434a90-07d7-4301-b451-8658c4a559a1",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": false,
+      "account_id": "8691007c-b8cb-402d-b331-c8af9f39bd1c",
+      "conducted_by": null,
+      "discovery_id": "33f16f36-53a5-4a22-8f6a-1cc4256d4c51"
+    },
+    "created_at": "2026-06-02T00:27:04.582159+00:00"
+  },
+  {
+    "id": "ed198e3d-6d68-4b09-b554-a4a4e4fd4a0f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a88133f0-3d8c-4eac-a90b-7ba645a1fe85",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "131c0ac0-b6a0-46f1-996e-bd792582dee8",
+      "conducted_by": null,
+      "discovery_id": "f87b1719-bf04-46cd-82da-f54401b39135"
+    },
+    "created_at": "2026-06-02T00:27:07.286602+00:00"
+  },
+  {
+    "id": "d920894c-2700-4aad-938b-037e6fd6c529",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": "2026-06-01",
+      "account_id": "88984cac-d61b-4533-952b-c6218c8fcd6e",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:27:09.970186+00:00"
+  },
+  {
+    "id": "c19969e0-ab11-4c2b-b938-117170cd301c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9ee70446-307a-4483-9a48-aa073db9f262",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "8aacaffb-6312-487d-ad4f-1d57dde7ef4d",
+      "conducted_by": null,
+      "discovery_id": "fcde0d5f-9de2-4b59-880d-139067fec65c"
+    },
+    "created_at": "2026-06-02T00:27:11.990415+00:00"
+  },
+  {
+    "id": "93275cb0-699d-452f-93d8-4d07b81e89f5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "96144480-da61-42bc-9dc2-403e5fd26135",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "d4ccb83d-46f9-4756-89e5-777fb620a625",
+      "conducted_by": null,
+      "discovery_id": "58e63687-4978-472a-a049-4c1c34442ef5"
+    },
+    "created_at": "2026-06-02T00:27:14.711543+00:00"
+  },
+  {
+    "id": "305eef31-e6d0-492d-a1f4-82ba522ff147",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a88133f0-3d8c-4eac-a90b-7ba645a1fe85",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "f87b1719-bf04-46cd-82da-f54401b39135"
+    },
+    "created_at": "2026-06-02T00:27:05.875324+00:00"
+  },
+  {
+    "id": "60e25bab-4ba0-45ca-873f-754869dc287f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9ee70446-307a-4483-9a48-aa073db9f262",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "fcde0d5f-9de2-4b59-880d-139067fec65c"
+    },
+    "created_at": "2026-06-02T00:27:10.355321+00:00"
+  },
+  {
+    "id": "37be371d-d28f-4849-8040-62aedc4c71d5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "96144480-da61-42bc-9dc2-403e5fd26135",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "58e63687-4978-472a-a049-4c1c34442ef5"
+    },
+    "created_at": "2026-06-02T00:27:13.321063+00:00"
+  },
+  {
+    "id": "c335241b-167f-46f6-8b11-3c2e30d831c8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d1bd2a68-9a30-4bb2-9bf9-e319984282ed",
+    "project_id": null,
+    "stage": "prospect",
+    "event_name": "discovery.qualified",
+    "metadata_json": {
+      "force": true,
+      "account_id": "08f66766-f39d-4a83-9213-d9bc76fe15d0",
+      "conducted_by": null,
+      "discovery_id": "8c6367dd-5274-462b-84b3-66d8a27c9614"
+    },
+    "created_at": "2026-06-02T00:27:17.246341+00:00"
+  },
+  {
+    "id": "68c328a4-f770-475f-9542-6d40ad17614f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5161b505-579c-4688-b61a-45f889691da3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "3dff6f73-6baf-4da4-b732-a5fb86c2adb0"
+    },
+    "created_at": "2026-06-02T00:27:07.91373+00:00"
+  },
+  {
+    "id": "940bfbf0-8291-4116-9325-b2f262c755f8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "8aacaffb-6312-487d-ad4f-1d57dde7ef4d",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:27:12.679603+00:00"
+  },
+  {
+    "id": "6534c11c-0168-489b-af17-718c888fc956",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "d4ccb83d-46f9-4756-89e5-777fb620a625",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:27:15.339369+00:00"
+  },
+  {
+    "id": "36263f39-ecd8-4d8b-b041-f55cb4bad582",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d1bd2a68-9a30-4bb2-9bf9-e319984282ed",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "8c6367dd-5274-462b-84b3-66d8a27c9614"
+    },
+    "created_at": "2026-06-02T00:27:15.851124+00:00"
+  },
+  {
+    "id": "f2fe67b0-b7b1-4f0c-ab51-0738b5665956",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "project_id": null,
+    "stage": "customer",
+    "event_name": "customer.confirmed",
+    "metadata_json": {
+      "signed_at": null,
+      "account_id": "08f66766-f39d-4a83-9213-d9bc76fe15d0",
+      "proposal_id": null,
+      "conducted_by": null,
+      "admin_override": true,
+      "proposal_status": null
+    },
+    "created_at": "2026-06-02T00:27:17.876263+00:00"
+  },
+  {
+    "id": "d8111263-83ce-4656-941d-293d9ccd1587",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1f428801-5ae6-41b2-a242-e8ca35172a6a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "bb8ee381-58f8-4b76-9255-b9fd2020bc0f",
+      "project_id": "930b31dc-1e1f-46c7-97d8-515ead998a52",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-06T15:40:08.952367+00:00"
+  },
+  {
+    "id": "5ee17933-c5ce-419f-b466-b0a0a814109d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1f428801-5ae6-41b2-a242-e8ca35172a6a",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "bb8ee381-58f8-4b76-9255-b9fd2020bc0f"
+    },
+    "created_at": "2026-06-06T15:40:08.952367+00:00"
+  },
+  {
+    "id": "7dcf88f7-2896-4549-942b-d2b1e0f39bc8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "318f4bda-2d3a-48ac-b59e-149ea7b7ae18",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "f493e691-f42b-4902-a73e-09721d9ef1ac"
+    },
+    "created_at": "2026-06-08T04:00:40.457575+00:00"
+  },
+  {
+    "id": "10d1ac24-10ca-48bf-b1bb-878904e51f88",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "316e5cfa-2481-4c3d-a293-bcad432f966f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+      "project_id": "346aee7c-22d6-4998-8de8-3bf2dbd62389",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-09T01:16:52.137579+00:00"
+  },
+  {
+    "id": "abeebabe-d7fd-40e5-acc0-46679b4ec341",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "316e5cfa-2481-4c3d-a293-bcad432f966f",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225"
+    },
+    "created_at": "2026-06-09T01:16:52.137579+00:00"
+  },
+  {
+    "id": "2a73ff50-4ba1-4740-8eb8-f29a23e78d8d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76134b1e-a0de-42b6-aa28-dd370362772e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "36454936-c516-4057-afee-d4de6f74cebe",
+      "project_id": "ffbbda65-601f-4c98-b50f-1f353b6716c5",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T01:40:34.385525+00:00"
+  },
+  {
+    "id": "4183dbbc-a122-491b-83a6-51974c767947",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76134b1e-a0de-42b6-aa28-dd370362772e",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "36454936-c516-4057-afee-d4de6f74cebe"
+    },
+    "created_at": "2026-06-10T01:40:34.385525+00:00"
+  },
+  {
+    "id": "b97f74e5-78a7-499d-b237-4467b37d85df",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d4858b6f-5fdb-43f9-9e5b-577ea9eb9ce0",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622",
+      "project_id": "dd14c534-2a9c-4d93-b79a-e3ddcb43a840",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T01:40:59.796939+00:00"
+  },
+  {
+    "id": "7c6661d0-e40d-45ea-ad3d-ec12207399e2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d4858b6f-5fdb-43f9-9e5b-577ea9eb9ce0",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622"
+    },
+    "created_at": "2026-06-10T01:40:59.796939+00:00"
+  },
+  {
+    "id": "15c975a8-5b1f-4eee-a1f3-ad6d186b336c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35f99f86-e60b-467e-b234-dbe714600f7e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+      "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T01:41:31.38494+00:00"
+  },
+  {
+    "id": "0c9fd50f-a425-4827-b638-410af90f3402",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35f99f86-e60b-467e-b234-dbe714600f7e",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff"
+    },
+    "created_at": "2026-06-10T01:41:31.38494+00:00"
+  },
+  {
+    "id": "6bfe369b-8fae-4c54-a8a0-17809ebfab00",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f918f259-aa01-440a-935e-2a3ab6c46bb8",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+      "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T01:52:33.011695+00:00"
+  },
+  {
+    "id": "3f23743e-449f-464b-a18e-425988de5a97",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f918f259-aa01-440a-935e-2a3ab6c46bb8",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02"
+    },
+    "created_at": "2026-06-10T01:52:33.011695+00:00"
+  },
+  {
+    "id": "f33861e5-8bbc-4714-845f-bad526115c77",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2da08001-5433-45be-8bac-829a9056f985",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "a94d29ed-a3cb-461d-b417-372d2a2aa182"
+    },
+    "created_at": "2026-06-10T15:32:04.118369+00:00"
+  },
+  {
+    "id": "ca07114f-ca88-48d9-a10d-f74b3850e9a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1eee8dfa-5d93-4a49-821f-cefd030e253e",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "0b60c4f7-ebb9-4617-85ab-7a542c5f8d53"
+    },
+    "created_at": "2026-06-10T15:32:24.285339+00:00"
+  },
+  {
+    "id": "97e5b016-7fea-4c59-9732-70821ef8be70",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "da9b787b-d2c0-4140-a05c-bcd2e30a7a3f",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "58760737-9273-418c-a386-32f766e8e364"
+    },
+    "created_at": "2026-06-10T15:32:25.059843+00:00"
+  },
+  {
+    "id": "0ee9f5ff-42c9-46e1-bb3c-c978aaaf0dd0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "e920080e-f910-4d43-947f-ae8d280a23e7",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "referral",
+      "discovery_id": "3f52e023-af8f-49a6-b8aa-f233e9b35771"
+    },
+    "created_at": "2026-06-10T15:32:25.713779+00:00"
+  },
+  {
+    "id": "75ce6493-660e-42f9-a62e-4e2158d0b83d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "850a61e7-3183-4e57-8d79-50baee03f627",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "showroom",
+      "discovery_id": "64edf800-b512-463a-b5af-e451935e5b2f"
+    },
+    "created_at": "2026-06-10T15:33:43.725052+00:00"
+  },
+  {
+    "id": "a4a97813-4c11-4660-aa36-ba9006c1034d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7a92ba47-11a8-4fe4-8ab9-b3dfbeca9868",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "fast_capture.created",
+    "metadata_json": {
+      "source": "phone",
+      "discovery_id": "943a9d5f-e691-4503-9173-1b3cc8f3e6ec"
+    },
+    "created_at": "2026-06-10T15:33:44.598516+00:00"
+  },
+  {
+    "id": "93deacff-0749-4a8b-be0b-a17a85d22d30",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "75cc0076-275e-4e66-9efa-9e59f591dc91",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895",
+      "project_id": "b3128504-4bbd-4f2f-ab79-d75fff011273",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:01:59.229533+00:00"
+  },
+  {
+    "id": "f380a7b0-d524-49b2-9864-b99a35fa700a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "75cc0076-275e-4e66-9efa-9e59f591dc91",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895"
+    },
+    "created_at": "2026-06-10T16:01:59.229533+00:00"
+  },
+  {
+    "id": "4f6c7c8a-58e0-4afc-a27b-6e73c9a4c1eb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d95b9d75-0e6e-4789-b962-e65999a4b9c9",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1",
+      "project_id": "750cd569-260c-43b5-88a3-07b6bfb9cb3c",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:02:19.07489+00:00"
+  },
+  {
+    "id": "3ede1b2a-495c-4652-997f-cb234184b19e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d95b9d75-0e6e-4789-b962-e65999a4b9c9",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1"
+    },
+    "created_at": "2026-06-10T16:02:19.07489+00:00"
+  },
+  {
+    "id": "a757b46f-8f17-4b6c-9149-dbde459149f8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "92160c42-02fb-402c-a94b-a9d20d363046",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3",
+      "project_id": "4b32c9ba-2ea9-44fd-aaa1-176a840b4dae",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:02:27.343114+00:00"
+  },
+  {
+    "id": "2a30ee0e-a88a-48ed-84db-79d20750cdc8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "92160c42-02fb-402c-a94b-a9d20d363046",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3"
+    },
+    "created_at": "2026-06-10T16:02:27.343114+00:00"
+  },
+  {
+    "id": "8dadeb90-a116-4cb3-955a-12adac759814",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "38c9b537-d6f9-4c82-9669-8e2fc11e6bf3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727",
+      "project_id": "13897bdf-301e-4e20-a1ab-488eb4faf68c",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:06:07.22894+00:00"
+  },
+  {
+    "id": "b7af1016-369c-4752-9778-3cd0ec2d793c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "38c9b537-d6f9-4c82-9669-8e2fc11e6bf3",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727"
+    },
+    "created_at": "2026-06-10T16:06:07.22894+00:00"
+  },
+  {
+    "id": "f7cafc1e-638b-40d2-a32f-abc209c079f0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1673edb2-2a56-4320-ba2c-66a5a178e657",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41",
+      "project_id": "fa886612-4cd2-4817-bf2d-9aa25b289e3b",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:06:27.960713+00:00"
+  },
+  {
+    "id": "e1cbcea3-a811-49f8-af1f-38449741a18d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1673edb2-2a56-4320-ba2c-66a5a178e657",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41"
+    },
+    "created_at": "2026-06-10T16:06:27.960713+00:00"
+  },
+  {
+    "id": "1f36e3e9-20a6-4bee-90e5-3e9727165e52",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6e4acde8-9a99-406a-b722-faba1fc79bbc",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c",
+      "project_id": "7ee7f3f7-d5b5-4564-a473-e5e7e96320a9",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:06:35.193724+00:00"
+  },
+  {
+    "id": "198dac8c-56b9-4e76-8365-4bbe28d69231",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "28d2aab2-2eed-4960-a1a3-717cd6e16635",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79",
+      "project_id": "bd89921b-0dda-4e92-889e-b54e41adf9a2",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-06-10T16:06:59.951812+00:00"
+  },
+  {
+    "id": "942ac415-c13a-4aa9-9cca-17dcfa6b4cad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6e4acde8-9a99-406a-b722-faba1fc79bbc",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c"
+    },
+    "created_at": "2026-06-10T16:06:35.193724+00:00"
+  },
+  {
+    "id": "e5109852-4404-449d-9730-131c9fe7a58e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "28d2aab2-2eed-4960-a1a3-717cd6e16635",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79"
+    },
+    "created_at": "2026-06-10T16:06:59.951812+00:00"
+  }
+]

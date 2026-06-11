@@ -1,0 +1,23 @@
+{
+  "timestamp": "20260611_020916",
+  "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+  "tables": {
+    "leads": 127,
+    "funnel_events": 217,
+    "discovery_interviews": 128,
+    "accounts": 65,
+    "contacts": 15,
+    "projects": 20,
+    "design_journeys": 16,
+    "journey_milestones": 132,
+    "journey_timeline_events": 99,
+    "journey_briefs": 14,
+    "milestone_versions": 13,
+    "moodboards": 58,
+    "moodboard_pages": 72,
+    "moodboard_elements": 909,
+    "relationship_threads": 14,
+    "relationship_messages": 13,
+    "human_assignments": 10
+  }
+}

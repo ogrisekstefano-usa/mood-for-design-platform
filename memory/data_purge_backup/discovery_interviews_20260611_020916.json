@@ -1,0 +1,2612 @@
+[
+  {
+    "id": "fb746352-96e2-450a-9756-8394b0c730a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "321e4289-b27f-467e-be61-3594f83f117a",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:55:02.776524+00:00",
+    "conducted_by": null,
+    "notes": "Cliente interessato a ristrutturazione completa, segue il nostro stile cinematic. Budget chiaro.",
+    "qualification_signals": {
+      "budget": "50k-100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "eef8e879-17c8-4d91-86f9-14060c2949da"
+    },
+    "created_at": "2026-06-01T16:54:24.083186+00:00",
+    "updated_at": "2026-06-01T16:55:02.847816+00:00"
+  },
+  {
+    "id": "34cd8b13-dad7-43ba-9877-b606d0a7eb5a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "66961292-a009-46ac-a49d-7fbd82f7dda6",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:36.79952+00:00",
+    "updated_at": "2026-06-01T16:56:36.79952+00:00"
+  },
+  {
+    "id": "e6d4690a-4f15-4704-b788-c5c01c1a6237",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5e790119-abb3-403b-84ed-2961448c4aa3",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:37.532142+00:00",
+    "updated_at": "2026-06-01T16:56:37.532142+00:00"
+  },
+  {
+    "id": "929bd4cf-95c1-4086-b13c-7a5bc01e86eb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0f3ba717-3eac-4e8f-8217-cefb53f3e022",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:38.90238+00:00",
+    "updated_at": "2026-06-01T16:56:38.90238+00:00"
+  },
+  {
+    "id": "23e466ff-36e6-4b25-a55f-a08c9d9fd382",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bda13b0d-faeb-4103-833c-1ba2838cb978",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:39.576617+00:00",
+    "updated_at": "2026-06-01T16:56:39.576617+00:00"
+  },
+  {
+    "id": "88290387-def1-44d4-92b5-629add35c514",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bd323597-2e3f-44ac-bc6b-4ca4a6f4ca8c",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:40.489195+00:00",
+    "updated_at": "2026-06-01T16:56:40.489195+00:00"
+  },
+  {
+    "id": "a5349eb4-1371-4d90-93f6-d2fce42b168b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "71b998c6-049c-4182-a0ce-03ab4dad1167",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:41.023361+00:00",
+    "updated_at": "2026-06-01T16:56:41.023361+00:00"
+  },
+  {
+    "id": "006561b4-5f09-4736-8281-a0dc852b3a3c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8ee584b9-dae9-4773-9d44-925e1e49e36e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:42.07629+00:00",
+    "updated_at": "2026-06-01T16:56:42.934277+00:00"
+  },
+  {
+    "id": "6cd7b145-8600-48d7-a226-616fae646391",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "78013d63-87fb-4be8-9bd7-03832d7f9d5a",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:43.644581+00:00",
+    "updated_at": "2026-06-01T16:56:44.509835+00:00"
+  },
+  {
+    "id": "d30902c6-8aad-4009-a10b-052e6b2d9dad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1de27141-be43-455f-b404-ca31b8d2655d",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:56:45.23191+00:00",
+    "updated_at": "2026-06-01T16:56:45.23191+00:00"
+  },
+  {
+    "id": "1d75089f-6254-4118-ba69-e1e273dadf05",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c4814f5-5210-401d-a780-3ecdea3868bc",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:47.444008+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "d6d96231-2097-4879-bf34-c0bccf0e1184"
+    },
+    "created_at": "2026-06-01T16:56:46.272673+00:00",
+    "updated_at": "2026-06-01T16:56:47.513725+00:00"
+  },
+  {
+    "id": "80ab1416-4e98-45ee-bc03-603f9ab0986c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a619298-1583-4d19-90dd-0271041faf50",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:49.786736+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "bb2b7418-d461-4170-a405-e0c1def464d5"
+    },
+    "created_at": "2026-06-01T16:56:48.101041+00:00",
+    "updated_at": "2026-06-01T16:56:49.854748+00:00"
+  },
+  {
+    "id": "016527f5-e111-46b5-9895-e55b71cbf5ed",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5cbc9aa9-5083-411a-8e39-084e47bbff30",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:52.571197+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "459eda22-9d14-45a9-bbd5-58390f2f8858"
+    },
+    "created_at": "2026-06-01T16:56:51.412793+00:00",
+    "updated_at": "2026-06-01T16:56:52.639354+00:00"
+  },
+  {
+    "id": "7065bf04-6ac4-400c-a215-7f0ab43086e5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8a231b29-f625-407f-b4fe-4a1ea6d8ea61",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:54.691429+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "0af061fd-ff46-465b-8480-e465bfd10cab"
+    },
+    "created_at": "2026-06-01T16:56:53.499726+00:00",
+    "updated_at": "2026-06-01T16:56:54.761196+00:00"
+  },
+  {
+    "id": "baaaf42a-f799-43c0-871d-8677669be0c7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "068a45ca-1785-435a-9b70-5f0e3ecd9bcd",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:57.18391+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "bcd3c015-f6fa-4dbe-a91f-7fd93414ff52"
+    },
+    "created_at": "2026-06-01T16:56:55.990982+00:00",
+    "updated_at": "2026-06-01T16:56:57.25394+00:00"
+  },
+  {
+    "id": "2baad740-ce02-4c6c-ab61-48187367a39a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "acac460d-42ab-44a5-b2f4-9f04a3624a74",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:56:59.920838+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "051bf61f-6ca9-41e2-bdd2-b449bd5f95eb"
+    },
+    "created_at": "2026-06-01T16:56:58.755362+00:00",
+    "updated_at": "2026-06-01T16:56:59.990096+00:00"
+  },
+  {
+    "id": "096c3b7e-5057-4422-a751-e1e1ed9685cb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c1c7d064-2b68-4f15-8627-50f1fc91c56b",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:57:02.529588+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "5fe07491-4fbb-46f8-b974-7c1f9c4a8660"
+    },
+    "created_at": "2026-06-01T16:57:01.365677+00:00",
+    "updated_at": "2026-06-01T16:57:02.599781+00:00"
+  },
+  {
+    "id": "b02bcf6b-febb-402a-8d9d-69775bfffc23",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2790756b-70bc-42d4-96a8-a0d23077b1b1",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T16:57:24.90596+00:00",
+    "updated_at": "2026-06-01T16:57:24.90596+00:00"
+  },
+  {
+    "id": "d1102c8d-1ce6-4d16-b760-b7e87f16d42d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8bded62b-cefa-4518-b177-8a63fd2032e8",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:57:27.061492+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "a2f8b999-2ce6-4899-952b-159e633a8ea6"
+    },
+    "created_at": "2026-06-01T16:57:25.922056+00:00",
+    "updated_at": "2026-06-01T16:57:27.134971+00:00"
+  },
+  {
+    "id": "d935e243-38ef-43e6-a450-369a41955533",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "345c4b3b-1f3e-4846-8e7c-3a2374851d1f",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T16:57:29.361087+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "54590461-366b-4178-bb2c-9aadac171030"
+    },
+    "created_at": "2026-06-01T16:57:27.700105+00:00",
+    "updated_at": "2026-06-01T16:57:29.42898+00:00"
+  },
+  {
+    "id": "d433573e-1e47-4a40-b155-defffa2336cf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d3c2dd8b-112c-46e0-91cf-63e505fcd9e5",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:14.419613+00:00",
+    "updated_at": "2026-06-01T17:07:14.419613+00:00"
+  },
+  {
+    "id": "1948676a-0382-48b4-88b5-04274125ad29",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9971ce50-f2c1-45fd-8fe1-5ad287084105",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:15.152102+00:00",
+    "updated_at": "2026-06-01T17:07:15.152102+00:00"
+  },
+  {
+    "id": "d3060887-b4e5-4d7b-be7e-5553859c990b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a85571ab-566a-44fc-a231-c878da8d65ef",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:16.457641+00:00",
+    "updated_at": "2026-06-01T17:07:16.457641+00:00"
+  },
+  {
+    "id": "25499c3a-1de8-4596-8816-715738a3f0ad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f33b9bb4-c212-4713-a47c-7b485d0dd606",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:17.103172+00:00",
+    "updated_at": "2026-06-01T17:07:17.103172+00:00"
+  },
+  {
+    "id": "b1bfeed0-2e7f-4e1f-bba2-5148a404f7c7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "fb775030-29d8-44a7-bdaf-a1ad77ac95ee",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:18.002381+00:00",
+    "updated_at": "2026-06-01T17:07:18.002381+00:00"
+  },
+  {
+    "id": "34a961e9-bfa7-4e41-82c7-9532ae85ba55",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c6e986cd-af41-4a65-a381-010d5605d338",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:18.519152+00:00",
+    "updated_at": "2026-06-01T17:07:18.519152+00:00"
+  },
+  {
+    "id": "dab5c64e-1d36-459e-9072-d0c64df7178a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7a0af572-4b6f-4717-a369-0e1ee9445d8b",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:19.556303+00:00",
+    "updated_at": "2026-06-01T17:07:20.391598+00:00"
+  },
+  {
+    "id": "6972f58c-80aa-429a-be54-1dcbedbb8545",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0b5e79d8-ca98-41cd-98e1-bc034e1bc676",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:21.091153+00:00",
+    "updated_at": "2026-06-01T17:07:21.915358+00:00"
+  },
+  {
+    "id": "5dc2de11-c2da-46eb-99bc-77c9f0945b98",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b969c226-558e-4e4c-a50b-4efac1a26106",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:07:22.620974+00:00",
+    "updated_at": "2026-06-01T17:07:22.620974+00:00"
+  },
+  {
+    "id": "b2974b7f-c401-4d3d-a999-dad0e912afc9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "69593f20-7f05-4fd7-a4c2-528517ed3422",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:24.80309+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "0d2d63a8-c05f-4060-b3a4-78cc89fcd0ac"
+    },
+    "created_at": "2026-06-01T17:07:23.638093+00:00",
+    "updated_at": "2026-06-01T17:07:24.87075+00:00"
+  },
+  {
+    "id": "48c54808-7b1b-4ffc-a465-d1ee6d443498",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3fab91e4-1eee-46a7-b91a-422182ae0a5f",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:29.813305+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "5fff0cc4-403c-42da-9ae6-ec616226134c"
+    },
+    "created_at": "2026-06-01T17:07:28.65334+00:00",
+    "updated_at": "2026-06-01T17:07:29.879733+00:00"
+  },
+  {
+    "id": "0d14837b-d760-4309-b36b-fa9c8c3e8f8b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af71aa02-15bb-4419-a3d8-eb083a573ecb",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:27.105233+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "dbaec544-bd50-40fd-9f2b-0aac69353d50"
+    },
+    "created_at": "2026-06-01T17:07:25.444775+00:00",
+    "updated_at": "2026-06-01T17:07:27.170647+00:00"
+  },
+  {
+    "id": "41a2c1c7-9187-4eb2-834e-deef7c6dd9ac",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8ca9218a-be02-42e8-abf5-fea656a8b9a3",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:31.873967+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "c8530cbc-978e-4f32-a27e-4f9841b571d8"
+    },
+    "created_at": "2026-06-01T17:07:30.710542+00:00",
+    "updated_at": "2026-06-01T17:07:31.939622+00:00"
+  },
+  {
+    "id": "c0cff4e7-f5c3-423e-b5be-2f4e8e90c85f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b6df984d-979a-4751-93c2-dbfeb531ff4f",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:34.303947+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "d254f4f6-e7a4-42d7-870c-4d1437cc61cd"
+    },
+    "created_at": "2026-06-01T17:07:33.150098+00:00",
+    "updated_at": "2026-06-01T17:07:34.370407+00:00"
+  },
+  {
+    "id": "16f7db11-48a5-4ce8-b521-ea2df79d1f11",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "97aa243f-25dc-432b-998f-b23770c0fe3f",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:36.988898+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "61ff15ee-3c3c-4181-a09f-c267fa7cbc28"
+    },
+    "created_at": "2026-06-01T17:07:35.834373+00:00",
+    "updated_at": "2026-06-01T17:07:37.054838+00:00"
+  },
+  {
+    "id": "b4df3226-32c9-4d32-adaf-a44653d673e0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "40859eb5-694a-43cc-a30e-f1e62ba76c06",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:07:39.536403+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "8a4cb6be-216f-4cd0-9cdb-16e583da6a56"
+    },
+    "created_at": "2026-06-01T17:07:38.388097+00:00",
+    "updated_at": "2026-06-01T17:07:39.602825+00:00"
+  },
+  {
+    "id": "440a802c-07aa-4bc9-a6bf-d5457517c934",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2c46d853-024e-4eb1-bfb2-68c5035b9512",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:22:03.456985+00:00",
+    "updated_at": "2026-06-01T17:22:03.456985+00:00"
+  },
+  {
+    "id": "acda2754-6df9-409d-a9b7-177880108915",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "92d4acee-e17c-4614-a51c-48108a62f205",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:24:15.404242+00:00",
+    "updated_at": "2026-06-01T17:24:15.404242+00:00"
+  },
+  {
+    "id": "0b400007-5460-4301-8d30-5e763dbf0c88",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c7a3da30-6af1-451a-ab3e-f70cdf68112e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:30:50.954849+00:00",
+    "updated_at": "2026-06-01T17:30:50.954849+00:00"
+  },
+  {
+    "id": "0627cfb8-97a2-48a5-8dd6-109be82f01ba",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6ec594e9-301b-4a90-93b4-6b345d0f1d8c",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:31:01.07051+00:00",
+    "updated_at": "2026-06-01T17:31:01.07051+00:00"
+  },
+  {
+    "id": "42cee924-ca3c-4fdc-a616-d509ad72f9ce",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "38bc7de3-07d9-4361-bceb-c15b3c60c7af",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:44.900476+00:00",
+    "updated_at": "2026-06-01T17:37:44.900476+00:00"
+  },
+  {
+    "id": "527773c6-1284-4108-bb86-7845ead8e9fd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "dea72cb7-9fda-4f8c-ac0c-18cf6aea0eaf",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:45.66204+00:00",
+    "updated_at": "2026-06-01T17:37:45.66204+00:00"
+  },
+  {
+    "id": "e80b1399-536e-45fa-866a-384838ca2d82",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0e3fabe0-26f5-4f1f-be8b-4881a36fa5ef",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:47.577122+00:00",
+    "updated_at": "2026-06-01T17:37:47.577122+00:00"
+  },
+  {
+    "id": "1a1fce0d-26ae-4c59-94d3-ccc8ea6d4502",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "fd9f3e0c-09a7-4b4d-a287-a0e4aed7d9b3",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:48.24082+00:00",
+    "updated_at": "2026-06-01T17:37:48.24082+00:00"
+  },
+  {
+    "id": "a4d637e6-48a0-4618-b879-c553abab6db0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7260cf33-baaf-48a2-8792-20fe9a31edba",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:49.151276+00:00",
+    "updated_at": "2026-06-01T17:37:49.151276+00:00"
+  },
+  {
+    "id": "c162ae77-89df-4eaf-84b6-0d0349a8e973",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5a466b0c-c962-4302-8f95-d7eb7bcd8356",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:49.67948+00:00",
+    "updated_at": "2026-06-01T17:37:49.67948+00:00"
+  },
+  {
+    "id": "0c0cd202-54b3-4159-87e0-2ab3fbe8667a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "73705d09-f6a0-4bfd-9a29-6cf47e6f3d6c",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:50.754889+00:00",
+    "updated_at": "2026-06-01T17:37:51.601225+00:00"
+  },
+  {
+    "id": "2d166aca-6e36-4cce-ad3a-c3350dd1d6d1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3346fd2e-d9c4-470b-be18-b006d8876a77",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:52.317778+00:00",
+    "updated_at": "2026-06-01T17:37:53.174158+00:00"
+  },
+  {
+    "id": "16f33e3f-5cda-4947-b75d-aa9e5f3fa379",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c314463d-e314-4d00-996b-90eb707cebc6",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-01T17:37:53.881472+00:00",
+    "updated_at": "2026-06-01T17:37:53.881472+00:00"
+  },
+  {
+    "id": "6185ef2a-5852-4aa3-9db9-229f34695fc2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "053bbd4f-2379-449f-b291-988c242b3b79",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:37:56.149072+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "e19371d7-1c50-4f64-99eb-7b150a166f5e"
+    },
+    "created_at": "2026-06-01T17:37:54.964144+00:00",
+    "updated_at": "2026-06-01T17:37:56.21912+00:00"
+  },
+  {
+    "id": "da345f70-dc42-4806-98ca-abca01fd77b0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "170d739f-b8f5-4501-bdf6-9912b5733e25",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:37:58.517241+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "72713cff-6c4c-4f4f-ba73-984adc45641b"
+    },
+    "created_at": "2026-06-01T17:37:56.815925+00:00",
+    "updated_at": "2026-06-01T17:37:58.585026+00:00"
+  },
+  {
+    "id": "e09757a0-3aad-4378-a53b-2ac2cc2d4eef",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "19eabfe7-f3a0-4c99-a258-8d2daa3a5811",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:38:01.320184+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "5f052eb8-571b-4cc4-bb06-a97b4d23f314"
+    },
+    "created_at": "2026-06-01T17:38:00.110684+00:00",
+    "updated_at": "2026-06-01T17:38:01.392883+00:00"
+  },
+  {
+    "id": "0ad614af-5ace-409b-969a-58e68f8b188a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "13694ea0-34a1-4727-a368-7b40301f232c",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:38:03.551006+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "cb3e5757-6ada-4f41-983e-6cddca8cae3a"
+    },
+    "created_at": "2026-06-01T17:38:02.230846+00:00",
+    "updated_at": "2026-06-01T17:38:03.62044+00:00"
+  },
+  {
+    "id": "012d776d-91b8-4b9b-97d9-73c0e33564a5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "4dcd728f-d56c-4604-bc17-6e6ca30a96ed",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:38:06.030887+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "238d8269-dc72-4699-960b-fd1721e9512a"
+    },
+    "created_at": "2026-06-01T17:38:04.860077+00:00",
+    "updated_at": "2026-06-01T17:38:06.098053+00:00"
+  },
+  {
+    "id": "1b4b13fe-0b7a-4892-8be0-cbedb60fb436",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c7d87c5-3374-4d10-9976-65278fa4a396",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:38:08.859208+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "60a1dc4d-14bb-42a0-b27e-3678695de55b"
+    },
+    "created_at": "2026-06-01T17:38:07.613937+00:00",
+    "updated_at": "2026-06-01T17:38:08.932825+00:00"
+  },
+  {
+    "id": "812690e0-ef48-4179-b624-ce087c8918cc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f6a060ce-80fe-4b5f-9295-0f120684d88c",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-01T17:38:11.776615+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "c8113943-f68f-4716-a8d5-f5b23fe2f9cf"
+    },
+    "created_at": "2026-06-01T17:38:10.502707+00:00",
+    "updated_at": "2026-06-01T17:38:11.852246+00:00"
+  },
+  {
+    "id": "69b71212-58fd-4c68-bbc6-d839bf21c7d0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3c7d87c5-3374-4d10-9976-65278fa4a396",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {},
+    "created_at": "2026-06-02T00:12:59.93982+00:00",
+    "updated_at": "2026-06-02T00:12:59.939832+00:00"
+  },
+  {
+    "id": "c6ecacbc-b9e5-4c86-8216-c98fa35bddd5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c274a4c1-052a-440f-ab47-32eef161fca7",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:53.715465+00:00",
+    "updated_at": "2026-06-02T00:14:53.715465+00:00"
+  },
+  {
+    "id": "51c665c4-2e98-4d51-8beb-b9c89ae15211",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d467fc16-ff46-4dfa-bb1c-5d59b66ce1f7",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:54.439295+00:00",
+    "updated_at": "2026-06-02T00:14:54.439295+00:00"
+  },
+  {
+    "id": "65fabf54-3014-4b2b-a6dc-4710b8c4c043",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1cc71b60-5eed-4b58-954b-77abfea08864",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:55.882675+00:00",
+    "updated_at": "2026-06-02T00:14:55.882675+00:00"
+  },
+  {
+    "id": "bdddd17d-ef64-4219-9a34-88be1533352b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "26574790-2042-4528-8155-95c56261d136",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:56.553875+00:00",
+    "updated_at": "2026-06-02T00:14:56.553875+00:00"
+  },
+  {
+    "id": "b83cd6a0-23be-46a1-9035-dcf5c14ff404",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b3239a58-b15f-4cde-abde-dc1315d3e1e2",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:57.476543+00:00",
+    "updated_at": "2026-06-02T00:14:57.476543+00:00"
+  },
+  {
+    "id": "da2c942f-5622-4445-92ca-144a4b65014e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "94739a99-c0be-4f5d-83e2-9512ec1296fe",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:58.011042+00:00",
+    "updated_at": "2026-06-02T00:14:58.011042+00:00"
+  },
+  {
+    "id": "f88711ab-1320-4694-a9b6-425fe3bb941a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "98df3138-9541-40a0-bb46-43f2f957ff8e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:14:59.064432+00:00",
+    "updated_at": "2026-06-02T00:14:59.945678+00:00"
+  },
+  {
+    "id": "f882b739-b8a1-4fe3-b8e4-44ad9cd3d226",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c9c63811-3ae2-456d-ad53-5ae59fd2eafd",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:15:00.687205+00:00",
+    "updated_at": "2026-06-02T00:15:01.547455+00:00"
+  },
+  {
+    "id": "9d4557ea-1a1b-4598-9df5-e73d5872ba6a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "e267ae26-e40b-4ed5-a62a-a4b9808996f7",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:15:02.285675+00:00",
+    "updated_at": "2026-06-02T00:15:02.285675+00:00"
+  },
+  {
+    "id": "0b88bc53-9c97-4c41-9e66-e5537a9d083d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35bbf22f-007b-49e3-9e8b-679bd931f734",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:04.537142+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "332b1dda-6a2f-451d-af96-8371ed48b6d4"
+    },
+    "created_at": "2026-06-02T00:15:03.333858+00:00",
+    "updated_at": "2026-06-02T00:15:04.609956+00:00"
+  },
+  {
+    "id": "dfec24db-3d9f-4ec6-a954-b96874ebeff6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8479af57-cdaf-4c63-83f4-0e7aac568668",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:06.939666+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "96fddd37-e2fd-4f4b-b9e0-8afb357c1172"
+    },
+    "created_at": "2026-06-02T00:15:05.219824+00:00",
+    "updated_at": "2026-06-02T00:15:07.008727+00:00"
+  },
+  {
+    "id": "7b4ffd4a-acec-4a48-98e3-f8c8af327baf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3e31a651-34ee-4946-a70f-c59bcc7d3756",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:09.75974+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "e1269ded-d7e9-447c-bec9-d4a1e18705b1"
+    },
+    "created_at": "2026-06-02T00:15:08.56794+00:00",
+    "updated_at": "2026-06-02T00:15:09.824642+00:00"
+  },
+  {
+    "id": "a12263b9-88bd-4dca-abe2-e3ded38b6b1b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "3f7a878c-f7e3-4536-83a7-eca8d4293555",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:11.94388+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "8fa8a01e-0252-4975-aac2-00f97f3b2b50"
+    },
+    "created_at": "2026-06-02T00:15:10.699309+00:00",
+    "updated_at": "2026-06-02T00:15:12.017506+00:00"
+  },
+  {
+    "id": "32b5737c-5ab1-42bb-8af3-d58a2468a274",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76096ebf-3fd4-49a1-bbf7-bc2dc86e917a",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:14.483384+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "195df833-1fcd-40e5-8c5c-344c3be8f4df"
+    },
+    "created_at": "2026-06-02T00:15:13.292952+00:00",
+    "updated_at": "2026-06-02T00:15:14.555432+00:00"
+  },
+  {
+    "id": "21b5e5a4-30d0-4410-bd68-18b457683794",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7ca22188-1d08-4de5-8ab1-880c56bf0d92",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:17.283223+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "fa9cb356-2bb1-4b72-821e-f3c70db0fa2c"
+    },
+    "created_at": "2026-06-02T00:15:16.083282+00:00",
+    "updated_at": "2026-06-02T00:15:17.348773+00:00"
+  },
+  {
+    "id": "7c6ce3a0-127f-4424-8085-7cefb5495dac",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "8af070b2-b805-4403-b914-1cc79aa19fb9",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:15:19.946491+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "7512b51c-7b80-44ab-82d8-993562cb7a97"
+    },
+    "created_at": "2026-06-02T00:15:18.758798+00:00",
+    "updated_at": "2026-06-02T00:15:20.009283+00:00"
+  },
+  {
+    "id": "9ff1efc9-406d-4187-95ec-7b224c39aa7e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a536e011-f681-4ecc-af08-1e085b4bb7c8",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:38.331626+00:00",
+    "updated_at": "2026-06-02T00:19:38.331626+00:00"
+  },
+  {
+    "id": "4b5d6cd4-b20a-4265-946a-5dbc1b9e7f37",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0ad01d7f-f829-4c18-b4f7-7bce7fba147e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:52.49317+00:00",
+    "updated_at": "2026-06-02T00:19:52.49317+00:00"
+  },
+  {
+    "id": "03a6c670-99ec-4002-bd1d-293c60926c1d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "74cff197-32ed-4c89-97fe-02028e08c559",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:53.174767+00:00",
+    "updated_at": "2026-06-02T00:19:53.174767+00:00"
+  },
+  {
+    "id": "f4cf50ad-58f9-48c4-ba41-1b63488c19a2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "49706a3d-bd63-4b0c-801b-08ba7e04206e",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:54.516274+00:00",
+    "updated_at": "2026-06-02T00:19:54.516274+00:00"
+  },
+  {
+    "id": "d69c43e5-785d-475e-ac46-3740414ac3c3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "52936cc3-55b8-4662-a7d2-f8ad2be4b204",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:55.205068+00:00",
+    "updated_at": "2026-06-02T00:19:55.205068+00:00"
+  },
+  {
+    "id": "3e286685-f8ad-4f1c-9908-6d14ae243076",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "91de9244-bc16-4ff5-b9c4-1b73de44bc16",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:56.135083+00:00",
+    "updated_at": "2026-06-02T00:19:56.135083+00:00"
+  },
+  {
+    "id": "239d215d-3da0-4e5f-877d-3bf4b18732c0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "4edcd6be-76ef-400a-9ed8-eb5deebb9b8e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:56.65677+00:00",
+    "updated_at": "2026-06-02T00:19:56.65677+00:00"
+  },
+  {
+    "id": "64edf800-b512-463a-b5af-e451935e5b2f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "850a61e7-3183-4e57-8d79-50baee03f627",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:33:43.725052+00:00",
+    "updated_at": "2026-06-10T15:33:43.725052+00:00"
+  },
+  {
+    "id": "943a9d5f-e691-4503-9173-1b3cc8f3e6ec",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7a92ba47-11a8-4fe4-8ab9-b3dfbeca9868",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:33:44.598516+00:00",
+    "updated_at": "2026-06-10T15:33:44.598516+00:00"
+  },
+  {
+    "id": "153eaca2-d2b1-44b9-85b1-b03a63228ad2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f5b4dc50-0ad7-4f98-a788-6b22c15a49c1",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:57.726093+00:00",
+    "updated_at": "2026-06-02T00:19:58.579102+00:00"
+  },
+  {
+    "id": "6aba8879-9ad3-4648-a65e-7d9ec5bcae0e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "eb3b6c98-eb46-4711-a7a2-fbc126861c08",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:19:59.970558+00:00",
+    "updated_at": "2026-06-02T00:20:00.868772+00:00"
+  },
+  {
+    "id": "d4edccea-c712-458d-b808-b332f5b7cee9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d6471d81-d401-4905-8fc3-bd58e0e22cf7",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:20:01.589392+00:00",
+    "updated_at": "2026-06-02T00:20:01.589392+00:00"
+  },
+  {
+    "id": "ef9b2c88-7076-410a-9621-88a7c86dc43a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d24a5c8f-ff68-49e7-92dc-4aa58a2896c8",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:03.853592+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "306932f8-f1dc-4175-8c92-7f44037f8657"
+    },
+    "created_at": "2026-06-02T00:20:02.667055+00:00",
+    "updated_at": "2026-06-02T00:20:03.926193+00:00"
+  },
+  {
+    "id": "4a74c9ca-6087-4e08-bd37-0810525416e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7e736423-a65a-4cfe-8239-08634f5a308e",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:06.265432+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "27785768-6d75-4f3e-9d7e-8a0af1ca14d9"
+    },
+    "created_at": "2026-06-02T00:20:04.5299+00:00",
+    "updated_at": "2026-06-02T00:20:06.328988+00:00"
+  },
+  {
+    "id": "4300bdc2-4474-432f-bab7-b80b906fc978",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "454484c8-581d-45ef-83e3-3915e4fc9ddf",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:11.232349+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "3fde0e86-2bce-4cb7-8e91-93d938a17fed"
+    },
+    "created_at": "2026-06-02T00:20:10.019758+00:00",
+    "updated_at": "2026-06-02T00:20:11.30018+00:00"
+  },
+  {
+    "id": "3c9127a8-8f64-46f9-8289-e8b6cc412d0d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "526998f0-3d00-4250-86d4-39e7ec1c1d30",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:13.830516+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "39361b8a-4930-496d-9b88-e721342d2e28"
+    },
+    "created_at": "2026-06-02T00:20:12.652085+00:00",
+    "updated_at": "2026-06-02T00:20:13.896795+00:00"
+  },
+  {
+    "id": "1e78bc3e-ebf6-4bc0-ab55-5009f0656893",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "cbb47ee1-4172-49db-87f3-297e6cce3a1f",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:16.665457+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "39fa415f-5a4a-49eb-9091-cc76a052ba25"
+    },
+    "created_at": "2026-06-02T00:20:15.452973+00:00",
+    "updated_at": "2026-06-02T00:20:16.729563+00:00"
+  },
+  {
+    "id": "01ad8866-a2c1-42f6-af8b-310e25e23e6f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a165942c-9e45-42b2-ad88-011540b9e7d3",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:19.337232+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "e72554d2-3ec9-4fad-907e-64fb3bee993e"
+    },
+    "created_at": "2026-06-02T00:20:18.13875+00:00",
+    "updated_at": "2026-06-02T00:20:19.40444+00:00"
+  },
+  {
+    "id": "c4e94cbb-5cfb-4931-8758-8223b05c6c69",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "890eba32-e120-4a9a-ad52-07edb6276531",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:20:09.095722+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "1227096b-c09f-4db2-ac10-4e6930fdd278"
+    },
+    "created_at": "2026-06-02T00:20:07.875665+00:00",
+    "updated_at": "2026-06-02T00:20:09.162535+00:00"
+  },
+  {
+    "id": "c5bced3f-d91b-472c-beff-ebc704785309",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "75fe3878-d0a3-4131-b263-c10ce4c71db2",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:23:09.402898+00:00",
+    "updated_at": "2026-06-02T00:23:09.402898+00:00"
+  },
+  {
+    "id": "ed547973-8047-4d62-abb1-d7fdbb8f64c7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "7c2b6ca8-92d0-4f87-ba9e-17034ed3142b",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:51.068321+00:00",
+    "updated_at": "2026-06-02T00:26:51.068321+00:00"
+  },
+  {
+    "id": "9a2ec571-ec07-4ddd-8bbf-bf02445a7591",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6a97dd30-3724-486e-9fab-7910ace0fb0b",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:51.738398+00:00",
+    "updated_at": "2026-06-02T00:26:51.738398+00:00"
+  },
+  {
+    "id": "7674bc19-2ec9-4803-8218-d31d45cb564e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "695fc08b-eb44-42fc-9c47-c98f4ffb8034",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:53.016568+00:00",
+    "updated_at": "2026-06-02T00:26:53.016568+00:00"
+  },
+  {
+    "id": "d493afac-c7c4-4622-91f7-f83891628f30",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "142b9f3e-a8e5-4951-880f-d0086b858f9a",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:53.652717+00:00",
+    "updated_at": "2026-06-02T00:26:53.652717+00:00"
+  },
+  {
+    "id": "27d21dba-709f-49d5-9410-35cb1705dccc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "972ce589-3a7f-4ad0-bf2a-4c7632e46821",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:55.009904+00:00",
+    "updated_at": "2026-06-02T00:26:55.009904+00:00"
+  },
+  {
+    "id": "38923891-3e2e-4343-b466-4f19fbcd3782",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "b21736b1-2aad-4112-a3d1-8572b5e270f4",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:55.514798+00:00",
+    "updated_at": "2026-06-02T00:26:55.514798+00:00"
+  },
+  {
+    "id": "6e2d23fb-7d87-4b7f-a578-ad175be00a0f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "c5fc080c-2b8a-4a8d-aad9-726536e87e20",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:56.548486+00:00",
+    "updated_at": "2026-06-02T00:26:57.377133+00:00"
+  },
+  {
+    "id": "c2b5d921-d2ae-4ac6-aa87-aae0b6ad6149",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "68812d5a-071f-478a-9936-896699099ece",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "100k",
+      "timeline": "6_months",
+      "market_sector": "residential"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:58.066662+00:00",
+    "updated_at": "2026-06-02T00:26:58.895807+00:00"
+  },
+  {
+    "id": "78fbaca0-286c-49a4-b6a2-4a2dc5fec92d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a22dc1b4-ea97-4250-93e5-1f90208ffbeb",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-02T00:26:59.614418+00:00",
+    "updated_at": "2026-06-02T00:26:59.614418+00:00"
+  },
+  {
+    "id": "d6e1cc86-1c8d-4aac-abc2-d8bf6d1dbe8a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0a69533d-dcb4-487b-8be0-12aae1e1941d",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:02.054993+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "bf71f93a-d01c-472d-89de-78b54ad6dac4"
+    },
+    "created_at": "2026-06-02T00:27:00.910096+00:00",
+    "updated_at": "2026-06-02T00:27:02.118146+00:00"
+  },
+  {
+    "id": "33f16f36-53a5-4a22-8f6a-1cc4256d4c51",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "10434a90-07d7-4301-b451-8658c4a559a1",
+    "status": "qualified",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:04.325175+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "budget": "200k",
+      "timeline": "1_year",
+      "market_sector": "hospitality"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "8691007c-b8cb-402d-b331-c8af9f39bd1c"
+    },
+    "created_at": "2026-06-02T00:27:02.691897+00:00",
+    "updated_at": "2026-06-02T00:27:04.395989+00:00"
+  },
+  {
+    "id": "f87b1719-bf04-46cd-82da-f54401b39135",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a88133f0-3d8c-4eac-a90b-7ba645a1fe85",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:07.006561+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "131c0ac0-b6a0-46f1-996e-bd792582dee8"
+    },
+    "created_at": "2026-06-02T00:27:05.875324+00:00",
+    "updated_at": "2026-06-02T00:27:07.069362+00:00"
+  },
+  {
+    "id": "3dff6f73-6baf-4da4-b732-a5fb86c2adb0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "5161b505-579c-4688-b61a-45f889691da3",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:09.08261+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "88984cac-d61b-4533-952b-c6218c8fcd6e"
+    },
+    "created_at": "2026-06-02T00:27:07.91373+00:00",
+    "updated_at": "2026-06-02T00:27:09.145242+00:00"
+  },
+  {
+    "id": "fcde0d5f-9de2-4b59-880d-139067fec65c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9ee70446-307a-4483-9a48-aa073db9f262",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:11.742886+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "8aacaffb-6312-487d-ad4f-1d57dde7ef4d"
+    },
+    "created_at": "2026-06-02T00:27:10.355321+00:00",
+    "updated_at": "2026-06-02T00:27:11.806755+00:00"
+  },
+  {
+    "id": "58e63687-4978-472a-a049-4c1c34442ef5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "96144480-da61-42bc-9dc2-403e5fd26135",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:14.449387+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "d4ccb83d-46f9-4756-89e5-777fb620a625"
+    },
+    "created_at": "2026-06-02T00:27:13.321063+00:00",
+    "updated_at": "2026-06-02T00:27:14.522664+00:00"
+  },
+  {
+    "id": "8c6367dd-5274-462b-84b3-66d8a27c9614",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d1bd2a68-9a30-4bb2-9bf9-e319984282ed",
+    "status": "qualified",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": "2026-06-02T00:27:16.9895+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture",
+      "qualified_account_id": "08f66766-f39d-4a83-9213-d9bc76fe15d0"
+    },
+    "created_at": "2026-06-02T00:27:15.851124+00:00",
+    "updated_at": "2026-06-02T00:27:17.059556+00:00"
+  },
+  {
+    "id": "cdda327f-dfbd-4b3f-8e34-7c2ce3887f6d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1f428801-5ae6-41b2-a242-e8ca35172a6a",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {},
+    "created_at": "2026-06-06T15:49:06.330227+00:00",
+    "updated_at": "2026-06-06T15:49:06.330239+00:00"
+  },
+  {
+    "id": "f493e691-f42b-4902-a73e-09721d9ef1ac",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "318f4bda-2d3a-48ac-b59e-149ea7b7ae18",
+    "status": "in_progress",
+    "source": "showroom",
+    "started_at": "2026-06-08T04:00:47.584329+00:00",
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": "jbj jjjjjj jjouhu",
+    "qualification_signals": {
+      "rooms": "bhjkb",
+      "style": "hhbkhb",
+      "budget": "7777",
+      "timing": "30"
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-08T04:00:40.457575+00:00",
+    "updated_at": "2026-06-08T04:33:48.334772+00:00"
+  },
+  {
+    "id": "ef11ce9d-190b-4cb9-949f-f4c3b04e7bdf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "ef895fc0-c5b8-4da7-a24b-a8f6c7918cb6",
+    "status": "pending",
+    "source": "manual",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {},
+    "created_at": "2026-06-08T13:59:52.460891+00:00",
+    "updated_at": "2026-06-08T13:59:52.460903+00:00"
+  },
+  {
+    "id": "7a50c21b-3e34-4bc0-8271-3866f4642f4d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "316e5cfa-2481-4c3d-a293-bcad432f966f",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-09T01:16:52.137579+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "571c9003-0d22-4177-8a17-b22ca7f0ec4f"
+    },
+    "created_at": "2026-06-09T01:16:52.137579+00:00",
+    "updated_at": "2026-06-09T01:16:52.137579+00:00"
+  },
+  {
+    "id": "58899be4-5ac1-4474-9c86-231cfa52fac1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "76134b1e-a0de-42b6-aa28-dd370362772e",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T01:40:34.385525+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "36454936-c516-4057-afee-d4de6f74cebe",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "7728c882-4d1b-4ed9-822b-449d69fedc89"
+    },
+    "created_at": "2026-06-10T01:40:34.385525+00:00",
+    "updated_at": "2026-06-10T01:40:34.385525+00:00"
+  },
+  {
+    "id": "58bcf6bc-d10c-4da9-a73c-c83cb4b3fa12",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d4858b6f-5fdb-43f9-9e5b-577ea9eb9ce0",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T01:40:59.796939+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "d8c25f1b-0e7b-4051-be98-d94ae6329f6d"
+    },
+    "created_at": "2026-06-10T01:40:59.796939+00:00",
+    "updated_at": "2026-06-10T01:40:59.796939+00:00"
+  },
+  {
+    "id": "46be9beb-e021-41c4-a8c7-9aa08a4829ad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "35f99f86-e60b-467e-b234-dbe714600f7e",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T01:41:31.38494+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "13cee942-1a45-4369-83ff-f7761ffa5ba8"
+    },
+    "created_at": "2026-06-10T01:41:31.38494+00:00",
+    "updated_at": "2026-06-10T01:41:31.38494+00:00"
+  },
+  {
+    "id": "6524af63-a80a-4cf7-9f9e-1a2ace54e29c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "f918f259-aa01-440a-935e-2a3ab6c46bb8",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T01:52:33.011695+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "7d973d85-fdfa-4c24-8059-a7d5c4bea627"
+    },
+    "created_at": "2026-06-10T01:52:33.011695+00:00",
+    "updated_at": "2026-06-10T01:52:33.011695+00:00"
+  },
+  {
+    "id": "a94d29ed-a3cb-461d-b417-372d2a2aa182",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "2da08001-5433-45be-8bac-829a9056f985",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:32:04.118369+00:00",
+    "updated_at": "2026-06-10T15:32:04.118369+00:00"
+  },
+  {
+    "id": "0b60c4f7-ebb9-4617-85ab-7a542c5f8d53",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1eee8dfa-5d93-4a49-821f-cefd030e253e",
+    "status": "pending",
+    "source": "showroom",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:32:24.285339+00:00",
+    "updated_at": "2026-06-10T15:32:24.285339+00:00"
+  },
+  {
+    "id": "58760737-9273-418c-a386-32f766e8e364",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "da9b787b-d2c0-4140-a05c-bcd2e30a7a3f",
+    "status": "pending",
+    "source": "phone",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:32:25.059843+00:00",
+    "updated_at": "2026-06-10T15:32:25.059843+00:00"
+  },
+  {
+    "id": "3f52e023-af8f-49a6-b8aa-f233e9b35771",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "e920080e-f910-4d43-947f-ae8d280a23e7",
+    "status": "pending",
+    "source": "referral",
+    "started_at": null,
+    "completed_at": null,
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {},
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "entry_path": "fast_capture"
+    },
+    "created_at": "2026-06-10T15:32:25.713779+00:00",
+    "updated_at": "2026-06-10T15:32:25.713779+00:00"
+  },
+  {
+    "id": "aaab876a-24a1-4e96-b8b9-47ede37c0eae",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "75cc0076-275e-4e66-9efa-9e59f591dc91",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:01:59.229533+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "01d7a17b-d0f7-44c7-8251-3ae7f36077b8"
+    },
+    "created_at": "2026-06-10T16:01:59.229533+00:00",
+    "updated_at": "2026-06-10T16:01:59.229533+00:00"
+  },
+  {
+    "id": "aa006da0-0ded-4441-bc6b-40a73f38c1ba",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "d95b9d75-0e6e-4789-b962-e65999a4b9c9",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:02:19.07489+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "0f7eb2cb-0da3-4da2-b91d-edadebc80a0c"
+    },
+    "created_at": "2026-06-10T16:02:19.07489+00:00",
+    "updated_at": "2026-06-10T16:02:19.07489+00:00"
+  },
+  {
+    "id": "0d3da760-2f37-428d-8b4d-9fc19e370d2f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "92160c42-02fb-402c-a94b-a9d20d363046",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:02:27.343114+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "a83c06a2-a3bc-46eb-8f92-51cc774d0e03"
+    },
+    "created_at": "2026-06-10T16:02:27.343114+00:00",
+    "updated_at": "2026-06-10T16:02:27.343114+00:00"
+  },
+  {
+    "id": "bf25b17f-37c4-465d-9f17-aa35e6dc0722",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "38c9b537-d6f9-4c82-9669-8e2fc11e6bf3",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:06:07.22894+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "77596813-8768-467e-b45d-397fa1f3f566"
+    },
+    "created_at": "2026-06-10T16:06:07.22894+00:00",
+    "updated_at": "2026-06-10T16:06:07.22894+00:00"
+  },
+  {
+    "id": "eca69c2f-8d17-4a83-87cb-fcb59e1397c5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "1673edb2-2a56-4320-ba2c-66a5a178e657",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:06:27.960713+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "505fd4ce-33be-487c-b0da-522cd904ad1b"
+    },
+    "created_at": "2026-06-10T16:06:27.960713+00:00",
+    "updated_at": "2026-06-10T16:06:27.960713+00:00"
+  },
+  {
+    "id": "5a6f5115-b90b-4247-975a-bfd9b625bd9d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6e4acde8-9a99-406a-b722-faba1fc79bbc",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:06:35.193724+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "1605684e-a091-4959-b7a0-4bd4083b9e46"
+    },
+    "created_at": "2026-06-10T16:06:35.193724+00:00",
+    "updated_at": "2026-06-10T16:06:35.193724+00:00"
+  },
+  {
+    "id": "4aee4ccf-e3e2-45f7-9431-c246ddfde578",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "28d2aab2-2eed-4960-a1a3-717cd6e16635",
+    "status": "qualified",
+    "source": "public_form",
+    "started_at": null,
+    "completed_at": "2026-06-10T16:06:59.951812+00:00",
+    "conducted_by": null,
+    "notes": null,
+    "qualification_signals": {
+      "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79",
+      "source_path": "begin_journey_ritual",
+      "auto_qualified": true
+    },
+    "disqualification_reason": null,
+    "recording_url": null,
+    "metadata_json": {
+      "auto": true,
+      "account_id": "b558e0e7-f04e-4ef3-8825-b4cb20811e7d"
+    },
+    "created_at": "2026-06-10T16:06:59.951812+00:00",
+    "updated_at": "2026-06-10T16:06:59.951812+00:00"
+  }
+]

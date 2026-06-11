@@ -1,0 +1,1378 @@
+[
+  {
+    "id": "1beecb82-effd-4a5a-aebe-b5e818a28730",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "b49defd6-6062-49da-a5ef-9c097d984d1b",
+    "title": "KE005B test moodboard",
+    "page_type": "blank",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {},
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:05:03.687966+00:00",
+    "updated_at": "2026-06-06T16:05:03.687966+00:00"
+  },
+  {
+    "id": "26795a50-8629-4282-a0b3-9ba69083e4fd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Living mood.",
+    "page_type": "mood",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F8F4ED"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.850146+00:00",
+    "updated_at": "2026-06-06T16:07:33.850146+00:00"
+  },
+  {
+    "id": "8a001005-183c-4883-8105-f77254985eb6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Materials.",
+    "page_type": "material_board",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F0EDE5"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.848757+00:00",
+    "updated_at": "2026-06-06T16:07:33.848757+00:00"
+  },
+  {
+    "id": "d718ea6d-7808-406d-aedc-db8be3cf0966",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Furniture.",
+    "page_type": "product_grid",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F8F4ED"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.852775+00:00",
+    "updated_at": "2026-06-06T16:07:33.852775+00:00"
+  },
+  {
+    "id": "2184ada5-84d4-4863-a045-de24ae1beed4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Kitchen & bath.",
+    "page_type": "mood",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F8F4ED"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.848506+00:00",
+    "updated_at": "2026-06-06T16:07:33.848506+00:00"
+  },
+  {
+    "id": "0c60b3e8-6229-41cc-b46e-6f3578d6da5c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Living concept.",
+    "page_type": "split_story",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F0EDE5"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.849213+00:00",
+    "updated_at": "2026-06-06T16:07:33.849213+00:00"
+  },
+  {
+    "id": "33987e69-2192-4e8f-acd4-ccffce5f5975",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Final direction.",
+    "page_type": "approval",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#F0EDE5"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:33.848044+00:00",
+    "updated_at": "2026-06-06T16:07:33.848044+00:00"
+  },
+  {
+    "id": "54ffc9e3-f2cb-4ac3-869e-7930dd756e8b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "title": "Casa Brera.",
+    "page_type": "cover",
+    "aspect_ratio": "portrait_a4",
+    "width": 1400,
+    "height": 2400,
+    "background": {},
+    "settings": {
+      "background_color": "#0F0D0B"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-06T16:07:34.086043+00:00",
+    "updated_at": "2026-06-06T16:07:34.086043+00:00"
+  },
+  {
+    "id": "ddea4203-00a9-4c2b-b02c-06362856049c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+    "title": "Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:28:52.635761+00:00",
+    "updated_at": "2026-06-08T22:28:52.635761+00:00"
+  },
+  {
+    "id": "fa6e4736-29d8-41b2-b289-57b04469fe05",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "2aa85a63-bd3e-491d-acbb-5cd8acd4845d",
+    "title": "Timeless Elegance",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:28:53.092258+00:00",
+    "updated_at": "2026-06-08T22:28:53.092258+00:00"
+  },
+  {
+    "id": "c38612b3-d74d-4c5f-a2fe-c74ab7b15d8a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:28:53.507795+00:00",
+    "updated_at": "2026-06-08T22:28:53.507795+00:00"
+  },
+  {
+    "id": "9f8ae7f1-9661-45b2-b185-b0f175374c73",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "646e82be-417c-4460-abe0-cb5042feb3bc",
+    "title": "Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:05.968857+00:00",
+    "updated_at": "2026-06-08T22:29:05.968857+00:00"
+  },
+  {
+    "id": "94b3bb7d-64bf-4758-ad31-f1a86a3a34fd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "206badc0-5345-4638-9cc6-9304f67cd1cf",
+    "title": "Timeless Elegance",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:06.348787+00:00",
+    "updated_at": "2026-06-08T22:29:06.348787+00:00"
+  },
+  {
+    "id": "0ad7e4cd-8f1e-4949-986b-3f870ad0107b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "8a0bd54f-4284-4acd-875d-bf6975d0da58",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:06.736753+00:00",
+    "updated_at": "2026-06-08T22:29:06.736753+00:00"
+  },
+  {
+    "id": "ea9792d0-e698-403b-9952-39813969f05d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "eb59df89-2a45-41af-a06a-f54261b09a7d",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:49.580607+00:00",
+    "updated_at": "2026-06-08T22:29:49.580607+00:00"
+  },
+  {
+    "id": "d3f64db4-9105-4ad6-ad0e-3c23704d15a4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "59c1f5bd-602c-4b7d-879c-91db167e64dc",
+    "title": "Elegant Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:49.984582+00:00",
+    "updated_at": "2026-06-08T22:29:49.984582+00:00"
+  },
+  {
+    "id": "112ebffb-fbc7-4c16-a977-01e81141234f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "0ca16f53-34db-455d-a3d2-41988b1a39c8",
+    "title": "Warm Timeless Classic",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:29:50.37887+00:00",
+    "updated_at": "2026-06-08T22:29:50.37887+00:00"
+  },
+  {
+    "id": "e9fe14ac-9bae-4f50-b849-cbaa7707ce51",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "14472339-bd09-4fa1-ba93-f1153dbbe772",
+    "title": "Elegant Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:17.968986+00:00",
+    "updated_at": "2026-06-08T22:34:17.968986+00:00"
+  },
+  {
+    "id": "f876d421-f693-4943-b187-5fc79efdbcd5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "826ff1ec-73a2-4c76-a65a-102c16929dea",
+    "title": "Warm Timeless Classic",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:18.423713+00:00",
+    "updated_at": "2026-06-08T22:34:18.423713+00:00"
+  },
+  {
+    "id": "105613cb-bfaa-4acb-9e6b-c40ec9adfd61",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "1935302c-2d9f-4868-a2dd-463a81b2a162",
+    "title": "Elegant Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:18.841379+00:00",
+    "updated_at": "2026-06-08T22:34:18.841379+00:00"
+  },
+  {
+    "id": "5d52d0f3-a15c-4cb0-be18-321e14d22d64",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "ccd791d8-7bcb-46fc-ac3e-240503702032",
+    "title": "Warm Timeless Classic",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:21.645638+00:00",
+    "updated_at": "2026-06-08T22:34:21.645638+00:00"
+  },
+  {
+    "id": "182b73dd-220b-42bb-bf4c-455b7664ee4b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "cfe65d73-b46b-4fa9-91e5-9ce0e3f2a22b",
+    "title": "Elegant Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:22.076215+00:00",
+    "updated_at": "2026-06-08T22:34:22.076215+00:00"
+  },
+  {
+    "id": "025e797f-31fb-47ad-8fa2-a7a5330ed42c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "392a731e-3e8c-4dc1-981d-44c4fa401fea",
+    "title": "Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-08T22:34:22.502618+00:00",
+    "updated_at": "2026-06-08T22:34:22.502618+00:00"
+  },
+  {
+    "id": "22286582-c0fc-49d6-828a-18ff5d8062b7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "f1cc07df-b9da-4c4f-8bbb-95e88115efca",
+    "title": "Elegant Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:36.189096+00:00",
+    "updated_at": "2026-06-09T00:19:36.189096+00:00"
+  },
+  {
+    "id": "435dadeb-c432-40cc-9ea7-e3c44235bc27",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "eb7e7a0c-59a2-485e-aa32-36807f7a1116",
+    "title": "Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:36.633242+00:00",
+    "updated_at": "2026-06-09T00:19:36.633242+00:00"
+  },
+  {
+    "id": "489bfc7f-321f-41de-82be-3a11e2a174f9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "f32df5a7-215e-4fae-aedb-250c3d1a80bf",
+    "title": "Timeless Elegance",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:37.037072+00:00",
+    "updated_at": "2026-06-09T00:19:37.037072+00:00"
+  },
+  {
+    "id": "3b6ea2d6-8d90-4a2a-8212-69dfbc20f338",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "4aefd8df-21b7-4595-a74a-c47b41635f01",
+    "title": "Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:40.932588+00:00",
+    "updated_at": "2026-06-09T00:19:40.932588+00:00"
+  },
+  {
+    "id": "121bc93a-b84d-4376-9158-b88e1a22d981",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "23666d7e-9c07-43c8-b3b0-2ecfb0b209d4",
+    "title": "Timeless Elegance",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:41.326223+00:00",
+    "updated_at": "2026-06-09T00:19:41.326223+00:00"
+  },
+  {
+    "id": "d1e7f2b7-56da-44d5-8409-10ff806679a1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "a3f0c1ea-7643-4eb1-b3b9-c0ae55ccde22",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:41.725272+00:00",
+    "updated_at": "2026-06-09T00:19:41.725272+00:00"
+  },
+  {
+    "id": "896e2133-d61d-475b-b73c-4e219ff50327",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "33957509-bd94-4d61-b5a7-dc7d3ab37580",
+    "title": "Timeless Elegance",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:44.781365+00:00",
+    "updated_at": "2026-06-09T00:19:44.781365+00:00"
+  },
+  {
+    "id": "44cc6c5a-92a5-428a-a6fc-454d3c1fc143",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "3014c214-3945-488a-b87d-84e5de966f2e",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:45.169886+00:00",
+    "updated_at": "2026-06-09T00:19:45.169886+00:00"
+  },
+  {
+    "id": "d117acc0-dc5b-4cbb-9c61-97dc5569e213",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "fd3ad603-e676-469a-95fd-01aa1e563279",
+    "title": "Elegant Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:45.557309+00:00",
+    "updated_at": "2026-06-09T00:19:45.557309+00:00"
+  },
+  {
+    "id": "d6612e22-521b-4e62-aded-18aa835b1cbe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "badbc3c4-868b-4b26-b1de-e6ac4adce60f",
+    "title": "Warm Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:50.487049+00:00",
+    "updated_at": "2026-06-09T00:19:50.487049+00:00"
+  },
+  {
+    "id": "f3ffdaac-a10a-49f7-a431-0492e13191c4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+    "title": "Elegant Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:50.878213+00:00",
+    "updated_at": "2026-06-09T00:19:50.878213+00:00"
+  },
+  {
+    "id": "43e6d3ca-095a-442c-b850-7a429b2d40b1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "0fca8651-8f10-417a-9803-eb7d9723820b",
+    "title": "Warm Timeless Classic",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T00:19:51.276516+00:00",
+    "updated_at": "2026-06-09T00:19:51.276516+00:00"
+  },
+  {
+    "id": "34769e66-e560-4ec2-99fb-34e75da99efa",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "title": "Vision",
+    "page_type": "cover",
+    "aspect_ratio": "portrait_4_5",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "vision",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T03:48:46.553174+00:00",
+    "updated_at": "2026-06-09T03:48:46.553174+00:00"
+  },
+  {
+    "id": "1c5c6c49-1381-45c0-a506-44865e45bb54",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "title": "Materials",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "materials",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T03:48:46.553174+00:00",
+    "updated_at": "2026-06-09T03:48:46.553174+00:00"
+  },
+  {
+    "id": "66e4e471-f784-4f66-b022-2a2e1b491029",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "title": "Products",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "products",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 2,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T03:48:46.553174+00:00",
+    "updated_at": "2026-06-09T03:48:46.553174+00:00"
+  },
+  {
+    "id": "7cdcf488-2a70-47f4-b2be-acc77750fc30",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "title": "Atmosphere",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "atmosphere",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 3,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T03:48:46.553174+00:00",
+    "updated_at": "2026-06-09T03:48:46.553174+00:00"
+  },
+  {
+    "id": "2e5e206c-2585-4aa5-b9d6-67b09fe02d39",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "title": "Design Notes",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "notes",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 4,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T03:48:46.553174+00:00",
+    "updated_at": "2026-06-09T03:48:46.553174+00:00"
+  },
+  {
+    "id": "1fe949a9-f0c4-4959-9084-08282f75ca54",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "1a1402ee-d49a-449e-8e4c-0bce91683622",
+    "title": "Elegant Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:32:28.706367+00:00",
+    "updated_at": "2026-06-09T23:32:28.706367+00:00"
+  },
+  {
+    "id": "6c958dd1-4162-42f5-a876-ddc8be158c33",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "118419c0-949b-4014-9418-9798f26062ab",
+    "title": "Warm Timeless Classic",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:32:29.170857+00:00",
+    "updated_at": "2026-06-09T23:32:29.170857+00:00"
+  },
+  {
+    "id": "8f39552a-d143-40cf-a173-67227f97d13f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "e1c56946-f976-410a-98ac-84fdc50e473f",
+    "title": "Elegant Scandinavian",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:32:29.585839+00:00",
+    "updated_at": "2026-06-09T23:32:29.585839+00:00"
+  },
+  {
+    "id": "a7303f0b-a105-42d7-ace4-347733cf6ebe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "title": "Vision",
+    "page_type": "cover",
+    "aspect_ratio": "portrait_4_5",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "vision",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:33:10.373241+00:00",
+    "updated_at": "2026-06-09T23:33:10.373241+00:00"
+  },
+  {
+    "id": "0271475c-3bcc-4f0a-8b43-f04ee9c5f325",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "title": "Materials",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "materials",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 1,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:33:10.373241+00:00",
+    "updated_at": "2026-06-09T23:33:10.373241+00:00"
+  },
+  {
+    "id": "5c7979b8-6ad6-4a96-b873-51a8b73bd610",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "title": "Products",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "products",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 2,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:33:10.373241+00:00",
+    "updated_at": "2026-06-09T23:33:10.373241+00:00"
+  },
+  {
+    "id": "53658c53-3047-4f4b-95f3-c18aa242c46c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "title": "Atmosphere",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "atmosphere",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 3,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:33:10.373241+00:00",
+    "updated_at": "2026-06-09T23:33:10.373241+00:00"
+  },
+  {
+    "id": "3379d8b3-e248-4860-ae6b-58fec00163e5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "title": "Design Notes",
+    "page_type": "gallery",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "section": "notes",
+      "generated_by": "store-012b"
+    },
+    "sort_order": 4,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-09T23:33:10.373241+00:00",
+    "updated_at": "2026-06-09T23:33:10.373241+00:00"
+  },
+  {
+    "id": "c0304e31-b698-4832-8d22-3dd65cc5b7b9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "8be1bfee-7ec8-468d-8616-32596ec6db88",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:39.781626+00:00",
+    "updated_at": "2026-06-10T01:41:39.781626+00:00"
+  },
+  {
+    "id": "1b88f465-3d98-4783-b150-4d11974c486f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "cf89ea58-b65d-4c45-9ea3-fa756b934442",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:40.235918+00:00",
+    "updated_at": "2026-06-10T01:41:40.235918+00:00"
+  },
+  {
+    "id": "37ab0fdb-d762-46e3-82d2-4e32451b41b6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "2a23fbca-f26b-4761-85b3-ddd65afb7b05",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:40.662072+00:00",
+    "updated_at": "2026-06-10T01:41:40.662072+00:00"
+  },
+  {
+    "id": "04a373f9-83b7-4a3f-9369-773b36212314",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "a27622d4-20c7-47ec-806e-c215b497504e",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:43.01325+00:00",
+    "updated_at": "2026-06-10T01:41:43.01325+00:00"
+  },
+  {
+    "id": "de166bc5-6d3e-4b26-9ab6-03344dc9c16b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "63bf53df-d6e6-4c31-9fbe-293f90345885",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:43.429706+00:00",
+    "updated_at": "2026-06-10T01:41:43.429706+00:00"
+  },
+  {
+    "id": "0db1d58d-a251-4dee-bd5e-5a55c76dcfa7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "f40dfb1b-18fb-44b2-99cc-07ed5bb8a38a",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:43.832813+00:00",
+    "updated_at": "2026-06-10T01:41:43.832813+00:00"
+  },
+  {
+    "id": "a96cf8f9-9ac2-4dab-b720-440010493181",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "bd795a9c-8926-4acc-8bfc-b541f19ed5e5",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:45.943757+00:00",
+    "updated_at": "2026-06-10T01:41:45.943757+00:00"
+  },
+  {
+    "id": "a1883f3f-c8ce-4a68-8490-56a876806253",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "3e245e9f-bcd2-41ef-a50d-bb02897428c3",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:46.357638+00:00",
+    "updated_at": "2026-06-10T01:41:46.357638+00:00"
+  },
+  {
+    "id": "93a372c5-73c6-4979-bcc6-6eef1391acde",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "7803bbe8-e3d1-41fd-8ffb-3f84b1148afb",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:46.769885+00:00",
+    "updated_at": "2026-06-10T01:41:46.769885+00:00"
+  },
+  {
+    "id": "86eb0412-0b62-4412-9f49-97a8e944b978",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "9aaa2d13-8b46-44d8-b5b3-931bfc28f8b1",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:48.768202+00:00",
+    "updated_at": "2026-06-10T01:41:48.768202+00:00"
+  },
+  {
+    "id": "719e2ffe-08ee-43be-85fb-0c5bfccbd5a8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "e1331424-f13a-4c3c-ae4a-f834d613c9e4",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:49.185765+00:00",
+    "updated_at": "2026-06-10T01:41:49.185765+00:00"
+  },
+  {
+    "id": "12a2ca82-22e9-4cba-8b8b-49fea105f986",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "576d7fb6-8d05-45c9-a5d7-fc05806ab494",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:41:49.597216+00:00",
+    "updated_at": "2026-06-10T01:41:49.597216+00:00"
+  },
+  {
+    "id": "d589440a-1543-4ce2-ad92-630ada8fea6f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "7e55d7fe-5b8a-4cd3-b74c-721aafa7cf56",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:41.214506+00:00",
+    "updated_at": "2026-06-10T01:52:41.214506+00:00"
+  },
+  {
+    "id": "42578bec-3d94-48b7-835f-2f346b0d5f2a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "d27a367c-c7d1-4473-bcb8-e692ee18d6e3",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:41.645641+00:00",
+    "updated_at": "2026-06-10T01:52:41.645641+00:00"
+  },
+  {
+    "id": "28b591b2-8128-4c8e-8e04-9ed3d72aceeb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "2f2c926d-4ac2-4da7-bd5e-ce84afcd7cf2",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:42.034978+00:00",
+    "updated_at": "2026-06-10T01:52:42.034978+00:00"
+  },
+  {
+    "id": "f2624920-08f1-4d84-8860-e47f96b9ce56",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "bb951134-610c-4ee5-99c9-7f592571949c",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:44.057703+00:00",
+    "updated_at": "2026-06-10T01:52:44.057703+00:00"
+  },
+  {
+    "id": "b199c439-6eab-4768-9d63-f4e46369c35d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "e5da6433-e3f3-4cf3-9b1f-1d4c4ae29bc9",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:44.430273+00:00",
+    "updated_at": "2026-06-10T01:52:44.430273+00:00"
+  },
+  {
+    "id": "ca44bc81-c3b3-469b-937c-dde304723092",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "298a17a6-8300-44ac-9fba-baea62dd47e8",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:44.824978+00:00",
+    "updated_at": "2026-06-10T01:52:44.824978+00:00"
+  },
+  {
+    "id": "63045fa5-a9c0-4e4c-9672-88332420b460",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "f783a6c2-0272-4a70-8ae9-4d350b008c99",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:46.835578+00:00",
+    "updated_at": "2026-06-10T01:52:46.835578+00:00"
+  },
+  {
+    "id": "8e52e8f3-5f7c-4faf-bdbb-0621ed07a490",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "85b6ee78-737b-4280-97ce-0514bcaffb29",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:47.215974+00:00",
+    "updated_at": "2026-06-10T01:52:47.215974+00:00"
+  },
+  {
+    "id": "00aa2dd2-bbee-4b87-81d8-212b03bbe0a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "9af6bebf-5d78-4de0-927b-f220a89f5c15",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:47.600007+00:00",
+    "updated_at": "2026-06-10T01:52:47.600007+00:00"
+  },
+  {
+    "id": "ea284314-1e3f-4234-bf87-071dd740e32b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "3166d8f0-423b-43d6-a6a4-e58d33df95e4",
+    "title": "Timeless Warm Contemporary",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:49.590479+00:00",
+    "updated_at": "2026-06-10T01:52:49.590479+00:00"
+  },
+  {
+    "id": "4e4be357-7f60-476e-bf45-412a132ed3fc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "ed9c2ddd-f63f-411d-8ec1-b48d1ca7bda1",
+    "title": "Italian Heritage",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:49.966169+00:00",
+    "updated_at": "2026-06-10T01:52:49.966169+00:00"
+  },
+  {
+    "id": "25b22fae-2319-4829-9c73-d0bcbe85a56b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "moodboard_id": "31df0468-1535-476d-9d83-454ba187075f",
+    "title": "Essential Minimal",
+    "page_type": "cover",
+    "aspect_ratio": "landscape_16_9",
+    "width": 1600,
+    "height": 1080,
+    "background": {},
+    "settings": {
+      "generated_by": "store-012a"
+    },
+    "sort_order": 0,
+    "hidden_in_presentation": false,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-06-10T01:52:50.360719+00:00",
+    "updated_at": "2026-06-10T01:52:50.360719+00:00"
+  }
+]

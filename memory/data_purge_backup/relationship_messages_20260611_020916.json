@@ -1,0 +1,249 @@
+[
+  {
+    "id": "09212869-e736-4306-8749-d653870e1076",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "e7219964-191c-4717-91e1-039fe22c19d0",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "stefano ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "1f428801-5ae6-41b2-a242-e8ca35172a6a",
+      "journey_id": "bb8ee381-58f8-4b76-9255-b9fd2020bc0f"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-06T15:40:13.891379+00:00"
+  },
+  {
+    "id": "29b13729-dfc0-4c58-8577-40a3f7a8c8f2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "0db103de-3e5f-4a2f-aff3-6ddf41317b8b",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TEST_Pulse_NoShare ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "316e5cfa-2481-4c3d-a293-bcad432f966f",
+      "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-09T01:16:56.973193+00:00"
+  },
+  {
+    "id": "93fdaf3b-a283-4cfb-b517-a267d8c44b30",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "40ede362-b030-491b-aa67-d4ce48970b29",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TEST_I18N ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "76134b1e-a0de-42b6-aa28-dd370362772e",
+      "journey_id": "36454936-c516-4057-afee-d4de6f74cebe"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T01:40:39.06835+00:00"
+  },
+  {
+    "id": "ca082dff-6b98-48bb-ba13-9d2768ee6d75",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "e0baefdd-d85b-456b-8295-b77fb5afc518",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TEST_I18N ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "d4858b6f-5fdb-43f9-9e5b-577ea9eb9ce0",
+      "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T01:41:02.97068+00:00"
+  },
+  {
+    "id": "0b111d58-452d-4fa7-978c-24cbe0996835",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "123a00c6-1c64-4c8b-a622-717ec231f866",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TEST_I18N ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "35f99f86-e60b-467e-b234-dbe714600f7e",
+      "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T01:41:34.673861+00:00"
+  },
+  {
+    "id": "d7675938-9f4b-41f5-a7c5-52f424696140",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "867bce9e-692c-4ac1-84a0-f11036ef1b4e",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TEST_I18N ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "f918f259-aa01-440a-935e-2a3ab6c46bb8",
+      "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T01:52:36.327326+00:00"
+  },
+  {
+    "id": "c5d3d4ba-2edd-4459-b989-ac8f32f95a5c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "c0af2e6f-31e6-478f-a540-95af051e0693",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Valentina ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "75cc0076-275e-4e66-9efa-9e59f591dc91",
+      "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:02:04.621462+00:00"
+  },
+  {
+    "id": "0ab64e3e-b846-4a99-826a-b1aa5f1ca763",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "c9eb3eda-780f-41c6-bc77-2b085d3e79d2",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Giuseppe ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "d95b9d75-0e6e-4789-b962-e65999a4b9c9",
+      "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:02:23.73698+00:00"
+  },
+  {
+    "id": "e88d3e46-9c9f-4359-b314-fb7ef484e828",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "c5cdd166-db2f-439d-b28f-c3fe186b311e",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Valentina ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "92160c42-02fb-402c-a94b-a9d20d363046",
+      "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:02:30.877592+00:00"
+  },
+  {
+    "id": "327de198-ad77-42a2-bbf5-2b6268fd217c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "51e76a50-c91d-409d-9b87-fabdf8b60e70",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Marco ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "38c9b537-d6f9-4c82-9669-8e2fc11e6bf3",
+      "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:06:11.974879+00:00"
+  },
+  {
+    "id": "751c5c61-11bd-4dde-8b61-4b801fd7c7e3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "85821cca-4553-47fb-a5b7-d823217b06b5",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Elena ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "1673edb2-2a56-4320-ba2c-66a5a178e657",
+      "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:06:32.623508+00:00"
+  },
+  {
+    "id": "dfdec61d-8195-4f9d-a7c9-ac40f627a29d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "c63f3455-1109-4771-8a9a-8a4085caa8f3",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "Solo2 ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "6e4acde8-9a99-406a-b722-faba1fc79bbc",
+      "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:06:39.564931+00:00"
+  },
+  {
+    "id": "cd20dca2-7f95-4f3a-9a82-f3730d329b8d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "thread_id": "6763505e-8146-4b9d-937a-428492e0366b",
+    "sender_type": "system",
+    "sender_user_id": null,
+    "sender_label": "Sistema",
+    "message_type": "system_narrative",
+    "content": "TestVerify ha completato le prime indicazioni del Journey. Le sue parole sono nel Client Profile.",
+    "attachments": [],
+    "metadata": {
+      "kind": "journey_initial_brief_completed",
+      "lead_id": "28d2aab2-2eed-4960-a1a3-717cd6e16635",
+      "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79"
+    },
+    "read_at": null,
+    "edited_at": null,
+    "created_at": "2026-06-10T16:07:04.339305+00:00"
+  }
+]

@@ -1,0 +1,4907 @@
+[
+  {
+    "id": "b49defd6-6062-49da-a5ef-9c097d984d1b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": null,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "KE005B test moodboard",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-06T16:05:03.477014+00:00",
+    "updated_at": "2026-06-06T16:05:04.231884+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {},
+    "current_page_id": "1beecb82-effd-4a5a-aebe-b5e818a28730",
+    "archived_at": null,
+    "deleted_at": "2026-06-06T16:05:04.162645+00:00",
+    "journey_id": null,
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "206badc0-5345-4638-9cc6-9304f67cd1cf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Elegance \u00b7 Set 02\u00a0\u00b7 B",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:06.160989+00:00",
+    "updated_at": "2026-06-08T22:29:06.160999+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3eb27e80-eebf-4b25-9e05-7f4fbf407690",
+        "generator": "store-012a",
+        "media_ids": [
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Timeless Elegance",
+        "set_created_at": "2026-06-08T22:29:05.393194+00:00",
+        "direction_letter": "B",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "3197d73e-9657-40b9-881d-e4da991765e8",
+          "a568b404-a3c0-4259-ae2c-097b7cbf2ec3",
+          "283a2a69-5425-4260-b9ea-2b56cc2e9aac",
+          "4a54a86b-202c-4d3b-96e4-67dacfaee005",
+          "22579a95-3a7d-4681-8f77-d0441068f70e"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "59c1f5bd-602c-4b7d-879c-91db167e64dc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Set 03\u00a0\u00b7 B3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:49.785246+00:00",
+    "updated_at": "2026-06-08T22:29:49.785258+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "0359f7c9-fd44-44a2-a2e7-7d57243b4cdc",
+        "generator": "store-012a",
+        "media_ids": [
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Warm Contemporary",
+        "set_created_at": "2026-06-08T22:29:48.835457+00:00",
+        "direction_letter": "B3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "4a54a86b-202c-4d3b-96e4-67dacfaee005",
+          "22579a95-3a7d-4681-8f77-d0441068f70e",
+          "710e84cd-0184-4c25-a0d9-2929af5e5cf6",
+          "2c00cd11-fc1a-449d-b07f-e4527bfcd71d",
+          "aba72133-b44a-4583-84d5-83e4e0ddbb61"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "d3f2d4cf-4843-40af-aa3b-d7821d3147f7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "930b31dc-1e1f-46c7-97d8-515ead998a52",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "test",
+    "description": null,
+    "template_id": "11111111-0000-0000-0000-000000000001",
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-06T16:05:44.93701+00:00",
+    "updated_at": "2026-06-06T20:26:37.62242+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {},
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": null,
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "646e82be-417c-4460-abe0-cb5042feb3bc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Set 02\u00a0\u00b7 A",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:05.779817+00:00",
+    "updated_at": "2026-06-08T22:29:05.779828+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3eb27e80-eebf-4b25-9e05-7f4fbf407690",
+        "generator": "store-012a",
+        "media_ids": [
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e",
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Contemporary",
+        "set_created_at": "2026-06-08T22:29:05.393194+00:00",
+        "direction_letter": "A",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c",
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "8a0bd54f-4284-4acd-875d-bf6975d0da58",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 02\u00a0\u00b7 C",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:06.542382+00:00",
+    "updated_at": "2026-06-08T22:29:06.542394+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3eb27e80-eebf-4b25-9e05-7f4fbf407690",
+        "generator": "store-012a",
+        "media_ids": [
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-08T22:29:05.393194+00:00",
+        "direction_letter": "C",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "710e84cd-0184-4c25-a0d9-2929af5e5cf6",
+          "2c00cd11-fc1a-449d-b07f-e4527bfcd71d",
+          "aba72133-b44a-4583-84d5-83e4e0ddbb61",
+          "432c1063-9d7e-43d6-b815-9e740e4f99a7",
+          "e37214cc-d3ee-4011-9c75-8d070108c0be"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "eb59df89-2a45-41af-a06a-f54261b09a7d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 03\u00a0\u00b7 A3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:49.374578+00:00",
+    "updated_at": "2026-06-08T22:29:49.37459+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "0359f7c9-fd44-44a2-a2e7-7d57243b4cdc",
+        "generator": "store-012a",
+        "media_ids": [
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-08T22:29:48.835457+00:00",
+        "direction_letter": "A3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c",
+          "3197d73e-9657-40b9-881d-e4da991765e8",
+          "a568b404-a3c0-4259-ae2c-097b7cbf2ec3",
+          "283a2a69-5425-4260-b9ea-2b56cc2e9aac"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": null,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Working Moodboard",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T03:48:46.327568+00:00",
+    "updated_at": "2026-06-09T03:48:46.327568+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "working_seed": {
+        "mode": "working",
+        "sections": [
+          "vision",
+          "materials",
+          "products",
+          "atmosphere",
+          "notes"
+        ],
+        "generator": "store-012b",
+        "set_index": 9,
+        "derived_at": "2026-06-09T03:48:46.327568+00:00",
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "source_set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+        "direction_name": "Elegant Warm Contemporary",
+        "generator_version": 1,
+        "source_concept_id": "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "0ca16f53-34db-455d-a3d2-41988b1a39c8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Timeless Classic \u00b7 Set 03\u00a0\u00b7 C3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:29:50.18221+00:00",
+    "updated_at": "2026-06-08T22:29:50.182223+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "0359f7c9-fd44-44a2-a2e7-7d57243b4cdc",
+        "generator": "store-012a",
+        "media_ids": [
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Timeless Classic",
+        "set_created_at": "2026-06-08T22:29:48.835457+00:00",
+        "direction_letter": "C3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "432c1063-9d7e-43d6-b815-9e740e4f99a7",
+          "e37214cc-d3ee-4011-9c75-8d070108c0be",
+          "58c14491-1d87-4d1a-92de-8f9bc8c69ea2",
+          "a2a7886e-f5ed-43fd-8e03-a2421fac3b93",
+          "5646e766-406a-48af-8a7c-98b606229d04"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "14472339-bd09-4fa1-ba93-f1153dbbe772",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Set 04\u00a0\u00b7 A4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:17.724008+00:00",
+    "updated_at": "2026-06-08T22:34:17.724019+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "d729afbf-0b8d-43a8-83e7-cccad875d265",
+        "generator": "store-012a",
+        "media_ids": [
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Warm Contemporary",
+        "set_created_at": "2026-06-08T22:34:17.058156+00:00",
+        "direction_letter": "A4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "a568b404-a3c0-4259-ae2c-097b7cbf2ec3",
+          "283a2a69-5425-4260-b9ea-2b56cc2e9aac",
+          "4a54a86b-202c-4d3b-96e4-67dacfaee005",
+          "22579a95-3a7d-4681-8f77-d0441068f70e",
+          "710e84cd-0184-4c25-a0d9-2929af5e5cf6"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "826ff1ec-73a2-4c76-a65a-102c16929dea",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Timeless Classic \u00b7 Set 04\u00a0\u00b7 B4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:18.202434+00:00",
+    "updated_at": "2026-06-08T22:34:18.202446+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "d729afbf-0b8d-43a8-83e7-cccad875d265",
+        "generator": "store-012a",
+        "media_ids": [
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Timeless Classic",
+        "set_created_at": "2026-06-08T22:34:17.058156+00:00",
+        "direction_letter": "B4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "2c00cd11-fc1a-449d-b07f-e4527bfcd71d",
+          "aba72133-b44a-4583-84d5-83e4e0ddbb61",
+          "432c1063-9d7e-43d6-b815-9e740e4f99a7",
+          "e37214cc-d3ee-4011-9c75-8d070108c0be",
+          "58c14491-1d87-4d1a-92de-8f9bc8c69ea2"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "1935302c-2d9f-4868-a2dd-463a81b2a162",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Scandinavian \u00b7 Set 04\u00a0\u00b7 C4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:18.631834+00:00",
+    "updated_at": "2026-06-08T22:34:18.631846+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "d729afbf-0b8d-43a8-83e7-cccad875d265",
+        "generator": "store-012a",
+        "media_ids": [
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Scandinavian",
+        "set_created_at": "2026-06-08T22:34:17.058156+00:00",
+        "direction_letter": "C4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "a2a7886e-f5ed-43fd-8e03-a2421fac3b93",
+          "5646e766-406a-48af-8a7c-98b606229d04",
+          "c8d8342e-2b2b-4e5f-888c-6942d39293eb",
+          "437b21da-5a70-44cd-9a2e-1b2901b87de7",
+          "4dd80f55-2d70-4b08-b7d3-f37f01a98e4d"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "ccd791d8-7bcb-46fc-ac3e-240503702032",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Timeless Classic \u00b7 Set 05\u00a0\u00b7 A5",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:21.430032+00:00",
+    "updated_at": "2026-06-08T22:34:21.430046+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "37b9d619-8ab8-4808-ac7b-10b0a1af77a4",
+        "generator": "store-012a",
+        "media_ids": [
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34"
+        ],
+        "set_index": 5,
+        "set_label": "Direction Set 05",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Timeless Classic",
+        "set_created_at": "2026-06-08T22:34:20.996405+00:00",
+        "direction_letter": "A5",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "22579a95-3a7d-4681-8f77-d0441068f70e",
+          "710e84cd-0184-4c25-a0d9-2929af5e5cf6",
+          "2c00cd11-fc1a-449d-b07f-e4527bfcd71d",
+          "aba72133-b44a-4583-84d5-83e4e0ddbb61",
+          "432c1063-9d7e-43d6-b815-9e740e4f99a7"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "cfe65d73-b46b-4fa9-91e5-9ce0e3f2a22b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Scandinavian \u00b7 Set 05\u00a0\u00b7 B5",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:21.851712+00:00",
+    "updated_at": "2026-06-08T22:34:21.851722+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "37b9d619-8ab8-4808-ac7b-10b0a1af77a4",
+        "generator": "store-012a",
+        "media_ids": [
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e"
+        ],
+        "set_index": 5,
+        "set_label": "Direction Set 05",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Scandinavian",
+        "set_created_at": "2026-06-08T22:34:20.996405+00:00",
+        "direction_letter": "B5",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "e37214cc-d3ee-4011-9c75-8d070108c0be",
+          "58c14491-1d87-4d1a-92de-8f9bc8c69ea2",
+          "a2a7886e-f5ed-43fd-8e03-a2421fac3b93",
+          "5646e766-406a-48af-8a7c-98b606229d04",
+          "c8d8342e-2b2b-4e5f-888c-6942d39293eb"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "392a731e-3e8c-4dc1-981d-44c4fa401fea",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Set 05\u00a0\u00b7 C5",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:34:22.291871+00:00",
+    "updated_at": "2026-06-08T22:34:22.291882+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "37b9d619-8ab8-4808-ac7b-10b0a1af77a4",
+        "generator": "store-012a",
+        "media_ids": [
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df",
+          "621d08a8-e5d2-43f3-8b85-83c32bea642e",
+          "2cbf3c90-c73a-4279-9c77-87b13c9b7219",
+          "17151e64-ded3-488c-8392-da04363fe214",
+          "8e139097-06df-4e5c-bdcc-3f8a1093ae56",
+          "dcc098ea-3966-4292-a2ea-a22357294a44"
+        ],
+        "set_index": 5,
+        "set_label": "Direction Set 05",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Contemporary",
+        "set_created_at": "2026-06-08T22:34:20.996405+00:00",
+        "direction_letter": "C5",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "437b21da-5a70-44cd-9a2e-1b2901b87de7",
+          "4dd80f55-2d70-4b08-b7d3-f37f01a98e4d",
+          "91caad8a-682f-4ba6-be87-6f0d1709beb0",
+          "3a270169-4f71-4e6d-afc1-a14fdafd8afb",
+          "ceaade88-5503-4356-a5a1-c12b8c675bc1"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "eb7e7a0c-59a2-485e-aa32-36807f7a1116",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Set 06\u00a0\u00b7 B6",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:36.42853+00:00",
+    "updated_at": "2026-06-09T00:19:38.019701+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9bad08af-e913-4f31-b7f3-b8763e2a9a51",
+        "generator": "store-012a",
+        "media_ids": [
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df",
+          "621d08a8-e5d2-43f3-8b85-83c32bea642e",
+          "2cbf3c90-c73a-4279-9c77-87b13c9b7219"
+        ],
+        "set_index": 6,
+        "set_label": "Direction Set 06",
+        "shared_at": "2026-06-09T00:19:37.821993+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Contemporary",
+        "set_created_at": "2026-06-09T00:19:35.225484+00:00",
+        "direction_letter": "B6",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "5646e766-406a-48af-8a7c-98b606229d04",
+          "c8d8342e-2b2b-4e5f-888c-6942d39293eb",
+          "437b21da-5a70-44cd-9a2e-1b2901b87de7",
+          "4dd80f55-2d70-4b08-b7d3-f37f01a98e4d",
+          "91caad8a-682f-4ba6-be87-6f0d1709beb0"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Set 01\u00a0\u00b7 A",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:28:52.407067+00:00",
+    "updated_at": "2026-06-09T00:20:49.735136+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+        "generator": "store-012a",
+        "media_ids": [
+          "07478fce-3eda-426f-9da6-25f8e69ec5c2",
+          "da09c776-32ab-4e71-a930-081e15cd5c4b",
+          "4155b0a2-a83f-47c5-8fda-717ca44fa723",
+          "eb43d0b9-6bf0-45ec-b865-8929f048987b",
+          "6fcdcd3b-837d-4712-a8c9-9bc1ac025bd1",
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "shared_at": "2026-06-09T00:10:40.446666+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "is_preferred": false,
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Contemporary",
+        "set_created_at": "2026-06-08T22:28:51.870340+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "ef0576e3-dfc2-4f92-84b2-d6d7bf7eed46",
+            "comment": null,
+            "reaction": "preferred",
+            "created_at": "2026-06-09T00:11:23.966273+00:00"
+          },
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "6d092d89-fe5e-4b38-bc65-3dfe92d2c663",
+            "comment": "Love the warm palette but want to see more wood textures.",
+            "reaction": "comment",
+            "created_at": "2026-06-09T00:11:25.416271+00:00"
+          }
+        ],
+        "direction_letter": "A",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2"
+        ],
+        "client_alignment_score": 15
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 01\u00a0\u00b7 C",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:28:53.30297+00:00",
+    "updated_at": "2026-06-09T00:20:49.867646+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+        "generator": "store-012a",
+        "media_ids": [
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "shared_at": "2026-06-09T00:10:40.446666+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "is_preferred": true,
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-08T22:28:51.870340+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "fcfb8b44-66b2-4353-be5c-99e1fcbce0d0",
+            "comment": null,
+            "reaction": "interested",
+            "created_at": "2026-06-09T00:11:21.483800+00:00"
+          },
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "99ebeda1-c93e-4374-857c-7992ca1a4743",
+            "comment": null,
+            "reaction": "preferred",
+            "created_at": "2026-06-09T00:11:22.666817+00:00"
+          },
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "704d5799-f917-4170-97e4-ccda52df6aea",
+            "comment": null,
+            "reaction": "preferred",
+            "created_at": "2026-06-09T00:20:49.527010+00:00"
+          }
+        ],
+        "direction_letter": "C",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "283a2a69-5425-4260-b9ea-2b56cc2e9aac",
+          "4a54a86b-202c-4d3b-96e4-67dacfaee005",
+          "22579a95-3a7d-4681-8f77-d0441068f70e",
+          "710e84cd-0184-4c25-a0d9-2929af5e5cf6",
+          "2c00cd11-fc1a-449d-b07f-e4527bfcd71d"
+        ],
+        "client_alignment_score": 23
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": null,
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Working Moodboard",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T23:33:10.162061+00:00",
+    "updated_at": "2026-06-09T23:33:10.162061+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "working_seed": {
+        "mode": "working",
+        "sections": [
+          "vision",
+          "materials",
+          "products",
+          "atmosphere",
+          "notes"
+        ],
+        "generator": "store-012b",
+        "set_index": 1,
+        "derived_at": "2026-06-09T23:33:10.162061+00:00",
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "source_set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+        "direction_name": "Warm Contemporary",
+        "generator_version": 1,
+        "source_concept_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "f32df5a7-215e-4fae-aedb-250c3d1a80bf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Elegance \u00b7 Set 06\u00a0\u00b7 C6",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:36.833542+00:00",
+    "updated_at": "2026-06-09T00:19:38.148932+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9bad08af-e913-4f31-b7f3-b8763e2a9a51",
+        "generator": "store-012a",
+        "media_ids": [
+          "17151e64-ded3-488c-8392-da04363fe214",
+          "8e139097-06df-4e5c-bdcc-3f8a1093ae56",
+          "dcc098ea-3966-4292-a2ea-a22357294a44",
+          "7aaeb2e3-09f9-4e30-8e54-41af0072e7a6",
+          "f987acb0-de3c-4d78-987a-ed2baccbd557",
+          "350dd7f7-53fd-405a-9a80-5fb34aa2c182",
+          "01fd37a5-1816-4159-ab8e-49fb593549f5",
+          "e414ca6d-0cb9-41c2-839b-f6e1a3ee9cc0"
+        ],
+        "set_index": 6,
+        "set_label": "Direction Set 06",
+        "shared_at": "2026-06-09T00:19:37.821993+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Timeless Elegance",
+        "set_created_at": "2026-06-09T00:19:35.225484+00:00",
+        "direction_letter": "C6",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "3a270169-4f71-4e6d-afc1-a14fdafd8afb",
+          "ceaade88-5503-4356-a5a1-c12b8c675bc1",
+          "b420c71f-a155-4fce-869d-5b9bcd476386",
+          "baae5c5a-680c-4847-9678-aa381ef99dde",
+          "b981e845-a780-4481-bbff-968f53ee0bed"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "f1cc07df-b9da-4c4f-8bbb-95e88115efca",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Scandinavian \u00b7 Set 06\u00a0\u00b7 A6",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:35.977207+00:00",
+    "updated_at": "2026-06-09T00:19:37.889919+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9bad08af-e913-4f31-b7f3-b8763e2a9a51",
+        "generator": "store-012a",
+        "media_ids": [
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b"
+        ],
+        "set_index": 6,
+        "set_label": "Direction Set 06",
+        "shared_at": "2026-06-09T00:19:37.821993+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Scandinavian",
+        "set_created_at": "2026-06-09T00:19:35.225484+00:00",
+        "direction_letter": "A6",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "aba72133-b44a-4583-84d5-83e4e0ddbb61",
+          "432c1063-9d7e-43d6-b815-9e740e4f99a7",
+          "e37214cc-d3ee-4011-9c75-8d070108c0be",
+          "58c14491-1d87-4d1a-92de-8f9bc8c69ea2",
+          "a2a7886e-f5ed-43fd-8e03-a2421fac3b93"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "23666d7e-9c07-43c8-b3b0-2ecfb0b209d4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Elegance \u00b7 Set 07\u00a0\u00b7 B7",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:41.130025+00:00",
+    "updated_at": "2026-06-09T00:19:42.700674+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "db7619cd-0f66-49b3-8e10-5df383e5124b",
+        "generator": "store-012a",
+        "media_ids": [
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df",
+          "621d08a8-e5d2-43f3-8b85-83c32bea642e",
+          "2cbf3c90-c73a-4279-9c77-87b13c9b7219",
+          "17151e64-ded3-488c-8392-da04363fe214",
+          "8e139097-06df-4e5c-bdcc-3f8a1093ae56",
+          "dcc098ea-3966-4292-a2ea-a22357294a44",
+          "7aaeb2e3-09f9-4e30-8e54-41af0072e7a6",
+          "f987acb0-de3c-4d78-987a-ed2baccbd557"
+        ],
+        "set_index": 7,
+        "set_label": "Direction Set 07",
+        "shared_at": "2026-06-09T00:19:42.505290+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Timeless Elegance",
+        "set_created_at": "2026-06-09T00:19:40.236817+00:00",
+        "direction_letter": "B7",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "4dd80f55-2d70-4b08-b7d3-f37f01a98e4d",
+          "91caad8a-682f-4ba6-be87-6f0d1709beb0",
+          "3a270169-4f71-4e6d-afc1-a14fdafd8afb",
+          "ceaade88-5503-4356-a5a1-c12b8c675bc1",
+          "b420c71f-a155-4fce-869d-5b9bcd476386"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "4aefd8df-21b7-4595-a74a-c47b41635f01",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Contemporary \u00b7 Set 07\u00a0\u00b7 A7",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:40.7367+00:00",
+    "updated_at": "2026-06-09T00:19:42.573427+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "db7619cd-0f66-49b3-8e10-5df383e5124b",
+        "generator": "store-012a",
+        "media_ids": [
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc"
+        ],
+        "set_index": 7,
+        "set_label": "Direction Set 07",
+        "shared_at": "2026-06-09T00:19:42.505290+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Contemporary",
+        "set_created_at": "2026-06-09T00:19:40.236817+00:00",
+        "direction_letter": "A7",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "58c14491-1d87-4d1a-92de-8f9bc8c69ea2",
+          "a2a7886e-f5ed-43fd-8e03-a2421fac3b93",
+          "5646e766-406a-48af-8a7c-98b606229d04",
+          "c8d8342e-2b2b-4e5f-888c-6942d39293eb",
+          "437b21da-5a70-44cd-9a2e-1b2901b87de7"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "a3f0c1ea-7643-4eb1-b3b9-c0ae55ccde22",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 07\u00a0\u00b7 C7",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:41.522104+00:00",
+    "updated_at": "2026-06-09T00:19:42.829658+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "db7619cd-0f66-49b3-8e10-5df383e5124b",
+        "generator": "store-012a",
+        "media_ids": [
+          "350dd7f7-53fd-405a-9a80-5fb34aa2c182",
+          "01fd37a5-1816-4159-ab8e-49fb593549f5",
+          "e414ca6d-0cb9-41c2-839b-f6e1a3ee9cc0",
+          "4b76f87a-2f61-47ac-ac8f-3cc8763cdde9",
+          "271ab977-2b6d-4a63-8d90-c4b90049a3f0",
+          "e5e2ee01-11e7-4255-b3d4-0a8b12d9a23f",
+          "433eb260-dae6-4e5f-ae54-30ffe8751b40",
+          "7d67e5ab-7eb8-4a43-9585-0503ed8079ae"
+        ],
+        "set_index": 7,
+        "set_label": "Direction Set 07",
+        "shared_at": "2026-06-09T00:19:42.505290+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-09T00:19:40.236817+00:00",
+        "direction_letter": "C7",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "baae5c5a-680c-4847-9678-aa381ef99dde",
+          "b981e845-a780-4481-bbff-968f53ee0bed",
+          "d7fe2cd7-5c39-4c20-a080-5cbb2368e7e5",
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "fd3ad603-e676-469a-95fd-01aa1e563279",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Set 08\u00a0\u00b7 C8",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:45.361786+00:00",
+    "updated_at": "2026-06-09T00:19:47.724873+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "cf7cb391-5a09-4975-9815-37a087689e4c",
+        "generator": "store-012a",
+        "media_ids": [
+          "e5e2ee01-11e7-4255-b3d4-0a8b12d9a23f",
+          "433eb260-dae6-4e5f-ae54-30ffe8751b40",
+          "7d67e5ab-7eb8-4a43-9585-0503ed8079ae",
+          "fd297215-58f8-4504-823d-15a205c0ce02",
+          "6693b5b3-b97b-4cd3-89a6-976b9d4ec388",
+          "9c6dd89e-eb34-4049-b6e0-8746dc57ea05",
+          "42387c90-1fbc-4a09-adc7-53e238dbb0e8",
+          "525513ab-9c40-405d-80aa-0c63cd1993dd"
+        ],
+        "set_index": 8,
+        "set_label": "Direction Set 08",
+        "shared_at": null,
+        "shared_by": null,
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Warm Contemporary",
+        "set_created_at": "2026-06-09T00:19:44.094903+00:00",
+        "direction_letter": "C8",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "3014c214-3945-488a-b87d-84e5de966f2e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 08\u00a0\u00b7 B8",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:44.976676+00:00",
+    "updated_at": "2026-06-09T00:19:47.471886+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "cf7cb391-5a09-4975-9815-37a087689e4c",
+        "generator": "store-012a",
+        "media_ids": [
+          "dcc098ea-3966-4292-a2ea-a22357294a44",
+          "7aaeb2e3-09f9-4e30-8e54-41af0072e7a6",
+          "f987acb0-de3c-4d78-987a-ed2baccbd557",
+          "350dd7f7-53fd-405a-9a80-5fb34aa2c182",
+          "01fd37a5-1816-4159-ab8e-49fb593549f5",
+          "e414ca6d-0cb9-41c2-839b-f6e1a3ee9cc0",
+          "4b76f87a-2f61-47ac-ac8f-3cc8763cdde9",
+          "271ab977-2b6d-4a63-8d90-c4b90049a3f0"
+        ],
+        "set_index": 8,
+        "set_label": "Direction Set 08",
+        "shared_at": null,
+        "shared_by": null,
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-09T00:19:44.094903+00:00",
+        "direction_letter": "B8",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "ceaade88-5503-4356-a5a1-c12b8c675bc1",
+          "b420c71f-a155-4fce-869d-5b9bcd476386",
+          "baae5c5a-680c-4847-9678-aa381ef99dde",
+          "b981e845-a780-4481-bbff-968f53ee0bed",
+          "d7fe2cd7-5c39-4c20-a080-5cbb2368e7e5"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "33957509-bd94-4d61-b5a7-dc7d3ab37580",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Elegance \u00b7 Set 08\u00a0\u00b7 A8",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:44.589734+00:00",
+    "updated_at": "2026-06-09T00:19:47.597786+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "cf7cb391-5a09-4975-9815-37a087689e4c",
+        "generator": "store-012a",
+        "media_ids": [
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df",
+          "621d08a8-e5d2-43f3-8b85-83c32bea642e",
+          "2cbf3c90-c73a-4279-9c77-87b13c9b7219",
+          "17151e64-ded3-488c-8392-da04363fe214",
+          "8e139097-06df-4e5c-bdcc-3f8a1093ae56"
+        ],
+        "set_index": 8,
+        "set_label": "Direction Set 08",
+        "shared_at": null,
+        "shared_by": null,
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Timeless Elegance",
+        "set_created_at": "2026-06-09T00:19:44.094903+00:00",
+        "direction_letter": "A8",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "c8d8342e-2b2b-4e5f-888c-6942d39293eb",
+          "437b21da-5a70-44cd-9a2e-1b2901b87de7",
+          "4dd80f55-2d70-4b08-b7d3-f37f01a98e4d",
+          "91caad8a-682f-4ba6-be87-6f0d1709beb0",
+          "3a270169-4f71-4e6d-afc1-a14fdafd8afb"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "badbc3c4-868b-4b26-b1de-e6ac4adce60f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Scandinavian \u00b7 Set 09\u00a0\u00b7 A9",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:50.291225+00:00",
+    "updated_at": "2026-06-09T00:19:58.998332+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+        "generator": "store-012a",
+        "media_ids": [
+          "2cbf3c90-c73a-4279-9c77-87b13c9b7219",
+          "17151e64-ded3-488c-8392-da04363fe214",
+          "8e139097-06df-4e5c-bdcc-3f8a1093ae56",
+          "dcc098ea-3966-4292-a2ea-a22357294a44",
+          "7aaeb2e3-09f9-4e30-8e54-41af0072e7a6",
+          "f987acb0-de3c-4d78-987a-ed2baccbd557",
+          "350dd7f7-53fd-405a-9a80-5fb34aa2c182",
+          "01fd37a5-1816-4159-ab8e-49fb593549f5"
+        ],
+        "set_index": 9,
+        "set_label": "Direction Set 09",
+        "shared_at": "2026-06-09T00:19:52.056259+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "is_preferred": false,
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Scandinavian",
+        "set_created_at": "2026-06-09T00:19:49.781879+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "9c99030b-250f-4047-91ae-cf22740d4f48",
+            "comment": null,
+            "reaction": "interested",
+            "created_at": "2026-06-09T00:19:54.948000+00:00"
+          },
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "effd8746-1221-4fde-b4f3-240305c515c3",
+            "comment": null,
+            "reaction": "preferred",
+            "created_at": "2026-06-09T00:19:57.111650+00:00"
+          }
+        ],
+        "direction_letter": "A9",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "91caad8a-682f-4ba6-be87-6f0d1709beb0",
+          "3a270169-4f71-4e6d-afc1-a14fdafd8afb",
+          "ceaade88-5503-4356-a5a1-c12b8c675bc1",
+          "b420c71f-a155-4fce-869d-5b9bcd476386",
+          "baae5c5a-680c-4847-9678-aa381ef99dde"
+        ],
+        "client_alignment_score": 13
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Set 09\u00a0\u00b7 B9",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:50.683277+00:00",
+    "updated_at": "2026-06-09T00:19:59.128799+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+        "generator": "store-012a",
+        "media_ids": [
+          "e414ca6d-0cb9-41c2-839b-f6e1a3ee9cc0",
+          "4b76f87a-2f61-47ac-ac8f-3cc8763cdde9",
+          "271ab977-2b6d-4a63-8d90-c4b90049a3f0",
+          "e5e2ee01-11e7-4255-b3d4-0a8b12d9a23f",
+          "433eb260-dae6-4e5f-ae54-30ffe8751b40",
+          "7d67e5ab-7eb8-4a43-9585-0503ed8079ae",
+          "fd297215-58f8-4504-823d-15a205c0ce02",
+          "6693b5b3-b97b-4cd3-89a6-976b9d4ec388"
+        ],
+        "set_index": 9,
+        "set_label": "Direction Set 09",
+        "shared_at": "2026-06-09T00:19:52.056259+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "is_preferred": true,
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Warm Contemporary",
+        "set_created_at": "2026-06-09T00:19:49.781879+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "a9dc206c-9ebc-4ace-a9a1-8f1cc484d15d",
+            "comment": null,
+            "reaction": "preferred",
+            "created_at": "2026-06-09T00:19:58.802016+00:00"
+          }
+        ],
+        "direction_letter": "B9",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "b981e845-a780-4481-bbff-968f53ee0bed",
+          "d7fe2cd7-5c39-4c20-a080-5cbb2368e7e5",
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee"
+        ],
+        "client_alignment_score": 10
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "0fca8651-8f10-417a-9803-eb7d9723820b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Timeless Classic \u00b7 Set 09\u00a0\u00b7 C9",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-09T00:19:51.08243+00:00",
+    "updated_at": "2026-06-09T00:20:00.677805+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+        "generator": "store-012a",
+        "media_ids": [
+          "9c6dd89e-eb34-4049-b6e0-8746dc57ea05",
+          "42387c90-1fbc-4a09-adc7-53e238dbb0e8",
+          "525513ab-9c40-405d-80aa-0c63cd1993dd",
+          "713ebdf9-ec35-4251-b8ef-a50f519e49b0",
+          "a9d57c5d-01f0-47d7-af9b-f950b11e03a7",
+          "02c182ad-2750-43c6-b42b-5c4e31917099",
+          "06418966-ccf9-4dbc-bc40-1058e5628afc",
+          "fd0d8812-9955-43ec-90d4-097e11d70a46"
+        ],
+        "set_index": 9,
+        "set_label": "Direction Set 09",
+        "shared_at": "2026-06-09T00:19:52.056259+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Timeless Classic",
+        "set_created_at": "2026-06-09T00:19:49.781879+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "732f1951-783b-4184-8e80-430350ebe7b7",
+            "comment": "Adoro questa palette",
+            "reaction": "comment",
+            "created_at": "2026-06-09T00:20:00.610807+00:00"
+          }
+        ],
+        "direction_letter": "C9",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c",
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c"
+        ],
+        "client_alignment_score": 5
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "2aa85a63-bd3e-491d-acbb-5cd8acd4845d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Elegance \u00b7 Set 01\u00a0\u00b7 B",
+    "description": null,
+    "template_id": null,
+    "status": "sent",
+    "current_version": 1,
+    "created_at": "2026-06-08T22:28:52.888498+00:00",
+    "updated_at": "2026-06-09T00:20:52.061041+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+        "generator": "store-012a",
+        "media_ids": [
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "shared_at": "2026-06-09T00:10:40.446666+00:00",
+        "shared_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Timeless Elegance",
+        "set_created_at": "2026-06-08T22:28:51.870340+00:00",
+        "client_reactions": [
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "babbdd99-1efd-489a-9e55-14761f8fbcf0",
+            "comment": null,
+            "reaction": "interested",
+            "created_at": "2026-06-09T00:20:46.419917+00:00"
+          },
+          {
+            "by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+            "id": "e49edb34-9335-4db4-a64f-7124f0db2a23",
+            "comment": "Test comment from playwright",
+            "reaction": "comment",
+            "created_at": "2026-06-09T00:20:51.989739+00:00"
+          }
+        ],
+        "direction_letter": "B",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c",
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c",
+          "3197d73e-9657-40b9-881d-e4da991765e8",
+          "a568b404-a3c0-4259-ae2c-097b7cbf2ec3"
+        ],
+        "client_alignment_score": 8
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "1a1402ee-d49a-449e-8e4c-0bce91683622",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Warm Contemporary \u00b7 Set 10\u00a0\u00b7 A10",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T23:32:28.450685+00:00",
+    "updated_at": "2026-06-09T23:32:28.450697+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ef893d55-af40-45cd-8f47-3fd73263c952",
+        "generator": "store-012a",
+        "media_ids": [
+          "f987acb0-de3c-4d78-987a-ed2baccbd557",
+          "350dd7f7-53fd-405a-9a80-5fb34aa2c182",
+          "01fd37a5-1816-4159-ab8e-49fb593549f5",
+          "e414ca6d-0cb9-41c2-839b-f6e1a3ee9cc0",
+          "4b76f87a-2f61-47ac-ac8f-3cc8763cdde9",
+          "271ab977-2b6d-4a63-8d90-c4b90049a3f0",
+          "e5e2ee01-11e7-4255-b3d4-0a8b12d9a23f",
+          "433eb260-dae6-4e5f-ae54-30ffe8751b40"
+        ],
+        "set_index": 10,
+        "set_label": "Direction Set 10",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Warm Contemporary",
+        "set_created_at": "2026-06-09T23:32:27.640887+00:00",
+        "direction_letter": "A10",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "b420c71f-a155-4fce-869d-5b9bcd476386",
+          "baae5c5a-680c-4847-9678-aa381ef99dde",
+          "b981e845-a780-4481-bbff-968f53ee0bed",
+          "d7fe2cd7-5c39-4c20-a080-5cbb2368e7e5",
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "118419c0-949b-4014-9418-9798f26062ab",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Warm Timeless Classic \u00b7 Set 10\u00a0\u00b7 B10",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T23:32:28.960416+00:00",
+    "updated_at": "2026-06-09T23:32:28.960426+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ef893d55-af40-45cd-8f47-3fd73263c952",
+        "generator": "store-012a",
+        "media_ids": [
+          "7d67e5ab-7eb8-4a43-9585-0503ed8079ae",
+          "fd297215-58f8-4504-823d-15a205c0ce02",
+          "6693b5b3-b97b-4cd3-89a6-976b9d4ec388",
+          "9c6dd89e-eb34-4049-b6e0-8746dc57ea05",
+          "42387c90-1fbc-4a09-adc7-53e238dbb0e8",
+          "525513ab-9c40-405d-80aa-0c63cd1993dd",
+          "713ebdf9-ec35-4251-b8ef-a50f519e49b0",
+          "a9d57c5d-01f0-47d7-af9b-f950b11e03a7"
+        ],
+        "set_index": 10,
+        "set_label": "Direction Set 10",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#3a2e26",
+          "#8b5a3c",
+          "#c7a17a",
+          "#e8d4b8",
+          "#f5ede2"
+        ],
+        "direction_name": "Warm Timeless Classic",
+        "set_created_at": "2026-06-09T23:32:27.640887+00:00",
+        "direction_letter": "B10",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "e1c56946-f976-410a-98ac-84fdc50e473f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "86db4a78-8947-428a-a0a2-619d282116ad",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Elegant Scandinavian \u00b7 Set 10\u00a0\u00b7 C10",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-09T23:32:29.383349+00:00",
+    "updated_at": "2026-06-09T23:32:29.383363+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ef893d55-af40-45cd-8f47-3fd73263c952",
+        "generator": "store-012a",
+        "media_ids": [
+          "02c182ad-2750-43c6-b42b-5c4e31917099",
+          "06418966-ccf9-4dbc-bc40-1058e5628afc",
+          "fd0d8812-9955-43ec-90d4-097e11d70a46",
+          "dece83f6-7786-46cd-9f8d-470bf59ce61b",
+          "5e2a9626-df4b-4a21-b898-8e7c97719fcc",
+          "1550bb41-ade0-43ab-bb96-6bba93955a7e",
+          "cf72bb52-d447-46df-94b1-f021f917e096",
+          "82a6371e-471b-4c76-a2bb-65f8c413c406"
+        ],
+        "set_index": 10,
+        "set_label": "Direction Set 10",
+        "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1f1f1f",
+          "#3e3e3e",
+          "#8a8a8a",
+          "#c8c2b3",
+          "#ece8de"
+        ],
+        "direction_name": "Elegant Scandinavian",
+        "set_created_at": "2026-06-09T23:32:27.640887+00:00",
+        "direction_letter": "C10",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 25
+          },
+          {
+            "key": "timeless_classic",
+            "label": "Timeless Classic",
+            "score": 19
+          },
+          {
+            "key": "scandinavian",
+            "label": "Scandinavian",
+            "score": 19
+          }
+        ],
+        "material_entity_ids": [
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c",
+          "3197d73e-9657-40b9-881d-e4da991765e8",
+          "a568b404-a3c0-4259-ae2c-097b7cbf2ec3",
+          "283a2a69-5425-4260-b9ea-2b56cc2e9aac"
+        ]
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "8be1bfee-7ec8-468d-8616-32596ec6db88",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 01\u00a0\u00b7 A",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:39.54239+00:00",
+    "updated_at": "2026-06-10T01:41:39.542402+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ab9aa2b3-aebd-4146-bd2d-13c4eb14dba3",
+        "generator": "store-012a",
+        "media_ids": [
+          "07478fce-3eda-426f-9da6-25f8e69ec5c2",
+          "da09c776-32ab-4e71-a930-081e15cd5c4b",
+          "4155b0a2-a83f-47c5-8fda-717ca44fa723",
+          "eb43d0b9-6bf0-45ec-b865-8929f048987b",
+          "6fcdcd3b-837d-4712-a8c9-9bc1ac025bd1",
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:41:38.754898+00:00",
+        "direction_letter": "A",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "5cf72dd5-9346-46ca-89d9-c954bad50819",
+          "e53b4a12-fa18-4491-8ae4-caed051b0bd6",
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "2fef9c0c-ff56-4d88-988a-227fe997965a"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "cf89ea58-b65d-4c45-9ea3-fa756b934442",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 01\u00a0\u00b7 B",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:40.032323+00:00",
+    "updated_at": "2026-06-10T01:41:40.032336+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ab9aa2b3-aebd-4146-bd2d-13c4eb14dba3",
+        "generator": "store-012a",
+        "media_ids": [
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:41:38.754898+00:00",
+        "direction_letter": "B",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "efce888a-c29a-4701-bf0d-9301ec1e9c95",
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c",
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "2a23fbca-f26b-4761-85b3-ddd65afb7b05",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 01\u00a0\u00b7 C",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:40.454669+00:00",
+    "updated_at": "2026-06-10T01:41:40.45468+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "ab9aa2b3-aebd-4146-bd2d-13c4eb14dba3",
+        "generator": "store-012a",
+        "media_ids": [
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:41:38.754898+00:00",
+        "direction_letter": "C",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "a27622d4-20c7-47ec-806e-c215b497504e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 02\u00a0\u00b7 A2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:42.815047+00:00",
+    "updated_at": "2026-06-10T01:41:42.81506+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "f6f32767-a2ef-45ed-a4dc-744420d45a0b",
+        "generator": "store-012a",
+        "media_ids": [
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e",
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:41:42.030191+00:00",
+        "direction_letter": "A2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "2fef9c0c-ff56-4d88-988a-227fe997965a",
+          "efce888a-c29a-4701-bf0d-9301ec1e9c95",
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "63bf53df-d6e6-4c31-9fbe-293f90345885",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 02\u00a0\u00b7 B2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:43.223662+00:00",
+    "updated_at": "2026-06-10T01:41:43.223675+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "f6f32767-a2ef-45ed-a4dc-744420d45a0b",
+        "generator": "store-012a",
+        "media_ids": [
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:41:42.030191+00:00",
+        "direction_letter": "B2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "3e245e9f-bcd2-41ef-a50d-bb02897428c3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 03\u00a0\u00b7 B3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:46.152473+00:00",
+    "updated_at": "2026-06-10T01:41:46.152485+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3c20c78d-1833-467f-8bf8-bfc5d366edec",
+        "generator": "store-012a",
+        "media_ids": [
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:41:45.228048+00:00",
+        "direction_letter": "B3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "e1331424-f13a-4c3c-ae4a-f834d613c9e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 04\u00a0\u00b7 B4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:48.977819+00:00",
+    "updated_at": "2026-06-10T01:41:48.97783+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "035284ff-6379-4a5f-809c-c7d368b6df61",
+        "generator": "store-012a",
+        "media_ids": [
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:41:48.052258+00:00",
+        "direction_letter": "B4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597",
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "f40dfb1b-18fb-44b2-99cc-07ed5bb8a38a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 02\u00a0\u00b7 C2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:43.635246+00:00",
+    "updated_at": "2026-06-10T01:41:43.635259+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "f6f32767-a2ef-45ed-a4dc-744420d45a0b",
+        "generator": "store-012a",
+        "media_ids": [
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:41:42.030191+00:00",
+        "direction_letter": "C2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597",
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "7803bbe8-e3d1-41fd-8ffb-3f84b1148afb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 03\u00a0\u00b7 C3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:46.565349+00:00",
+    "updated_at": "2026-06-10T01:41:46.565362+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3c20c78d-1833-467f-8bf8-bfc5d366edec",
+        "generator": "store-012a",
+        "media_ids": [
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:41:45.228048+00:00",
+        "direction_letter": "C3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c",
+          "ebbbea9e-d56b-433d-9cfc-49a7b7d66d96",
+          "e9bdc52d-d25e-40de-b8ce-ec3bc67709b9"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "576d7fb6-8d05-45c9-a5d7-fc05806ab494",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 04\u00a0\u00b7 C4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:49.392772+00:00",
+    "updated_at": "2026-06-10T01:41:49.392799+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "035284ff-6379-4a5f-809c-c7d368b6df61",
+        "generator": "store-012a",
+        "media_ids": [
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:41:48.052258+00:00",
+        "direction_letter": "C4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "ebbbea9e-d56b-433d-9cfc-49a7b7d66d96",
+          "e9bdc52d-d25e-40de-b8ce-ec3bc67709b9",
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c",
+          "b3f06ed6-c4dd-4e84-9f33-9f18c6b854a6"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "bd795a9c-8926-4acc-8bfc-b541f19ed5e5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 03\u00a0\u00b7 A3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:45.738962+00:00",
+    "updated_at": "2026-06-10T01:41:45.738974+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "3c20c78d-1833-467f-8bf8-bfc5d366edec",
+        "generator": "store-012a",
+        "media_ids": [
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:41:45.228048+00:00",
+        "direction_letter": "A3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c",
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "9aaa2d13-8b46-44d8-b5b3-931bfc28f8b1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "ef455b17-b317-435f-a55e-4efb45f8e230",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 04\u00a0\u00b7 A4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:41:48.566352+00:00",
+    "updated_at": "2026-06-10T01:41:48.566364+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "035284ff-6379-4a5f-809c-c7d368b6df61",
+        "generator": "store-012a",
+        "media_ids": [
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:41:48.052258+00:00",
+        "direction_letter": "A4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "7e55d7fe-5b8a-4cd3-b74c-721aafa7cf56",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 01\u00a0\u00b7 A",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:41.012179+00:00",
+    "updated_at": "2026-06-10T01:52:41.012192+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "379f9bae-2e35-4a98-a1ca-8795d82ec10c",
+        "generator": "store-012a",
+        "media_ids": [
+          "07478fce-3eda-426f-9da6-25f8e69ec5c2",
+          "da09c776-32ab-4e71-a930-081e15cd5c4b",
+          "4155b0a2-a83f-47c5-8fda-717ca44fa723",
+          "eb43d0b9-6bf0-45ec-b865-8929f048987b",
+          "6fcdcd3b-837d-4712-a8c9-9bc1ac025bd1",
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:52:40.205761+00:00",
+        "direction_letter": "A",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "5cf72dd5-9346-46ca-89d9-c954bad50819",
+          "e53b4a12-fa18-4491-8ae4-caed051b0bd6",
+          "2996b7ce-3fd8-499d-baf8-011ad9ac8f81",
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "2fef9c0c-ff56-4d88-988a-227fe997965a"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "d27a367c-c7d1-4473-bcb8-e692ee18d6e3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 01\u00a0\u00b7 B",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:41.461928+00:00",
+    "updated_at": "2026-06-10T01:52:41.46194+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "379f9bae-2e35-4a98-a1ca-8795d82ec10c",
+        "generator": "store-012a",
+        "media_ids": [
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:52:40.205761+00:00",
+        "direction_letter": "B",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "efce888a-c29a-4701-bf0d-9301ec1e9c95",
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c",
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "2f2c926d-4ac2-4da7-bd5e-ce84afcd7cf2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 01\u00a0\u00b7 C",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:41.847901+00:00",
+    "updated_at": "2026-06-10T01:52:41.847914+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "379f9bae-2e35-4a98-a1ca-8795d82ec10c",
+        "generator": "store-012a",
+        "media_ids": [
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda"
+        ],
+        "set_index": 1,
+        "set_label": "Direction Set 01",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:52:40.205761+00:00",
+        "direction_letter": "C",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "298a17a6-8300-44ac-9fba-baea62dd47e8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 02\u00a0\u00b7 C2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:44.628215+00:00",
+    "updated_at": "2026-06-10T01:52:44.628227+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "adb42546-e254-43e8-ac6b-93bbb9e33e91",
+        "generator": "store-012a",
+        "media_ids": [
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:52:43.373775+00:00",
+        "direction_letter": "C2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597",
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "9af6bebf-5d78-4de0-927b-f220a89f5c15",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 03\u00a0\u00b7 C3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:47.409297+00:00",
+    "updated_at": "2026-06-10T01:52:47.409308+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "85684a62-b153-4465-88ca-d5abfc173ebc",
+        "generator": "store-012a",
+        "media_ids": [
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0",
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:52:46.159853+00:00",
+        "direction_letter": "C3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c",
+          "ebbbea9e-d56b-433d-9cfc-49a7b7d66d96",
+          "e9bdc52d-d25e-40de-b8ce-ec3bc67709b9"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "31df0468-1535-476d-9d83-454ba187075f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 04\u00a0\u00b7 C4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:50.175101+00:00",
+    "updated_at": "2026-06-10T01:52:50.175114+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9cf9cd79-c185-4bc0-9176-8f69002eb689",
+        "generator": "store-012a",
+        "media_ids": [
+          "556a82fa-80f2-435d-a710-7783790dd65f",
+          "120c0c38-9736-4caf-a49e-eaa7c86c3f9b",
+          "0773a302-4bd9-4fb1-a08f-702eea0e5f69",
+          "beb220b8-408f-4c41-90e6-a5d6bd8fa2d1",
+          "a27d7e17-ec04-4d8c-9b8b-807aef193f8e",
+          "be61a393-2065-492c-94da-54deb729060f",
+          "d90f0a42-ba77-4f68-9aec-8ce0f334f2dc",
+          "c2a1c2f0-13c4-4c7e-b795-7bb736f7f7df"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:52:48.920319+00:00",
+        "direction_letter": "C4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "ebbbea9e-d56b-433d-9cfc-49a7b7d66d96",
+          "e9bdc52d-d25e-40de-b8ce-ec3bc67709b9",
+          "a28dd3b8-3994-4a03-a607-0bb82dafbf4d",
+          "859c4d44-ae7f-4413-b888-80aaef9ebf4c",
+          "b3f06ed6-c4dd-4e84-9f33-9f18c6b854a6"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "bb951134-610c-4ee5-99c9-7f592571949c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 02\u00a0\u00b7 A2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:43.865406+00:00",
+    "updated_at": "2026-06-10T01:52:43.865419+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "adb42546-e254-43e8-ac6b-93bbb9e33e91",
+        "generator": "store-012a",
+        "media_ids": [
+          "bfe1a1d1-e2f4-4a62-8d6b-b0dfe636441e",
+          "68066a08-5b56-45ad-ad28-7e5aae2f91d4",
+          "bff082b5-9231-4d4a-a3e8-c0a35cb4040e",
+          "4271aaba-b30e-4569-b7a0-2c9afc2360f7",
+          "55581864-ceb3-4dff-8291-1d234c78f0f0",
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:52:43.373775+00:00",
+        "direction_letter": "A2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "35adaf70-8877-4947-91a5-dd218eeffd6b",
+          "2fef9c0c-ff56-4d88-988a-227fe997965a",
+          "efce888a-c29a-4701-bf0d-9301ec1e9c95",
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "f783a6c2-0272-4a70-8ae9-4d350b008c99",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 03\u00a0\u00b7 A3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:46.642163+00:00",
+    "updated_at": "2026-06-10T01:52:46.642174+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "85684a62-b153-4465-88ca-d5abfc173ebc",
+        "generator": "store-012a",
+        "media_ids": [
+          "c3105c8a-484e-49c1-bf65-cbb880144739",
+          "8ba4ff3d-e282-4b03-9af1-306449d15fad",
+          "2647ee7b-15d1-423e-814c-84147ba93b9b",
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:52:46.159853+00:00",
+        "direction_letter": "A3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "82da4a52-3420-4465-b4a6-8963c0639458",
+          "7e0efb3f-a7e3-41ee-9c9e-040e7634fa1c",
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "3166d8f0-423b-43d6-a6a4-e58d33df95e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 04\u00a0\u00b7 A4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:49.409924+00:00",
+    "updated_at": "2026-06-10T01:52:49.409936+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9cf9cd79-c185-4bc0-9176-8f69002eb689",
+        "generator": "store-012a",
+        "media_ids": [
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:52:48.920319+00:00",
+        "direction_letter": "A4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "e5da6433-e3f3-4cf3-9b1f-1d4c4ae29bc9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Essential Minimal \u00b7 Set 02\u00a0\u00b7 B2",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:44.249296+00:00",
+    "updated_at": "2026-06-10T01:52:44.249307+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "adb42546-e254-43e8-ac6b-93bbb9e33e91",
+        "generator": "store-012a",
+        "media_ids": [
+          "ed385c4f-26f7-43d5-a45f-c753de95b0cc",
+          "84ee7731-6357-4ee4-9c0e-b7fadc47aed1",
+          "df34dc80-d508-4a1f-b231-24993ce7a5d0",
+          "e3eaea2c-65a1-4dd6-a248-653169faf2d4",
+          "f788e5cc-82f5-4698-bd20-317720407b42",
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52"
+        ],
+        "set_index": 2,
+        "set_label": "Direction Set 02",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "es-MX",
+        "direction_name": "Essential Minimal",
+        "set_created_at": "2026-06-10T01:52:43.373775+00:00",
+        "direction_letter": "B2",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "56244bcd-2c76-43a3-ba0d-f332c4fe8eb7",
+          "65cc0ec1-6fb9-480f-bde9-245438342c38",
+          "f446583a-889f-41e6-8b13-8ad754ad2dee",
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "85b6ee78-737b-4280-97ce-0514bcaffb29",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Timeless Warm Contemporary \u00b7 Set 03\u00a0\u00b7 B3",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:47.032447+00:00",
+    "updated_at": "2026-06-10T01:52:47.03246+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "85684a62-b153-4465-88ca-d5abfc173ebc",
+        "generator": "store-012a",
+        "media_ids": [
+          "c6e65ecc-5ad6-41de-ad36-fb6aa03731c5",
+          "8b875124-7338-4076-bab4-f0b10192c4bd",
+          "4bc087ab-9c15-440e-bf17-46418ceb4f52",
+          "9bab02de-3d7b-40c3-a4b3-8ad0d50019c9",
+          "37e52e28-6d4f-4277-b8bb-b1dd6d0a6942",
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513"
+        ],
+        "set_index": 3,
+        "set_label": "Direction Set 03",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "it",
+        "direction_name": "Timeless Warm Contemporary",
+        "set_created_at": "2026-06-10T01:52:46.159853+00:00",
+        "direction_letter": "B3",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "dc409bfa-48af-4c8a-80a4-8c00b4a4806a",
+          "d5df3c12-7897-484e-bb75-7dc8142204ec",
+          "22ec1489-6ee4-412b-a146-88425a0d937f",
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597"
+        ],
+        "tenant_primary_locale": null
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  },
+  {
+    "id": "ed9c2ddd-f63f-411d-8ec1-b48d1ca7bda1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": "186829dc-cc4a-4bb8-bba7-f24df1be6f9b",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "title": "Italian Heritage \u00b7 Set 04\u00a0\u00b7 B4",
+    "description": null,
+    "template_id": null,
+    "status": "draft",
+    "current_version": 1,
+    "created_at": "2026-06-10T01:52:49.783469+00:00",
+    "updated_at": "2026-06-10T01:52:49.783482+00:00",
+    "cover_strategy": "auto",
+    "cover_metadata": {},
+    "presentation_metadata": {},
+    "ai_metadata": {
+      "concept_seed": {
+        "set_id": "9cf9cd79-c185-4bc0-9176-8f69002eb689",
+        "generator": "store-012a",
+        "media_ids": [
+          "cb0d1a0a-6959-4644-8ab3-96ee6ee18cda",
+          "c3a34532-d734-4184-bae4-67207ea3fe76",
+          "323df1e8-5b55-4e89-a7db-c8bd42126513",
+          "edc19986-1c4a-462a-96c2-3e86143a08d7",
+          "b9667422-7dc5-40bc-a294-fb4305807b34",
+          "081c371f-ed21-45ca-89ad-2b8b74a8b852",
+          "7eed08d9-b00f-446b-9233-f2e0734206c9",
+          "cb31d501-e6b8-4e51-b5e5-0cda14b758c0"
+        ],
+        "set_index": 4,
+        "set_label": "Direction Set 04",
+        "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+        "needs_flags": [
+          "NEEDS_PRODUCT_SELECTION"
+        ],
+        "color_palette": [
+          "#1c1b1a",
+          "#3a3530",
+          "#7a6b58",
+          "#bda988",
+          "#e9ddc6"
+        ],
+        "target_locale": "en-US",
+        "direction_name": "Italian Heritage",
+        "set_created_at": "2026-06-10T01:52:48.920319+00:00",
+        "direction_letter": "B4",
+        "generator_version": 1,
+        "product_entity_ids": [],
+        "style_dna_snapshot": [
+          {
+            "key": "warm_contemporary",
+            "label": "Warm Contemporary",
+            "score": 40
+          },
+          {
+            "key": "modern_italian",
+            "label": "Modern Italian",
+            "score": 35
+          },
+          {
+            "key": "minimal",
+            "label": "Minimal",
+            "score": 25
+          }
+        ],
+        "material_entity_ids": [
+          "5e4289e2-96b0-453c-ab4f-4ed6753176c2",
+          "b9effaa1-4fcb-4aae-a4d1-b4c937ace597",
+          "f4a9096d-9759-41a4-a39f-fcec315178dd",
+          "a736dfc1-8c29-4ac4-b1b0-7b2646b4b94e",
+          "51109904-f0c4-45f9-a9fe-1c352b95d59c"
+        ],
+        "tenant_primary_locale": "it"
+      }
+    },
+    "current_page_id": null,
+    "archived_at": null,
+    "deleted_at": null,
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "milestone_id": null,
+    "scope": null,
+    "room_key": null,
+    "chapter_key": null,
+    "visibility": "studio_only",
+    "approval_state": "draft"
+  }
+]

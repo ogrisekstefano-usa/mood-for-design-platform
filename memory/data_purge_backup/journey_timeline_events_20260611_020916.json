@@ -1,0 +1,1628 @@
+[
+  {
+    "id": "cdedab51-e539-46b9-aca6-702f67b2523b",
+    "journey_id": "bb8ee381-58f8-4b76-9255-b9fd2020bc0f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di stefano ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-06T15:40:08.952367+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "c07733fb-4c02-4e42-aeed-8a9870482ecc",
+    "journey_id": "bb8ee381-58f8-4b76-9255-b9fd2020bc0f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "7f1456e5-b262-43c2-8582-35f53eced76c",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. stefano racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-06T15:40:08.952367+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "ce6f300c-04fc-4082-9d5c-b62d984730f1",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_shared",
+    "narrative_text": "Hai condiviso Direction Set 01 con il cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "set_index": 1,
+      "moodboard_ids": [
+        "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+        "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+        "2aa85a63-bd3e-491d-acbb-5cd8acd4845d"
+      ]
+    },
+    "created_at": "2026-06-09T00:10:40.446666+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "c7460fc8-bf1f-4687-bfd9-3a0c7f5004b6",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha segnato \"Warm Scandinavian\" come interessante.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": null,
+      "reaction": "interested",
+      "feedback_id": "3f8fbc7d-c1e4-4c83-83bc-da213f1ca276",
+      "moodboard_id": "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+      "direction_name": "Warm Scandinavian",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:11:21.4838+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b1074faf-8dcf-49a2-b9f1-fa4f78b57f2e",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha indicato \"Warm Scandinavian\" come direzione preferita.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": null,
+      "reaction": "preferred",
+      "feedback_id": "a0105de1-8c7e-4d78-81fb-f2572f6456e5",
+      "moodboard_id": "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+      "direction_name": "Warm Scandinavian",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:11:22.666817+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "43b8f911-38f3-45a4-9f58-b254a5cb0425",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha cambiato direzione preferita: da \"Warm Scandinavian\" a \"Warm Contemporary\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": null,
+      "reaction": "preferred",
+      "feedback_id": "cefb3706-ef76-4ff1-8e2c-9ce73ce6e142",
+      "moodboard_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+      "direction_name": "Warm Contemporary",
+      "switched_from_moodboard_id": "84aa5b09-4862-4d5f-9327-7ddbac82b034"
+    },
+    "created_at": "2026-06-09T00:11:23.966273+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b156b647-32ce-4e2e-b327-0f67cc4fce18",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha lasciato un commento su \"washbasin in Mineralguss, Light\": \"Love this finish, can we see in light walnut?\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": "Love this finish, can we see in light walnut?",
+      "reaction": "comment",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "8562867c-3496-4878-926a-2cadab769aca",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:46:02.707743+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "4f730f7a-ad7a-4333-b082-42997de09689",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:46:04.815664+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "eae6e497-6511-40fc-b7f4-e31dcdb97b39",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha scartato \"quartzite mat\" da questa proposta.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "rejected",
+      "from": "suggested",
+      "element_id": "b18a668b-df6f-4431-8f61-8350f17bed60",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:09.095885+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "2d39ed79-2c65-4d20-9515-8d3b51854da1",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha segnato \"Oak\" come discusso.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "discussed",
+      "from": "suggested",
+      "element_id": "1c3953f0-30fc-4d27-bf48-0d5e8c6c383f",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:09.791576+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "6fd15a26-b45d-473e-994f-2831bc25d514",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:10.647739+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b9e48155-edc1-4ebe-b6b0-f5e2b3645895",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha mostrato interesse per \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "interesting",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "9f7193bd-af07-4a8a-885b-bb39b178f5eb",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:11.710124+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "6af20c92-5cce-4df6-954f-1bec73809a55",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente vorrebbe approfondire \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "explore_further",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "7a140431-eb7c-4977-90f3-c2d07df55a7c",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:13.294947+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "ffaf6078-e358-48b4-b3e9-8e76d50eb4c1",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha lasciato un commento su \"washbasin in Mineralguss, Light\": \"Adoro la grana di questa pietra\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": "Adoro la grana di questa pietra",
+      "reaction": "comment",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "c4142318-59b3-4caf-9113-d2c365c9a3d3",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:14.245851+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "413f9ac9-bb0a-4e5f-98ab-ab98282538bc",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:17.165093+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "63ccef47-9874-45ef-bf59-7cccc8647bd6",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:51:18.386758+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "85f4b3ae-b738-497a-ac7f-7648001d47fb",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:51:20.2223+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "24bb2945-d560-4e09-8301-b9dbc87b5b86",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:52:39.865581+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "d280fced-d04a-49c9-acf7-40013b242831",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha scartato \"quartzite mat\" da questa proposta.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "rejected",
+      "from": "rejected",
+      "element_id": "b18a668b-df6f-4431-8f61-8350f17bed60",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:52:41.105296+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "e7dd47c4-3bc0-4590-a1cf-6a224746b9cf",
+    "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Valentina Conti ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:01:59.229533+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "5a5bcaed-ea20-4c80-bd3f-221ea855e9b3",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha lasciato un commento su \"Warm Contemporary\": \"Love the warm palette but want to see more wood textures.\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": "Love the warm palette but want to see more wood textures.",
+      "reaction": "comment",
+      "feedback_id": "154724a0-b5b3-42f0-9bf3-ed75ff88fc8f",
+      "moodboard_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+      "direction_name": "Warm Contemporary",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:11:25.416271+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "868d9c24-ac54-4522-9f6f-3cd947a312ea",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_shared",
+    "narrative_text": "Hai condiviso Direction Set 06 con il cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9bad08af-e913-4f31-b7f3-b8763e2a9a51",
+      "set_index": 6,
+      "moodboard_ids": [
+        "f1cc07df-b9da-4c4f-8bbb-95e88115efca",
+        "eb7e7a0c-59a2-485e-aa32-36807f7a1116",
+        "f32df5a7-215e-4fae-aedb-250c3d1a80bf"
+      ]
+    },
+    "created_at": "2026-06-09T00:19:37.821993+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "0ed343a4-7369-423e-bfa0-c4828e944f68",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_shared",
+    "narrative_text": "Hai condiviso Direction Set 07 con il cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "db7619cd-0f66-49b3-8e10-5df383e5124b",
+      "set_index": 7,
+      "moodboard_ids": [
+        "4aefd8df-21b7-4595-a74a-c47b41635f01",
+        "23666d7e-9c07-43c8-b3b0-2ecfb0b209d4",
+        "a3f0c1ea-7643-4eb1-b3b9-c0ae55ccde22"
+      ]
+    },
+    "created_at": "2026-06-09T00:19:42.50529+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "96a31137-1f17-4068-aad0-af1b21bf9bbc",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_shared",
+    "narrative_text": "Hai condiviso Direction Set 08 con il cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "cf7cb391-5a09-4975-9815-37a087689e4c",
+      "set_index": 8,
+      "moodboard_ids": [
+        "3014c214-3945-488a-b87d-84e5de966f2e",
+        "33957509-bd94-4d61-b5a7-dc7d3ab37580",
+        "fd3ad603-e676-469a-95fd-01aa1e563279"
+      ]
+    },
+    "created_at": "2026-06-09T00:19:46.406319+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "080706b8-5a52-41b8-b957-a16d6eab39e1",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_unshared",
+    "narrative_text": "Hai ritirato la condivisione del Direction Set.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "cf7cb391-5a09-4975-9815-37a087689e4c"
+    },
+    "created_at": "2026-06-09T00:19:47.404773+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b31db8b3-6049-410d-be64-91dad89663b4",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "concept_set_shared",
+    "narrative_text": "Hai condiviso Direction Set 09 con il cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+      "set_index": 9,
+      "moodboard_ids": [
+        "badbc3c4-868b-4b26-b1de-e6ac4adce60f",
+        "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+        "0fca8651-8f10-417a-9803-eb7d9723820b"
+      ]
+    },
+    "created_at": "2026-06-09T00:19:52.056259+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "0e8370f3-7e5a-4cc0-b4b5-35f1a6ae15f9",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha segnato \"Warm Scandinavian\" come interessante.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+      "comment": null,
+      "reaction": "interested",
+      "feedback_id": "09a1dd39-72f4-45f8-a747-42fb195825c8",
+      "moodboard_id": "badbc3c4-868b-4b26-b1de-e6ac4adce60f",
+      "direction_name": "Warm Scandinavian",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:19:54.948+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "34345ae3-3594-42c3-abcb-5d6acb29e062",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha indicato \"Warm Scandinavian\" come direzione preferita.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+      "comment": null,
+      "reaction": "preferred",
+      "feedback_id": "0acc5e01-28d6-4fcf-9ec0-8850d9bae0de",
+      "moodboard_id": "badbc3c4-868b-4b26-b1de-e6ac4adce60f",
+      "direction_name": "Warm Scandinavian",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:19:57.11165+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "53c65ff8-9199-4267-bd02-a6e7543379ab",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha cambiato direzione preferita: da \"Warm Scandinavian\" a \"Elegant Warm Contemporary\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+      "comment": null,
+      "reaction": "preferred",
+      "feedback_id": "3b3581fe-b4f6-4048-ad57-6b1403420dea",
+      "moodboard_id": "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+      "direction_name": "Elegant Warm Contemporary",
+      "switched_from_moodboard_id": "badbc3c4-868b-4b26-b1de-e6ac4adce60f"
+    },
+    "created_at": "2026-06-09T00:19:58.802016+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "03b8f3e9-50bd-42f3-93c9-8681e0afd30b",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha lasciato un commento su \"Warm Timeless Classic\": \"Adoro questa palette\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "9a93f549-dd4c-4eca-9b88-78675ceefd51",
+      "comment": "Adoro questa palette",
+      "reaction": "comment",
+      "feedback_id": "18528e3a-d160-4bc2-b6c2-6a17a179170d",
+      "moodboard_id": "0fca8651-8f10-417a-9803-eb7d9723820b",
+      "direction_name": "Warm Timeless Classic",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:20:00.610807+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "14b03470-e231-480f-bc7a-7349b122600d",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha segnato \"Timeless Elegance\" come interessante.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": null,
+      "reaction": "interested",
+      "feedback_id": "643f6057-317c-418e-86e1-c896420884e0",
+      "moodboard_id": "2aa85a63-bd3e-491d-acbb-5cd8acd4845d",
+      "direction_name": "Timeless Elegance",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:20:46.419917+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "f308be65-45bc-46e1-b4bb-ca4cfc94c904",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha cambiato direzione preferita: da \"Warm Contemporary\" a \"Warm Scandinavian\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": null,
+      "reaction": "preferred",
+      "feedback_id": "d793d09d-343d-4632-a804-92235547e741",
+      "moodboard_id": "84aa5b09-4862-4d5f-9327-7ddbac82b034",
+      "direction_name": "Warm Scandinavian",
+      "switched_from_moodboard_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56"
+    },
+    "created_at": "2026-06-09T00:20:49.52701+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "a2b9f189-52fc-4d2a-a7f8-085f73987b4e",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_concept_feedback",
+    "narrative_text": "Il cliente ha lasciato un commento su \"Timeless Elegance\": \"Test comment from playwright\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "set_id": "4404661b-2a86-4fbd-b2cb-4ed8843c11fe",
+      "comment": "Test comment from playwright",
+      "reaction": "comment",
+      "feedback_id": "d0f45b4e-2856-4702-a718-46fa7788d38a",
+      "moodboard_id": "2aa85a63-bd3e-491d-acbb-5cd8acd4845d",
+      "direction_name": "Timeless Elegance",
+      "switched_from_moodboard_id": null
+    },
+    "created_at": "2026-06-09T00:20:51.989739+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "f40f6d94-a9db-48ae-badf-e51509e02952",
+    "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TEST_Pulse_NoShare ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-09T01:16:52.137579+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "70cd05e9-947a-4ccf-b7af-4702cd422f71",
+    "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "f21464f5-ae3f-4e04-93e6-cacc67fb8b4c",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TEST_Pulse_NoShare racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-09T01:16:52.137579+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "efa66176-2fe8-4d1a-911f-e97b672355a3",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "working_moodboard_generated",
+    "narrative_text": "Hai generato il Working Moodboard a partire da Elegant Warm Contemporary.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "source_concept_id": "2fe76717-755d-4742-b5f4-1e1c33f152a6",
+      "working_moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T03:48:46.327568+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "39099e8a-d68f-428b-b20a-e9b562686a82",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "suggested",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:46:00.775531+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "47d7b577-d25e-4d5a-94f9-8356b11c01a4",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha mostrato interesse per \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "interesting",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "20423023-ff65-4cd7-b683-55e32ab2956c",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:46:01.604059+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b216ea04-09fd-42c7-b9b5-92a77064fc25",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:51:07.742079+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "4ca1c488-ed24-465e-a286-5ae7c1ab4624",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha segnato \"Oak\" come discusso.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "discussed",
+      "from": "discussed",
+      "element_id": "1c3953f0-30fc-4d27-bf48-0d5e8c6c383f",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:52:41.7969+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "70480867-17a7-4d39-bb8a-3f2593d1cd42",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:52:42.766556+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "bacc5cf7-9489-49cc-937e-f7c6f39e4bc3",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha mostrato interesse per \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "interesting",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "9803a9fc-1e5c-4bb3-9ec7-a231288f124e",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:52:43.78469+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "42921b44-c2d9-454a-8eb8-5253cab6bc7e",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha lasciato un commento su \"washbasin in Mineralguss, Light\": \"Adoro la grana di questa pietra\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": "Adoro la grana di questa pietra",
+      "reaction": "comment",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "5496337d-054f-4ceb-bc5d-a2b29d56d319",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:53:15.832662+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "93d33d4e-fc32-4b8e-9911-172abd74569b",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:53:18.822494+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "e754ceb4-1fc6-4cae-97c9-d63e71eea8d6",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:53:20.254642+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "3b3e6f22-c5c1-48d0-8d37-d464943c9204",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:53:22.032582+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "2ed4f923-7101-46da-8cb8-c40738b667c9",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:53:23.240265+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "81ca0551-be72-448c-a43b-ececdceceb66",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:00.723904+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "2e47c809-a2ce-424d-a1a8-aeec79d55b8a",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha scartato \"quartzite mat\" da questa proposta.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "rejected",
+      "from": "rejected",
+      "element_id": "b18a668b-df6f-4431-8f61-8350f17bed60",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:02.035197+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "1a611b8e-f2a5-42e2-a351-54c593972f58",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha segnato \"Oak\" come discusso.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "discussed",
+      "from": "discussed",
+      "element_id": "1c3953f0-30fc-4d27-bf48-0d5e8c6c383f",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:02.757359+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "515c01a8-6ccb-4a5b-aa38-a665c9552f98",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:03.640482+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "6477cdb5-218d-44a4-a44d-8d32b4755d9d",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha mostrato interesse per \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "interesting",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "9cbd570d-8b2c-49c0-b995-e59c796a2683",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:04.669862+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "1bc4dc94-ca15-45e4-b2e5-b457c0bbec85",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente vorrebbe approfondire \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "explore_further",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "4dc69ffb-2582-4f24-b3fa-1177e95e3467",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:06.248566+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "12890c24-efa1-4a4c-8d42-2e7b295a224d",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha lasciato un commento su \"washbasin in Mineralguss, Light\": \"Adoro la grana di questa pietra\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": "Adoro la grana di questa pietra",
+      "reaction": "comment",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "c2dfb759-4052-4578-be76-8e79c1a36657",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:07.227992+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "371147a2-80d7-4ac9-a51f-00ebd7e6885e",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:54:10.172469+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "d73a205b-6233-497c-9d7f-0159c8d959b0",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:54:11.395081+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "a89114f2-5e6b-4f3e-9c0b-f6318531fbdc",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:54:13.194646+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "47c22be5-78d3-45e6-aee4-eea7336ea494",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:54:14.402717+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "199f035d-42d3-480e-a44c-523ea3d60294",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 1 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 1,
+      "skipped": 0,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:58:45.955444+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "d03d0dc4-b94b-40ce-8b59-af5e312af4fd",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:58:47.058224+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "fde1c2da-184a-4ba5-b062-6cb750d315ad",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:37.150438+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "71dc903b-ca5a-4305-9749-ee455bfc9842",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha scartato \"quartzite mat\" da questa proposta.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "rejected",
+      "from": "rejected",
+      "element_id": "b18a668b-df6f-4431-8f61-8350f17bed60",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:38.511344+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "3ade636c-ba71-4d60-ae8f-686fdf27f605",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha segnato \"Oak\" come discusso.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "discussed",
+      "from": "discussed",
+      "element_id": "1c3953f0-30fc-4d27-bf48-0d5e8c6c383f",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:39.224533+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "5c108ff8-b96b-47d6-ac9b-b903103c8821",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:40.1209+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "bceb8779-e26b-499c-94ec-836bfe22dada",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha mostrato interesse per \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "interesting",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "6ca04cc3-9967-4e60-926b-f6a214b2ad73",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:41.16535+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "33a69d4e-d4eb-43be-93b2-e54a7ceea724",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente vorrebbe approfondire \"washbasin in Mineralguss, Light\".",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": null,
+      "reaction": "explore_further",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "c977e1f7-6fdb-4ac9-af83-5ce7f111cbfc",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:42.759788+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "41b9b5eb-d933-4680-a57e-eed5a9d82e93",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "client_signal",
+    "narrative_text": "Client Signal\u2122 \u2014 Il cliente ha lasciato un commento su \"washbasin in Mineralguss, Light\": \"Adoro la grana di questa pietra\"",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "comment": "Adoro la grana di questa pietra",
+      "reaction": "comment",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "feedback_id": "0f42cb87-365b-41ae-9fe7-a88f59a582cf",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:43.738857+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "e36d7099-16f5-46e8-a343-ce1f76e2f653",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "element_status_changed",
+    "narrative_text": "Il designer ha approvato \"washbasin in Mineralguss, Light\" per la fase successiva.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "to": "approved",
+      "from": "approved",
+      "element_id": "36e69190-5968-45e7-a483-3856334b43cd",
+      "element_type": "material",
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7"
+    },
+    "created_at": "2026-06-09T12:59:46.9494+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "ba7c29b5-abe3-4818-9de2-7c0c66b76075",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:59:47.945068+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "a69c3022-288f-4a65-be7f-560af69c2d0f",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:59:49.508538+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "b571eddd-bf45-48d5-84b4-f955aabd2736",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T12:59:50.494004+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "9debf19f-7328-431b-9609-c1ac62800bdc",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T13:00:20.720781+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "c24ab714-4cdc-4459-b855-386cbe5290a6",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T13:00:21.761444+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "02bd425b-ee4e-45d4-b5f0-7ce6ecfb5848",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "materials_synced_to_board",
+    "narrative_text": "Sincronizzati 0 materiali approvati al Material Board.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "added": 0,
+      "skipped": 1,
+      "moodboard_id": "47821aa0-50c0-4ff6-ae5f-e6dccf0391e7",
+      "material_board_id": "0c0d6a44-7070-4b19-9a00-b565cdeb45e2"
+    },
+    "created_at": "2026-06-09T13:00:57.334542+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "5e8c2111-3a52-43d2-98a8-f6462246d598",
+    "journey_id": "8bb7a3b4-02af-4040-8420-37a254713899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "working_moodboard_generated",
+    "narrative_text": "Hai generato il Working Moodboard a partire da Warm Contemporary.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {
+      "source_concept_id": "d9fdcd23-bb7c-428d-bde7-0e64fa000e56",
+      "working_moodboard_id": "6dad13e6-5d3f-4cbf-a3a8-b4ffdeba63a2"
+    },
+    "created_at": "2026-06-09T23:33:10.162061+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "a2779c6c-d56b-450b-b115-4b55f27cb2a9",
+    "journey_id": "36454936-c516-4057-afee-d4de6f74cebe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TEST_I18N ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:40:34.385525+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "6c7fc7b8-0abc-4537-8229-3e15c93dd086",
+    "journey_id": "36454936-c516-4057-afee-d4de6f74cebe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "a0da009c-d10c-4b1b-ae10-802225da88ec",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TEST_I18N racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:40:34.385525+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "5694b415-65ba-4404-ba6a-b5183b04551e",
+    "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TEST_I18N ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:40:59.796939+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "1014041d-7dc3-454e-9d61-d7c9f88b5cee",
+    "journey_id": "8a7ee36c-d6e3-43c5-b5dd-f3d4d2a30622",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "86bba9da-a611-466a-85a9-bf9876248220",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TEST_I18N racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:40:59.796939+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "90f83b3b-c8a7-4ee7-bd04-22d23804a54f",
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TEST_I18N ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:41:31.38494+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "e3794af8-1389-4502-9199-9aab44a761e2",
+    "journey_id": "b2b3d085-f179-443c-bf2a-aa55b20f7dff",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "2234d82c-1430-443e-8b1e-b2d855303f02",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TEST_I18N racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:41:31.38494+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "febe2515-10d7-45a5-954d-b3966b61b1e2",
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TEST_I18N ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:52:33.011695+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "450d4571-f38d-4ad8-be25-ecd1cd654bdb",
+    "journey_id": "52fe1e31-2748-4231-a8ad-ae2af13fef02",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "bbf07183-d7da-4813-9e2f-aeaa4742b8b1",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TEST_I18N racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T01:52:33.011695+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "6281cd9e-4e94-4475-a9c4-2f988b20ffa0",
+    "journey_id": "ebc02a6e-8f52-4c60-a992-fc977e231895",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "95a0768d-0f6a-4a0f-80b6-48da3a9e1588",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Valentina racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:01:59.229533+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "8ae9d837-d14a-4f0e-b0f7-a877190861c7",
+    "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Giuseppe ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:02:19.07489+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "e96db3cf-f4b0-4b55-b0af-61ba824f3f5b",
+    "journey_id": "4713b48c-a898-4a20-95ce-94a58e1350d1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "cb383c4e-185e-4760-8c55-24ce9addc25c",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Giuseppe racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:02:19.07489+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "3f8e39a7-1ff3-4ef6-a51e-498085f68ae9",
+    "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Valentina Conti ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:02:27.343114+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "c3d9a20d-06b0-43f0-98b5-6db2a40816e4",
+    "journey_id": "23173b4d-dedf-4aa4-a465-0255fb25a6f3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "ca62a4c0-3030-49b6-9e03-f5d15adf840c",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Valentina racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:02:27.343114+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "aa2f026f-b9bb-4a54-aa77-1760ad94cb50",
+    "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Marco Bianchi ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:07.22894+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "ae569465-2606-4cda-ba2e-d6743c696b97",
+    "journey_id": "028eedf3-74de-4ed0-883b-f424f3ff3727",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "58672a22-94c8-4fd9-b704-311460ebee96",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Marco racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:07.22894+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "78fffc08-8871-4744-83fa-73fda62e4b06",
+    "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Elena Ricci ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:27.960713+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "941d342a-ea08-4c5e-a8c5-8ac91d290aad",
+    "journey_id": "775f32fc-836d-4a04-9ea7-5b22d9813e41",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "0f269d45-db65-49a4-882e-481725b46422",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Elena racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:27.960713+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "7dde74e4-7dfd-45ae-94dd-736b931c3702",
+    "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di Solo2 ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:35.193724+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "04ce4786-b091-43c8-b62e-35c74922f5a0",
+    "journey_id": "976a4948-fd74-4477-9cb5-1c9b6e7e138c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "74abfaef-de7a-44ae-a048-a1e33a399dd4",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. Solo2 racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:35.193724+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "75cf33d7-8557-4df5-8582-0418d8747354",
+    "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "journey_started",
+    "narrative_text": "Il Design Journey\u2122 di TestVerify Cognome ha avuto inizio. Una conversazione apre il viaggio.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:59.951812+00:00",
+    "event_canon": "journey_created"
+  },
+  {
+    "id": "c09fd2d8-a986-4a6e-8bb4-c1333fa838f7",
+    "journey_id": "88c072b7-dce8-411c-b7ae-b36a2592ac79",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "4737a801-906a-4941-8bfb-d89f61f8c5c9",
+    "event_type": "milestone_started",
+    "narrative_text": "Brief Cliente \u2014 in apertura. TestVerify racconta la sua atmosfera.",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:06:59.951812+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "4424eb7f-d1da-4c34-8bcc-37ab7cf00b1c",
+    "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": null,
+    "event_type": "milestone_in_progress",
+    "narrative_text": "test known canon",
+    "created_by": null,
+    "metadata": {},
+    "created_at": "2026-06-10T16:50:04.882922+00:00",
+    "event_canon": "brief_started"
+  },
+  {
+    "id": "56b136fc-0a9b-45db-b5e5-4652bb480155",
+    "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "f21464f5-ae3f-4e04-93e6-cacc67fb8b4c",
+    "event_type": "milestone_presented",
+    "narrative_text": "Legacy call presentata al cliente.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {},
+    "created_at": "2026-06-10T16:51:04.122376+00:00",
+    "event_canon": null
+  },
+  {
+    "id": "4cbc5037-b346-476b-be03-0cf3be62f3dd",
+    "journey_id": "bba6e7e8-f31f-4c48-aab0-4ec4f3b34225",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "milestone_id": "302977fe-3dd5-442f-9abf-25e1e179e1a2",
+    "event_type": "milestone_in_progress",
+    "narrative_text": "Material Direction\u2122 \u2014 in lavorazione.",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata": {},
+    "created_at": "2026-06-10T16:52:35.270677+00:00",
+    "event_canon": null
+  }
+]
