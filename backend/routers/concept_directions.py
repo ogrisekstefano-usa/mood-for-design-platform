@@ -742,18 +742,42 @@ def share_concept_set(jid: str, set_id: str, body: ShareBody = ShareBody(),
     except Exception:
         log.exception("share timeline event failed (non-blocking)")
 
+    # ── Lookup client user_id (needed for notification + email) ────────────
+    pid = journey.get("project_id")
+    client_user_id: str | None = None
+    if pid:
+        try:
+            pr = (c.table("projects").select("client_user_id")
+                  .eq("id", pid).limit(1).execute().data or [])
+            if pr:
+                client_user_id = pr[0].get("client_user_id")
+        except Exception:
+            log.debug("share: project lookup for client_user_id failed")
+
+    # ── In-app notification to client (ALWAYS, complements email) ──────────
+    if client_user_id:
+        try:
+            from services import notification_publisher as _np
+            _np.publish(
+                tenant_id=tid,
+                recipient_user_id=client_user_id,
+                recipient_type="client",
+                sender_user_id=uid,
+                sender_type="designer",
+                category_key="designer_replied",
+                narrative=f"Il tuo studio ha condiviso nuove direzioni progettuali: {set_label}",
+                payload={"journey_id": jid, "set_id": set_id,
+                         "set_index": set_index, "set_label": set_label},
+                deep_link_url=f"/journey/{jid}/concepts",
+            )
+        except Exception:
+            log.exception("concept share client notification failed (non-blocking)")
+
     # Notification email (best-effort)
     email_result = {"sent": False, "reason": None}
     if body.notify:
         try:
-            pid = journey.get("project_id")
-            client_user_id = None
             client_email = None
-            if pid:
-                pr = (c.table("projects").select("client_user_id")
-                      .eq("id", pid).limit(1).execute().data or [])
-                if pr:
-                    client_user_id = pr[0].get("client_user_id")
             if client_user_id:
                 up = (c.table("users_profile").select("email,first_name").eq("id", client_user_id).limit(1).execute().data or [])
                 if up:
@@ -765,7 +789,7 @@ def share_concept_set(jid: str, set_id: str, body: ShareBody = ShareBody(),
                 strings = _email_strings(locale)
                 base = (_os.environ.get("FRONTEND_URL") or
                         _os.environ.get("PUBLIC_BASE_URL") or "").rstrip("/")
-                area_url = (base + f"/client/journey/{jid}/concepts") if base else f"/client/journey/{jid}/concepts"
+                area_url = (base + f"/journey/{jid}/concepts") if base else f"/journey/{jid}/concepts"
                 html = (
                     f"<p style='font-family:Inter,sans-serif;font-size:14px;color:#1f1f1f;line-height:1.6'>{strings['body']}</p>"
                     f"<p style='margin-top:24px'><a href='{area_url}' "

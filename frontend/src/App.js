@@ -829,6 +829,14 @@ function App() {
                     <BriefGuidedPage />
                   </ClientRoute>
                 } />
+                {/* STORE-012C · Client Concept Direction Review™ — canonical path
+                    (mirrors /client/journey/:jid/concepts for backwards compat)
+                    Linked from: AtelierActionPanel, concept share email, in-app notification deep_link */}
+                <Route path="/journey/:jid/concepts" element={
+                  <ClientRoute>
+                    <ClientConceptReviewPage />
+                  </ClientRoute>
+                } />
 
                 {/* ITER162 · Welcome Panel Atelier™ — full-bleed preset surface.
                     Vive FUORI da ClientDashboardLayout perché porta una sua

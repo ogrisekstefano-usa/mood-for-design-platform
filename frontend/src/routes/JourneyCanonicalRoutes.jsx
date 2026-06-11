@@ -33,6 +33,8 @@ const JourneyOperatingPage       = lazy(() => import('../pages/journey-operating
 // mounts it anymore. Restore: swap the lazy import below.
 const ClientWelcomePresetPage    = lazy(() => import('../pages/client/ClientWelcomePresetPage'));
 // const ClientCompanionPage     = lazy(() => import('../pages/client/ClientCompanionPage')); // FROZEN — Gen 2
+// STORE-012C · Concept Direction Review — client reviews shared directions
+const ClientConceptReviewPage    = lazy(() => import('../pages/client/ClientConceptReviewPage'));
 
 const Loader = () => (
   <div style={{
@@ -132,6 +134,20 @@ export const StudioJourneyStepView = () => {
 export const CanonicalClientJourney = () => (
   <Suspense fallback={<Loader />}>
     <ClientWelcomePresetPage />
+  </Suspense>
+);
+
+
+/* ════════════════════════════════════════════════════════════════════
+ * 3b · /journey/:jid/concepts · CLIENT Concept Direction Review™
+ *
+ * STORE-012C — route was missing. Now wired to ClientConceptReviewPage
+ * which reads from /api/client/journeys/:jid/concept-directions and
+ * shows only directions with concept_seed.shared_at set.
+ * ════════════════════════════════════════════════════════════════════ */
+export const CanonicalClientConcepts = () => (
+  <Suspense fallback={<Loader />}>
+    <ClientConceptReviewPage />
   </Suspense>
 );
 

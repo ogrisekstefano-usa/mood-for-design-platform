@@ -1,16 +1,15 @@
 /**
  * AtelierActionPanel · ITER162
  *
- * "Cosa vuoi fare ora?" — 3 azioni relazionali su sfondo cream/sand:
+ * "Cosa vuoi fare ora?" — azioni relazionali:
  *   1. Continua il brief guidato
- *   2. Scrivi al tuo referente
- *   3. Possiamo sentirci?
- *
- * Mai usare lessico SaaS (Open Ticket / Create Request).
+ *   2. Visualizza le Direzioni (se journeyId, naviga a /journey/:jid/concepts)
+ *   3. Scrivi al tuo referente
+ *   4. Possiamo sentirci?
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, MessageSquare, Calendar, ChevronRight } from 'lucide-react';
+import { Sparkles, MessageSquare, Calendar, ChevronRight, Compass } from 'lucide-react';
 
 const AtelierActionPanel = ({ journeyId, onRecallClick }) => {
   return (
@@ -18,6 +17,25 @@ const AtelierActionPanel = ({ journeyId, onRecallClick }) => {
       <h3 className="atelier-actions__title" data-testid="atelier-action-title">
         Cosa vuoi fare ora?
       </h3>
+
+      {journeyId && (
+        <Link
+          to={`/journey/${journeyId}/concepts`}
+          className="atelier-action"
+          data-testid="atelier-action-concepts"
+        >
+          <span className="atelier-action__icon" aria-hidden>
+            <Compass size={16} strokeWidth={1.5} />
+          </span>
+          <span className="atelier-action__body">
+            <span className="atelier-action__label">Visualizza le Direzioni™</span>
+            <span className="atelier-action__sub">
+              Le proposte di stile condivise dal tuo studio.
+            </span>
+          </span>
+          <ChevronRight size={16} strokeWidth={1.4} className="atelier-action__chev" aria-hidden />
+        </Link>
+      )}
 
       <Link
         to={journeyId ? `/journey/${journeyId}/brief` : '/client'}

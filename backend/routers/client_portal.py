@@ -588,14 +588,38 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
             or next((m for m in milestones if m.get("status") == "not_started"), None) \
             or (milestones[0] if milestones else None)
 
-    # Recent shared directions — moodboards/proposals updated in the last 60 events
+    # Shared directions — only moodboards that have been explicitly published
+    # (status != 'draft' = not yet ready for client review)
     moodboards = (c.table("moodboards")
-                  .select("id,title,status,cover_metadata,updated_at,project_id")
+                  .select("id,title,status,cover_metadata,updated_at,project_id,journey_id,ai_metadata")
                   .eq("tenant_id", tenant_id)
                   .eq("project_id", journey["project_id"])
+                  .not_.eq("status", "draft")
                   .is_("deleted_at", "null")
                   .order("updated_at", desc=True).limit(8)
                   .execute().data or [])
+
+    # Also include concept-direction moodboards linked by journey_id
+    # (these use ai_metadata.concept_seed.shared_at as the publish signal)
+    concept_mbs: list[dict] = []
+    try:
+        cr = (c.table("moodboards")
+              .select("id,title,status,cover_metadata,updated_at,project_id,journey_id,ai_metadata")
+              .eq("tenant_id", tenant_id)
+              .eq("journey_id", journey_id)
+              .is_("deleted_at", "null")
+              .execute().data or [])
+        for r in cr:
+            seed = ((r.get("ai_metadata") or {}).get("concept_seed") or {})
+            if seed.get("shared_at"):
+                concept_mbs.append(r)
+    except Exception:
+        pass
+
+    # Merge without duplicates — concept_mbs take precedence
+    seen_ids = {r["id"] for r in concept_mbs}
+    all_mbs = concept_mbs + [r for r in moodboards if r["id"] not in seen_ids]
+
     shared_directions = [{
         "kind":       "moodboard",
         "id":         m["id"],
@@ -612,7 +636,8 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
         "cover_url":  (m.get("cover_metadata") or {}).get("signed_url")
                       or (m.get("cover_metadata") or {}).get("url"),
         "updated_at": m.get("updated_at"),
-    } for m in moodboards]
+        "is_concept_direction": bool((m.get("ai_metadata") or {}).get("concept_seed")),
+    } for m in all_mbs]
 
     # Evolution timeline (narrative)
     ev_rows = (c.table("journey_timeline_events")
