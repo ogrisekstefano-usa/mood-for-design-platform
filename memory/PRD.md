@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 > **Last update:** 11 Jun 2026
-> **Status:** CORE FLOW CERTIFICATION SPRINT COMPLETATO — CERTIFICAZIONE FALLITA (8 blocchi P0) · Report generati: `CORE_FLOW_CERTIFICATION_REPORT.md` · `MODEL_CONSISTENCY_REPORT.md` · Prossimo: fix P0 solo dopo approvazione report utente
+> **Status:** CLIENT MODEL CONSOLIDATION SPRINT COMPLETATO — `CLIENT_MODEL_CONSOLIDATION_FINAL.md` prodotto · DESIGN JOURNEY come pivot centrale proposto · P0/P1/P2 classificati · Nessun codice scritto. Prossimo: approvazione modello → implementazione P0
 
 ## Original problem statement
 
