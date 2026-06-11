@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** 11 Jun 2026
-> **Status:** CORE PRODUCT STABILIZATION P0 EXECUTION SPRINT — P0-1 DONE (Prospects da 0→11 · Journey Source of Truth) · P0-2 DONE (Designer notification su concept feedback) · P0-4 DONE (Link mancante + CTA correta su ProspectsPage) · Testing iteration_239: 9/9 PASS
+> **Last update:** 11 Jun 2026 — v3
+> **Status:** MOODBOARD PUBLISH FLOW CERTIFICATO (Iteration 240: 7/7 PASS) · Tutte le connessioni mancanti Designer↔Cliente chiuse · Bug fix: companion 500 (enum None) · Prossimo: Resend API key + generate set_id bug
 
 ## Original problem statement
 
