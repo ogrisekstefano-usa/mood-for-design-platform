@@ -95,7 +95,7 @@ export default function IdentityPage() {
           data-testid="identity-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="es. Studio Rossi Architetti"
+          placeholder="es. Studio Architettura Milano"
           style={inputStyle}
         />
       </Field>

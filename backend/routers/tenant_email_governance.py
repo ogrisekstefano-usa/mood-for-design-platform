@@ -97,13 +97,13 @@ TEMPLATE_CATALOGUE = [
     },
 ]
 
-# Dummy data injected in /preview endpoint
+# Dummy data injected in /preview endpoint — neutral placeholders, no real names
 DUMMY_VARS = {
-    "client_name":       "Maria Bianchi",
-    "first_name":        "Maria",
-    "journey_name":      "Villa Lago",
-    "designer_name":     "Stefano Rossi",
-    "referente_name":    "Stefano Rossi",
+    "client_name":       "Cliente Esempio",
+    "first_name":        "Cliente",
+    "journey_name":      "Progetto Residenziale",
+    "designer_name":     "Referente Studio",
+    "referente_name":    "Referente Studio",
     "tenant_name":       "MOOD for DESIGN",
     "studio_name":       "MOOD for DESIGN",
     "brand_name":        "MOOD for DESIGN",

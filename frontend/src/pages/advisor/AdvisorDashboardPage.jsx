@@ -339,7 +339,7 @@ const ReportDrawer = ({
             <input className="adv-field__input" value={form.attendees} onChange={e => setForm({
             ...form,
             attendees: e.target.value
-          })} placeholder="Maria Rossi, Marco Bianchi" />
+          })} placeholder="es. Cliente A, Cliente B" />
           </Field>
           <Field label="Sommario" testid="rpt-summary">
             <textarea rows={3} className="adv-field__input" value={form.summary} onChange={e => setForm({

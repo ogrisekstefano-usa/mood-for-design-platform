@@ -7,7 +7,7 @@
  * (page_key='begin-journey') prima del primo paint. Se una traduzione
  * manca, il sistema rende uno skeleton; MAI un foreign-language leak.
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -42,6 +42,28 @@ const BeginJourneyForm = () => {
   const [phone, setPhone] = useState('');
   // ITER167 R4 · Phone Country Prefix — DB-driven from /admin/languages.
   const [phoneCountry, setPhoneCountry] = useState(null);
+  // F5 — email validation state
+  const [emailStatus, setEmailStatus] = useState(null); // null | 'valid' | 'existing' | 'invalid' | 'checking'
+  const emailDebounceRef = useRef(null);
+
+  // F5 — debounced email check
+  useEffect(() => {
+    if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
+    const val = email.trim().toLowerCase();
+    if (!val) { setEmailStatus(null); return; }
+    emailDebounceRef.current = setTimeout(async () => {
+      setEmailStatus('checking');
+      try {
+        const r = await axios.get(`${API}/api/public/check-email`, {
+          params: { email: val, tenant_slug: 'studio' },
+        });
+        setEmailStatus(r.data?.status || 'available');
+      } catch {
+        setEmailStatus('available'); // fail-open
+      }
+    }, 500);
+    return () => clearTimeout(emailDebounceRef.current);
+  }, [email]);
 
   // Editorial taxonomy built from the dynamic bundle.
   const taxonomy = useMemo(() => ({
@@ -387,12 +409,33 @@ const BeginJourneyForm = () => {
                   {get(k('step3.field.email.label'))}
                 </label>
                 <input
-                  className="bj-input"
+                  className={`bj-input${emailStatus === 'invalid' ? ' bj-input--error' : ''}`}
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   data-testid="bj-email"
                 />
+                {/* F5 — email validation indicator */}
+                {emailStatus === 'checking' && (
+                  <span className="bj-email-hint bj-email-hint--checking" data-testid="email-status-checking">
+                    Verifica in corso…
+                  </span>
+                )}
+                {emailStatus === 'available' && (
+                  <span className="bj-email-hint bj-email-hint--ok" data-testid="email-status-available">
+                    ✓ Email disponibile
+                  </span>
+                )}
+                {emailStatus === 'existing' && (
+                  <span className="bj-email-hint bj-email-hint--existing" data-testid="email-status-existing">
+                    ✓ Account esistente — ti invieremo il link di accesso
+                  </span>
+                )}
+                {emailStatus === 'invalid' && (
+                  <span className="bj-email-hint bj-email-hint--error" data-testid="email-status-invalid">
+                    ✕ Email non valida
+                  </span>
+                )}
               </div>
 
               <div className="bj-field">

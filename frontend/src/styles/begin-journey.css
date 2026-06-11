@@ -759,3 +759,18 @@
   .bj-phone-prefix__trigger { padding: 0 12px; }
 }
 
+
+/* F5 — Email validation hints */
+.bj-email-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-family: 'Inter', sans-serif;
+  transition: opacity .2s;
+}
+.bj-email-hint--checking  { opacity: 0.5; color: #9ba0a8; }
+.bj-email-hint--ok        { color: #4eca8b; }
+.bj-email-hint--existing  { color: #7ce4f5; }
+.bj-email-hint--error     { color: #f5827c; }
+.bj-input--error          { border-color: #f5827c !important; }

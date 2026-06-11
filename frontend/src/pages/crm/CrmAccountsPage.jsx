@@ -327,7 +327,7 @@ const NewAccountModal = ({
         </header>
         <div className="crm-modal__body">
           <label className="crm-label">{t('crm.crm_accounts.label_nome_account')}</label>
-          <input value={name} onChange={e => setName(e.target.value)} data-testid="crm-new-account-name" placeholder="es. Studio Bianchi · Villa Padova · ABC SpA" className="crm-input" />
+          <input value={name} onChange={e => setName(e.target.value)} data-testid="crm-new-account-name" placeholder="es. Villa Lago · Studio Milano · ABC SpA" className="crm-input" />
           <label className="crm-label">{t('crm.crm_accounts.label_tipo')}</label>
           <select value={type} onChange={e => setType(e.target.value)} data-testid="crm-new-account-type" className="crm-input">
             {Object.entries(ACCOUNT_TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}

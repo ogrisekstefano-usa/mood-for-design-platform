@@ -233,7 +233,7 @@ function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
             data-testid="nr-lead-first-name"
             value={firstName}
             onChange={(e) => { setFirstName(e.target.value); setDedupMatches([]); }}
-            placeholder="es. Marco"
+            placeholder="es. Alessandro"
             autoFocus
           />
         </AtelierField>

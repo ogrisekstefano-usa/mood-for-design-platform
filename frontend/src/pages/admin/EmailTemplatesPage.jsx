@@ -255,7 +255,7 @@ const EmailTemplatesPage = () => {
                 <Eye size={12} strokeWidth={1.6} /> Anteprima · variabili compilate
               </p>
               <p className="text-[12px] text-white/40 italic">
-                Maria Bianchi · Villa Lago · Stefano Rossi · MOOD for DESIGN · link demo non cliccabile
+                Cliente Esempio · Progetto Residenziale · Referente Studio · MOOD for DESIGN · link demo non cliccabile
               </p>
             </header>
 

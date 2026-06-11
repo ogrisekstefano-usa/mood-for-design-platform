@@ -1,6 +1,6 @@
 """Dashboard Snapshot · "Editorial Studio" model
 
-Aggregator che alimenta la dashboard ridisegnata (Stefano · Feb 2026):
+Aggregator che alimenta la dashboard ridisegnata (Feb 2026):
   · Ecosistema MOOD™     → counter del patrimonio digitale
   · MOOD Intelligence™   → suggerimenti calcolati LIVE dal DB (no LLM)
   · Spotlight Oggi       → la singola opportunità più importante del giorno

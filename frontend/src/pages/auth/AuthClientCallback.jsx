@@ -164,6 +164,23 @@ const AuthClientCallback = () => {
       }
       if (cancelled || !profile) return;
 
+      // ITER180 · SESSION-GUARD · Client callback must only accept client-role sessions.
+      // If an admin/designer accidentally follows a client magic link in their browser,
+      // refuse installation — never silently overwrite a staff session with a client one.
+      const profileRole = (
+        (profile?.profile?.role) ||
+        (profile?.role) ||
+        ''
+      ).toLowerCase();
+      if (profileRole && profileRole !== 'client') {
+        // Staff session detected via client callback → remove stale token and
+        // redirect to the admin workspace without touching the existing session.
+        try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        cleanUrl();
+        if (!cancelled) navigate('/dashboard', { replace: true });
+        return;
+      }
+
       // ITER171.2 · Atomic propagation to AuthContext BEFORE navigation.
       // This prevents ClientRoute from seeing `user=null` on mount and
       // bouncing the magic-link client back to /auth/login.

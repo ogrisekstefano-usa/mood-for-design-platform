@@ -103,7 +103,7 @@ def fast_capture(
 
     Body:
       {
-        "name": "Marco Rossi",          # required
+        "name": "<nome completo>",          # required
         "phone": "+39333012345",         # required if email empty
         "email": "marco@email.it",       # required if phone empty
         "source": "showroom",            # required, LOCKED_SOURCE_ENUM

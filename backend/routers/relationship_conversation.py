@@ -432,6 +432,66 @@ def send_message(
         locale=body.locale or "it",
     )
 
+    # ── NOTIFICATION CHAIN ──────────────────────────────────────────────
+    # F4 · ITER180: message → notification → badge → email (best-effort)
+    try:
+        from services import notification_publisher as _np
+        from services import email_service as _es
+
+        if sender_type == "client":
+            # Client scrive → notifica il designer assegnato
+            designer_id = t.get("primary_designer_id") or t.get("lead_assignee_id")
+            if designer_id:
+                _np.publish(
+                    tenant_id=ctx["tenant_id"],
+                    recipient_user_id=designer_id,
+                    recipient_type="designer",
+                    sender_user_id=pid,
+                    sender_type="client",
+                    category_key="message_received",
+                    narrative=preview or "Nuovo messaggio",
+                    payload={"thread_id": thread_id, "message_id": msg_id,
+                             "sender_label": sender_label},
+                    lead_id=t.get("lead_id"),
+                )
+                # Email notification al designer (non-blocking)
+                try:
+                    designer_row = db().table("users_profile").select("email,first_name").eq("id", designer_id).limit(1).execute().data
+                    if designer_row and designer_row[0].get("email"):
+                        _es.send_template_email(
+                            to=designer_row[0]["email"],
+                            template_key="generic",
+                            context={
+                                "designer_name": designer_row[0].get("first_name", "Referente"),
+                                "client_name": sender_label,
+                                "preview": preview or "Nuovo messaggio",
+                                "action_url": f"/workspace/conversations",
+                            },
+                        )
+                except Exception:
+                    pass  # email non-blocking
+
+        elif sender_type == "designer":
+            # Designer risponde → notifica il cliente
+            client_profile_id = t.get("client_profile_id")
+            if client_profile_id:
+                _np.publish(
+                    tenant_id=ctx["tenant_id"],
+                    recipient_user_id=client_profile_id,
+                    recipient_type="client",
+                    sender_user_id=pid,
+                    sender_type="designer",
+                    category_key="designer_replied",
+                    narrative=preview or "Il tuo referente ha risposto",
+                    payload={"thread_id": thread_id, "message_id": msg_id,
+                             "sender_label": sender_label},
+                    lead_id=t.get("lead_id"),
+                )
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("send_message: notification chain failed (non-blocking)")
+
+    # ── MEMORY FRAGMENTS ────────────────────────────────────────────────
     # Light memory: long client messages or attachments → memory fragment
     try:
         if sender_type == "client":

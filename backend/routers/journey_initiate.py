@@ -162,6 +162,51 @@ def _compose_rationale(at: Optional[AtmospherePayload],
     return " ".join(parts)
 
 
+# ─── Endpoint: check-email (public, no auth) ─────────────────────────
+@router.get("/public/check-email")
+def check_email(
+    email: str = Query(...),
+    tenant_slug: Optional[str] = Query(None),
+):
+    """Verifica sintattica + presenza account per un'email.
+
+    Restituisce:
+      { "status": "available" }   → email nuova, il journey creerà un account
+      { "status": "existing" }    → cliente già registrato, invieremo il magic link
+      { "status": "invalid" }     → email non valida
+    """
+    import re
+    EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$')
+    clean = (email or '').strip().lower()
+    if not clean or not EMAIL_RE.match(clean):
+        return {"status": "invalid"}
+
+    c = db()
+    slug = (tenant_slug or '').strip() or os.environ.get('DEFAULT_PUBLIC_TENANT_SLUG', '')
+    tid = None
+    try:
+        if slug:
+            rows = c.table('tenants').select('id').eq('slug', slug).limit(1).execute().data
+            if rows:
+                tid = rows[0]['id']
+    except Exception:
+        pass
+
+    try:
+        query = (c.table('users_profile').select('id,role')
+                 .eq('email', clean)
+                 .eq('role', 'client'))
+        if tid:
+            query = query.eq('tenant_id', tid)
+        found = query.limit(1).execute().data
+        if found:
+            return {"status": "existing"}
+    except Exception:
+        pass  # If DB lookup fails, treat as available (fail-open for UX)
+
+    return {"status": "available"}
+
+
 # ─── Endpoint: initiate ──────────────────────────────────────────────
 @router.post("/public/journeys/initiate", status_code=201)
 def initiate_journey(request: Request, body: InitiatePayload = Body(...)):

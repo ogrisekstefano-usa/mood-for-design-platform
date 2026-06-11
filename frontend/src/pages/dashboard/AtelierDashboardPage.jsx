@@ -1,5 +1,5 @@
 /**
- * AtelierDashboardPage — "Editorial Studio" redesign (Feb 2026 · Stefano brief)
+ * AtelierDashboardPage — "Editorial Studio" redesign (Feb 2026).
  *
  * Trasformazione: da console amministrativa a "spazio che ispira azione,
  * progettazione e crescita del business" (Apple / Notion / AD / Mohd refs).

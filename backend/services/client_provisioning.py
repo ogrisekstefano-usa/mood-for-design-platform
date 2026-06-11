@@ -139,10 +139,29 @@ def _ensure_profile(
 ) -> Dict[str, Any]:
     """Idempotent users_profile for role=client. Returns the row."""
     c = db()
+    # ITER180 · SESSION-GUARD · Scope lookup to (auth_user_id × tenant_id).
+    # Without tenant_id filter an admin email submitted as client email would
+    # return the admin's profile → session leakage (journey intestato all'admin).
     existing = (c.table("users_profile").select("*")
-                .eq("auth_user_id", auth_user_id).limit(1).execute().data or [])
+                .eq("auth_user_id", auth_user_id)
+                .eq("tenant_id", tenant_id)
+                .limit(1).execute().data or [])
     if existing:
         p = existing[0]
+        # ITER180 · SESSION-GUARD · Never reuse a staff profile as client.
+        # If the bound profile is admin/designer/pm → raise so the caller can
+        # refuse provisioning and surface a clear error (not a silent mis-link).
+        bound_role = (p.get("role") or "").lower()
+        if bound_role and bound_role != "client":
+            logger.error(
+                "[session-guard] auth_user_id=%s already bound to role=%s in tenant=%s "
+                "— refusing client provisioning for email=%s",
+                auth_user_id[:8], bound_role, tenant_id[:8], email,
+            )
+            raise ValueError(
+                f"session_guard:role_conflict bound_role={bound_role} "
+                f"tenant={tenant_id[:8]} email={email}"
+            )
         # P0-IDENTITY-1 · Sync email if accounts.email differs from stored value.
         if email and p.get("email", "").lower() != email.lower():
             try:

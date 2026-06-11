@@ -131,17 +131,8 @@ const JourneyPreparingPage = () => {
           <p className="jp-foot__text" data-testid="journey-preparing-foot">
             Nessuna password necessaria al primo accesso.
           </p>
-          {/* Dev/preview convenience: link diretto se l'email non arriva */}
-          {magicUrl && (
-            <a
-              href={magicUrl}
-              className="jp-foot__bypass"
-              data-testid="journey-preparing-bypass"
-              rel="noopener noreferrer"
-            >
-              Apri direttamente il tuo spazio →
-            </a>
-          )}
+          {/* Dev/preview bypass intentionally removed — session leakage vector.
+               Use the email link or the "Invia nuovamente" button above. */}
           <Link to="/auth/login" className="jp-foot__return" data-testid="journey-preparing-return">
             Tornare alla landing
           </Link>

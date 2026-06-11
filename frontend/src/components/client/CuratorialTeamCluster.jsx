@@ -7,7 +7,7 @@
  *   ❌ collaborators · staff · team members · operators
  *
  * Behavior:
- *  - Single avatar  → soft pill: portrait · "Stefano · In studio"
+ *  - Single avatar  → soft pill: portrait · "Referente · In studio"
  *  - Multi-avatar   → stacked cluster (max 3 visible + "+N")
  *  - Click          → DesignerPresentationModal with bio, presence,
  *                     specialties, languages, CTA message/call

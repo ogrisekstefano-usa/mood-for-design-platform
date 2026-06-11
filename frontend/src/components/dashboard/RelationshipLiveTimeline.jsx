@@ -5,7 +5,7 @@
  * Editorial sentences appearing as the relationship breathes.
  *
  *   Sofia ha completato il briefing iniziale.   ·  2 min fa
- *   Marco è tornato sul moodboard dopo 3 giorni. ·  ora
+ *   Il cliente è tornato sul moodboard dopo 3 giorni. ·  ora
  *
  * Sprint F · F4 behavior:
  *   - Realtime subscribe to `relationship_events:tenant_id=eq.<tid>`

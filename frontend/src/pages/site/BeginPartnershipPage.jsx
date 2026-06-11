@@ -266,7 +266,7 @@ const BeginPartnershipPage = () => {
             <label className="bj-field-label">Nome dello studio o azienda *</label>
             <input data-testid="bp-company-name" type="text"
                    value={companyName} onChange={(e) => setCompanyName(e.target.value)}
-                   className="bj-input" placeholder="Studio Bianchi Architetti" />
+                   className="bj-input" placeholder="es. Studio Architettura" />
 
             <label className="bj-field-label">Sito web</label>
             <input data-testid="bp-company-website" type="url"
