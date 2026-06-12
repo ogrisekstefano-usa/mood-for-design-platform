@@ -413,6 +413,10 @@ def provision_client_after_journey(
     logger.info("[ITER169] redirect_to=%r", redirect_to)
     magic_link = _generate_magic_link(email, redirect_to)
     result["magic_link_url"] = magic_link
+    # ── Log per recupero in assenza di email delivery (Resend fallback) ──
+    if magic_link:
+        logger.warning("🔑 [DEBUG_MAGIC_LINK_PROVISION] email=%s | journey=%s | link=%s",
+                       email, journey_id, magic_link)
 
     # ── 5. Email Continuity™ "Il tuo spazio è pronto" (ITER167.R3) ────
     if magic_link:
