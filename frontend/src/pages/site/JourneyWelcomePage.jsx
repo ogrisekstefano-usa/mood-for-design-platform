@@ -2,10 +2,16 @@
  * JourneyWelcomePage · Sprint G.2
  * Read-only welcome surface mostrata appena dopo il submit del rituale.
  * Accesso pubblico via welcome_token.
+ *
+ * FASE 1+2 · Journey Welcome Completion (Feb 2026):
+ *   - Aggiunto fetch companion (/api/public/journeys/welcome/{token}/companion)
+ *   - CTA "Accedi al tuo Atelier™" → /access
+ *   - CTA "Visualizza le Direzioni™" → /journey/:jid/concepts (se condivise)
+ *   - Sezione Direzioni inline (no auth) quando has_directions=true
  */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import '../../styles/begin-journey.css';
 import { useT } from '../../i18n/useT';
@@ -24,14 +30,13 @@ const GUESTS_LABEL = {
   alone: 'vivi lo spazio in solitudine'
 };
 const JourneyWelcomePage = () => {
-  const {
-    t
-  } = useT();
-  const {
-    token
-  } = useParams();
+  const { t } = useT();
+  const { token } = useParams();
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
+  const [companion, setCompanion] = useState(null);
+
+  // Fetch main welcome data
   useEffect(() => {
     let cancel = false;
     axios.get(`${API}/api/public/journeys/welcome/${token}`).then(r => {
@@ -39,9 +44,16 @@ const JourneyWelcomePage = () => {
     }).catch(() => {
       if (!cancel) setErr(true);
     });
-    return () => {
-      cancel = true;
-    };
+    return () => { cancel = true; };
+  }, [token]);
+
+  // Fetch companion data (non-blocking — directions, next action)
+  useEffect(() => {
+    let cancel = false;
+    axios.get(`${API}/api/public/journeys/welcome/${token}/companion`).then(r => {
+      if (!cancel) setCompanion(r.data);
+    }).catch(() => { /* companion è non-bloccante */ });
+    return () => { cancel = true; };
   }, [token]);
   if (err) {
     return <div className="jw-shell" data-testid="welcome-error">
@@ -69,7 +81,10 @@ const JourneyWelcomePage = () => {
     studio_name
   } = data;
   const chap = journey?.first_chapter;
+  const journeyId = journey?.id || companion?.journey_id;
   const url = typeof window !== 'undefined' ? window.location.href : '';
+  const hasDirections = companion?.has_directions && (companion?.concept_directions?.length > 0);
+  const directions = companion?.concept_directions || [];
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(url);
@@ -90,6 +105,55 @@ const JourneyWelcomePage = () => {
           {t("site.journey_welcome.questo_e_il_tuo_design_journey_tutto_cio_che_condi")}
           {studio_name && <><br />{t("site.journey_welcome.lo_studio_che_ti_accompagna")} <em>{studio_name}</em>.</>}
         </p>
+
+        {/* ── CTA Principal — sempre visibile ───────────────────────── */}
+        <div className="jw-cta-panel" data-testid="welcome-cta-panel">
+          <Link to="/access" className="jw-cta-btn jw-cta-btn--primary" data-testid="welcome-cta-atelier">
+            Accedi al tuo Atelier™
+          </Link>
+          {hasDirections && journeyId && (
+            <Link
+              to={`/journey/${journeyId}/concepts`}
+              className="jw-cta-btn jw-cta-btn--secondary"
+              data-testid="welcome-cta-directions"
+            >
+              Visualizza le Direzioni™
+              {directions.length > 0 && (
+                <span className="jw-cta-count">{directions.length} {directions.length === 1 ? 'direzione' : 'direzioni'}</span>
+              )}
+            </Link>
+          )}
+        </div>
+
+        {/* ── Direzioni condivise (se disponibili) ──────────────────── */}
+        {hasDirections && (
+          <div className="jw-card jw-card--directions" data-testid="welcome-directions-section">
+            <div className="jw-card__eyebrow">Direzioni progettuali condivise</div>
+            <div className="jw-card__title">
+              {studio_name || 'Il tuo studio'} ha condiviso {directions.length} {directions.length === 1 ? 'direzione' : 'direzioni'} con te.
+            </div>
+            <div className="jw-directions-grid">
+              {directions.map((d, i) => (
+                <div key={d.id || i} className="jw-direction-item" data-testid={`welcome-direction-${i}`}>
+                  {d.cover_url && (
+                    <div className="jw-direction-cover" style={{ backgroundImage: `url(${d.cover_url})` }} />
+                  )}
+                  <div className="jw-direction-meta">
+                    <span className="jw-direction-set">{d.set_label || 'Direction Set'}</span>
+                    <span className="jw-direction-name">{d.title || 'Direzione progettuale'}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {journeyId && (
+              <div className="jw-card__body" style={{ marginTop: '24px' }}>
+                <Link to={`/journey/${journeyId}/concepts`} className="jw-cta-btn jw-cta-btn--ghost" data-testid="welcome-directions-open">
+                  Apri e rispondi alle direzioni →
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Reflected atmosphere */}
         <div className="jw-card" data-testid="welcome-atmosphere">

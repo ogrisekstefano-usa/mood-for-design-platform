@@ -631,6 +631,106 @@
 }
 .jw-footer__btn:hover { color: color-mix(in srgb, var(--jo-accent) 100%, transparent); }
 
+/* ── Journey Welcome · CTA Panel ────────────────────────────────── */
+.jw-cta-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 0 auto 64px;
+  max-width: 480px;
+}
+.jw-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 32px;
+  border-radius: 4px;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  border: none;
+}
+.jw-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.jw-cta-btn--primary {
+  background: color-mix(in srgb, var(--jo-accent) 90%, transparent);
+  color: #0a0a0a;
+}
+.jw-cta-btn--secondary {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--jo-accent) 55%, transparent);
+  color: color-mix(in srgb, var(--jo-accent) 90%, transparent);
+}
+.jw-cta-btn--ghost {
+  background: transparent;
+  color: color-mix(in srgb, var(--jo-accent) 80%, transparent);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  padding: 0;
+  width: auto;
+  display: inline-flex;
+  text-decoration: none;
+}
+.jw-cta-btn--ghost:hover { opacity: 0.75; transform: none; }
+.jw-cta-count {
+  font-size: 11px;
+  opacity: 0.7;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  padding-left: 4px;
+}
+
+/* ── Journey Welcome · Direzioni Card ───────────────────────────── */
+.jw-card--directions {
+  border-color: color-mix(in srgb, var(--jo-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--jo-accent) 5%, transparent);
+}
+.jw-directions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.jw-direction-item {
+  border: 1px solid color-mix(in srgb, var(--jo-text) 10%, transparent);
+  border-radius: 6px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--jo-text) 3%, transparent);
+}
+.jw-direction-cover {
+  width: 100%;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  background-color: color-mix(in srgb, var(--jo-text) 6%, transparent);
+}
+.jw-direction-meta {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.jw-direction-set {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--jo-accent) 65%, transparent);
+}
+.jw-direction-name {
+  font-size: 14px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: color-mix(in srgb, var(--jo-text) 88%, transparent);
+}
+
 /* ── ITER167 R4 · Phone Country Prefix ────────────────────────────── */
 .bj-phone-row {
   display: flex;

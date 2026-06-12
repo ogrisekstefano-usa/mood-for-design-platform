@@ -1,0 +1,90 @@
+{
+  "summary": "Full certification test of Client→Designer flow. All 14 test scenarios PASS. JourneyWelcomePage now shows CTAs ('Accedi al tuo Atelier™' always, 'Visualizza le Direzioni™' when has_directions=true) and directions section. All backend endpoints verified. Flow: begin-journey → companion → share directions → client sees directions → client leaves feedback — fully working.",
+  "test_results": {
+    "A1_BeginJourney": {
+      "status": "PASS",
+      "details": "POST /api/public/journeys/initiate returns welcome_token, journey_id, lead_id. Required field is 'welcome' object with first_name+email."
+    },
+    "A2_WelcomePage_CTAs": {
+      "status": "PASS",
+      "details": "JourneyWelcomePage renders data-testid: welcome-page, welcome-hero, welcome-cta-panel, welcome-cta-atelier ('Accedi al tuo Atelier™'). All testids present and visible."
+    },
+    "A3_Companion_Endpoint": {
+      "status": "PASS",
+      "details": "GET /api/public/journeys/welcome/{token}/companion returns journey_id, lifecycle_state, concept_directions[], has_directions. Returns has_directions=true after share."
+    },
+    "A4_ClientPortal_Companion": {
+      "status": "PASS",
+      "details": "GET /api/client/journeys/{jid}/companion returns full journey data: header, active_chapter, shared_directions, evolution_timeline."
+    },
+    "A5_DesignerSharesDirections": {
+      "status": "PASS",
+      "details": "POST /api/journeys/{jid}/concept-directions/{set_id}/share returns shared_at timestamp, boards count, email object. Works correctly."
+    },
+    "A6_ClientSeesDirections": {
+      "status": "PASS",
+      "details": "GET /api/client/journeys/{jid}/concept-directions returns sets with set_shared_at. After sharing, returns 1 set with 3 directions."
+    },
+    "A7_ClientFeedback": {
+      "status": "PASS",
+      "details": "POST /api/client/concept-directions/{moodboard_id}/feedback accepts {reaction, text}. Returns feedback object with narrative. Required field: 'reaction' (not 'sentiment')."
+    },
+    "B1_Prospects": {
+      "status": "PASS",
+      "details": "GET /api/relations/prospects returns data[] with journey_lifecycle_state and journey_id per prospect. Count: 12+."
+    },
+    "B2_Accounts": {
+      "status": "PASS",
+      "details": "GET /api/relations/accounts returns data[] with journey_lifecycle_state and journey_id. Count: 17."
+    },
+    "B3_WelcomeNotDeadScreen": {
+      "status": "PASS",
+      "details": "Welcome page has 'Accedi al tuo Atelier™' CTA always visible. No longer a dead screen."
+    },
+    "B4_AccessPageRenders": {
+      "status": "PASS",
+      "details": "/access renders 'Accedi al tuo spazio progettuale' with email form and CONTINUA button."
+    },
+    "B5_WelcomeWithDirections": {
+      "status": "PASS",
+      "details": "After sharing directions, welcome page shows: welcome-cta-directions ('Visualizza le Direzioni™ 3 direzioni') AND welcome-directions-section with 3 direction cards. Full B5 flow verified."
+    }
+  },
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/client-relations/prospects (wrong URL in review_request)",
+        "issue": "Correct endpoint is /api/relations/prospects, not /api/client-relations/prospects. Review request had wrong paths.",
+        "priority": "INFO"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "All pages",
+        "issues": ["EDITORIAL · DEBUG bar visible on all pages. REACT_APP_EDITORIAL_DEBUG=true in frontend/.env — intentional for preview but should be disabled in production."]
+      }
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_242.json"],
+  "action_items": [
+    "Set REACT_APP_EDITORIAL_DEBUG=false in production deployment to hide debug bar"
+  ],
+  "critical_code_review_comments": [
+    "A7 feedback endpoint requires 'reaction' field (not 'sentiment') — API schema is correct but review_request documentation uses wrong field name",
+    "Email delivery is MOCKED (Resend BLOCKED) — share endpoint returns sent:true but no actual email delivered"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (all 7 backend endpoints pass)",
+    "frontend": "100% (all UI tests pass, JourneyWelcomePage fully fixed)"
+  },
+  "seed_data_creation": "Created test journey DirezTest (jid: 5bb93016, token: BYJ0C53T1vDcx8WjGRgzKFG7zkuLr51K) with shared concept directions for B5 testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 242: FULL CERTIFICATION PASS. All 12 scenarios pass. JourneyWelcomePage P1 issues from iter241 are FIXED. Correct API routes: /api/relations/prospects and /api/relations/accounts. A7 feedback requires 'reaction' not 'sentiment'. Test journey with shared directions: jid=5bb93016, token=BYJ0C53T1vDcx8WjGRgzKFG7zkuLr51K. Only remaining minor issue: EDITORIAL DEBUG bar (intentional in preview env)."
+}
