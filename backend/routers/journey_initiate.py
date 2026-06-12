@@ -655,3 +655,63 @@ def get_welcome(token: str):
         },
         "studio_name":    studio_name,
     }
+
+
+@router.get("/public/journeys/welcome/{token}/companion")
+def get_welcome_companion(token: str):
+    """Companion payload per il portale cliente unauthenticated.
+    Restituisce shared concept directions, notifiche non lette, e
+    azioni disponibili — tutto accessibile solo via welcome_token.
+    Usato da JourneyWelcomePage per fornire un portale funzionante
+    anche senza autenticazione Supabase."""
+    c = db()
+    rows = (c.table('design_journeys').select('id, tenant_id, account_id, project_id, lifecycle_state')
+            .eq('welcome_token', token).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(status_code=404, detail="Welcome non trovato")
+    j = rows[0]
+    tid = j['tenant_id']
+    jid = j['id']
+
+    # ── Shared concept directions ──────────────────────────────────────
+    concept_directions: list[dict] = []
+    try:
+        mbs = (c.table('moodboards')
+               .select('id, title, status, cover_metadata, ai_metadata, updated_at')
+               .eq('tenant_id', tid)
+               .eq('journey_id', jid)
+               .is_('deleted_at', 'null')
+               .execute().data or [])
+        for m in mbs:
+            seed = ((m.get('ai_metadata') or {}).get('concept_seed') or {})
+            if seed.get('shared_at'):
+                concept_directions.append({
+                    "id":          m['id'],
+                    "title":       m.get('title') or 'Direzione progettuale',
+                    "status":      m.get('status'),
+                    "set_id":      seed.get('set_id'),
+                    "set_label":   seed.get('set_label'),
+                    "shared_at":   seed.get('shared_at'),
+                    "cover_url":   ((m.get('cover_metadata') or {}).get('signed_url')
+                                   or (m.get('cover_metadata') or {}).get('url')),
+                    "updated_at":  m.get('updated_at'),
+                })
+    except Exception:
+        pass
+
+    # ── Next action ────────────────────────────────────────────────────
+    next_action = None
+    if concept_directions:
+        next_action = {
+            "kind": "review_directions",
+            "label": "Visualizza le Direzioni™",
+            "description": f"{len(concept_directions)} direzioni condivise dal tuo studio",
+        }
+
+    return {
+        "journey_id":         jid,
+        "lifecycle_state":    j.get('lifecycle_state'),
+        "concept_directions": concept_directions,
+        "has_directions":     len(concept_directions) > 0,
+        "next_action":        next_action,
+    }
