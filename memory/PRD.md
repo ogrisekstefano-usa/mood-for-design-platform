@@ -351,7 +351,7 @@ See `/app/memory/test_credentials.md`. Default super_admin:
   - ✅ P0-2: client_portal.py concept feedback ora pubblica notifica al designer via notification_publisher (categoria message_received + unread_for_designer++).
   - ✅ P0-4: ProspectsPage.jsx: Link import mancante fixato. CTA card cambiata da "Promuovi ad Account" (deprecated) a "Apri Journey". ProspectLane mostra journey_lifecycle_state badge.
   - ✅ **MOODBOARD PUBLISH FLOW CERTIFICATION (11 Jun 2026)**: All 7/7 PASS. See `MOODBOARD_E2E_CERTIFICATION.md`.
-  - ✅ **LIFECYCLE CANONICALIZATION SPRINT (08 Feb 2026)**: 5 documenti di audit prodotti. Verdetto finale: MOOD non è governato da un unico Journey canonico (convergenza 46%). design_journeys.lifecycle_state stuck a 'conversation_open'. Roadmap P0/P1/P2 dettagliata in NEXT_STABILIZATION_ROADMAP.md.
+  - ✅ **POST-CERTIFICATION CONSOLIDATION (08 Feb 2026)**: 4 documenti di audit prodotti (LIFECYCLE_CONSOLIDATION_AUDIT, DISCOVERY_CONSOLIDATION_REPORT, DESIGNER_CLIENT_COLLABORATION_CERTIFICATION 8/8, CLIENT_MODEL_CLEANUP_REPORT). Verdetto: NO — MOOD non è ancora governato da un unico Journey canonico. P0 bloccante: design_journeys.lifecycle_state non avanza mai (stuck a conversation_open × 18).
 
 
 
