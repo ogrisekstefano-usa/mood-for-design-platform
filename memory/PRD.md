@@ -396,3 +396,24 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 
 
+
+## P0 Implementation Sprint — 2026-06-12
+
+### P0-A: Email Deduplication (journey_initiate.py)
+- Lookup accounts per email+tenant prima di qualsiasi insert
+- Case B (email + open journey): action=resumed, zero duplicati
+- Case A (email + no open journey): nuovo journey su account esistente
+- Log: [LIFECYCLE_DEDUP]
+
+### P0-B: Account → Lead Resolution (client_relations.py + AccountsPage.jsx)
+- legacy_lead_id aggiunto al SELECT
+- resolved_lead_id per ogni account (metadata_json → legacy_lead_id → email fallback)
+- AccountsPage.handleOpen usa resolved_lead_id → no 404
+
+### P0-C: SSoT
+- design_journeys.lifecycle_state = SSoT fase progettuale
+- accounts.lifecycle_stage = SSoT fase CRM pre-journey
+
+### P0-D: Lifecycle (journey_initiate.py)
+- lifecycle_state='in_progress' invece di 'conversation_open' alla creazione
+- Log: [LIFECYCLE_TRANSITION]

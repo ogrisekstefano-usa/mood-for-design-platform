@@ -276,7 +276,7 @@ def list_accounts(
     client = db()
     tenant_id = current_user['tenant_id']
     query = client.table('accounts').select(
-        'id, account_name, account_type, email, language, locale_code, '
+        'id, account_name, account_type, email, language, locale_code, legacy_lead_id, '
         'lifecycle_stage, relationship_journey_stage, relationship_health, '
         'relationship_score, cultural_profile, mood_dominant, '
         'luxury_perception_axis, market_id, primary_owner_id, '
@@ -357,6 +357,49 @@ def list_accounts(
         r['journey_id'] = journey.get('id')
         r['journey_lifecycle_state'] = journey.get('lifecycle_state')
         r['journey_project_id'] = journey.get('project_id')
+
+    # ── P0-B: Resolve lead_id per account ────────────────────────────────
+    # Prevents WelcomeDrawer 404 ("Lead not found") caused by passing
+    # account.id to an endpoint that expects lead.id.
+    # Lookup chain:
+    #   1. leads.metadata_json->>'account_id' == account.id  (precise)
+    #   2. accounts.legacy_lead_id                            (lead_conversion path)
+    #   3. leads.email == account.email  ORDER BY created_at ASC (oldest signal)
+    lead_map: dict = {}
+    if account_ids:
+        try:
+            account_emails = list(set(
+                r.get('email', '').lower() for r in rows if r.get('email')
+            ))
+            if account_emails:
+                lr = (client.table('leads')
+                      .select('id, email, metadata_json')
+                      .eq('tenant_id', tenant_id)
+                      .in_('email', account_emails)
+                      .order('created_at', desc=False)
+                      .execute())
+                email_lead_fallback: dict = {}
+                for lead in (lr.data or []):
+                    meta_acc = (lead.get('metadata_json') or {}).get('account_id')
+                    le = (lead.get('email') or '').lower()
+                    if meta_acc and meta_acc in account_ids:
+                        # Precise link: lead.metadata_json.account_id → account
+                        lead_map[meta_acc] = lead['id']
+                    if le and le not in email_lead_fallback:
+                        email_lead_fallback[le] = lead['id']
+                for r in rows:
+                    aid = r['id']
+                    if aid not in lead_map:
+                        if r.get('legacy_lead_id'):
+                            lead_map[aid] = r['legacy_lead_id']
+                        else:
+                            ae = (r.get('email') or '').lower()
+                            if ae in email_lead_fallback:
+                                lead_map[aid] = email_lead_fallback[ae]
+        except Exception:
+            logger.debug("P0-B: lead_id resolution failed (non-blocking)")
+    for r in rows:
+        r['resolved_lead_id'] = lead_map.get(r['id'])
 
     return {"data": rows, "total": res.count or 0,
             "limit": limit, "offset": offset}

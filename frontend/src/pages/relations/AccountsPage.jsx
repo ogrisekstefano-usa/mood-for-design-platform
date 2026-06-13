@@ -245,7 +245,7 @@ const AccountsPage = () => {
   const [welcomeId, setWelcomeId] = useState(null);
   const [convertAccount, setConvertAccount] = useState(null);
   const [revertAccount, setRevertAccount]   = useState(null);
-  const handleOpen = (a) => setWelcomeId(a.id);
+  const handleOpen = (a) => setWelcomeId(a.resolved_lead_id || null);
   const handleWelcomeAction = () => setWelcomeId(null);
   const handleLifecycleUpdated = () => { if (typeof refresh === 'function') refresh(); };
 

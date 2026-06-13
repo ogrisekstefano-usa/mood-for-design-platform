@@ -226,6 +226,12 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
 
     now = _now()
 
+    # Compute request_host early — needed by P0-A dedup provisioning path
+    # (also consumed later in step 8 journey_runtime_identity)
+    request_host = ((request.headers.get('x-forwarded-host')
+                     or request.headers.get('x-original-host')
+                     or request.headers.get('host') or '').split(',')[0].strip())
+
     # Phone normalization (ITER167 R4): use the normalized version if
     # the frontend sent one (full E.164-style "+39…"), otherwise the raw
     # value. Country code / dial code go to metadata_json for future
@@ -237,44 +243,117 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     if body.welcome.dial_code:
         _phone_meta["dial_code"] = body.welcome.dial_code
 
-    # 1. Account
+    # ── P0-A EMAIL DEDUPLICATION ─────────────────────────────────────────
+    # Prevents duplicate identity chains for the same email+tenant.
+    # Case B: email + open journey  → resume existing journey (return immediately)
+    # Case A: email + no open journey → new journey on existing account
+    # Case C: email not found       → full create (original path)
+    _is_returning = False
+    try:
+        _dedup_acct = (c.table('accounts').select('id, account_name, lifecycle_stage')
+                       .eq('tenant_id', tid).ilike('email', email)
+                       .limit(1).execute().data or [])
+        if _dedup_acct:
+            _is_returning = True
+            account_id = _dedup_acct[0]['id']
+            _open_j = (c.table('design_journeys')
+                       .select('id, lifecycle_state, welcome_token, project_id')
+                       .eq('tenant_id', tid).eq('account_id', account_id)
+                       .neq('lifecycle_state', 'closed')
+                       .neq('lifecycle_state', 'certified_closure')
+                       .order('created_at', desc=True).limit(1).execute().data or [])
+            if _open_j:
+                # ── CASE B: resume existing open journey ─────────────────
+                _j = _open_j[0]
+                logger.warning(
+                    "[LIFECYCLE_DEDUP] email=%s existing_account=%s "
+                    "existing_journey=%s action=resume",
+                    email, account_id[:8], _j['id'][:8],
+                )
+                _prov: dict = {}
+                try:
+                    from services.client_provisioning import (
+                        provision_client_after_journey as _prov_fn,
+                    )
+                    _xld = (c.table('leads').select('id').eq('tenant_id', tid)
+                            .ilike('email', email).order('created_at', desc=False)
+                            .limit(1).execute().data or [])
+                    _prov = _prov_fn(
+                        tenant_id=tid, request_host=request_host,
+                        first_name=first_name, email=email,
+                        phone=body.welcome.phone, locale="it",
+                        journey_id=_j['id'], account_id=account_id,
+                        lead_id=_xld[0]['id'] if _xld else None,
+                        summary_text=None,
+                    )
+                except Exception:
+                    logger.exception(
+                        "[LIFECYCLE_DEDUP] provisioning for resumed journey failed"
+                    )
+                return {
+                    "journey_id":     _j['id'],
+                    "lead_id":        None,
+                    "welcome_token":  _j['welcome_token'],
+                    "welcome_url":    f"/journey/welcome/{_j['welcome_token']}",
+                    "magic_link_url": _prov.get("magic_link_url"),
+                    "profile_id":     _prov.get("profile_id"),
+                    "assignee":       _prov.get("assignee_profile"),
+                    "thread_id":      _prov.get("thread_id"),
+                    "message":        "Il tuo spazio progettuale è pronto.",
+                    "action":         "resumed",
+                }
+            else:
+                # ── CASE A: new journey on existing account ───────────────
+                logger.warning(
+                    "[LIFECYCLE_DEDUP] email=%s existing_account=%s "
+                    "action=new_journey_on_existing_account",
+                    email, account_id[:8],
+                )
+                c.table('accounts').update({"updated_at": now}).eq('id', account_id).execute()
+    except Exception:
+        logger.exception("[LIFECYCLE_DEDUP] dedup check failed — proceeding with full create")
+        _is_returning = False
+
+    # 1. Account (skipped for returning clients — account_id already set by P0-A)
     # ITER185.P1 · Forward-only: start as 'prospect' (canon LOCKED) since Begin
     # Journey contains qualifying signals (budget, timeline). Discovery row is
     # created qualified later in the same transaction.
-    account_id = str(uuid.uuid4())
-    c.table('accounts').insert({
-        "id":              account_id,
-        "tenant_id":       tid,
-        "account_name":    full_name,    # FASE-2: first_name + last_name
-        "account_type":    "private_client",
-        "lifecycle_stage": "prospect",
-        "source":          "begin_journey_ritual",
-        "email":           email,
-        "phone":           _phone_normalized,
-        "language":        "it",
-        "locale_code":     "it",
-        "country":         body.welcome.country_code,
-        "metadata_json":   _phone_meta or {},
-        "created_at":      now,
-        "updated_at":      now,
-    }).execute()
+    if not _is_returning:
+        account_id = str(uuid.uuid4())
+        c.table('accounts').insert({
+            "id":              account_id,
+            "tenant_id":       tid,
+            "account_name":    full_name,    # FASE-2: first_name + last_name
+            "account_type":    "private_client",
+            "lifecycle_stage": "prospect",
+            "source":          "begin_journey_ritual",
+            "email":           email,
+            "phone":           _phone_normalized,
+            "language":        "it",
+            "locale_code":     "it",
+            "country":         body.welcome.country_code,
+            "metadata_json":   _phone_meta or {},
+            "created_at":      now,
+            "updated_at":      now,
+        }).execute()
 
-    # 2. Contact
-    contact_id = str(uuid.uuid4())
-    c.table('contacts').insert({
-        "id":              contact_id,
-        "tenant_id":       tid,
-        "account_id":      account_id,
-        "first_name":      first_name,
-        "last_name":       last_name,    # FASE-2: saved if provided
-        "email":           email,
-        "phone":           _phone_normalized,
-        "metadata_json":   _phone_meta or {},
-        "primary_contact": True,
-        "lifecycle_stage": "conversation_open",
-        "created_at":      now,
-        "updated_at":      now,
-    }).execute()
+    # 2. Contact (skipped for returning clients — P0-A dedup)
+    if not _is_returning:
+        contact_id = str(uuid.uuid4())
+        c.table('contacts').insert({
+            "id":              contact_id,
+            "tenant_id":       tid,
+            "account_id":      account_id,
+            "first_name":      first_name,
+            "last_name":       last_name,    # FASE-2: saved if provided
+            "email":           email,
+            "phone":           _phone_normalized,
+            "metadata_json":   _phone_meta or {},
+            "primary_contact": True,
+            "lifecycle_stage": "conversation_open",
+            "created_at":      now,
+            "updated_at":      now,
+        }).execute()
 
     # 3. Project (minimal)
     project_id = str(uuid.uuid4())
@@ -296,7 +375,10 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "updated_at":    now,
     }).execute()
 
-    # 4. Design Journey (with welcome_token + lifecycle_state=conversation_open)
+    # 4. Design Journey (with welcome_token)
+    # P0-D · SSoT lifecycle: brief starts immediately → in_progress
+    # (constraint-valid values: conversation_open | in_progress | presenting |
+    #  drifting | on_pause | approved | closed | editioned | abandoned)
     journey_id    = str(uuid.uuid4())
     welcome_token = secrets.token_urlsafe(24)
     c.table('design_journeys').insert({
@@ -306,12 +388,16 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "account_id":            account_id,
         "current_milestone_id":  None,
         "overall_status":        "in_progress",
-        "lifecycle_state":       "conversation_open",
+        "lifecycle_state":       "in_progress",
         "welcome_token":         welcome_token,
         "started_at":            now,
         "created_at":            now,
         "updated_at":            now,
     }).execute()
+    logger.warning(
+        "[LIFECYCLE_TRANSITION] journey=%s from=conversation_open to=in_progress",
+        journey_id[:8],
+    )
 
     # 4.5 JOURNEY OWNERSHIP · Assegna il primo membro disponibile del tenant come owner
     try:
@@ -428,9 +514,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     resolved = getattr(request.state, 'resolved_tenant', None) or {}
     # ITER169 · prefer X-Forwarded-Host when present (K8s ingress rewrites
     # the internal Host header to a non-public cluster domain).
-    request_host = ((request.headers.get('x-forwarded-host')
-                     or request.headers.get('x-original-host')
-                     or request.headers.get('host') or '').split(',')[0].strip())
+    # request_host already computed at function top (P0-A dedup path)
     resolved_host = resolved.get('host') or request_host or None
     resolved_subdomain = resolved.get('subdomain')
     if not resolved_subdomain and request_host:
@@ -589,6 +673,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "assignee":       provisioning.get("assignee_profile"),
         "thread_id":      provisioning.get("thread_id"),
         "message":        "Il tuo spazio progettuale è pronto.",
+        "action":         "new_journey_on_existing" if _is_returning else "created",
     }
 
 
