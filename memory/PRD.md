@@ -397,6 +397,18 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 
 
+## PRE-DEPLOY EXECUTION SPRINT — COMPLETATO 2026-06-14
+
+### Steps eseguiti
+- Step 1–3: DB cleanup eseguito (tutti gli account/lead/journey di test eliminati)
+- Step 4: P1-A `human_assignment._candidates_for()` — rimosso `super_admin` da `_PRIORITY_FOR_CLIENT` + filtro `.neq("role","super_admin")` (belt-and-suspenders)
+- Step 5: Backend riavviato e verificato
+- Step 6: E2E test con email univoca `e2e.certify.1781405667@moodtest.io` → `action=created`, 9/9 success criteria PASS
+- Step 7: Secondo submit stessa email → `action=resumed`, nessun duplicato
+- Step 8: `FINAL_SYSTEM_HEALTH_REPORT.md` generato in `/app/memory/`
+
+**Verdetto: 🟢 SISTEMA CERTIFICATO — 9/9 PASS**
+
 ## P0 Implementation Sprint — 2026-06-12
 
 ### P0-A: Email Deduplication (journey_initiate.py)

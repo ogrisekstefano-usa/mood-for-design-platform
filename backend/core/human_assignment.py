@@ -23,11 +23,11 @@ log = logging.getLogger(__name__)
 
 # Candidate roles ordered by priority. The first non-empty group wins.
 # Once a group is chosen, all members of that group compete round-robin.
+# RULE: super_admin is NEVER a candidate for client assignments.
 _PRIORITY_FOR_CLIENT: List[List[str]] = [
     ["tenant_admin"],
     ["project_manager"],
     ["designer", "editor"],
-    ["super_admin"],  # last resort fallback
 ]
 
 _PRIORITY_FOR_STUDIO_ONBOARDING: List[List[str]] = [
@@ -51,12 +51,15 @@ def _candidates_for(tenant_id: str, subject_type: str) -> List[Dict]:
                    if subject_type == "studio_onboarding"
                    else _PRIORITY_FOR_CLIENT)
     for roles in role_groups:
+        # Belt-and-suspenders: super_admin is ALWAYS excluded from client routing,
+        # regardless of which role_group is being evaluated.
         r = (
             c.table("users_profile")
             .select("id,first_name,last_name,role,email,avatar_url,short_bio,role_label,response_time_label,contact_cta_label,created_at")
             .eq("tenant_id", tenant_id)
             .in_("role", roles)
             .eq("status", "active")
+            .neq("role", "super_admin")
             .execute()
         )
         members = r.data or []
