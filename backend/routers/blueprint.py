@@ -17,17 +17,16 @@ from core.tenant_context import get_tenant_context
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# ── HARDENING-I18N-GUARD™ (Sprint Iter117) ─────────────────────
-# Server-side enforcement of the language governance contract:
-#   - Blueprint operational locales = 6 fixed (it, en-US, en-GB, fr, de, es)
-#   - Anything else requested against /api/blueprint/i18n/{locale} → 403
-#   - Public surfaces use /api/public/i18n/{locale} (separate router).
-# This is defense-in-depth: even if a frontend localStorage override or a
-# manually crafted axios call tries to fetch ar/zh/ja from Blueprint, the
-# server refuses. Mirrors BLUEPRINT_OPERATIONAL_CODES in
-# /app/frontend/src/site/content/languages.js.
+# ── HARDENING-I18N-GUARD™ (Sprint Iter117 · P0.5 BCP-47 contract) ──────────
+# Server-side enforcement of the language governance contract.
+# Mirrors BLUEPRINT_OPERATIONAL_CODES in languages.js exactly.
+# Full BCP-47 codes are the canonical form (frontend always sends these).
+# Short forms kept for backward compat (legacy DB data / curl tests).
 BLUEPRINT_OPERATIONAL_LOCALES = frozenset({
-    "it", "en-US", "en-GB", "fr", "de", "es",
+    # Full BCP-47 — canonical (frontend sends these)
+    "it-IT", "en-US", "en-GB", "fr-FR", "de-DE", "es-ES", "es-MX",
+    # Short forms — backward compat (legacy data / CLI tests)
+    "it", "fr", "de", "es",
 })
 
 

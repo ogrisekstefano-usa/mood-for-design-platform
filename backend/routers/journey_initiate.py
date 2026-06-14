@@ -587,13 +587,16 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         )
 
     # ITER161 · P0.2 · Lead → Prospect transition (interview completata)
-    # Appena il cliente ha condiviso le prime 3 indicazioni, NON è più un lead
-    # puro: ha investito tempo emotivo e ha condiviso una direzione.
+    # P0.5-B · Lifecycle propagation: progression_state + first_journey_id + intake timestamp.
+    # Valid progression_state values (DB constraint): 'lead' | 'prospect' | 'account'
     try:
         c.table("leads").update({
-            "status":         "qualified",
-            "pipeline_stage": "prospect_initial_brief",
-            "updated_at":     now,
+            "status":             "qualified",
+            "pipeline_stage":     "prospect_initial_brief",
+            "progression_state":  "prospect",
+            "first_journey_id":   journey_id,
+            "intake_completed_at": now,
+            "updated_at":         now,
         }).eq("id", lead_id).execute()
         c.table("funnel_events").insert({
             "id":            str(uuid.uuid4()),
@@ -660,6 +663,24 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         import logging
         logging.getLogger(__name__).exception("client provisioning failed")
         provisioning = {}
+
+    # P0.5-B · Account lifecycle advancement: prospect → active
+    # Eseguito DOPO il provisioning. relationship_thread_id non è una colonna
+    # della tabella accounts — il thread è referenziato solo via journey.
+    try:
+        c.table("accounts").update({
+            "lifecycle_stage": "active",
+            "updated_at":      now,
+        }).eq("id", account_id).execute()
+        logger.warning(
+            "[LIFECYCLE_TRANSITION] account=%s lifecycle_stage: prospect → active",
+            account_id[:8],
+        )
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception(
+            "account lifecycle_stage advancement failed (non-blocking)"
+        )
 
     return {
         "journey_id":     journey_id,

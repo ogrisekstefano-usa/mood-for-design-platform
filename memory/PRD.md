@@ -397,6 +397,31 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 
 
+## P0.5 — I18N CONTRACT & LIFECYCLE PROPAGATION — COMPLETATO 2026-06-14
+
+### Fix applicati
+- **P0.5-A**: `blueprint.py` — `BLUEPRINT_OPERATIONAL_LOCALES` aggiornato con BCP-47 full codes (`it-IT`, `fr-FR`, `de-DE`, `es-ES`, `es-MX`) + backward compat short codes. Risolto il P0 Welcome page bloccata.
+- **P0.5-B**: `journey_initiate.py` — propagazione lifecycle post-journey: `leads.progression_state=prospect`, `leads.first_journey_id=UUID`, `leads.intake_completed_at=now`, `accounts.lifecycle_stage=active`
+- Success criteria: **18/18 PASS** — Report: `/app/memory/P0.5_CLOSURE_REPORT.md`
+
+### Bug P1/P2 residui (fuori scope P0.5)
+- AUTH-1: ogrisekadvisor password invalida
+- Resend: dominio non verificato (azione utente)
+- HF-2: homepage editorial keys raw
+- HF-4: debug overlay visibile
+- D-3: build warning useActiveJourney
+
+## POST-STABILIZATION VALIDATION SPRINT — COMPLETATO 2026-06-14
+
+### Bug certificati (no fix effettuati — solo documentazione)
+- **P0**: HF-1 Welcome page bloccata (causata da I18N-1 BCP-47 mismatch in platform.py)
+- **P1**: I18N-1/2/3/4 — `blueprint/i18n/{locale}-{CODE}` → 403 per it-IT/fr-FR/de-DE/es-ES
+- **P1**: AUTH-1 — ogrisekadvisor@gmail.com password non valida
+- **P1**: LC-1/2 — journey_initiate non propaga lifecycle ad accounts/leads
+- **P1**: Resend dominio non verificato
+- **P2**: 8 bug minori (build warning, debug overlay, thread link null, ecc.)
+- Report completo: `/app/memory/POST_STABILIZATION_REPORT.md`
+
 ## PRE-DEPLOY EXECUTION SPRINT — COMPLETATO 2026-06-14
 
 ### Steps eseguiti
