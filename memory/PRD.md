@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** 08 Feb 2026 — v4
-> **Status:** REAL FLOW CERTIFIED (Iteration 242: 14/14 PASS) · JourneyWelcomePage P1-2 CHIUSO · CTA "Accedi al tuo Atelier™" + "Visualizza le Direzioni™" · Flusso Designer↔Cliente COMPLETAMENTE CERTIFICATO
+> **Last update:** Giugno 2026 — v5
+> **Status:** REAL FLOW CERTIFIED (Iteration 242: 14/14 PASS) · JourneyWelcomePage P1-2 CHIUSO · CTA "Accedi al tuo Atelier™" + "Visualizza le Direzioni™" · Flusso Designer↔Cliente COMPLETAMENTE CERTIFICATO · UX/UI & Conversion Sprint COMPLETATO (report generati) · Homepage CMS Consolidation Plan GENERATO
 
 ## Original problem statement
 
@@ -468,3 +468,28 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 ### P0-D: Lifecycle (journey_initiate.py)
 - lifecycle_state='in_progress' invece di 'conversation_open' alla creazione
 - Log: [LIFECYCLE_TRANSITION]
+
+
+
+---
+
+## UX/UI & Conversion Sprint — Giugno 2026
+
+### Sprint completato: Report generati, nessun codice modificato
+
+**Deliverables prodotti:**
+- `/app/memory/UX_UI_CONVERSION_MASTER_REPORT.md` — Audit completo 7 domande business + CMS audit + Responsive + Business Conversion Findings (Top 10 problemi, Top 10 opportunità, P0/P1/P2)
+- `/app/memory/CONVERSION_REPORT.md` — Sintesi esecutiva per decision making
+- `/app/memory/HOMEPAGE_CMS_CONSOLIDATION_PLAN.md` — Piano tecnico CMS-driven, nessuna implementazione
+
+**Findings critici (P0):**
+1. Tenant slug mismatch: frontend usa `i18n-recovery-1`, CMS è su `studio` → homepage completamente vuota
+2. Debug bar visibile a tutti i visitatori
+3. Brand "MOOD for DESIGN" (piattaforma) esposto invece del brand dello studio
+4. 0 progetti pubblicati, 0 articoli magazine
+5. CTA "INIZIA IL TUO DESIGN JOURNEY™" → terminologia SaaS
+
+**Next Actions (da approvare con utente):**
+- Implementare Fix 0.1 (tenant slug) + Fix 0.2 (debug bar) + Fix 0.3 (bucket pubblico)
+- Pubblicare contenuto (progetti, magazine) via Blueprint
+- Homepage CMS Consolidation: sviluppare Homepage Builder in Blueprint
