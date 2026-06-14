@@ -397,6 +397,20 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 
 
 
+## POST-STABILIZATION CLEANUP & PRODUCTION READINESS — COMPLETATO 2026-06-14
+
+### Eseguito
+- STEP 1: 107 record di test eliminati (5 entità complete: accounts, leads, contacts, journeys, projects, threads)
+- STEP 2: auth.users: 7 → 2 (admin + advisor)
+- STEP 3: Resend diagnosi — mailbox attiva usa dominio radice non verificato (fix documentato)
+- STEP 4: Readiness check — 7/7 endpoint OK + no super_admin
+- STEP 5: System health: 0 duplicati, 0 thread orfani, 0 project.client_user_id null
+- 4 report prodotti: FINAL_CLEANUP_REPORT.md, AUTH_STATUS_REPORT.md, RESEND_READINESS_REPORT.md, PRODUCTION_READINESS_REPORT.md
+
+### Azioni bloccanti rimaste
+- RESEND-1: Aggiornare email_mailboxes mailbox attiva a @mail.moodfordesign.com
+- AUTH-1: Reset password ogrisekadvisor@gmail.com su Supabase
+
 ## P0.5 — I18N CONTRACT & LIFECYCLE PROPAGATION — COMPLETATO 2026-06-14
 
 ### Fix applicati
