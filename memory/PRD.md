@@ -493,3 +493,25 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Implementare Fix 0.1 (tenant slug) + Fix 0.2 (debug bar) + Fix 0.3 (bucket pubblico)
 - Pubblicare contenuto (progetti, magazine) via Blueprint
 - Homepage CMS Consolidation: sviluppare Homepage Builder in Blueprint
+
+
+---
+
+## Fix 0.1 + Fix 0.2 — Giugno 2026
+
+### Completati con successo
+
+**Fix 0.1 — Tenant slug mismatch (1 riga)**
+- File: `/app/frontend/src/pages/site/HomePage.jsx` (riga 790)
+- Aggiunto: `if (host.includes('.preview.emergentagent.com')) return 'studio';`
+- Risultato: Homepage carica le 21 sezioni CMS (11 con contenuto, 10 da popolare)
+
+**Fix 0.2 — Debug bar pubblica**
+- File: `/app/frontend/.env`
+- `REACT_APP_EDITORIAL_DEBUG=false` (era `true`)
+- Risultato: Barra debug scomparsa da tutte le pagine pubbliche
+
+**Fix 0.3 — Mini Audit completato, implementazione pending**
+- Hero image su bucket privato `tenant-assets`, signed URL con scadenza 27 May 2027
+- Piano documentato in `HOMEPAGE_CMS_CONSOLIDATION_PLAN.md` Fase 0 Fix 0.3
+- Non implementato: in attesa decisione utente

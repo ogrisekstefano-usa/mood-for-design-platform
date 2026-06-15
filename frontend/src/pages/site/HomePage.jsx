@@ -787,6 +787,8 @@ const TENANT_SLUG = (() => {
   const first = (host.split('.')[0] || '').toLowerCase();
   const PLATFORM = ['studio', 'blueprint', 'www', 'localhost'];
   if (first.startsWith('content-hub-pro-')) return 'studio';
+  // Fix 0.1: preview hostnames (e.g. i18n-recovery-1.preview.emergentagent.com) must resolve to 'studio'
+  if (host.includes('.preview.emergentagent.com')) return 'studio';
   if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
   return first || 'studio';
 })();
