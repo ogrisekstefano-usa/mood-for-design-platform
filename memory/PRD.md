@@ -509,6 +509,27 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 **Fix 0.2 — Debug bar pubblica**
 - File: `/app/frontend/.env`
 - `REACT_APP_EDITORIAL_DEBUG=false` (era `true`)
+
+---
+
+## Content Population Sprint — Giugno 2026
+
+### Completato con successo
+
+- 3 Published Design Journeys creati (Villa Lago di Como, Penthouse Milano, Boutique Suite Amalfi)
+- 6 Magazine Articles creati (3 IT + 3 EN)
+- 5 CMS sections aggiornate (design_journey, atmosphere_statement, professionals_cta, cinematic_quote, editorial_footer)
+- Nuova revisione pubblicata (`dd9f41c3`)
+- Scoperta architettura critica: la homepage usa snapshot `published_revision_id` — ogni modifica CMS richiede nuova pubblicazione
+- Report: `/app/memory/HOMEPAGE_REAL_CONTENT_REVIEW.md`
+
+**Issues rimasti (da risolvere dopo approvazione):**
+- Footer hardcoded in EDITORIAL_SHELL: `© 2026 MOOD for DESIGN™`, `Running on Blueprint OS™`, `Questo servizio è fornito da`
+- editorial_grid legge da locale_content.it.items (hardcoded) invece del DB
+- atmosphere_statement body non mappato correttamente
+- Duplicate header su /magazine
+- Nessun brand dello studio, nessun volto umano
+
 - Risultato: Barra debug scomparsa da tutte le pagine pubbliche
 
 **Fix 0.3 — Mini Audit completato, implementazione pending**
