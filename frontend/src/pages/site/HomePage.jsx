@@ -60,14 +60,14 @@ const EDITORIAL_SHELL = {
     en: 'Welcome to our studio. We design relationships, not just spaces.',
   },
   nav: {
-    how_it_works:    { it: 'Come funziona',  en: 'How it works' },
+    how_it_works:    { it: 'Come lavoriamo',  en: 'How we work' },
     magazine:        { it: 'Magazine',       en: 'Magazine' },
-    design_stories:  { it: 'Design Stories', en: 'Design Stories' },
+    design_stories:  { it: 'Progetti', en: 'Projects' },
     materials:       { it: 'Materiali',      en: 'Materials' },
-    professionals:   { it: 'Per i professionisti', en: 'For Professionals™' },
+    professionals:   { it: 'Per i professionisti', en: 'For Professionals' },
     about:           { it: 'Chi siamo',      en: 'About' },
-    login:           { it: 'Rientra', en: 'Re-enter' },
-    cta:             { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
+    login:           { it: 'Accedi', en: 'Sign in' },
+    cta:             { it: 'Prenota una consulenza', en: 'Book a consultation' },
   },
   // Editorial slots — empty by design. Populated by the CMS.
   hero:       { image: '', title: { it: '', en: '' }, sub: { it: '', en: '' },
@@ -81,16 +81,9 @@ const EDITORIAL_SHELL = {
                 private: { it: '', en: '' }, pro: { it: '', en: '' } },
   footer: {
     cols: [],
-    rights: { it: '© 2026 MOOD for DESIGN. Tutti i diritti riservati.',
-              en: '© 2026 MOOD for DESIGN. All rights reserved.' },
+    rights: { it: '', en: '' },
     colophon: {
-      enabled: true,
-      left:   { it: '© 2026 MOOD for DESIGN™', en: '© 2026 MOOD for DESIGN™' },
-      center: { it: { prefix: 'Questo servizio è fornito da ', link_label: 'MOOD for DESIGN', suffix: '' },
-                en: { prefix: 'This service is provided by ',  link_label: 'MOOD for DESIGN', suffix: '' } },
-      center_link_href: 'https://www.moodfordesign.com',
-      right:  { it: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
-                en: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios' },
+      enabled: false,
     },
   },
 };
@@ -194,9 +187,10 @@ const LanguageSelector = ({ locale, locales, onChange }) => {
 // ─────────────────────────────────────────────────────────────────────
 // HEADER (with burger menu for tablet/mobile)
 // ─────────────────────────────────────────────────────────────────────
-const SiteHeader = ({ locale, copy, onLocaleChange }) => {
+const SiteHeader = ({ locale, copy, onLocaleChange, brandLogoUrl }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const locales = (copy.locales && copy.locales.length) ? copy.locales : DEFAULT_LOCALES;
+  const logoUrl = brandLogoUrl || MOOD_BRAND_LOGO_URL;
 
   // Close menu on route change / anchor click
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -215,10 +209,10 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
   <>
     <header className="mfd-header">
       <div className="mfd-header__inner">
-        <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label={MOOD_BRAND_ALT}>
+        <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label="Studio">
           <img
-            src={MOOD_BRAND_LOGO_URL}
-            alt={MOOD_BRAND_ALT}
+            src={logoUrl}
+            alt="Studio"
             className="mfd-header__brand-img"
             draggable={false}
             data-testid="home-header-brand-img"
@@ -388,8 +382,42 @@ const HowItWorks = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 // MAGAZINE
 // ─────────────────────────────────────────────────────────────────────
-const Magazine = ({ locale, copy }) => {
-  if (!copy.magazine.cards || copy.magazine.cards.length === 0) {
+// Step 4 — reads from Editorial published DB (not hardcoded settings.cards)
+const useMagazineArticles = (locale) => {
+  const [articles, setArticles] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    const loc = locale === 'en' ? 'en' : 'it';
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/magazine/public/${TENANT_SLUG}/articles?locale=${loc}&limit=3`;
+    fetch(url)
+      .then((r) => r.ok ? r.json() : {})
+      .then((d) => {
+        if (cancelled) return;
+        const items = d.articles || d.items || (Array.isArray(d) ? d : []);
+        setArticles(items);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
+  return articles;
+};
+
+const Magazine = ({ locale, copy, articles }) => {
+  // Use live DB articles if available, fall back to CMS hardcoded cards
+  const cards = (articles && articles.length > 0)
+    ? articles.map((a) => ({
+        id: a.id,
+        slug: a.slug,
+        image: a.cover_url || a.hero_url || '',
+        category: a.category_slug || '',
+        title: Object.fromEntries(
+          Object.entries(a.locale_content || {}).map(([loc, c]) => [loc, (c || {}).title || ''])
+        ),
+      }))
+    : (copy.magazine.cards || []);
+
+  if (!cards || cards.length === 0) {
     return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli editoriali in evidenza dal Blueprint." />;
   }
   return (
@@ -405,8 +433,8 @@ const Magazine = ({ locale, copy }) => {
         </Link>
       </header>
       <div className="mfd-home-magazine__grid">
-        {copy.magazine.cards.map((c) => (
-          <Link key={c.id} to={`/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
+        {cards.map((c) => (
+          <Link key={c.id} to={c.slug ? `/magazine/${c.slug}` : `/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
             <div className="mag-card__media">
               <img src={c.image} alt="" loading="lazy" />
               <span className="mag-card__veil" />
@@ -616,18 +644,20 @@ const FooterColophon = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────────────────────────────
-const SiteFooter = ({ locale, copy }) => (
+const SiteFooter = ({ locale, copy, brandLogoUrl }) => (
   <footer id="footer" className="mfd-footer" data-testid="site-footer">
     <div className="mfd-footer__inner">
       <div className="mfd-footer__top">
         <div className="mfd-footer__brand">
+          {brandLogoUrl && (
           <img
-            src={MOOD_BRAND_LOGO_URL}
-            alt={MOOD_BRAND_ALT}
+            src={brandLogoUrl}
+            alt="Studio"
             className="mfd-footer__brand-img"
             draggable={false}
             data-testid="home-footer-brand-img"
           />
+          )}
         </div>
         <div className="mfd-footer__cols">
           {copy.footer.cols.map((col, ci) => (
@@ -855,6 +885,8 @@ const HomePageBody = () => {
   // CMS — single source of truth for editorial copy.
   const cms = useStorefrontContent(TENANT_SLUG, 'home');
   const navBundle = useNavBundle(locale);
+  // Step 4 — Magazine: live DB articles (replaces hardcoded editorial_grid.settings.cards)
+  const magazineArticles = useMagazineArticles(locale);
   const copy = useMemo(() => {
     const merged = { ...EDITORIAL_SHELL };
     const mapped = mapCmsToCopy(cms?.content, locale === 'en' ? 'en-US' : locale);
@@ -880,7 +912,7 @@ const HomePageBody = () => {
         <Hero locale={locale} copy={copy} />
         <TrustStrip locale={locale} copy={copy} />
         <HowItWorks locale={locale} copy={copy} />
-        <Magazine locale={locale} copy={copy} />
+        <Magazine locale={locale} copy={copy} articles={magazineArticles} />
         <DesignStories locale={locale} copy={copy} />
         <Materials locale={locale} copy={copy} />
         <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />

@@ -24,6 +24,7 @@ const resolveTenantSlug = () => {
   const first = host.split('.')[0] || '';
   const PLATFORM = ['studio', 'blueprint', 'www', 'localhost'];
   if (first.startsWith('content-hub-pro-')) return 'studio';
+  if (host.includes('.preview.emergentagent.com')) return 'studio';
   if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
   return first || 'studio';
 };
@@ -59,17 +60,7 @@ const resolveBag = (bag, locale) => {
 };
 
 const SHELL_COLOPHON = {
-  enabled: true,
-  left:   { it: '© 2026 MOOD for DESIGN™', en: '© 2026 MOOD for DESIGN™' },
-  center: {
-    it: { prefix: 'Questo servizio è fornito da ', link_label: 'MOOD for DESIGN', suffix: '' },
-    en: { prefix: 'This service is provided by ',  link_label: 'MOOD for DESIGN', suffix: '' },
-  },
-  center_link_href: 'https://www.moodfordesign.com',
-  right: {
-    it: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
-    en: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
-  },
+  enabled: false,
 };
 
 // Map a social platform code to an icon component (lucide-react).

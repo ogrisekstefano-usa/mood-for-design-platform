@@ -536,3 +536,42 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Hero image su bucket privato `tenant-assets`, signed URL con scadenza 27 May 2027
 - Piano documentato in `HOMEPAGE_CMS_CONSOLIDATION_PLAN.md` Fase 0 Fix 0.3
 - Non implementato: in attesa decisione utente
+
+---
+
+## Studio Identity & White Label Sprint — Giugno 2026
+
+### Completato con successo (Steps 1, 2, 3, 4, 5)
+
+**Step 1 + 4 (Sprint precedente):**
+- Rimosso branding MOOD da `HomePage.jsx`, `MoodSiteFooter.jsx`, `MoodSiteHeader.jsx`
+- Magazine section collegata a `magazine_articles` DB (non più hardcoded)
+- Navigation labels aggiornati nel DB (nav_top.settings.links)
+
+**Step 2 — Inventario CMS (completato in questo sprint):**
+- 37 section types in uso nel DB (8 nel registro formale + 29 legacy)
+- 4 tabelle DB lato pubblico: cms_pages, cms_sections, magazine_articles, published_design_journeys + users_profile
+- Identificati 6 Gap Reali (G1-G6) e 6 Pseudo-Gap (PG1-PG6)
+- Confermato: il CMS attuale può supportare un sito completo internazionale SENZA nuove tabelle
+
+**Step 3 — Architettura /about (completato):**
+- 7 sezioni (store_hero + atmosphere_statement + team_identity_card + value_props + stats_band + projects_preview + dual_cta)
+- ZERO nuove tabelle — tutti i dati già nel DB o nei tipi di sezione registrati
+- Richiede: 'about' in PAGE_KEYS + route frontend + script seed
+
+**Step 5 — WHITE_LABEL_IDENTITY_PLAN.md prodotto:**
+- File: `/app/memory/WHITE_LABEL_IDENTITY_PLAN.md`
+- Inventario completo CMS, Audit white-label, Gap register, /about architecture, Raccomandazione finale
+
+**Verifica tecnica:**
+- CMS homepage: served_from=revision, 21 sections, OK
+- Magazine: 3 articoli IT from DB
+- Journeys: 3 progetti pubblicati from DB
+- Public brand API: brand.name ancora "MOOD for DESIGN" (G3 — pending)
+
+**Gap Prioritari aperti (da approvare con utente):**
+- G1: Aggiungere 'about' a PAGE_KEYS + route frontend + seed (P1)
+- G2: Logo fallback MOOD in brandAssets.js → placeholder neutro (P1)
+- G3: Update branding_settings.public_brand_name nel DB (P1)
+- G4: Fix 0.3 logo bucket migration (P2 — deferred by user)
+- G5: Riempire users_profile.short_bio + avatar_url team (P2)

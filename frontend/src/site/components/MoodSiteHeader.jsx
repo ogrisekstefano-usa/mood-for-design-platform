@@ -26,6 +26,7 @@ const resolveTenantSlug = () => {
   const first = host.split('.')[0] || '';
   const PLATFORM = ['studio', 'blueprint', 'www', 'localhost'];
   if (first.startsWith('content-hub-pro-')) return 'studio';
+  if (host.includes('.preview.emergentagent.com')) return 'studio';
   if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
   return first || 'studio';
 };
@@ -35,12 +36,12 @@ const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''
 
 const DEFAULT_COPY = {
   nav: {
-    how_it_works:  { it: 'Come funziona',  en: 'How it works' },
+    how_it_works:  { it: 'Come lavoriamo',  en: 'How we work' },
     magazine:      { it: 'Magazine',       en: 'Magazine' },
-    design_stories:{ it: 'Design Stories', en: 'Design Stories' },
+    design_stories:{ it: 'Progetti', en: 'Projects' },
     professionals: { it: 'Per i professionisti', en: 'For professionals' },
-    cta:           { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
-    login:         { it: 'Rientra', en: 'Re-enter' },
+    cta:           { it: 'Prenota una consulenza', en: 'Book a consultation' },
+    login:         { it: 'Accedi', en: 'Sign in' },
   },
 };
 
@@ -84,10 +85,10 @@ const MoodSiteHeader = ({
     <>
       <header className="mfd-header" data-testid="mfd-header">
         <div className="mfd-header__inner">
-          <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label={MOOD_BRAND_ALT}>
+          <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label="Studio">
             <img
               src={brandLogoUrl}
-              alt={MOOD_BRAND_ALT}
+              alt="Studio"
               className="mfd-header__brand-img"
               draggable={false}
               data-testid="mfd-header-brand-img"
