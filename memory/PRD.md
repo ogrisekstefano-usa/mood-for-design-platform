@@ -575,3 +575,43 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - G3: Update branding_settings.public_brand_name nel DB (P1)
 - G4: Fix 0.3 logo bucket migration (P2 — deferred by user)
 - G5: Riempire users_profile.short_bio + avatar_url team (P2)
+
+---
+
+## Fase Alpha + G1 Sprint — Giugno 2026
+
+### G3 — COMPLETATO
+- `branding_settings.public_brand_name` aggiornato da "MOOD for DESIGN" → "Studio"
+- `branding_settings.public_brand_name_i18n` aggiornato (it-IT, en-US)
+- API `/api/storefront/public/studio/brand` ora restituisce `brand.name = "Studio"`
+
+### G2 — COMPLETATO
+- `brandAssets.js`: `MOOD_BRAND_LOGO_URL = null`, `MOOD_BRAND_ALT = 'Studio'`
+- `MoodSiteHeader.jsx`: fallback null + `logoImgError` state + `onError` handler → mostra wordmark "Studio"
+- `MoodSiteFooter.jsx`: fallback null + wordmark span di fallback
+- `SiteFooter.jsx`: rimosso riferimento MOOD
+- `HomePage.jsx SiteHeader`: rimosso riferimento MOOD
+- DB: rimosso `nav_top.settings.logo_url` rotto (Google Storage URL) e ripubblicata navigazione
+
+### G1 — /about page COMPLETATA
+- `storefront_registry.py`: 'about' in PAGE_KEYS + DEFAULT_PAGE_COMPOSITION
+- `seed_about_page.py`: 7 sezioni CMS create + published nel DB
+- `AboutPage.jsx`: pagina CMS-driven multilingua con 7 sezioni
+- `App.js`: route `/about` aggiunta con lazy import
+- `api.js` isPublicSurface: `/about` aggiunto (fix by testing agent)
+- Nav: link "Chi siamo / /about" aggiunto e pubblicato
+
+### Test results (iteration_243):
+- G3 brand.name = Studio: PASS
+- G2 no MOOD logo (wordmark fallback): PASS
+- G1 /about loads con 7 sezioni: PASS
+- Hero title CMS: PASS
+- Stats (18, 200+, 12, 100%): PASS
+- Projects (Villa Como, Milano, Amalfi): PASS
+- Manifesto quote: PASS
+- CTA title: PASS
+- Nav link "Chi siamo": PASS
+
+### Gap rimasti:
+- G4: Fix 0.3 logo bucket migration (P2 — deferred)
+- G5: users_profile.short_bio + avatar_url team (P2)

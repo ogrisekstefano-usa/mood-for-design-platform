@@ -54,6 +54,7 @@ const MoodSiteHeader = ({
   // The short form ('it' / 'en') is what DEFAULT_COPY keys use.
   const locale = (localeProp || site?.locale || 'it').slice(0, 2);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logoImgError, setLogoImgError] = useState(false);
   const location = useLocation();
   const onHome = location.pathname === '/' || location.pathname === '';
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -67,6 +68,9 @@ const MoodSiteHeader = ({
     const fromSettings = navTop?._settings?.logo_url || navTop?.settings?.logo_url;
     return (fromSettings && String(fromSettings).trim()) || null;
   }, [cmsNav]);
+
+  // Reset img error when logo URL changes
+  useEffect(() => { setLogoImgError(false); }, [brandLogoUrl]);
 
   // Always close the menu when route changes (defensive)
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
@@ -86,8 +90,8 @@ const MoodSiteHeader = ({
       <header className="mfd-header" data-testid="mfd-header">
         <div className="mfd-header__inner">
           <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label="Studio">
-            {brandLogoUrl
-              ? <img src={brandLogoUrl} alt="Studio" className="mfd-header__brand-img" draggable={false} data-testid="mfd-header-brand-img" />
+            {(brandLogoUrl && !logoImgError)
+              ? <img src={brandLogoUrl} alt="Studio" className="mfd-header__brand-img" draggable={false} data-testid="mfd-header-brand-img" onError={() => setLogoImgError(true)} />
               : <span className="mfd-header__brand-wordmark" data-testid="mfd-header-brand-wordmark">Studio</span>
             }
           </Link>
