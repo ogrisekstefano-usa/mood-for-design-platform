@@ -18,12 +18,13 @@
  * platform default for the "MOOD for DESIGN" master brand.
  */
 
-// Canonical CDN URL (preferred — cacheable on the Emergent customer-assets bucket).
-export const MOOD_BRAND_LOGO_URL =
-  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png';
+// White-label: no platform logo is shown as fallback.
+// Each tenant must configure their logo via CMS → navigation → nav_top → logo_url.
+// When no logo is configured, the site shows the studio name as text.
+export const MOOD_BRAND_LOGO_URL = null;
 
 // Local fallback (bundled in /public/brand/) used by Brand.jsx as last resort.
 export const MOOD_BRAND_LOGO_LOCAL = '/brand/logo-official.png';
 
-// Alt text — keep accessibility editorial, not "logo image".
-export const MOOD_BRAND_ALT = 'MOOD for DESIGN™';
+// Alt text — neutral, white-label safe.
+export const MOOD_BRAND_ALT = 'Studio';

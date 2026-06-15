@@ -146,6 +146,7 @@ const MagazineAdminPage = lazy(() => import('./pages/settings/MagazineAdminPage'
 const MagazineEditorPage = lazy(() => import('./pages/settings/MagazineEditorPage'));
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
+const AboutPage = lazy(() => import('./pages/site/AboutPage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
 const MembersPage = lazy(() => import('./pages/settings/MembersPage'));
 const PlanPage = lazy(() => import('./pages/settings/PlanPage'));
@@ -472,6 +473,7 @@ function App() {
                     Magazine + Start Project + Begin Journey now share the same SiteLayout
                     (P0 stabilization: ONE renderer, ONE runtime, ONE source of truth). */}
                 <Route element={<SiteLayout />}>
+                  <Route path="/about" element={<AboutPage />} />
                   <Route path="/projects" element={<ProjectsIndexPage />} />
                   <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="/magazine" element={<MagazinePage />} />

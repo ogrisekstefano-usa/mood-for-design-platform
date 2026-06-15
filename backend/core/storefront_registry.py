@@ -24,7 +24,7 @@ from typing import Dict, Any, List
 
 
 # ── Page key catalog (Session B locks to these 6) ──────────────────────────
-PAGE_KEYS = ['home', 'projects', 'start_project', 'professionals', 'navigation', 'ui']
+PAGE_KEYS = ['home', 'projects', 'start_project', 'professionals', 'navigation', 'ui', 'about']
 
 
 # ── Storefront-specific section catalog ────────────────────────────────────
@@ -517,6 +517,7 @@ DEFAULT_PAGE_COMPOSITION: Dict[str, List[str]] = {
     "professionals": ["pro_hero", "pro_benefits", "pro_intake_step"],
     "navigation": ["nav_top", "footer_columns"],
     "ui": ["shared_ui_labels"],
+    "about": ["store_hero", "atmosphere_statement", "team_identity_card", "design_journey", "stats_band", "featured_design_journeys", "cinematic_quote"],
 }
 
 

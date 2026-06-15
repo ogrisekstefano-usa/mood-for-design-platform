@@ -1,0 +1,59 @@
+{
+  "summary": "Tested Studio Identity & White Label sprint. Fixed critical bug where /about redirected to login. All G1/G2/G3 requirements verified after fix.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "MoodSiteHeader",
+        "issue": "Header brand logo shows broken image (naturalWidth=0) on all pages including /about. CMS nav_top.settings.logo_url is set to a Google Storage URL that does not load. The MOOD logo is not shown (correct), but a broken image appears instead of the 'Studio' wordmark fallback. Needs img onerror fallback or fix to CMS logo_url.",
+        "selector": "[data-testid='mfd-header-brand-img']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "/about page access",
+        "issue": "FIXED: /about was redirecting to /auth/login because '/about' was missing from isPublicSurface list in api.js. Background provider API calls (branding, profile) returning 401 triggered auth redirect. Fixed by adding `p === '/about' || p.startsWith('/about/')` to the isPublicSurface check.",
+        "affected_selectors": ["[data-testid='about-page']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/frontend/src/lib/api.js"],
+  "action_items": [
+    "Check CMS nav_top.settings.logo_url: currently set to a broken Google Storage URL. Either fix the URL or add an onerror fallback in MoodSiteHeader.jsx to show wordmark when img fails to load."
+  ],
+  "critical_code_review_comments": [
+    "api.js isPublicSurface list is a maintenance burden - any new public route added to App.js must also be added here manually. Consider a whitelist approach or checking against known protected routes instead.",
+    "The /about route was silently broken for unauthenticated users because of this list omission - this pattern will recur with future public routes."
+  ],
+  "updated_files": ["/app/frontend/src/lib/api.js"],
+  "success_rate": {
+    "backend": "N/A",
+    "frontend": "95%"
+  },
+  "rca_of_issue": {
+    "bug": "/about page redirected to /auth/login for unauthenticated users",
+    "root_cause": "In /app/frontend/src/lib/api.js, the response interceptor redirects to /auth/login on any 401 response unless the current path is in the isPublicSurface allowlist. The '/about' path was not in this list. When background provider calls (api/branding, api/profile/me, api/branding/studio-palette) returned 401, the interceptor triggered window.location.href = '/auth/login'.",
+    "fix": "Added `p === '/about' || p.startsWith('/about/')` to the isPublicSurface check in api.js line 131.",
+    "reproduction": "Navigate to /about while unauthenticated → immediately redirected to /auth/login"
+  },
+  "test_results": {
+    "G3_brand_api_returns_Studio": "PASS",
+    "G2_header_no_MOOD_logo": "PASS (but broken img shown instead of wordmark fallback)",
+    "G2_footer_no_MOOD_logo": "PASS - shows 'Studio' wordmark",
+    "G1_about_page_loads": "PASS (after fix)",
+    "G1_nav_chi_siamo_link": "PASS",
+    "G1_hero_text": "PASS - 'Progettiamo spazi che raccontano chi sei.'",
+    "G1_stats_4_numbers": "PASS - 18, 200+, 12, 100%",
+    "G1_projects_villa_milano_amalfi": "PASS - all 3 projects shown",
+    "G1_manifesto_quote": "PASS - 'Non costruiamo interni. Costruiamo appartenenza.'",
+    "G1_cta_title": "PASS - 'Hai un progetto? Parlaci.'"
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "The /about route fix is in api.js isPublicSurface list. The header shows a broken image from CMS logo_url - main agent should verify if this is intentional or if fallback to wordmark is needed when img.naturalWidth=0."
+}

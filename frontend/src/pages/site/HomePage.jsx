@@ -190,7 +190,7 @@ const LanguageSelector = ({ locale, locales, onChange }) => {
 const SiteHeader = ({ locale, copy, onLocaleChange, brandLogoUrl }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const locales = (copy.locales && copy.locales.length) ? copy.locales : DEFAULT_LOCALES;
-  const logoUrl = brandLogoUrl || MOOD_BRAND_LOGO_URL;
+  const logoUrl = brandLogoUrl || null;
 
   // Close menu on route change / anchor click
   const closeMenu = useCallback(() => setMenuOpen(false), []);

@@ -139,8 +139,7 @@ const MoodSiteFooter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(cmsHome?.content?.editorial_footer)]);
 
-  const brandLogoUrl = (footerSettings.logo_url && String(footerSettings.logo_url).trim())
-                   || MOOD_BRAND_LOGO_URL;
+  const brandLogoUrl = (footerSettings.logo_url && String(footerSettings.logo_url).trim()) || null;
 
   const socialLinks = Array.isArray(footerSettings.social_links)
     ? footerSettings.social_links.filter((s) => s && s.href)
@@ -191,13 +190,10 @@ const MoodSiteFooter = () => {
       <div className="mfd-footer__inner">
         <div className="mfd-footer__top">
           <div className="mfd-footer__brand">
-            <img
-              src={brandLogoUrl}
-              alt={MOOD_BRAND_ALT}
-              className="mfd-footer__brand-img"
-              draggable={false}
-              data-testid="site-footer-brand-img"
-            />
+            {brandLogoUrl
+              ? <img src={brandLogoUrl} alt="Studio" className="mfd-footer__brand-img" draggable={false} data-testid="site-footer-brand-img" />
+              : <span className="mfd-footer__brand-wordmark" data-testid="site-footer-brand-wordmark">Studio</span>
+            }
             {socialLinks.length > 0 && (
               <ul className="mfd-footer__socials" data-testid="footer-socials">
                 {socialLinks.map((s, i) => {

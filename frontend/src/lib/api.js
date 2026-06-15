@@ -128,7 +128,9 @@ api.interceptors.response.use(
         p.startsWith('/moodboard/share/') ||
         p.startsWith('/review/') ||
         p.startsWith('/f/') ||
-        p.startsWith('/form/');
+        p.startsWith('/form/') ||
+        p === '/about' ||
+        p.startsWith('/about/');
       if (!isPublicSurface) {
         localStorage.removeItem(STORAGE_KEY);
         window.location.href = '/auth/login';

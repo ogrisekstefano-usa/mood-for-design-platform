@@ -137,7 +137,7 @@ const SiteFooter = () => {
         <div className="mfd-footer__brand-block">
           <Link to="/" data-testid="footer-brand" aria-label={MOOD_BRAND_ALT}>
             <img
-              src={brand?.logo_url || MOOD_BRAND_LOGO_URL}
+              src={brand?.logo_url || null}
               alt={MOOD_BRAND_ALT}
               className="mfd-footer__brand-img"
               draggable={false}

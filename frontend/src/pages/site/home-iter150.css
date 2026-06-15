@@ -194,6 +194,28 @@
 @media (max-width: 600px) {
   .mfd-header__brand-img { height: 58px; width: 58px; }
 }
+/* ITER171.6 · White-label wordmark fallback — shown when no logo URL is configured.
+   Renders the studio name as an elegant serif logotype. */
+.mfd-header__brand-wordmark {
+  display: block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px; font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--mfd-ink, #2A2A2A);
+  user-select: none;
+  line-height: 1;
+}
+/* Footer wordmark fallback */
+.mfd-footer__brand-wordmark {
+  display: block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px; font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--mfd-ink, #2A2A2A);
+  user-select: none;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
 .mfd-header__brand-sub {
   font-size: 9.5px;
   letter-spacing: 0.28em;

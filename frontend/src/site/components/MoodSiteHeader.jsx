@@ -59,13 +59,13 @@ const MoodSiteHeader = ({
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   // ITER171.6 · CMS-driven logo. Reads from `navigation.nav_top.settings.logo_url`.
-  // Falls back to the bundled brand asset when CMS has no override yet.
+  // White-label: no platform logo fallback. If CMS has no override, renders studio name as text.
   const tenantSlug = useMemo(() => resolveTenantSlug(), []);
   const cmsNav = useStorefrontContent(tenantSlug, 'navigation');
   const brandLogoUrl = useMemo(() => {
     const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
     const fromSettings = navTop?._settings?.logo_url || navTop?.settings?.logo_url;
-    return (fromSettings && String(fromSettings).trim()) || MOOD_BRAND_LOGO_URL;
+    return (fromSettings && String(fromSettings).trim()) || null;
   }, [cmsNav]);
 
   // Always close the menu when route changes (defensive)
@@ -86,13 +86,10 @@ const MoodSiteHeader = ({
       <header className="mfd-header" data-testid="mfd-header">
         <div className="mfd-header__inner">
           <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label="Studio">
-            <img
-              src={brandLogoUrl}
-              alt="Studio"
-              className="mfd-header__brand-img"
-              draggable={false}
-              data-testid="mfd-header-brand-img"
-            />
+            {brandLogoUrl
+              ? <img src={brandLogoUrl} alt="Studio" className="mfd-header__brand-img" draggable={false} data-testid="mfd-header-brand-img" />
+              : <span className="mfd-header__brand-wordmark" data-testid="mfd-header-brand-wordmark">Studio</span>
+            }
           </Link>
           <nav className="mfd-header__nav" aria-label="Primary">
             {onHome ? (
