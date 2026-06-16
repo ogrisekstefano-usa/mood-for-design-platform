@@ -646,3 +646,39 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - P1: Fix 0.3 bucket migration (on hold)
 - P2: Timezone field in Identity Model
 - P2: Engine i18n unification E3 → E1
+
+## STUDIO IDENTITY & CONVERSION SPRINT — FASE 2 (Giugno 2026)
+
+### Documenti prodotti
+- /app/memory/STUDIO_CONTENT_AUDIT.md — audit P0/P1/P2 completo
+- /app/memory/CTA_CONSOLIDATION_REPORT.md — analisi CTA + raccomandazione
+- /app/memory/PROFESSIONALS_PAGE_PLAN.md — blueprint pagina professionisti
+
+### P0 Fix implementati
+- Footer: social MOOD rimossi (instagram/linkedin moodfordesign → vuoto)
+- Footer colophon_link: moodfordesign.com → vuoto
+- Tutti i CTA href: /begin-journey → /consulenza (home + about + professionals)
+- Route /consulenza: alias route per BeginJourneyPage
+- Route /servizi + /services: nuova ServicesPage CMS-driven
+
+### Pagine implementate
+- /professionals: ProfessionalsGatewayPage riscritta (100% CMS-driven, era hardcoded)
+  - 6 sezioni: hero, manifesto, triptych (3 vantaggi), processo (4 step), collaboratori, finalCTA
+- /servizi: ServicesPage creata (CMS-driven)
+  - 5 sezioni: hero, triptych (4 tipologie), manifesto, processo, finalCTA
+- /about: fix CTA /begin-journey → /consulenza in 4 sezioni CMS
+
+### CTA consolidata
+- CTA primaria unica: "Prenota una consulenza" → /consulenza
+- Tutte le primarie convergono su /consulenza
+- Terminologia SaaS rimossa: Journey, Blueprint, MOOD
+
+### Test Results (iteration_245)
+- Backend: 100%
+- Frontend: 100% (dopo fix api.js isPublicSurface + CMS about)
+
+### Prossime priorità
+- P1: Footer premium (indirizzo, telefono, email, città servite — CMS settings)
+- P1: About page enhancement (stats_band con numeri reali, team_identity_card)
+- P2: /professionals: aggiungere immagine hero CMS
+- P2: Timezone field in Identity Model
