@@ -615,3 +615,34 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 ### Gap rimasti:
 - G4: Fix 0.3 logo bucket migration (P2 — deferred)
 - G5: users_profile.short_bio + avatar_url team (P2)
+
+## HOMEPAGE LAYOUT CONSOLIDATION SPRINT — COMPLETATO (Giugno 2026)
+### Modifiche Layout V2
+- Hero full-screen 100svh (Safari iOS safe, fallback 100vh)
+- HowItWorks: griglia dinamica da CMS (var(--how-cols)), 4 col desktop → 1 col mobile
+- DesignStories: 3 colonne (da 4)
+- EditorialStatement: nuova sezione manifesto studio (atmosphere_statement CMS)
+- Padding editoriale aumentato: clamp(80px, 8vw, 120px) su tutte le sezioni principali
+- Section head margin: 18px → 56px
+- Fix CSS broken rule (ading { })
+
+### Rimozione Terminologia SaaS/MOOD (P0)
+- "Design Journey™" rimosso da: hero title, CTA hero, CTA nav, cinematic_quote
+- "Blueprint" rimosso da: tutti gli EmptyEditorialSlot (visibili all'utente)
+- "MOOD for DESIGN™" rimosso da: hero eyebrow IT/EN, _default eyebrow
+- CTA nav: "Prenota una consulenza" (era "Inizia il tuo Design Journey™")
+- FallBack testi: "progetti" invece di "Journey"
+
+### Test Results
+- 10/10 test superati (testing_agent_v4, iteration_244)
+- Hero 100svh: PASS, HowItWorks 4col: PASS, Projects 3col: PASS
+- EditorialStatement: PASS, No Blueprint: PASS, No EmptySlots: PASS
+
+### Documenti generati
+- /app/memory/HOMEPAGE_LAYOUT_MIGRATION_REPORT.md
+
+### Prossime priorità
+- P1: Valutare Homepage Builder (posticipato)
+- P1: Fix 0.3 bucket migration (on hold)
+- P2: Timezone field in Identity Model
+- P2: Engine i18n unification E3 → E1
