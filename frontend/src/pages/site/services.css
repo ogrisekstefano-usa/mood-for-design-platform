@@ -1,0 +1,81 @@
+/**
+ * services.css
+ * ─────────────
+ * Stili specifici per ServicesPage.
+ * Eredita variabili e componenti base da home-iter150.css.
+ */
+
+/* ─────────────────────────────────────────────────────────────────
+ * Hero variante servizi
+ * ───────────────────────────────────────────────────────────────── */
+.mfd-svc-hero.mfd-home-hero {
+  min-height: 88svh;
+}
+@supports not (min-height: 88svh) {
+  .mfd-svc-hero.mfd-home-hero { min-height: 88vh; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Triptych servizi — 4 blocchi tipologie
+ * ───────────────────────────────────────────────────────────────── */
+.mfd-svc-triptych {
+  padding: clamp(80px, 8vw, 120px) 0;
+  background: var(--mfd-bg, #f5f2ed);
+}
+.mfd-svc-triptych__inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+}
+.mfd-svc-triptych__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--mfd-line, rgba(38,38,38,.12));
+  padding-top: 40px;
+}
+.mfd-svc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 28px;
+  background: var(--mfd-bg-2, #f0ebe1);
+  border-radius: 2px;
+  border: 1px solid var(--mfd-line, rgba(38,38,38,.08));
+  transition: border-color 220ms ease, transform 220ms ease;
+}
+.mfd-svc-card:hover {
+  border-color: var(--mfd-accent, #00c9b3);
+  transform: translateY(-3px);
+}
+.mfd-svc-card__num {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--mfd-accent, #00c9b3);
+}
+.mfd-svc-card__title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--mfd-ink, #1a1a18);
+  letter-spacing: -0.01em;
+}
+.mfd-svc-card__body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--mfd-ink-2, #555);
+  flex: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Responsive
+ * ───────────────────────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .mfd-svc-triptych__grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (max-width: 768px) {
+  .mfd-svc-triptych__grid { grid-template-columns: 1fr; gap: 16px; }
+  .mfd-svc-hero.mfd-home-hero { min-height: 100svh; }
+}

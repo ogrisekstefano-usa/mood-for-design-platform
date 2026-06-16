@@ -1,0 +1,52 @@
+{
+  "summary": "Studio Identity & Conversion Sprint testing. Fixed critical bug: /servizi and /consulenza were redirecting to /auth/login due to missing entries in api.js isPublicSurface list. After fix, all pages load correctly. Found CMS data issue: /about page has '/begin-journey' hrefs in 4 sections (should be '/consulenza').",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "/about page CTA links",
+        "issue": "CMS data for /about page has '/begin-journey' in settings.cta_primary_href (hero_editorial, team_identity_card, design_journey, cinematic_quote sections). Should be '/consulenza'. Code fallback is '/consulenza' but CMS override takes precedence.",
+        "affected_selectors": ["[data-testid='about-hero-cta-primary']", "[data-testid='about-approach-cta']", "[data-testid='about-cta-private']"],
+        "priority": "HIGH"
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/frontend/src/lib/api.js"],
+  "action_items": [
+    "Update CMS data for /about page: change cta_primary_href from '/begin-journey' to '/consulenza' for sections: hero_editorial, team_identity_card, design_journey, cinematic_quote. Use a migration script or admin panel to update storefront sections for page_key='about', tenant_slug='studio'."
+  ],
+  "critical_code_review_comments": [
+    "api.js isPublicSurface list was missing '/servizi' and '/consulenza' — FIXED in this iteration. Main agent should review all newly added public routes and ensure they are listed in isPublicSurface in /app/frontend/src/lib/api.js",
+    "/consulenza page shows 'Design Journey™' as internal form navigation label — this is acceptable as it's the form UI, not a public SaaS branding mention"
+  ],
+  "updated_files": ["/app/frontend/src/lib/api.js"],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "85%"
+  },
+  "test_results": {
+    "homepage_nav_cta": "PASS - 'PRENOTA UNA CONSULENZA' visible",
+    "homepage_footer_no_moodfordesign": "PASS - no moodfordesign social links",
+    "homepage_no_blueprint_mood": "PASS - no Blueprint/MOOD/Design Journey text",
+    "homepage_finalcta": "PASS - 'Pronti a trasformare il vostro spazio?' visible",
+    "professionals_hero": "PASS - 'La tua competenza, il nostro metodo.' loaded",
+    "professionals_manifesto": "PASS - 'Non subappaltiamo. Co-progettiamo.' visible",
+    "professionals_cta": "PASS - CTA 'Prenota una consulenza' present",
+    "professionals_no_blueprint": "PASS - no Blueprint/Design Journey text",
+    "servizi_loads": "PASS (after fix) - 'Dal concept alla consegna chiavi.' visible",
+    "servizi_4_types": "PASS - Residenziale, Hospitality visible",
+    "servizi_process": "PASS - 'Ascolto' phase visible",
+    "consulenza_no_404": "PASS (after fix) - BeginJourneyPage loads at /consulenza",
+    "about_cta_begin_journey": "FAIL - CMS data still has '/begin-journey' in 4 sections (hero_editorial, team_identity_card, design_journey, cinematic_quote)"
+  },
+  "rca_of_issue": "Root cause of /servizi and /consulenza redirect to login: /app/frontend/src/lib/api.js has a global 401 interceptor that redirects to /auth/login unless the current path is in the 'isPublicSurface' list. The new routes '/servizi' and '/consulenza' were not added to this list when they were created. Fix: added these paths to isPublicSurface list. Root cause of /about begin-journey links: CMS seed data for the about page was seeded with '/begin-journey' hrefs and was not updated when '/consulenza' was introduced as the new CTA route.",
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Bug fixed: /servizi and /consulenza no longer redirect to login (api.js isPublicSurface fix). Remaining issue: /about page CMS data has '/begin-journey' in 4 section settings - needs DB update. Use: GET /api/storefront/public/studio/pages/about to see current data and update sections via admin panel or migration. All other sprint features verified working: homepage nav CTA, footer clean, professionals page full CMS content, servizi page full CMS content, consulenza loads BeginJourneyPage."
+}

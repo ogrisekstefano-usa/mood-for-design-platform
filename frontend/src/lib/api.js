@@ -130,7 +130,12 @@ api.interceptors.response.use(
         p.startsWith('/f/') ||
         p.startsWith('/form/') ||
         p === '/about' ||
-        p.startsWith('/about/');
+        p.startsWith('/about/') ||
+        p === '/servizi' ||
+        p === '/services' ||
+        p.startsWith('/servizi/') ||
+        p === '/consulenza' ||
+        p.startsWith('/consulenza/');
       if (!isPublicSurface) {
         localStorage.removeItem(STORAGE_KEY);
         window.location.href = '/auth/login';

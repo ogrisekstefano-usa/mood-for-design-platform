@@ -1,0 +1,173 @@
+/**
+ * professionals.css
+ * ─────────────────
+ * Stili specifici per ProfessionalsGatewayPage.
+ * Eredita variabili e componenti base da home-iter150.css.
+ * ZERO ridefinizioni di variabili globali.
+ */
+
+/* ─────────────────────────────────────────────────────────────────
+ * Skeleton loading
+ * ───────────────────────────────────────────────────────────────── */
+.pro-skeleton {
+  min-height: 100vh;
+  background: var(--mfd-bg, #f5f2ed);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 80px clamp(24px, 4vw, 72px);
+}
+.pro-skeleton__bar {
+  background: linear-gradient(90deg, #e8e3da 25%, #f0ebe2 50%, #e8e3da 75%);
+  background-size: 200% 100%;
+  animation: skelPulse 1.4s ease infinite;
+  border-radius: 4px;
+}
+.pro-skeleton__bar--hero { height: 320px; }
+.pro-skeleton__bar--text { height: 24px; max-width: 480px; }
+@keyframes skelPulse {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Hero — varianti di padding per pagina professionisti
+ * ───────────────────────────────────────────────────────────────── */
+.mfd-pro-hero.mfd-home-hero {
+  min-height: 88svh;
+}
+@supports not (min-height: 88svh) {
+  .mfd-pro-hero.mfd-home-hero { min-height: 88vh; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Triptych — 3 card vantaggi partnership
+ * ───────────────────────────────────────────────────────────────── */
+.mfd-pro-triptych {
+  padding: clamp(80px, 8vw, 120px) 0;
+  background: var(--mfd-bg-2, #f0ebe1);
+}
+.mfd-pro-triptych__inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+}
+.mfd-pro-triptych__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  border-top: 1px solid var(--mfd-line, rgba(38,38,38,.12));
+  padding-top: 40px;
+}
+.mfd-pro-triptych__card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mfd-pro-triptych__num {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--mfd-accent, #00c9b3);
+  font-variant-numeric: tabular-nums;
+}
+.mfd-pro-triptych__card-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--mfd-ink, #1a1a18);
+  letter-spacing: -0.01em;
+}
+.mfd-pro-triptych__card-body {
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--mfd-ink-2, #555);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Chi Collabora — layout 2 colonne (testo + accento visivo)
+ * ───────────────────────────────────────────────────────────────── */
+.mfd-pro-collaborators {
+  padding: clamp(80px, 8vw, 120px) 0;
+  background: var(--mfd-bg, #f5f2ed);
+}
+.mfd-pro-collaborators__inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+}
+.mfd-pro-collaborators__text {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.mfd-pro-collaborators__body {
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.72;
+  color: var(--mfd-ink-2, #555);
+  max-width: 52ch;
+}
+.mfd-pro-collaborators__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mfd-pro-tag {
+  display: inline-block;
+  padding: 8px 18px;
+  border: 1px solid var(--mfd-line, rgba(38,38,38,.15));
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mfd-ink, #1a1a18);
+  border-radius: 100px;
+  font-weight: 500;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.mfd-pro-tag:hover {
+  background: var(--mfd-ink, #1a1a18);
+  color: var(--mfd-bg, #f5f2ed);
+}
+.mfd-pro-collaborators__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mfd-pro-collaborators__accent-block {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, var(--mfd-bg-2, #f0ebe1) 0%, #e3dccf 100%);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.mfd-pro-collaborators__accent-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 40px,
+    rgba(38,38,38,.04) 40px,
+    rgba(38,38,38,.04) 41px
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * Responsive
+ * ───────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .mfd-pro-triptych__grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .mfd-pro-collaborators__inner { grid-template-columns: 1fr; }
+  .mfd-pro-collaborators__visual { display: none; }
+}
+@media (max-width: 640px) {
+  .mfd-pro-triptych__grid { grid-template-columns: 1fr; gap: 20px; }
+  .mfd-pro-hero.mfd-home-hero { min-height: 100svh; }
+}

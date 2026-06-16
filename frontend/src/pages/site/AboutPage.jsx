@@ -104,7 +104,7 @@ const AboutHero = ({ locale, sec }) => {
           </h1>
           {sub && <p className="mfd-home-hero__sub" data-testid="about-hero-sub">{sub}</p>}
           <div className="mfd-home-hero__ctas">
-            <Link to={settings.cta_primary_href || '/begin-journey'} className="mfd-cta mfd-cta--solid" data-testid="about-hero-cta-primary">{cta1}</Link>
+            <Link to={settings.cta_primary_href || '/consulenza'} className="mfd-cta mfd-cta--solid" data-testid="about-hero-cta-primary">{cta1}</Link>
             <Link to={settings.cta_secondary_href || '/professionals'} className="mfd-cta mfd-cta--ghost" data-testid="about-hero-cta-secondary">{cta2}</Link>
           </div>
         </div>
@@ -162,7 +162,7 @@ const TeamSection = ({ locale, sec }) => {
   const headline = bag.headline || '';
   const subheadline = bag.subheadline || '';
   const ctaLabel = bag.cta_label || (locale === 'en' ? 'Start a conversation' : 'Inizia una conversazione');
-  const ctaHref = settings.cta_href || '/begin-journey';
+  const ctaHref = settings.cta_href || '/consulenza';
 
   const leader = leaders[0];
 
@@ -250,7 +250,7 @@ const ApproachSection = ({ locale, sec }) => {
         )}
         {cta && (
           <div className="mfd-how__cta-wrap">
-            <Link to={settings.cta_href || '/begin-journey'} className="mfd-cta mfd-cta--outline" data-testid="about-approach-cta">{cta}</Link>
+            <Link to={settings.cta_href || '/consulenza'} className="mfd-cta mfd-cta--outline" data-testid="about-approach-cta">{cta}</Link>
           </div>
         )}
       </div>
@@ -360,7 +360,7 @@ const ContactCTA = ({ locale, sec }) => {
           {sub && <p className="mfd-finalcta__sub" data-testid="about-cta-sub">{sub}</p>}
         </div>
         <div className="mfd-finalcta__paths">
-          <Link to={settings.private_href || '/begin-journey'} className="mfd-finalcta__path" data-testid="about-cta-private">
+          <Link to={settings.private_href || '/consulenza'} className="mfd-finalcta__path" data-testid="about-cta-private">
             <span className="mfd-finalcta__path-label">{privateCta}</span>
           </Link>
           <Link to={settings.pro_href || '/professionals'} className="mfd-finalcta__path" data-testid="about-cta-pro">
