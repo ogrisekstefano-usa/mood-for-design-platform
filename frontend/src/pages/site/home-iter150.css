@@ -597,11 +597,13 @@
   margin: 0 auto;
   padding: 0 clamp(24px, 4vw, 72px);
 }
-/* No bottom veil — was creating a visible grey shadow stripe before Stories */
+/* V2 LAYOUT · Magazine 3-col editorial cards
+   ── Desktop: 3 columns, landscape image, text below (not overlay)
+   ── Replaces the 5-column overlay style of V1 */
 .mfd-home-magazine__grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
 .mag-card {
   position: relative;
@@ -609,11 +611,11 @@
   background: transparent;
   overflow: hidden;
   transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
 }
 .mag-card__media {
   position: relative;
-  aspect-ratio: 4 / 5;
-  max-height: 480px;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
 }
 .mag-card__media img {
@@ -621,46 +623,52 @@
   object-fit: cover;
   transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.mag-card__veil {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgba(14, 13, 11, 0.78) 100%);
-}
 .mag-card:hover .mag-card__media img { transform: scale(1.05); }
+/* Remove the dark overlay veil used in V1 */
+.mag-card__veil { display: none; }
+/* Editorial body — below the image */
+.mag-card__body {
+  padding: 18px 0 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
 .mag-card__category {
-  position: absolute;
-  left: 16px; bottom: 64px;
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(245, 242, 237, 0.82);
+  color: var(--mfd-mute);
   font-weight: 600;
+  margin: 0;
 }
 .mag-card__title {
-  position: absolute;
-  left: 16px; right: 52px; bottom: 16px;
-  font-size: 18px;
-  line-height: 1.12;
-  margin: 0;
-  color: #fff;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   font-weight: 400;
-  letter-spacing: -0.005em;
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--mfd-ink);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 .mag-card__title span { display: block; }
-.mag-card__plus {
-  position: absolute;
-  right: 16px; bottom: 18px;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 1px solid rgba(245, 242, 237, 0.45);
-  display: inline-flex; align-items: center; justify-content: center;
-  color: rgba(245, 242, 237, 0.85);
-  transition: all 240ms ease;
-}
-.mag-card:hover .mag-card__plus {
-  background: var(--mfd-accent);
-  border-color: var(--mfd-accent);
+.mag-card__read-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
   color: var(--mfd-ink);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 220ms ease, color 220ms ease;
 }
+.mag-card:hover .mag-card__read-cta {
+  border-color: var(--mfd-accent);
+  color: var(--mfd-accent-2);
+}
+/* Remove V1 overlay elements */
+.mag-card__plus { display: none; }
 
 /* ═════════════════════════════════════════════════════════════════
  * DESIGN STORIES — real projects
