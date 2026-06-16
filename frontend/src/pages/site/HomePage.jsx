@@ -1,27 +1,24 @@
 /**
- * HomePage — MOOD for DESIGN™ · International Lead Generation Platform
- * ITER150 · Public Editorial Experience™
+ * HomePage — Studio Pubblico · Layout Editoriale Premium
  *
- * Premium international design ecosystem · NOT a SaaS landing.
- * Warm minimal palette (warm white #F5F2ED · charcoal · editorial beige).
- * Cyan #00C9B3 ONLY for CTAs / hover / progressions.
+ * Palette calda minimale (warm white #F5F2ED · charcoal · beige editoriale).
+ * Cyan #00C9B3 SOLO per CTA / hover / progressioni.
  *
- * Sections (top → bottom, mirroring the ITER150 mockup):
- *   1. SiteHeader      — sticky luxury nav + welcome strip
- *   2. Hero            — full-bleed lifestyle photography + serif headline
- *   3. TrustStrip      — partner brand row, monochrome
- *   4. HowItWorks      — 3 editorial steps (Discover · Share · Design Journey)
- *   5. Magazine        — 5 cinematic editorial cards (NO date, NO author)
- *   6. DesignStories   — real projects grid (4 cards)
- *   7. Materials       — horizontal tactile selector
- *   8. FinalCTA        — dark band, two pathways
- *   9. SiteFooter      — minimal editorial (Company · Resources · Legal · Social)
+ * Sezioni (dall'alto verso il basso):
+ *   1. Header          — nav sticky premium con wordmark studio
+ *   2. Hero            — fotografia full-screen + headline serif
+ *   3. Partner Strip   — brand partner, monocromatico (marquee)
+ *   4. Come Lavoriamo  — N step orizzontali dinamici da CMS
+ *   5. Magazine        — 3 card editoriali orizzontali
+ *   6. Progetti        — 3 card landscape da CMS
+ *   7. Materiali       — carosello tattile orizzontale
+ *   8. Manifesto       — dichiarazione editoriale dello studio
+ *   9. CTA Finale      — banda scura, due percorsi
+ *  10. Footer          — white-label, CMS-driven
  *
- * Architecture: editorial copy + media URLs are resolved through
- * useStorefrontContent('home') (CMS-driven). When DB content is empty
- * we fall back to FALLBACK (curated Unsplash + IT/EN copy) so the page
- * never reads broken — and Blueprint Command Center™ can override
- * each block without code changes.
+ * Architettura: ZERO hardcoding. Tutto CMS-driven via
+ * useStorefrontContent('home'). Sezioni vuote mostrano
+ * EmptyEditorialSlot invece di contenuto fittizio.
  */
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -42,23 +39,11 @@ import './home-iter150.css';
 // FALLBACK · curated editorial copy + Unsplash imagery
 // ─────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────
-// ITER157 · Sprint A · Public Editorial Infrastructure™
-//
-// NO HARDCODED EDITORIAL CONTENT.
-// Every block of copy, image, project, magazine article, brand label
-// and CTA lives in the Storefront CMS (cms_pages/home + cms_sections).
-//
-// EDITORIAL_SHELL provides ONLY navigation-level UI labels needed
-// to render the chrome (header, footer link structure) when the CMS
-// has not yet been seeded. It contains NO editorial content, NO fake
-// images, NO mock arrays. Empty sections render the graceful
-// `EmptyEditorialSlot` placeholder instead.
+// SHELL EDITORIALE — struttura di fallback quando il CMS non ha ancora
+// contenuto. NESSUN testo di prodotto, NESSUNA immagine fittizia.
+// Sezioni vuote mostrano EmptyEditorialSlot.
 // ─────────────────────────────────────────────────────────────────────
 const EDITORIAL_SHELL = {
-  welcome: {
-    it: 'Benvenuti nel nostro studio. Disegniamo relazioni, non solo spazi.',
-    en: 'Welcome to our studio. We design relationships, not just spaces.',
-  },
   nav: {
     how_it_works:    { it: 'Come lavoriamo',  en: 'How we work' },
     magazine:        { it: 'Magazine',       en: 'Magazine' },
@@ -69,16 +54,17 @@ const EDITORIAL_SHELL = {
     login:           { it: 'Accedi', en: 'Sign in' },
     cta:             { it: 'Prenota una consulenza', en: 'Book a consultation' },
   },
-  // Editorial slots — empty by design. Populated by the CMS.
-  hero:       { image: '', title: { it: '', en: '' }, sub: { it: '', en: '' },
-                cta_primary: { it: '', en: '' }, cta_secondary: { it: '', en: '' } },
-  trust:      { eyebrow: { it: '', en: '' }, brands: [] },
-  howitworks: { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, steps: [], cta: { it: '', en: '' } },
-  magazine:   { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, cards: [] },
-  stories:    { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, viewAll: { it: '', en: '' }, cards: [] },
-  materials:  { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, swatches: [] },
-  finalCTA:   { title: { it: '', en: '' }, sub: { it: '', en: '' },
-                private: { it: '', en: '' }, pro: { it: '', en: '' } },
+  // Slot editoriali — vuoti per design. Popolati dal CMS.
+  hero:               { image: '', title: { it: '', en: '' }, sub: { it: '', en: '' },
+                        cta_primary: { it: '', en: '' }, cta_secondary: { it: '', en: '' } },
+  trust:              { eyebrow: { it: '', en: '' }, brands: [] },
+  howitworks:         { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, steps: [], cta: { it: '', en: '' } },
+  magazine:           { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, cards: [] },
+  stories:            { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, viewAll: { it: '', en: '' }, cards: [] },
+  materials:          { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, swatches: [] },
+  editorialStatement: { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, body: { it: '', en: '' }, cta: { it: '', en: '' } },
+  finalCTA:           { title: { it: '', en: '' }, sub: { it: '', en: '' },
+                        private: { it: '', en: '' }, pro: { it: '', en: '' } },
   footer: {
     cols: [],
     rights: { it: '', en: '' },
@@ -119,11 +105,11 @@ const EmptyEditorialSlot = ({ section, label, testid }) => (
       <span className="mfd-empty-slot__rule" aria-hidden="true" />
       <p className="mfd-empty-slot__eyebrow">{section.toUpperCase()}</p>
       <p className="mfd-empty-slot__hint">
-        {label || 'Sezione editoriale in attesa di curation.'}
+        {label || 'Sezione editoriale in attesa di contenuto.'}
       </p>
       {isEditorialPreview() && (
         <a href="/blueprint/experience" className="mfd-empty-slot__cta" data-testid={`empty-slot-cta-${section}`}>
-          Apri Blueprint Experience →
+          Personalizza questa sezione →
         </a>
       )}
     </div>
@@ -287,7 +273,7 @@ const Hero = ({ locale, copy }) => {
   const titleEmpty = isLocaleEmpty(copy.hero.title);
   const imageEmpty = !copy.hero.image;
   if (titleEmpty && imageEmpty) {
-    return <EmptyEditorialSlot section="hero_editorial" label="Componi l'apertura editoriale dal Blueprint." testid="empty-slot-hero" />;
+    return <EmptyEditorialSlot section="hero_editorial" label="Personalizza questa sezione dal pannello amministrativo." testid="empty-slot-hero" />;
   }
   return (
   <section className="mfd-home-hero" data-testid="hero-section">
@@ -345,7 +331,7 @@ const TrustStrip = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 const HowItWorks = ({ locale, copy }) => {
   if (!copy.howitworks.steps || copy.howitworks.steps.length === 0) {
-    return <EmptyEditorialSlot section="how_it_works" label="Definisci i passi del Design Journey dal Blueprint." testid="empty-slot-how-it-works" />;
+    return <EmptyEditorialSlot section="how_it_works" label="Personalizza i passaggi del processo creativo dal pannello amministrativo." testid="empty-slot-how-it-works" />;
   }
   return (
   <section id="how-it-works" className="mfd-how" data-testid="how-it-works">
@@ -358,7 +344,10 @@ const HowItWorks = ({ locale, copy }) => {
           ))}
         </h2>
       </header>
-      <ol className="mfd-how__steps">
+      <ol
+        className="mfd-how__steps"
+        style={{ '--how-cols': Math.min(copy.howitworks.steps.length, 4) }}
+      >
         {copy.howitworks.steps.map((s) => (
           <li key={s.id} className="mfd-how__step">
             <span className="mfd-how__step-num">{s.id}</span>
@@ -418,7 +407,7 @@ const Magazine = ({ locale, copy, articles }) => {
     : (copy.magazine.cards || []);
 
   if (!cards || cards.length === 0) {
-    return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli editoriali in evidenza dal Blueprint." />;
+    return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli in evidenza dal pannello amministrativo." />;
   }
   return (
   <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
@@ -502,11 +491,11 @@ const DesignStories = ({ locale, copy }) => {
     <div className="mfd-stories__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
         <div>
-          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale) || (locale === 'en' ? 'Design Stories' : 'Design Stories')}</p>
-          <h2 className="mfd-section-title">{L(copy.stories.title, locale) || (locale === 'en' ? 'Real journeys. Real spaces.' : 'Journey reali. Spazi reali.')}</h2>
+          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale) || (locale === 'en' ? 'Our Projects' : 'I Nostri Progetti')}</p>
+          <h2 className="mfd-section-title">{L(copy.stories.title, locale) || (locale === 'en' ? 'Real projects. Real spaces.' : 'Progetti reali. Spazi reali.')}</h2>
         </div>
         <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
-          {L(copy.stories.viewAll, locale) || (locale === 'en' ? 'View all journeys' : 'Vedi tutti i Journey')} <ArrowRight size={14} strokeWidth={1.6} />
+          {L(copy.stories.viewAll, locale) || (locale === 'en' ? 'View all projects' : 'Vedi tutti i progetti')} <ArrowRight size={14} strokeWidth={1.6} />
         </Link>
       </header>
       <div className="mfd-stories__grid">
@@ -536,7 +525,7 @@ const Materials = ({ locale, copy }) => {
   const railRef = React.useRef(null);
   const scrollBy = (dx) => railRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
   if (!copy.materials.swatches || copy.materials.swatches.length === 0) {
-    return <EmptyEditorialSlot section="materials_carousel" label="Componi il carosello materiali dal Blueprint." />;
+    return <EmptyEditorialSlot section="materials_carousel" label="Componi la selezione materiali dal pannello amministrativo." />;
   }
   return (
     <section id="materials" className="mfd-materials" data-testid="materials-section">
@@ -569,6 +558,44 @@ const Materials = ({ locale, copy }) => {
             </button>
           </div>
         </div>
+      </div>
+    </section>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────
+// EDITORIAL STATEMENT — manifesto dello studio (atmosphere_statement CMS)
+// ─────────────────────────────────────────────────────────────────────
+const EditorialStatement = ({ locale, copy }) => {
+  const s = copy.editorialStatement;
+  if (!s) return null;
+  const titleEmpty = isLocaleEmpty(s.title);
+  const bodyEmpty  = isLocaleEmpty(s.body);
+  if (titleEmpty && bodyEmpty) return null;
+  const titleText = L(s.title, locale);
+  const bodyText  = L(s.body,  locale);
+  const eyebrow   = L(s.eyebrow, locale);
+  const ctaText   = L(s.cta, locale);
+  const ctaHref   = s.cta_href || '/about';
+  return (
+    <section className="mfd-editorial-stmt" data-testid="editorial-statement">
+      <div className="mfd-editorial-stmt__inner">
+        {eyebrow && <p className="mfd-editorial-stmt__eyebrow">{eyebrow}</p>}
+        <blockquote className="mfd-editorial-stmt__quote" data-testid="editorial-statement-title">
+          {titleText.split('\n').map((line, i) => (
+            <span key={i}>{line}</span>
+          ))}
+        </blockquote>
+        {bodyText && (
+          <p className="mfd-editorial-stmt__body" data-testid="editorial-statement-body">
+            {bodyText}
+          </p>
+        )}
+        {ctaText && (
+          <Link to={ctaHref} className="mfd-editorial-stmt__cta" data-testid="editorial-statement-cta">
+            {ctaText} <ArrowRight size={14} strokeWidth={1.6} />
+          </Link>
+        )}
       </div>
     </section>
   );
@@ -808,6 +835,20 @@ const mapCmsToCopy = (content, locale) => {
     };
   }
 
+  // atmosphere_statement → copy.editorialStatement (manifesto dello studio)
+  const atmo = _b('atmosphere_statement');
+  const atmoSettings = content.atmosphere_statement?._settings || {};
+  if (Object.keys(atmo).length) {
+    merged.editorialStatement = {
+      eyebrow:    { it: atmo.eyebrow || '', en: atmo.eyebrow || '' },
+      title:      { it: atmo.title   || '', en: atmo.title   || '' },
+      body:       { it: atmo.body    || '', en: atmo.body    || '' },
+      cta:        { it: atmo.cta     || '', en: atmo.cta     || '' },
+      cta_href:   atmoSettings.cta_href || '/about',
+      alignment:  atmoSettings.alignment || 'editorial-left',
+    };
+  }
+
   return merged;
 };
 
@@ -916,6 +957,7 @@ const HomePageBody = () => {
         <DesignStories locale={locale} copy={copy} />
         <Materials locale={locale} copy={copy} />
         <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />
+        <EditorialStatement locale={locale} copy={copy} />
         <FinalCTA locale={locale} copy={copy} />
       </main>
       <MoodSiteFooter />

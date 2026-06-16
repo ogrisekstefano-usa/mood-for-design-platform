@@ -353,7 +353,8 @@
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-home-hero {
   position: relative;
-  min-height: clamp(560px, 72vh, 820px);
+  min-height: 100vh;       /* Fallback per browser legacy */
+  min-height: 100svh;      /* Esclude la barra browser mobile (Safari iOS, Chrome mobile) */
   padding: 0;
   overflow: hidden;
   color: #fff;
@@ -488,7 +489,7 @@
  * SECTION HEAD (shared)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-section-head {
-  margin: 0 0 18px;
+  margin: 0 0 56px;
 }
 .mfd-section-head--with-link {
   display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
@@ -500,7 +501,7 @@
   text-transform: uppercase;
   color: var(--mfd-mute);
   font-weight: 600;
-  margin: 0 0 18px;
+  margin: 0 0 24px;
 }
 .mfd-section-title {
   font-size: clamp(38px, 4.5vw, 64px);
@@ -527,7 +528,7 @@
  * HOW IT WORKS
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-how {
-  padding: clamp(20px, 2.5vw, 36px) 0;
+  padding: clamp(80px, 8vw, 120px) 0;
   background: var(--mfd-bg);
 }
 .mfd-how__inner {
@@ -538,10 +539,12 @@
 .mfd-how__steps {
   list-style: none; padding: 0; margin: 0 0 16px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Colonne dinamiche — impostato da React via --how-cols (default 3).
+     Max 4 colonne visibili per leggibilità editoriale. */
+  grid-template-columns: repeat(var(--how-cols, 3), 1fr);
   gap: 56px;
   border-top: 1px solid var(--mfd-line);
-  padding-top: 18px;
+  padding-top: 40px;
 }
 .mfd-how__step {
   display: grid;
@@ -588,7 +591,7 @@
  * MAGAZINE — 5 editorial cards (no date, no author)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-home-magazine {
-  padding: clamp(16px, 2vw, 32px) 0 0;
+  padding: clamp(80px, 8vw, 120px) 0;
   background: var(--mfd-bg);
   position: relative;
 }
@@ -674,20 +677,20 @@
  * DESIGN STORIES — real projects
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-stories {
-  padding: 0;
-  margin: clamp(28px, 4vw, 64px) 0;
+  padding: clamp(80px, 8vw, 120px) 0;
+  margin: 0;
   background: var(--mfd-bg-2);
   box-shadow: none;
 }
 .mfd-stories__inner {
   max-width: 1480px;
   margin: 0 auto;
-  padding: clamp(24px, 3vw, 48px) clamp(24px, 4vw, 72px);
+  padding: 0 clamp(24px, 4vw, 72px);
 }
 .mfd-stories__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 .story-card {
   display: flex; flex-direction: column;
@@ -735,7 +738,7 @@
  * MATERIALS — horizontal rail
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-materials {
-  padding: clamp(16px, 2vw, 32px) 0;
+  padding: clamp(80px, 8vw, 120px) 0;
   background: var(--mfd-bg);
 }
 .mfd-materials__inner {
@@ -1091,12 +1094,19 @@
   .mfd-header__nav { gap: 26px; font-size: 14px; }
 }
 
+/* Desktop medio (1024 - 1279): HowItWorks può mostrare 4 col ma con gap ridotto */
+@media (max-width: 1180px) {
+  .mfd-how__steps { gap: 36px; }
+  .mfd-how__step:not(:last-child)::after { right: -18px; }
+}
+
 /* Tablet landscape (1280 - 880) — burger takes over earlier to prevent
    the header from wrapping when the 4 nav items + RIENTRA + CTA can't
    all fit on a single row. */
 @media (max-width: 1280px) {
   .mfd-home-magazine__grid { grid-template-columns: repeat(3, 1fr); }
   .mag-card:nth-child(4), .mag-card:nth-child(5) { display: none; }
+  /* Projects: passa a 2 colonne a 1280 */
   .mfd-stories__grid { grid-template-columns: repeat(2, 1fr); }
   .mfd-footer__top { grid-template-columns: 1fr; gap: 22px; }
   .mfd-trust { padding: 18px 0; }
@@ -1107,9 +1117,12 @@
   .mfd-home-hero__content::before {
     inset: -32px -40px -32px -60px;
   }
-  /* Collapse the entire right cluster into the burger menu: nav, the
-     primary CTA, AND the RIENTRA pill — nothing stays inline next to
-     the logo so the burger is the single entry point. */
+  /* HowItWorks: con 4 step passa a 2 righe × 2 col a 1280 */
+  .mfd-how__steps {
+    --how-cols: 2 !important;
+    gap: 40px;
+  }
+  /* Collapse the entire right cluster into the burger menu */
   .mfd-header__nav,
   .mfd-header__cta,
   .mfd-header__reenter { display: none !important; }
@@ -1139,7 +1152,8 @@
   .mfd-cta { padding: 12px 20px; font-size: 11.5px; }
 
   .mfd-home-hero {
-    min-height: 520px;
+    min-height: 100vh;
+    min-height: 100svh;
     padding: 60px 24px;
     align-items: flex-end;
   }
@@ -1159,8 +1173,9 @@
   .mfd-section-head--with-link { gap: 16px; }
   .mfd-section-link { font-size: 10.5px; letter-spacing: 0.18em; }
 
+  /* HowItWorks: 1 colonna su mobile */
   .mfd-how__steps {
-    grid-template-columns: 1fr;
+    --how-cols: 1 !important;
     gap: 22px;
     padding-top: 18px;
   }
@@ -1171,6 +1186,7 @@
   .mag-card__title { font-size: 18px; }
   .mag-card__category { left: 14px; bottom: 70px; font-size: 9.5px; }
 
+  /* Projects: 1 colonna su mobile */
   .mfd-stories__grid { grid-template-columns: 1fr; gap: 12px; }
   .story-card__body { padding: 18px 18px 22px; }
   .story-card__title { font-size: 20px; }
@@ -1191,7 +1207,7 @@
 
 /* Small mobile (≤ 480) */
 @media (max-width: 480px) {
-  .mfd-home-hero { min-height: 460px; padding: 48px 18px; }
+  .mfd-home-hero { min-height: 100vh; min-height: 100svh; padding: 48px 18px; }
   .mfd-home-hero__title { font-size: 36px; }
   .mfd-home-magazine__grid { grid-template-columns: 1fr; gap: 8px; }
   .mfd-footer__cols { grid-template-columns: 1fr; }
@@ -1504,6 +1520,84 @@
 .mfd-stories--loading {
   min-height: 30vh;
 }
-ading {
-  min-height: 30vh;
+
+/* ═════════════════════════════════════════════════════════════════
+ * EDITORIAL STATEMENT — manifesto dello studio (atmosphere_statement)
+ * Layout editoriale sinistra · grande citazione serif · body + CTA
+ * ═══════════════════════════════════════════════════════════════ */
+.mfd-editorial-stmt {
+  padding: clamp(96px, 10vw, 144px) 0;
+  background: var(--mfd-bg);
+  border-top: 1px solid var(--mfd-line);
+  border-bottom: 1px solid var(--mfd-line);
+}
+.mfd-editorial-stmt__inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 680px);
+  gap: clamp(48px, 6vw, 96px);
+  align-items: start;
+}
+.mfd-editorial-stmt__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--mfd-mute);
+  font-weight: 600;
+  margin: 0 0 32px;
+  grid-column: 1 / -1;
+}
+.mfd-editorial-stmt__quote {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(36px, 4.2vw, 64px);
+  font-weight: 400;
+  line-height: 1.10;
+  letter-spacing: -0.018em;
+  color: var(--mfd-ink);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.mfd-editorial-stmt__quote span {
+  display: block;
+}
+.mfd-editorial-stmt__body {
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.72;
+  color: var(--mfd-ink-2);
+  margin: 0 0 32px;
+  max-width: 56ch;
+}
+.mfd-editorial-stmt__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--mfd-ink);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 4px;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+.mfd-editorial-stmt__cta:hover {
+  border-color: var(--mfd-accent);
+  color: var(--mfd-accent-2);
+}
+@media (max-width: 1080px) {
+  .mfd-editorial-stmt__inner {
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 4vw, 48px);
+  }
+}
+@media (max-width: 768px) {
+  .mfd-editorial-stmt {
+    padding: clamp(64px, 8vw, 96px) 0;
+  }
+  .mfd-editorial-stmt__quote {
+    font-size: clamp(28px, 7vw, 44px);
+  }
 }
