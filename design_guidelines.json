@@ -1,56 +1,77 @@
 {
-  "theme": {
-    "mode": "dark",
-    "archetype": "Swiss & High-Contrast",
-    "description": "Blueprint Chameleon™: cinematic dark UI, glassmorphism, NO white backgrounds.",
-    "colors": {
-      "primary": "#00e5ff",
-      "secondary": "#00b4d8",
-      "background": {
-        "dark": "#040404",
-        "surface": "#0a0a0a",
-        "panel": "#111111",
-        "glass": "rgba(17, 17, 17, 0.7)"
-      },
-      "text": {
-        "main": "#ededed",
-        "secondary": "#a1a1aa",
-        "muted": "#52525b"
-      },
-      "border": {
-        "default": "rgba(255, 255, 255, 0.1)",
-        "light": "rgba(255, 255, 255, 0.15)"
-      }
-    }
+  "theme": "Light",
+  "archetype": "Organic & Earthy",
+  "visual_mood": "Editorial luxury, warm cream and off-white backgrounds, deep charcoal text, sophisticated serif typography paired with clean modern sans-serif. Minimalist and refined structure.",
+  "colors": {
+    "background_primary": "#F5F0EB",
+    "background_secondary": "#FFFFFF",
+    "background_dark": "#121212",
+    "text_primary": "#111111",
+    "text_secondary": "#4A4A4A",
+    "text_light": "#FFFFFF",
+    "accent": "#111111",
+    "border_light": "#E5E0DB"
   },
   "typography": {
-    "headings": {
-      "family": "Cormorant Garamond, serif",
-      "weight": "400",
-      "styles": "cinematic, elegant, distinctive"
+    "heading_font": "Cormorant Garamond, serif",
+    "body_font": "Inter, sans-serif"
+  },
+  "layout_and_spacing": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-20 md:py-32"
+  },
+  "images": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1646987916641-1f3c8992daa2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMGxpdmluZyUyMHJvb218ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Full-bleed interior design photography for Hero section"
     },
-    "body": {
-      "family": "Inter, sans-serif",
-      "weight": "300, 400, 500",
-      "styles": "clean, modern, neutral"
+    "studio_team": {
+      "url": "https://images.unsplash.com/photo-1599696848652-f0ff23bc911f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzOTB8MHwxfHNlYXJjaHwxfHxpbnRlcmlvciUyMGRlc2lnbiUyMHRlYW0lMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Team/Studio architecture image for the 50/50 Editorial Section"
     },
-    "data_metrics": {
-      "family": "JetBrains Mono, monospace",
-      "weight": "300, 400",
-      "styles": "tech-oriented, precise"
-    }
+    "projects": [
+      {
+        "url": "https://images.unsplash.com/photo-1738168246881-40f35f8aba0a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBtaW5pbWFsaXN0JTIwYXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Project card 1"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1772656674442-a37d93baae3f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBtaW5pbWFsaXN0JTIwYXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Project card 2"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1653972233229-1b8c042d6d8e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtaW5pbWFsaXN0JTIwYXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Project card 3"
+      }
+    ],
+    "magazine": [
+      {
+        "url": "https://images.unsplash.com/photo-1599696848652-f0ff23bc911f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwxfHxpbnRlcmlvciUyMGRlc2lnbiUyMGRldGFpbHMlMjBmdXJuaXR1cmV8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Magazine thumbnail 1"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1628512743826-2c28a508ad5e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwzfHxpbnRlcmlvciUyMGRlc2lnbiUyMGRldGFpbHMlMjBmdXJuaXR1cmV8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Magazine thumbnail 2"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1640190582299-b8c67cfca2a4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwyfHxpbnRlcmlvciUyMGRlc2lnbiUyMGRldGFpbHMlMjBmdXJuaXR1cmV8ZW58MHx8fHwxNzgxNjY2Mzg5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Magazine thumbnail 3"
+      }
+    ]
   },
-  "layout": {
-    "strategy": "dense, 4-column cockpit",
-    "spacing": "tight to generous depending on component",
-    "grids": "asymmetrical and bento style when possible"
-  },
-  "components": {
-    "knowledge_strip": "Sticky top bar, blur backdrop, key metrics.",
-    "future_uses_panel": "Highlights ecosystem availability. State A (existing uses) active glow, State B (available uses) discrete chips.",
-    "knowledge_impact_card": "AI Validation ROI module. Cyan glow delta animations.",
-    "connected_assets_network": "SVG 4-quadrant mini-graph replacing static lists. Thumbnails on nodes.",
-    "post_certification_launch": "Hero large tiles, directional arrows, runway layout."
-  },
-  "instructions_to_main_agent": "Ensure HTML layout is built without generic white backgrounds. Embrace the glassmorphism and cyan glows as specified in v2 and v3. Implement animations for AI Validation impact and Future Uses states."
+  "instructions_to_main_agent": {
+    "overview": "Implement an editorial luxury layout for an Italian interior design studio named 'Studio'. The background colors should alternate between pure white (#FFFFFF) and warm cream (#F5F0EB). Text should be deep charcoal (#111111) to replace any default cyan/teal colors.",
+    "testing": "All interactive and key informational elements MUST include a `data-testid` attribute (e.g., data-testid='hero-cta-button', data-testid='nav-link-chi-siamo').",
+    "dom_structure_updates": {
+      "Header": "Light/cream background. Left: serif logo 'Studio'. Center: nav links (CHI SIAMO, PROGETTI, SERVIZI, MAGAZINE, PER I PROFESSIONISTI). Right: outlined CTA 'PRENOTA UNA CONSULENZA' and 'ACCEDI' link.",
+      "Hero": "Full-bleed image with dark overlay. Large serif heading 'Il tuo spazio. Il nostro progetto.' Two CTAs: Primary filled dark charcoal ('RACCONTACI IL TUO PROGETTO'), Secondary ghost outline ('PER I PROFESSIONISTI').",
+      "How_It_Works": "Section titled 'COME LAVORIAMO'. Light bg. 4 horizontal steps using flex/grid. Large numbers (01, 02, 03, 04) above bold step titles. A chevron arrow '>' must physically sit between the steps (not after the last one).",
+      "Editorial_Studio": "Section 'LO STUDIO'. 2-column 50/50 split. Left side: eyebrow 'LO STUDIO', large serif title 'Progettiamo ambienti che migliorano la vita.', text paragraph, text link 'SCOPRI DI PIÙ SU DI NOI →'. Right side: full-bleed image.",
+      "Projects": "Section 'PROGETTI SELEZIONATI'. 3-column grid for cards. Cards must be borderless. Image aspect ratio 4/3. Followed by serif title, location, and 'SCOPRI IL PROGETTO →' text link.",
+      "Digital_Journey": "Cream bg section. Left: bold serif title 'Il tuo progetto inizia prima del primo incontro.', text, link. Right: 2x2 grid of 4 icon cards. Icons: file, heart, list, plus.",
+      "Magazine": "Section 'ISPIRAZIONE E APPROFONDIMENTI'. 3 horizontal article cards in a flex row. Each card has a small square thumbnail on the left, title on the right, and 'LEGGI IL ARTICOLO →'. Standalone 'VEDI TUTTI GLI ARTICOLI →' link on far right.",
+      "Final_CTA": "Dark background (#121212). 3-column grid: Left: large serif 'Pronto a iniziare il tuo progetto?', Center: primary button (white background, dark text), Right: Secondary contact prompt placeholder text.",
+      "Footer": "Dark background (#121212). 4 columns (2fr 1fr 1fr 1fr). Col 1: Logo + tagline + social. Col 2: NAVIGAZIONE. Col 3: PER I PROFESSIONISTI. Col 4: INFORMAZIONI. Bottom bar with copyright."
+    },
+    "css_overrides_to_append_to_home_iter150_css": "/* Typography */\nh1, h2, h3, .serif-heading { font-family: 'Cormorant Garamond', serif; color: #111111; }\nbody, p, a, span, .sans-body { font-family: 'Inter', sans-serif; }\n\n/* Buttons */\n.btn-primary { background-color: #111111 !important; color: #FFFFFF !important; border: 1px solid #111111 !important; transition: all 0.3s ease; }\n.btn-primary:hover { background-color: #333333 !important; border-color: #333333 !important; }\n.btn-outline { background-color: transparent !important; color: #111111 !important; border: 1px solid #111111 !important; }\n.btn-outline:hover { background-color: #111111 !important; color: #FFFFFF !important; }\n\n/* Hero */\n.hero-overlay { background: rgba(0,0,0,0.4); }\n\n/* How It Works (Come Lavoriamo) */\n.how-it-works-grid { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; }\n.step-item { flex: 1; display: flex; flex-direction: column; position: relative; }\n.step-number { font-size: 3rem; font-weight: 300; font-family: 'Cormorant Garamond', serif; color: #111111; margin-bottom: 1rem; }\n.step-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 1.25rem; }\n.step-item:not(:last-child)::after { content: '>'; position: absolute; top: 1.5rem; right: -1.5rem; font-size: 1.5rem; color: #111111; opacity: 0.5; font-weight: 300; }\n\n/* Editorial Section (Lo Studio) */\n.editorial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }\n.editorial-image { width: 100%; height: 100%; object-fit: cover; }\n\n/* Projects Grid */\n.projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }\n.project-card { display: flex; flex-direction: column; border: none; background: transparent; }\n.project-image-wrapper { width: 100%; aspect-ratio: 4/3; overflow: hidden; margin-bottom: 1rem; }\n.project-image { width: 100%; height: 100%; object-fit: cover; }\n.project-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 0.25rem; }\n.project-location { color: #666; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }\n.project-link { font-weight: 600; font-size: 0.875rem; color: #111111; display: inline-flex; align-items: center; }\n\n/* Digital Journey */\n.digital-journey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }\n.features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }\n.feature-card { padding: 1.5rem; background: #FFFFFF; border-radius: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 1rem; }\n.feature-icon { font-size: 1.5rem; color: #111111; }\n\n/* Magazine Section */\n.magazine-row { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }\n@media(min-width: 768px) { .magazine-row { flex-direction: row; justify-content: space-between; } }\n.magazine-card { display: flex; align-items: center; gap: 1.5rem; flex: 1; }\n.magazine-thumb { width: 100px; height: 100px; object-fit: cover; flex-shrink: 0; }\n.magazine-content { display: flex; flex-direction: column; gap: 0.5rem; }\n.magazine-title { font-weight: 600; font-size: 1rem; line-height: 1.4; }\n\n/* Final CTA Section */\n.final-cta-section { background-color: #121212; color: #FFFFFF; padding: 6rem 0; }\n.final-cta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; align-items: center; }\n.final-cta-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; line-height: 1.2; color: #FFFFFF; }\n.final-cta-section .btn-primary { background-color: #FFFFFF !important; color: #121212 !important; border-color: #FFFFFF !important; }\n.final-cta-section .btn-primary:hover { background-color: #E5E5E5 !important; }\n\n/* Footer */\n.site-footer { background-color: #121212; color: #FFFFFF; padding: 4rem 0 2rem; font-size: 0.875rem; }\n.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 4rem; }\n.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 1rem; color: #FFFFFF; }\n.footer-col-title { font-weight: 600; color: #888888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; font-size: 0.75rem; }\n.footer-links { display: flex; flex-direction: column; gap: 0.75rem; }\n.footer-links a { color: #CCCCCC; text-decoration: none; transition: color 0.2s; }\n.footer-links a:hover { color: #FFFFFF; }\n.footer-bottom { border-top: 1px solid #333333; padding-top: 2rem; display: flex; justify-content: space-between; color: #888888; }"
+  }
 }
