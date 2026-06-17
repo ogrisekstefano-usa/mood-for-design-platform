@@ -641,7 +641,39 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 ### Documenti generati
 - /app/memory/HOMEPAGE_LAYOUT_MIGRATION_REPORT.md
 
-### Prossime priorità
+## LAYOUT REFRESH HOMEPAGE — 17 Giugno 2026
+
+### Obiettivo
+Allineare il layout della homepage allo screenshot di riferimento dell'utente.
+
+### Cambiamenti CSS (home-iter150.css, lines 1605+)
+- Hero CTA primario: `background: #111111` (da cyan)
+- Header CTA: outlined charcoal (`.mfd-header__cta.mfd-cta--primary`)
+- HowItWorks: numeri serif 48px (01,02,03,04) + frecce `→` tra i passi
+- EditorialStatement: grid 50/50 con colonna immagine destra
+- DesignStories: card senza bordo + link "SCOPRI IL PROGETTO →"
+- Magazine: layout righe orizzontali con thumbnail 96px + "LEGGI L'ARTICOLO →"
+- FinalCTA: 3 colonne (titolo | bottone | Contattaci)
+- DigitalJourneyHighlight: nuova sezione cream con 4 icon card 2×2
+
+### Cambiamenti JSX (HomePage.jsx)
+- `EditorialStatement`: struttura 2-col con colonna sinistra (eyebrow+title+body+CTA) + colonna destra (immagine)
+- `FinalCTA`: layout 3 colonne dark (lede | button | contact) 
+- `DigitalJourneyHighlight`: nuovo componente con 4 step card dai dati `design_journey`
+- `Magazine`: classe `mfd-home-magazine--rows` + `mag-card__read-cta` aggiunto
+- `DesignStories`: `.story-card__discover` con "SCOPRI IL PROGETTO →"
+- Ordine sezioni: Hero → TrustStrip → HowItWorks → EditorialStatement → DesignStories → DigitalJourneyHighlight → Magazine → EditorialFreeBlocks → FinalCTA
+- Materials e seconda istanza Magazine rimossi dal render
+
+### Bug fix (MoodSiteHeader.jsx)
+- Trovato: `SiteHeader` in HomePage.jsx era dead code; il componente reale usato era `MoodSiteHeader.jsx` (import)
+- Fix: hardcoded `/begin-journey` → `copy.nav?.cta_href || '/consulenza'` (desktop + mobile)
+- CTA header verificato via Playwright: href=/consulenza ✅
+
+### DB patch (atmosphere_statement)
+- Aggiunto `image_url` in settings per la sezione "Lo Studio" della homepage
+- Home page ripubblicata con revisione `layout-refresh-2026`
+
 - P1: Valutare Homepage Builder (posticipato)
 - P1: Fix 0.3 bucket migration (on hold)
 - P2: Timezone field in Identity Model

@@ -25,8 +25,10 @@
 
 | # | Componente | Riga | Vecchio URL | Nuovo URL | Stato |
 |---|-----------|------|-------------|-----------|-------|
-| 1 | `SiteHeader` (desktop) | 217 | `/begin-journey` | `copy.nav.cta_href \|\| '/consulenza'` | ✅ FIXATO |
-| 2 | `SiteHeader` (mobile menu) | 250 | `/begin-journey` | `copy.nav.cta_href \|\| '/consulenza'` | ✅ FIXATO |
+| 1 | `SiteHeader` (desktop) — **NOTA: dead code non usato** | 217 | `/begin-journey` | `copy.nav.cta_href \|\| '/consulenza'` | ⚠️ DEAD CODE |
+| 1b | `MoodSiteHeader.jsx` (desktop) — **componente reale** | 123 | `/begin-journey` | `copy.nav?.cta_href \|\| '/consulenza'` | ✅ FIXATO |
+| 2 | `SiteHeader` (mobile menu) — **NOTA: dead code non usato** | 250 | `/begin-journey` | `copy.nav.cta_href \|\| '/consulenza'` | ⚠️ DEAD CODE |
+| 2b | `MoodSiteHeader.jsx` (mobile menu) — **componente reale** | 165 | `/begin-journey` | `copy.nav?.cta_href \|\| '/consulenza'` | ✅ FIXATO |
 | 3 | `Hero` (CTA primario) | 293 | `/begin-journey` | `copy.hero.cta_primary_href \|\| '/consulenza'` | ✅ FIXATO |
 | 4 | `HowItWorks` (CTA processo) | 362 | `/begin-journey` | `copy.howitworks.cta_href \|\| '/consulenza'` | ✅ FIXATO |
 | 5 | `FinalCTA` (path privato) | 619 | `/begin-journey` | `copy.finalCTA.private_href \|\| '/consulenza'` | ✅ FIXATO |

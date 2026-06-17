@@ -120,7 +120,7 @@ const MoodSiteHeader = ({
             {L(copy.nav.login, locale)}
           </Link>
           <Link
-            to="/begin-journey"
+            to={copy.nav?.cta_href || '/consulenza'}
             className="mfd-cta mfd-cta--primary mfd-header__cta"
             data-testid="header-cta-start-project"
             onClick={closeMenu}
@@ -162,7 +162,7 @@ const MoodSiteHeader = ({
               <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
             </nav>
             <Link
-              to="/begin-journey"
+              to={copy.nav?.cta_href || '/consulenza'}
               className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
               onClick={closeMenu}
               data-testid="mobile-menu-cta"
