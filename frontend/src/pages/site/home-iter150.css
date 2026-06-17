@@ -1601,3 +1601,385 @@
     font-size: clamp(28px, 7vw, 44px);
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYOUT REFRESH 2026 — Allineamento allo screenshot di riferimento
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Hero CTA primario — charcoal scuro (non cyan) ────────────────────── */
+.mfd-cta--solid {
+  background: #111111 !important;
+  color: #f5f2ed !important;
+  border: 1px solid #111111 !important;
+}
+.mfd-cta--solid:hover {
+  background: #2d2d2d !important;
+  border-color: #2d2d2d !important;
+  box-shadow: 0 6px 28px rgba(17,17,17,0.22) !important;
+  color: #f5f2ed !important;
+}
+
+/* ── Header CTA — outlined charcoal ──────────────────────────────────── */
+.mfd-header__cta.mfd-cta--primary {
+  background: transparent !important;
+  color: var(--mfd-ink) !important;
+  border: 1.5px solid var(--mfd-ink) !important;
+  padding: 9px 22px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.18em !important;
+}
+.mfd-header__cta.mfd-cta--primary:hover {
+  background: var(--mfd-ink) !important;
+  color: var(--mfd-bg) !important;
+  box-shadow: none !important;
+}
+
+/* ── How It Works — numeri serif grandi + frecce tra i passi ─────────── */
+.mfd-how__step {
+  grid-template-columns: 1fr !important;
+  padding-right: 12px;
+}
+.mfd-how__step-num {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 48px !important;
+  font-weight: 400 !important;
+  background: transparent !important;
+  color: var(--mfd-beige) !important;
+  width: auto !important; height: auto !important;
+  border-radius: 0 !important;
+  display: block !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 14px !important;
+  line-height: 1 !important;
+  text-align: left !important;
+}
+.mfd-how__step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mfd-how__step-title {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: var(--mfd-ink) !important;
+  letter-spacing: 0.005em !important;
+  margin: 0 0 6px !important;
+}
+.mfd-how__step-text {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: var(--mfd-ink-2) !important;
+}
+/* Rimpiazza linea verticale con freccia → */
+.mfd-how__step:not(:last-child)::after {
+  content: '→' !important;
+  position: absolute !important;
+  right: -20px !important; top: 22px !important;
+  width: auto !important; height: auto !important;
+  background: none !important;
+  font-size: 20px !important;
+  color: var(--mfd-line) !important;
+  font-weight: 300 !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  border-radius: 0 !important;
+}
+
+/* ── EditorialStatement (Lo Studio) — 2 colonne 50/50 con immagine ───── */
+.mfd-editorial-stmt__inner {
+  grid-template-columns: 1fr 1fr !important;
+  gap: clamp(48px, 6vw, 80px) !important;
+  align-items: center !important;
+}
+.mfd-editorial-stmt__eyebrow {
+  grid-column: unset !important;
+  margin: 0 0 20px !important;
+}
+.mfd-editorial-stmt__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.mfd-editorial-stmt__quote {
+  margin: 0 0 24px !important;
+}
+.mfd-editorial-stmt__body {
+  margin: 0 0 28px !important;
+}
+.mfd-editorial-stmt__image {
+  height: 520px;
+  overflow: hidden;
+}
+.mfd-editorial-stmt__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mfd-editorial-stmt__image:hover img { transform: scale(1.03); }
+@media (max-width: 1080px) {
+  .mfd-editorial-stmt__inner {
+    grid-template-columns: 1fr !important;
+  }
+  .mfd-editorial-stmt__image {
+    height: 320px;
+    order: -1;
+  }
+}
+
+/* ── DesignStories — card senza bordo ────────────────────────────────── */
+.story-card {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.story-card:hover {
+  box-shadow: none !important;
+  transform: translateY(-3px) !important;
+}
+.story-card__body {
+  padding: 18px 0 0 !important;
+}
+.story-card__discover {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--mfd-ink);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+.story-card:hover .story-card__discover {
+  border-color: var(--mfd-ink);
+  color: var(--mfd-ink);
+}
+
+/* ── Magazine — card orizzontali ─────────────────────────────────────── */
+.mfd-home-magazine--rows .mfd-home-magazine__grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+.mfd-home-magazine--rows .mag-card {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 28px !important;
+  padding: 22px 0 !important;
+  border-bottom: 1px solid var(--mfd-line) !important;
+  overflow: visible !important;
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.mfd-home-magazine--rows .mag-card:last-child { border-bottom: none !important; }
+.mfd-home-magazine--rows .mag-card:hover { transform: none !important; box-shadow: none !important; }
+.mfd-home-magazine--rows .mag-card__media {
+  width: 96px !important; height: 96px !important;
+  aspect-ratio: 1 !important;
+  flex: 0 0 96px !important;
+  overflow: hidden;
+}
+.mfd-home-magazine--rows .mag-card__media img {
+  transition: transform 600ms ease;
+}
+.mfd-home-magazine--rows .mag-card:hover .mag-card__media img { transform: scale(1.06) !important; }
+.mfd-home-magazine--rows .mag-card__veil { display: none !important; }
+.mfd-home-magazine--rows .mag-card__body {
+  padding: 0 !important;
+  flex: 1;
+}
+.mfd-home-magazine--rows .mag-card__category {
+  margin-bottom: 6px !important;
+}
+.mfd-home-magazine--rows .mag-card__title {
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+  margin-bottom: 12px !important;
+}
+.mfd-home-magazine--rows .mag-card__plus { display: none !important; }
+.mag-card__read-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--mfd-ink);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+.mag-card:hover .mag-card__read-cta {
+  border-color: var(--mfd-ink);
+}
+@media (max-width: 768px) {
+  .mfd-home-magazine--rows .mag-card {
+    flex-direction: column !important;
+    padding: 18px 0 !important;
+  }
+  .mfd-home-magazine--rows .mag-card__media {
+    width: 100% !important; height: auto !important;
+    aspect-ratio: 3/2 !important;
+    flex: none !important;
+  }
+}
+
+/* ── FinalCTA — 3 colonne dark ───────────────────────────────────────── */
+.mfd-finalcta__inner {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr 1fr !important;
+  gap: 48px !important;
+  align-items: center !important;
+}
+.mfd-finalcta__lede {
+  text-align: left;
+}
+.mfd-finalcta__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+}
+.mfd-finalcta__contact {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mfd-finalcta__contact-label {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.42);
+  font-weight: 600;
+}
+.mfd-finalcta__contact-link {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  color: rgba(245, 242, 237, 0.75);
+  font-weight: 400;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+.mfd-finalcta__contact-link:hover {
+  border-color: rgba(245, 242, 237, 0.5);
+  color: #f5f2ed;
+}
+@media (max-width: 1080px) {
+  .mfd-finalcta__inner {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    text-align: center !important;
+  }
+  .mfd-finalcta__lede { text-align: center; }
+  .mfd-finalcta__center { align-items: center; }
+  .mfd-finalcta__contact { text-align: center; align-items: center; }
+}
+
+/* ── Digital Journey Highlight — sezione intermedia ─────────────────── */
+.mfd-journey-hl {
+  padding: clamp(80px, 8vw, 120px) 0;
+  background: var(--mfd-bg-2);
+}
+.mfd-journey-hl__inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+}
+.mfd-journey-hl__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--mfd-mute);
+  font-weight: 600;
+  margin: 0 0 24px;
+}
+.mfd-journey-hl__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(28px, 3.2vw, 46px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--mfd-ink);
+  margin: 0 0 20px;
+}
+.mfd-journey-hl__body {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--mfd-ink-2);
+  margin: 0 0 28px;
+  max-width: 50ch;
+}
+.mfd-journey-hl__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--mfd-ink);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 4px;
+  transition: border-color 220ms ease, color 220ms ease;
+  text-decoration: none;
+}
+.mfd-journey-hl__cta:hover {
+  border-color: var(--mfd-ink);
+}
+.mfd-journey-hl__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.mfd-journey-hl__card {
+  padding: 26px 22px;
+  background: var(--mfd-bg);
+  border: 1px solid var(--mfd-line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 280ms ease, transform 280ms ease;
+}
+.mfd-journey-hl__card:hover {
+  box-shadow: 0 10px 36px rgba(14,13,11,0.07);
+  transform: translateY(-3px);
+}
+.mfd-journey-hl__card-icon {
+  color: var(--mfd-ink);
+  opacity: 0.55;
+}
+.mfd-journey-hl__card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mfd-ink);
+  letter-spacing: 0.01em;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10.5px;
+}
+.mfd-journey-hl__card-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--mfd-ink-2);
+  margin: 0;
+}
+@media (max-width: 1080px) {
+  .mfd-journey-hl__inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .mfd-journey-hl__grid { grid-template-columns: 1fr 1fr; }
+}

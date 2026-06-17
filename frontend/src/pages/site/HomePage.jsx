@@ -23,7 +23,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Plus, Heart, SlidersHorizontal, FileText, Layers } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
 import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
@@ -410,7 +410,7 @@ const Magazine = ({ locale, copy, articles }) => {
     return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli in evidenza dal pannello amministrativo." />;
   }
   return (
-  <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
+  <section id="magazine" className="mfd-home-magazine mfd-home-magazine--rows" data-testid="magazine-section">
     <div className="mfd-home-magazine__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
         <div>
@@ -428,12 +428,17 @@ const Magazine = ({ locale, copy, articles }) => {
               <img src={c.image} alt="" loading="lazy" />
               <span className="mag-card__veil" />
             </div>
-            <span className="mag-card__category">{c.category}</span>
-            <h3 className="mag-card__title">
-              {L(c.title, locale).split('\n').map((line, i) => (
-                <span key={i}>{line}</span>
-              ))}
-            </h3>
+            <div className="mag-card__body">
+              <span className="mag-card__category">{c.category}</span>
+              <h3 className="mag-card__title">
+                {L(c.title, locale).split('\n').map((line, i) => (
+                  <span key={i}>{line}</span>
+                ))}
+              </h3>
+              <span className="mag-card__read-cta" aria-hidden="true">
+                {locale === 'en' ? 'Read article' : "Leggi l'articolo"} <ArrowRight size={11} strokeWidth={1.8} />
+              </span>
+            </div>
             <span className="mag-card__plus" aria-hidden="true">
               <Plus size={14} strokeWidth={1.6} />
             </span>
@@ -508,7 +513,9 @@ const DesignStories = ({ locale, copy }) => {
               <p className="story-card__kind">{j.location || j.atmosphere || ''}</p>
               <h3 className="story-card__title">{j.title}</h3>
               {j.excerpt && <p className="story-card__excerpt">{j.excerpt}</p>}
-              {j.atmosphere && <p className="story-card__atmosphere" aria-hidden="true">— {j.atmosphere}</p>}
+              <span className="story-card__discover">
+                {locale === 'en' ? 'Discover project' : 'Scopri il progetto'} <ArrowRight size={11} strokeWidth={1.8} />
+              </span>
             </div>
           </Link>
         ))}
@@ -565,6 +572,7 @@ const Materials = ({ locale, copy }) => {
 
 // ─────────────────────────────────────────────────────────────────────
 // EDITORIAL STATEMENT — manifesto dello studio (atmosphere_statement CMS)
+// Layout 2026: 2 colonne — testo a sinistra, immagine a destra
 // ─────────────────────────────────────────────────────────────────────
 const EditorialStatement = ({ locale, copy }) => {
   const s = copy.editorialStatement;
@@ -577,24 +585,32 @@ const EditorialStatement = ({ locale, copy }) => {
   const eyebrow   = L(s.eyebrow, locale);
   const ctaText   = L(s.cta, locale);
   const ctaHref   = s.cta_href || '/about';
+  const imageUrl  = s.image_url || '';
   return (
     <section className="mfd-editorial-stmt" data-testid="editorial-statement">
       <div className="mfd-editorial-stmt__inner">
-        {eyebrow && <p className="mfd-editorial-stmt__eyebrow">{eyebrow}</p>}
-        <blockquote className="mfd-editorial-stmt__quote" data-testid="editorial-statement-title">
-          {titleText.split('\n').map((line, i) => (
-            <span key={i}>{line}</span>
-          ))}
-        </blockquote>
-        {bodyText && (
-          <p className="mfd-editorial-stmt__body" data-testid="editorial-statement-body">
-            {bodyText}
-          </p>
-        )}
-        {ctaText && (
-          <Link to={ctaHref} className="mfd-editorial-stmt__cta" data-testid="editorial-statement-cta">
-            {ctaText} <ArrowRight size={14} strokeWidth={1.6} />
-          </Link>
+        <div className="mfd-editorial-stmt__left">
+          {eyebrow && <p className="mfd-editorial-stmt__eyebrow">{eyebrow}</p>}
+          <blockquote className="mfd-editorial-stmt__quote" data-testid="editorial-statement-title">
+            {titleText.split('\n').map((line, i) => (
+              <span key={i}>{line}</span>
+            ))}
+          </blockquote>
+          {bodyText && (
+            <p className="mfd-editorial-stmt__body" data-testid="editorial-statement-body">
+              {bodyText}
+            </p>
+          )}
+          {ctaText && (
+            <Link to={ctaHref} className="mfd-editorial-stmt__cta" data-testid="editorial-statement-cta">
+              {ctaText} <ArrowRight size={14} strokeWidth={1.6} />
+            </Link>
+          )}
+        </div>
+        {imageUrl && (
+          <div className="mfd-editorial-stmt__image" aria-hidden="true">
+            <img src={imageUrl} alt="" loading="lazy" />
+          </div>
         )}
       </div>
     </section>
@@ -602,7 +618,56 @@ const EditorialStatement = ({ locale, copy }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────
-// FINAL CTA
+// DIGITAL JOURNEY HIGHLIGHT — sezione intermedia con 4 feature card
+// Alimentata dai passi del design_journey CMS (stessi dati di HowItWorks
+// ma con layout e prospettiva clienti)
+// ─────────────────────────────────────────────────────────────────────
+const JOURNEY_ICONS = [Heart, SlidersHorizontal, FileText, Layers];
+
+const DigitalJourneyHighlight = ({ locale, copy }) => {
+  const steps = (copy.howitworks?.steps || []).slice(0, 4);
+  const titleKey = locale === 'en'
+    ? 'Your project begins before the first meeting.'
+    : 'Il tuo progetto inizia prima del primo incontro.';
+  const bodyKey = locale === 'en'
+    ? 'Our digital brief lets you share inspirations, preferences and goals before we meet — so every consultation starts with focus.'
+    : 'Il nostro brief digitale ti permette di condividere ispirazioni, preferenze e obiettivi prima di incontrarci — così ogni consulenza parte già nel vivo.';
+  const ctaLabel = locale === 'en' ? 'Start now' : 'Inizia ora';
+  const eyebrowLabel = locale === 'en' ? 'Digital Brief' : 'Brief Digitale';
+
+  // Non mostrare se non ci sono step CMS
+  if (!steps.length) return null;
+
+  return (
+    <section className="mfd-journey-hl" data-testid="journey-highlight">
+      <div className="mfd-journey-hl__inner">
+        <div className="mfd-journey-hl__left">
+          <p className="mfd-journey-hl__eyebrow">{eyebrowLabel}</p>
+          <h2 className="mfd-journey-hl__title">{titleKey}</h2>
+          <p className="mfd-journey-hl__body">{bodyKey}</p>
+          <Link to="/consulenza" className="mfd-journey-hl__cta" data-testid="journey-hl-cta">
+            {ctaLabel} <ArrowRight size={12} strokeWidth={2} />
+          </Link>
+        </div>
+        <div className="mfd-journey-hl__grid">
+          {steps.map((s, i) => {
+            const Icon = JOURNEY_ICONS[i] || Layers;
+            return (
+              <div key={s.id || i} className="mfd-journey-hl__card">
+                <Icon size={22} strokeWidth={1.4} className="mfd-journey-hl__card-icon" />
+                <p className="mfd-journey-hl__card-title">{L(s.title, locale)}</p>
+                <p className="mfd-journey-hl__card-text">{L(s.body, locale)}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────
+// FINAL CTA — 3 colonne dark (titolo | CTA | contatto)
 // ─────────────────────────────────────────────────────────────────────
 const FinalCTA = ({ locale, copy }) => (
   <section className="mfd-finalcta" data-testid="final-cta">
@@ -615,14 +680,21 @@ const FinalCTA = ({ locale, copy }) => (
         </h2>
         <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
       </div>
-      <div className="mfd-finalcta__paths">
-        <Link to={copy.finalCTA.private_href || '/consulenza'} className="mfd-finalcta__path" data-testid="final-cta-private">
-          <span className="mfd-finalcta__path-label">{L(copy.hero.cta_primary, locale)}</span>
-          <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.private, locale)}</span>
+      <div className="mfd-finalcta__center">
+        <Link
+          to={copy.finalCTA.private_href || '/consulenza'}
+          className="mfd-cta mfd-cta--outline mfd-cta--inverse"
+          data-testid="final-cta-private"
+        >
+          {L(copy.hero.cta_primary, locale) || (locale === 'en' ? 'Book a consultation' : 'Prenota una consulenza')}
         </Link>
-        <Link to="/professionals" className="mfd-finalcta__path" data-testid="final-cta-pro">
-          <span className="mfd-finalcta__path-label">{L(copy.hero.cta_secondary, locale)}</span>
-          <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.pro, locale)}</span>
+      </div>
+      <div className="mfd-finalcta__contact">
+        <p className="mfd-finalcta__contact-label">
+          {locale === 'en' ? 'Prefer to write?' : 'Preferisci scrivere?'}
+        </p>
+        <Link to="/consulenza" className="mfd-finalcta__contact-link" data-testid="final-cta-contact">
+          {locale === 'en' ? 'Contattaci' : 'Contattaci'}
         </Link>
       </div>
     </div>
@@ -847,6 +919,7 @@ const mapCmsToCopy = (content, locale) => {
       cta:        { it: atmo.cta     || '', en: atmo.cta     || '' },
       cta_href:   atmoSettings.cta_href || '/about',
       alignment:  atmoSettings.alignment || 'editorial-left',
+      image_url:  atmoSettings.image_url || '',
     };
   }
 
@@ -954,11 +1027,11 @@ const HomePageBody = () => {
         <Hero locale={locale} copy={copy} />
         <TrustStrip locale={locale} copy={copy} />
         <HowItWorks locale={locale} copy={copy} />
-        <Magazine locale={locale} copy={copy} articles={magazineArticles} />
-        <DesignStories locale={locale} copy={copy} />
-        <Materials locale={locale} copy={copy} />
-        <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />
         <EditorialStatement locale={locale} copy={copy} />
+        <DesignStories locale={locale} copy={copy} />
+        <DigitalJourneyHighlight locale={locale} copy={copy} />
+        <Magazine locale={locale} copy={copy} articles={magazineArticles} />
+        <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />
         <FinalCTA locale={locale} copy={copy} />
       </main>
       <MoodSiteFooter />

@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only homepage layout test for https://i18n-recovery-1.preview.emergentagent.com. All visual sections render correctly. One critical issue: Header CTA links to /begin-journey instead of /consulenza.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Header CTA (desktop + mobile menu)",
+        "issue": "Header 'PRENOTA UNA CONSULENZA' button links to /begin-journey instead of /consulenza. Both desktop (mfd-header__inner) and mobile (mfd-mobile-menu) links use /begin-journey.",
+        "selector": "a[href*='begin-journey']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_246.json"],
+  "action_items": [
+    "Fix Header CTA href from /begin-journey to /consulenza (both desktop and mobile menu variants)"
+  ],
+  "critical_code_review_comments": [
+    "In HomePage.jsx or Header component, the CTA button in mfd-header__inner and mfd-mobile-menu still uses href='/begin-journey' - must be changed to href='/consulenza'"
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "90%"},
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All homepage sections pass visually: Hero (Il tuo spazio, 2 CTAs, hero image), HowItWorks (4 steps 01-04 serif), EditorialStatement (2-col text+image), DesignStories (6 projects 3-col, SCOPRI IL PROGETTO), DigitalJourneyHighlight (BRIEF DIGITALE, 4 icon cards), Magazine (horizontal thumbnails + LEGGI L'ARTICOLO x3), FinalCTA (3-col dark), Footer (multi-col dark). Only bug: header/mobile CTA href is /begin-journey instead of /consulenza.",
+  "rca_of_issue": "The Header component in HomePage.jsx or the shared Header/Nav component renders the main CTA with href='/begin-journey'. The requirement says all public CTA buttons should navigate to /consulenza. Need to search for 'begin-journey' in the header/nav source and replace with '/consulenza'."
+}
