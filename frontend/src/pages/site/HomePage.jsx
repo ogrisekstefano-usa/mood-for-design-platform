@@ -214,7 +214,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange, brandLogoUrl }) => {
         <Link to="/access" className="mfd-header__reenter" data-testid="header-cta-reenter" onClick={closeMenu}>
           {L(copy.nav.login, locale)}
         </Link>
-        <Link to="/begin-journey" className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
+        <Link to={copy.nav.cta_href || '/consulenza'} className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
           {L(copy.nav.cta, locale)}
         </Link>
         <button
@@ -247,7 +247,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange, brandLogoUrl }) => {
             <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
           </nav>
           <Link
-            to="/begin-journey"
+            to={copy.nav.cta_href || '/consulenza'}
             className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
             onClick={closeMenu}
             data-testid="mobile-menu-cta"
@@ -290,7 +290,7 @@ const Hero = ({ locale, copy }) => {
         </h1>
         <p className="mfd-home-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
         <div className="mfd-home-hero__ctas">
-          <Link to="/begin-journey" className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
+          <Link to={copy.hero.cta_primary_href || '/consulenza'} className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
             {L(copy.hero.cta_primary, locale)}
           </Link>
           <Link to="/professionals" className="mfd-cta mfd-cta--ghost" data-testid="hero-cta-secondary">
@@ -359,7 +359,7 @@ const HowItWorks = ({ locale, copy }) => {
         ))}
       </ol>
       <div className="mfd-how__cta-wrap">
-        <Link to="/begin-journey" className="mfd-cta mfd-cta--outline" data-testid="how-cta">
+        <Link to={copy.howitworks.cta_href || '/consulenza'} className="mfd-cta mfd-cta--outline" data-testid="how-cta">
           {L(copy.howitworks.cta, locale)}
         </Link>
       </div>
@@ -616,7 +616,7 @@ const FinalCTA = ({ locale, copy }) => (
         <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
       </div>
       <div className="mfd-finalcta__paths">
-        <Link to="/begin-journey" className="mfd-finalcta__path" data-testid="final-cta-private">
+        <Link to={copy.finalCTA.private_href || '/consulenza'} className="mfd-finalcta__path" data-testid="final-cta-private">
           <span className="mfd-finalcta__path-label">{L(copy.hero.cta_primary, locale)}</span>
           <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.private, locale)}</span>
         </Link>
@@ -746,7 +746,7 @@ const mapCmsToCopy = (content, locale) => {
       sub:           { it: hero.sub   || '',  en: hero.sub   || '' },
       cta_primary:   { it: hero.cta_primary   || '', en: hero.cta_primary   || '' },
       cta_secondary: { it: hero.cta_secondary || '', en: hero.cta_secondary || '' },
-      cta_primary_href:   heroSettings.cta_primary_href   || '/begin-journey',
+      cta_primary_href:   heroSettings.cta_primary_href   || '/consulenza',
       cta_secondary_href: heroSettings.cta_secondary_href || '/professionals',
     };
   }
@@ -783,6 +783,7 @@ const mapCmsToCopy = (content, locale) => {
       title:   { it: journey.title   || journey.title_pre || '',
                  en: journey.title   || journey.title_pre || '' },
       cta:     { it: journey.cta     || '', en: journey.cta || '' },
+      cta_href: journeySettings.links?.cta_href || journeySettings.cta_href || '/consulenza',
       steps:   Array.isArray(journeySettings.steps) ? journeySettings.steps : [],
     };
   }
@@ -821,7 +822,7 @@ const mapCmsToCopy = (content, locale) => {
       sub:          { it: finalc.sub     || '', en: finalc.sub     || '' },
       private:      { it: finalc.private || '', en: finalc.private || '' },
       pro:          { it: finalc.pro     || '', en: finalc.pro     || '' },
-      private_href: finalSettings.private_href || '/begin-journey',
+      private_href: finalSettings.private_href || '/consulenza',
       pro_href:     finalSettings.pro_href     || '/professionals',
     };
   }
@@ -904,7 +905,7 @@ const useNavBundle = (locale) => {
         about:          { it: linksByKey.about?.label          || '', en: linksByKey.about?.label          || '' },
         login:          { it: pick(bag.login?.label_i18n)      || '', en: pick(bag.login?.label_i18n)      || '' },
         cta:            { it: pick(bag.cta?.label_i18n)        || '', en: pick(bag.cta?.label_i18n)        || '' },
-        cta_href:       bag.cta?.href   || '/begin-journey',
+        cta_href:       bag.cta?.href   || '/consulenza',
         login_href:     bag.login?.href || '/access',
         hrefs:          linksByKey,
       },

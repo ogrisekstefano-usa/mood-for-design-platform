@@ -677,8 +677,61 @@ See `/app/memory/test_credentials.md`. Default super_admin:
 - Backend: 100%
 - Frontend: 100% (dopo fix api.js isPublicSurface + CMS about)
 
-### Prossime priorità
-- P1: Footer premium (indirizzo, telefono, email, città servite — CMS settings)
-- P1: About page enhancement (stats_band con numeri reali, team_identity_card)
-- P2: /professionals: aggiungere immagine hero CMS
-- P2: Timezone field in Identity Model
+## CONTENT & CREDIBILITY SPRINT — 17 Giugno 2026
+
+### Obiettivo
+Trasformare il tenant demo "Studio" da pagine vuote a un sito white-label credibile che dimostri le capacità del CMS — senza fake identities, fake addresses, o fake company history.
+
+### Regole applicate
+- NESSUN dato fittizio: zero indirizzi, telefoni, email inventati
+- NESSUN nome fittizio: team usa ruoli generici, zero "Mario Rossi"
+- Classificazione demo esplicita: `editorial_tone = 'cms-showcase-demo'` su tutti i nuovi contenuti
+- CTA unificato: zero riferimenti residui a `/begin-journey` nei CTA pubblici
+
+### Deliverables prodotti
+- `/app/memory/LEGACY_CTA_SCAN.md` — audit CTA completo (13 fix documentati)
+- `/app/memory/SITE_CREDIBILITY_AUDIT.md` — score 7.58/10 su 5 dimensioni
+
+### Contenuto aggiunto
+
+**Progetti (3→6):**
+- `residenza-in-campagna` [residential, 2025] — tipologico generico
+- `suite-boutique-waterfront` [hospitality, 2025] — tipologico generico
+- `spazio-di-lavoro-creativo` [contract, 2024] — tipologico generico
+Tutti marcati: `editorial_tone = 'cms-showcase-demo'`
+
+**Magazine (6→12):**
+- `marmo-luce-architettura-italiana` [materiali]
+- `arredare-il-silenzio` [interior]
+- `hospitality-design-2025` [architettura]
+- `neutro-come-scelta-radicale` [tendenze]
+- `designing-for-privacy` [interior, EN first]
+- `cucina-manifesto-del-living-contemporaneo` [lifestyle]
+Tutti marcati: `editorial_tone = 'cms-showcase-demo'`, `tags: ['demo-content']`
+
+**Footer premium:**
+- Struttura completa (4 colonne: brand, naviga, contenuti, legale)
+- Social: struttura presente, handle vuoti da compilare dal tenant
+- Copyright generico, NESSUN recapito inventato
+
+**CTA unificati:**
+- `nav_top.settings.cta.href`: `/begin-journey` → `/consulenza` ✅
+- `HomePage.jsx` 5 JSX hardcoded fix + 3 fallback fix ✅
+- `about` page 4 sezioni CMS: tutte già su `/consulenza` ✅
+
+### Script creati
+- `seed_demo_projects_v2.py`
+- `seed_magazine_credibility.py`
+- `seed_footer_premium.py`
+- `patch_cta_legacy.py`
+
+### Score credibilità (SITE_CREDIBILITY_AUDIT.md)
+7.58 / 10 — Trust 7.0 · Authority 7.5 · Editorial 7.0 · Conversion 8.5 · Brand 8.0
+
+### Backlog P1 post-sprint
+- Aggiungere demo-marker ai 3 progetti legacy e 6 articoli legacy
+- Arricchire body_blocks dei nuovi articoli (1-3 → 5-7 blocchi)
+- Configurare social handles dal pannello CMS admin
+- Popolare trust strip sulla homepage
+- Verificare e testare la pagina `/consulenza`
+

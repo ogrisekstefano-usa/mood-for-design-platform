@@ -58,7 +58,7 @@ SECTIONS = [
             },
         },
         'settings': {
-            'cta_primary_href': '/begin-journey',
+            'cta_primary_href': '/consulenza',
             'cta_secondary_href': '/professionals',
         },
     },
@@ -109,7 +109,7 @@ SECTIONS = [
             },
         },
         'settings': {
-            'cta_href': '/begin-journey',
+            'cta_href': '/consulenza',
             'variant': 'warm',
             'alignment': 'portrait_left',
             'max_leaders': 1,
@@ -134,7 +134,7 @@ SECTIONS = [
             },
         },
         'settings': {
-            'cta_href': '/begin-journey',
+            'cta_href': '/consulenza',
             'steps': [
                 {
                     'id': '01',
@@ -229,7 +229,7 @@ SECTIONS = [
             },
         },
         'settings': {
-            'private_href': '/begin-journey',
+            'private_href': '/consulenza',
             'pro_href': '/professionals',
         },
     },
