@@ -626,26 +626,25 @@ const JOURNEY_ICONS = [Heart, SlidersHorizontal, FileText, Layers];
 
 const DigitalJourneyHighlight = ({ locale, copy }) => {
   const steps = (copy.howitworks?.steps || []).slice(0, 4);
-  const titleKey = locale === 'en'
-    ? 'Your project begins before the first meeting.'
-    : 'Il tuo progetto inizia prima del primo incontro.';
-  const bodyKey = locale === 'en'
-    ? 'Our digital brief lets you share inspirations, preferences and goals before we meet — so every consultation starts with focus.'
-    : 'Il nostro brief digitale ti permette di condividere ispirazioni, preferenze e obiettivi prima di incontrarci — così ogni consulenza parte già nel vivo.';
-  const ctaLabel = locale === 'en' ? 'Start now' : 'Inizia ora';
-  const eyebrowLabel = locale === 'en' ? 'Digital Brief' : 'Brief Digitale';
+  const title   = locale === 'en'
+    ? 'Tell us about your project'
+    : 'Raccontaci il tuo progetto';
+  const body    = locale === 'en'
+    ? 'Share your needs, style, timeframe and goals. We will help you turn ideas into a concrete, personalised project.'
+    : 'Condividi esigenze, stile, tempistiche e obiettivi. Ti aiuteremo a trasformare le idee in un progetto concreto.';
+  const ctaLabel = locale === 'en' ? 'Fill in the brief' : 'Compila il brief';
+  const eyebrow  = locale === 'en' ? 'Project Brief' : 'Brief di Progetto';
 
-  // Non mostrare se non ci sono step CMS
   if (!steps.length) return null;
 
   return (
     <section className="mfd-journey-hl" data-testid="journey-highlight">
       <div className="mfd-journey-hl__inner">
         <div className="mfd-journey-hl__left">
-          <p className="mfd-journey-hl__eyebrow">{eyebrowLabel}</p>
-          <h2 className="mfd-journey-hl__title">{titleKey}</h2>
-          <p className="mfd-journey-hl__body">{bodyKey}</p>
-          <Link to="/consulenza" className="mfd-journey-hl__cta" data-testid="journey-hl-cta">
+          <p className="mfd-journey-hl__eyebrow">{eyebrow}</p>
+          <h2 className="mfd-journey-hl__title">{title}</h2>
+          <p className="mfd-journey-hl__body">{body}</p>
+          <Link to="/begin-journey" className="mfd-journey-hl__cta" data-testid="journey-hl-cta">
             {ctaLabel} <ArrowRight size={12} strokeWidth={2} />
           </Link>
         </div>
