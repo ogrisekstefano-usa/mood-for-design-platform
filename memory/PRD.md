@@ -767,3 +767,43 @@ Tutti marcati: `editorial_tone = 'cms-showcase-demo'`, `tags: ['demo-content']`
 - Popolare trust strip sulla homepage
 - Verificare e testare la pagina `/consulenza`
 
+---
+
+## DUAL CTA STRATEGY — COMPLETATA (2026-06-18)
+
+### Obiettivo
+Separare il funnel "Human First" (`/consulenza`) dal funnel "Project First" (`/begin-journey`).
+
+### Implementazione
+**DigitalJourneyHighlight (HomePage.jsx):**
+- Eyebrow: "Brief di Progetto"
+- Titolo: "Raccontaci il tuo progetto"
+- Copy: "Condividi esigenze, stile, tempistiche e obiettivi. Ti aiuteremo a trasformare le idee in un progetto concreto."
+- CTA: "Compila il brief →" → `/begin-journey`
+
+**Footer CMS (home.editorial_footer — colonna "Contatti"):**
+- "Prenota una consulenza" → `/consulenza` (primario)
+- "Brief di Progetto" → `/begin-journey` ← NUOVO (secondario)
+- Script: `patch_editorial_footer_begin_journey.py`
+- Snapshot home pubblicato: rev_id=`eacabbd7-8a01-4357-b9ce-866c3e4fb6d8`
+
+### Audit prodotto
+- `CTA_HIERARCHY_REPORT.md` → `/app/memory/CTA_HIERARCHY_REPORT.md`
+- 13 CTA primarie `/consulenza` — coerenti ✅
+- 2 CTA secondarie `/begin-journey` — Homepage + Footer ✅
+- 5 anomalie legacy `/start-project` da consolidare (P1)
+- 3 anomalie placeholder `/onboarding/:kind` da rimuovere (P1)
+
+### Test visivo eseguito
+- Screenshot Desktop Hero: ✅ "PRENOTA UNA CONSULENZA" primario visibile
+- Screenshot Desktop DigitalJourneyHighlight: ✅ "COMPILA IL BRIEF →" secondario visibile
+- Screenshot Desktop Footer: ✅ "Brief di Progetto" visibile in colonna Contatti
+- Screenshot Mobile Hero: ✅ layout responsive corretto
+- Screenshot Mobile DigitalJourneyHighlight: ✅ CTA "COMPILA IL BRIEF →" visibile
+- Screenshot Mobile Footer: ✅ struttura a colonne wrappate mobile-native
+
+### Prossimi step P1
+- Consolidare `/start-project` → `/begin-journey` in: MagazinePage, MagazineArticlePage, ProjectDetailPage
+- Sostituire `/onboarding/private` → `/begin-journey` in: ProjectDetailPage, ProjectsIndexPage
+- Sostituire `/onboarding/pro` → `/professionals` in: ProjectsIndexPage
+
