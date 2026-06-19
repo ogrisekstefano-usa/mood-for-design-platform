@@ -1,0 +1,33 @@
+{
+  "summary": "CMS Consolidation & Multilingual Governance Sprint — frontend-only testing of 10 acceptance criteria. 9/10 pass. One issue: /partner-application hero section renders as black/empty box — CMS content (CANDIDATURA PARTNER eyebrow, hero title) not visible even though page is accessible and form loads below.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "PartnerApplicationPage hero",
+        "issue": "Hero section renders as a black/dark empty rectangle — 'CANDIDATURA PARTNER' eyebrow and hero title text are not visible. The form content below it loads fine. Likely useStorefrontContent('partner-application') CMS fetch returns data but hero_editorial section content is not being rendered (background image missing, text invisible on dark bg, or CMS section data not mapping correctly).",
+        "selector": ".partner-application hero / hero_editorial section",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix /partner-application hero: hero_editorial section content not rendering — black box visible instead of CMS hero with 'CANDIDATURA PARTNER' eyebrow. Check useStorefrontContent hook response and hero component rendering logic in PartnerApplicationPage.jsx"
+  ],
+  "critical_code_review_comments": [
+    "PartnerApplicationPage.jsx: hero uses useStorefrontContent(TENANT_SLUG, 'partner-application') — but hero renders as black box. Either the CMS hero_editorial section data structure doesn't match what the component expects, or the background image URL is missing/broken."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "90% (9/10 acceptance criteria pass)"},
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "CMS sprint largely working: /professionals shows 6 ProTriptych types (CMS-driven), 3 case studies (Villa privata Brianza, Resort Costiera Amalfitana, Penthouse Milano) from PartnerCasesSection, no hardcoded PartnerTypesGrid. Header nav labels all CMS-driven (COME LAVORIAMO, MAGAZINE, PROGETTI, PER I PROFESSIONISTI) + CTAs visible. Homepage/About/Services all load with CMS content. Only remaining issue: /partner-application hero renders as black box — CMS hero_editorial content not displayed.",
+  "rca_of_issue": "/partner-application hero black box: The hero section relies on useStorefrontContent to fetch hero_editorial section. Either (1) the background image URL stored in CMS is broken/missing causing dark overlay with no visible background, or (2) the text content exists in CMS but white text is rendered on a black/no-image background making it invisible. Check PartnerApplicationPage.jsx hero rendering and verify CMS hero_editorial section has a valid image_url field."
+}

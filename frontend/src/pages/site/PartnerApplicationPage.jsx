@@ -11,6 +11,7 @@
  */
 import React, { useState } from 'react';
 import { useSite } from '../../site/SiteContext';
+import { useStorefrontContent } from '../../site/useStorefrontContent';
 import { CheckSquare, Square, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import './home-iter150.css';
 import './partner-application.css';
@@ -22,6 +23,22 @@ const L = (obj, locale) => {
   if (!obj || typeof obj === 'string') return obj || '';
   return obj[locale] || obj['it'] || obj['_default'] || '';
 };
+
+const resolveBag = (bag, locale) => {
+  if (!bag || typeof bag !== 'object') return {};
+  const norm = (locale || 'it').toLowerCase();
+  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
+  return { ...(bag._default || {}), ...(bag.it || {}) };
+};
+
+const TENANT_SLUG = (() => {
+  if (typeof window === 'undefined') return 'studio';
+  const host  = window.location.hostname || '';
+  const first = (host.split('.')[0] || '').toLowerCase();
+  if (host.includes('.preview.emergentagent.com')) return 'studio';
+  if (['studio', 'blueprint', 'www', 'localhost'].some((h) => first === h || first.startsWith(h))) return 'studio';
+  return first || 'studio';
+})();
 
 const ROLES = [
   { value: 'architect',         it: 'Architetto',         en: 'Architect' },
@@ -48,11 +65,9 @@ const INTERESTS = [
   { id: 'network',            it: 'Vorrei entrare nella rete professionale',              en: 'I want to join the professional network' },
 ];
 
-const copy = {
+// FORM_LABELS: etichette del form — P2 per migrazione CMS completa
+const FORM_LABELS = {
   it: {
-    eyebrow:      'CANDIDATURA PARTNER',
-    title:        'Proponi una\ncollaborazione.',
-    sub:          'Raccontaci il tuo studio e come immagini una collaborazione con noi. Valutiamo ogni profilo con cura entro 5 giorni lavorativi.',
     s1_title:     'Identità professionale',
     nome:         'Nome *',
     cognome:      'Cognome *',
@@ -72,18 +87,13 @@ const copy = {
     tipo_ph:      'Seleziona...',
     interessi:    'Seleziona tutto ciò che ti riguarda:',
     racconto:     'Raccontaci come immagini una collaborazione.',
-    racconto_ph:  'Descrivici il tuo approccio al progetto, il tipo di clientela che segui, e come potreste collaborare con il nostro studio...',
+    racconto_ph:  'Descrivici il tuo approccio al progetto...',
     submit:       'Invia candidatura',
     privacy:      'I tuoi dati vengono utilizzati esclusivamente per valutare la collaborazione. Nessun dato viene condiviso con terzi.',
-    success_title: 'Candidatura ricevuta.',
-    success_body:  'Grazie per il tuo interesse. Il nostro team valuterà la candidatura e ti contatterà qualora emergano opportunità di collaborazione compatibili con il tuo profilo.',
     error:        'Si è verificato un errore. Riprova o scrivici a info@studio.com.',
     required:     'Compila tutti i campi obbligatori.',
   },
   en: {
-    eyebrow:      'PARTNER APPLICATION',
-    title:        'Propose a\ncollaboration.',
-    sub:          'Tell us about your studio and how you envision a collaboration with us. We evaluate every profile carefully within 5 business days.',
     s1_title:     'Professional identity',
     nome:         'First name *',
     cognome:      'Last name *',
@@ -103,11 +113,9 @@ const copy = {
     tipo_ph:      'Select...',
     interessi:    'Select all that apply:',
     racconto:     'Tell us how you envision a collaboration.',
-    racconto_ph:  'Describe your approach to design, the type of clients you work with, and how you could collaborate with our studio...',
+    racconto_ph:  'Describe your approach to design...',
     submit:       'Submit application',
     privacy:      'Your data is used exclusively to evaluate the collaboration. No data is shared with third parties.',
-    success_title: 'Application received.',
-    success_body:  'We will review your profile within 5 business days and contact you at the email address provided.',
     error:        'An error occurred. Please try again or write to info@studio.com.',
     required:     'Please fill in all required fields.',
   },
@@ -122,8 +130,22 @@ const INITIAL_FORM = {
 
 export default function PartnerApplicationPage() {
   const { locale } = useSite();
-  const c = copy[locale.startsWith('en') ? 'en' : 'it'];
+  const c  = FORM_LABELS[locale.startsWith('en') ? 'en' : 'it'];
   const en = locale.startsWith('en');
+
+  // ── CMS-driven hero ────────────────────────────────────────────────────────
+  const cmsPa     = useStorefrontContent(TENANT_SLUG, 'partner-application');
+  const heroSec   = cmsPa?.page?.sections?.find(s => s.section_type === 'hero_editorial') || null;
+  const heroBag   = heroSec ? resolveBag(heroSec.locale_content || {}, locale) : null;
+  const heroSetts = heroSec?.settings || {};
+
+  const heroEyebrow     = heroBag?.eyebrow     || '';
+  const heroTitle       = heroBag?.title        || '';
+  const heroSub         = heroBag?.sub          || '';
+  const heroBgImage     = heroSetts.bg_image    || '';
+  const heroSuccessTitle = heroBag?.success_title || '';
+  const heroSuccessBody  = heroBag?.success_body  || '';
+  // ──────────────────────────────────────────────────────────────────────────
 
   const [form, setForm]         = useState(INITIAL_FORM);
   const [status, setStatus]     = useState('idle'); // idle | loading | success | error
@@ -192,8 +214,8 @@ export default function PartnerApplicationPage() {
       <div className="mfd-pa-page" data-testid="partner-application-page">
         <div className="mfd-pa-success" data-testid="partner-application-success">
           <CheckCircle size={48} strokeWidth={1.2} className="mfd-pa-success__icon" />
-          <h1 className="mfd-pa-success__title">{c.success_title}</h1>
-          <p className="mfd-pa-success__body">{c.success_body}</p>
+          <h1 className="mfd-pa-success__title">{heroSuccessTitle || (en ? 'Application received.' : 'Candidatura ricevuta.')}</h1>
+          <p className="mfd-pa-success__body">{heroSuccessBody || ''}</p>
         </div>
       </div>
     );
@@ -201,21 +223,19 @@ export default function PartnerApplicationPage() {
 
   return (
     <div className="mfd-pa-page" data-testid="partner-application-page">
-      {/* Hero editoriale */}
+      {/* Hero editoriale — CMS driven via partner-application page */}
       <header className="mfd-pa-hero">
         <div className="mfd-pa-hero__inner">
-          <p className="mfd-section-eyebrow mfd-pa-hero__eyebrow" data-testid="pa-hero-eyebrow">{c.eyebrow}</p>
-          <h1 className="mfd-pa-hero__title" data-testid="pa-hero-title">
-            {c.title.split('\n').map((line, i) => <span key={i}>{line}</span>)}
-          </h1>
-          <p className="mfd-pa-hero__sub" data-testid="pa-hero-sub">{c.sub}</p>
+          {heroEyebrow && <p className="mfd-section-eyebrow mfd-pa-hero__eyebrow" data-testid="pa-hero-eyebrow">{heroEyebrow}</p>}
+          {heroTitle && (
+            <h1 className="mfd-pa-hero__title" data-testid="pa-hero-title">
+              {heroTitle.split('\n').map((line, i) => <span key={i}>{line}</span>)}
+            </h1>
+          )}
+          {heroSub && <p className="mfd-pa-hero__sub" data-testid="pa-hero-sub">{heroSub}</p>}
         </div>
         <div className="mfd-pa-hero__image-col">
-          <img
-            src="https://images.pexels.com/photos/4977353/pexels-photo-4977353.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-            alt=""
-            loading="eager"
-          />
+          {heroBgImage && <img src={heroBgImage} alt="" loading="eager" />}
         </div>
       </header>
 

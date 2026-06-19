@@ -1,16 +1,8 @@
 /**
  * MoodSiteHeader — reusable public site header for the cream/editorial layout.
- *
- * Used by HomePage and any other public surface that should keep the same
- * top chrome (e.g. BeginJourneyPage, MagazinePage, ProjectsIndexPage…).
- *
- * Cross-page anchor behaviour: when the header is shown on a page that
- * isn't `/`, in-page hashes like `#how-it-works` become `/#how-it-works`
- * so the link goes home + scrolls to the anchor.
- *
- * Mobile menu is bullet-proofed with `visibility: hidden + pointer-events: none`
- * when closed, so even if a CSS transform regression appeared it would
- * never leak content into the page flow.
+ * CMS-driven: reads nav labels, CTA and login from the `navigation` CMS page.
+ * Falls back silently to empty strings when CMS is not loaded yet.
+ * White-label compliant — ZERO hardcoded nav text.
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -31,27 +23,49 @@ const resolveTenantSlug = () => {
   return first || 'studio';
 };
 
-// Localized copy resolver
+// Localized copy resolver for {en-US, it-IT, _default} format
+const Ln = (obj, locale) => {
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj;
+  const norm = (locale || 'it').toLowerCase();
+  const itKey = norm.startsWith('it') ? 'it-IT' : null;
+  const enKey = norm.startsWith('en') ? 'en-US' : null;
+  return (itKey && obj[itKey]) || (enKey && obj[enKey]) ||
+    obj['_default'] || obj['en-US'] || obj['it-IT'] ||
+    Object.values(obj)[0] || '';
+};
+
+// Legacy resolver for {it, en} format from `copy` prop (backward compat with HomePage)
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
 
-const DEFAULT_COPY = {
-  nav: {
-    how_it_works:  { it: 'Come lavoriamo',  en: 'How we work' },
-    magazine:      { it: 'Magazine',       en: 'Magazine' },
-    design_stories:{ it: 'Progetti', en: 'Projects' },
-    professionals: { it: 'Per i professionisti', en: 'For professionals' },
-    cta:           { it: 'Prenota una consulenza', en: 'Book a consultation' },
-    login:         { it: 'Accedi', en: 'Sign in' },
-  },
+/**
+ * Hook: reads nav data from CMS `navigation` page nav_top section.
+ * Returns { links: Map<id, {label, href}>, cta: {label, href}, login: {label, href} }
+ */
+const useCmsNav = (tenantSlug, locale) => {
+  const cmsNav = useStorefrontContent(tenantSlug, 'navigation');
+  return useMemo(() => {
+    const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
+    if (!navTop) return null;
+    const settings = navTop._settings || navTop.settings || {};
+    if (!settings) return null;
+    const links = {};
+    (settings.links || []).filter((l) => l.visible !== false).forEach((l) => {
+      links[l.id] = { label: Ln(l.label_i18n, locale), href: l.href || '/' };
+    });
+    return {
+      links,
+      cta:   { label: Ln(settings.cta?.label_i18n, locale),   href: settings.cta?.href   || '' },
+      login: { label: Ln(settings.login?.label_i18n, locale), href: settings.login?.href || '/access' },
+    };
+  }, [cmsNav, locale]);
 };
 
 const MoodSiteHeader = ({
   locale: localeProp,
-  copy = DEFAULT_COPY,
+  copy = null,  // optional legacy prop from HomePage; standalone usage reads CMS directly
 }) => {
   const site = useSite();
-  // Prefer the prop (used by HomePage), then the SiteContext locale, then 'it'.
-  // The short form ('it' / 'en') is what DEFAULT_COPY keys use.
   const locale = (localeProp || site?.locale || 'it').slice(0, 2);
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoImgError, setLogoImgError] = useState(false);
@@ -59,15 +73,26 @@ const MoodSiteHeader = ({
   const onHome = location.pathname === '/' || location.pathname === '';
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // ITER171.6 · CMS-driven logo. Reads from `navigation.nav_top.settings.logo_url`.
-  // White-label: no platform logo fallback. If CMS has no override, renders studio name as text.
   const tenantSlug = useMemo(() => resolveTenantSlug(), []);
+  // CMS logo (always fetched directly from CMS)
   const cmsNav = useStorefrontContent(tenantSlug, 'navigation');
   const brandLogoUrl = useMemo(() => {
     const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
     const fromSettings = navTop?._settings?.logo_url || navTop?.settings?.logo_url;
     return (fromSettings && String(fromSettings).trim()) || null;
   }, [cmsNav]);
+
+  // CMS-driven nav (for standalone usage — SiteLayout renders without `copy` prop)
+  const cmsNavData = useCmsNav(tenantSlug, locale);
+
+  // Nav resolvers: prefer `copy` prop (legacy, HomePage), then CMS, then empty string
+  const navLabel = (key) => {
+    if (copy?.nav?.[key]) return L(copy.nav[key], locale);
+    return cmsNavData?.links?.[key]?.label || '';
+  };
+  const ctaLabel  = copy?.nav?.cta ? L(copy.nav.cta, locale) : (cmsNavData?.cta?.label  || '');
+  const ctaHref   = copy?.nav?.cta_href || cmsNavData?.cta?.href || '';
+  const loginLabel = copy?.nav?.login ? L(copy.nav.login, locale) : (cmsNavData?.login?.label || '');
 
   // Reset img error when logo URL changes
   useEffect(() => { setLogoImgError(false); }, [brandLogoUrl]);
@@ -96,37 +121,29 @@ const MoodSiteHeader = ({
             }
           </Link>
           <nav className="mfd-header__nav" aria-label="Primary">
-            {onHome ? (
-              <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
+            {navLabel('how_it_works') && (onHome ? (
+              <a href="#how-it-works">{navLabel('how_it_works')}</a>
             ) : (
-              <Link to="/#how-it-works">{L(copy.nav.how_it_works, locale)}</Link>
-            )}
-            <Link to="/magazine">{L(copy.nav.magazine, locale)}</Link>
-            {onHome ? (
-              <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
+              <Link to="/#how-it-works">{navLabel('how_it_works')}</Link>
+            ))}
+            {navLabel('magazine') && <Link to="/magazine">{navLabel('magazine')}</Link>}
+            {navLabel('design_stories') && (onHome ? (
+              <a href="#design-stories">{navLabel('design_stories')}</a>
             ) : (
-              <Link to="/#design-stories">{L(copy.nav.design_stories, locale)}</Link>
-            )}
-            <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
+              <Link to="/#design-stories">{navLabel('design_stories')}</Link>
+            ))}
+            {navLabel('professionals') && <Link to="/professionals">{navLabel('professionals')}</Link>}
           </nav>
-          {/* RIENTRA — Access Continuity™ CTA (ghost, accanto al CTA primario).
-              ITER167 · "RIENTRA" perché elegante, corto, non software. */}
-          <Link
-            to="/access"
-            className="mfd-header__reenter"
-            data-testid="header-cta-reenter"
-            onClick={closeMenu}
-          >
-            {L(copy.nav.login, locale)}
-          </Link>
-          <Link
-            to={copy.nav?.cta_href || '/consulenza'}
-            className="mfd-cta mfd-cta--primary mfd-header__cta"
-            data-testid="header-cta-start-project"
-            onClick={closeMenu}
-          >
-            {L(copy.nav.cta, locale)}
-          </Link>
+          {loginLabel && (
+            <Link to="/access" className="mfd-header__reenter" data-testid="header-cta-reenter" onClick={closeMenu}>
+              {loginLabel}
+            </Link>
+          )}
+          {ctaLabel && ctaHref && (
+            <Link to={ctaHref} className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project" onClick={closeMenu}>
+              {ctaLabel}
+            </Link>
+          )}
           <button
             type="button"
             className={`mfd-burger ${menuOpen ? 'mfd-burger--open' : ''}`}
@@ -140,10 +157,6 @@ const MoodSiteHeader = ({
         </div>
       </header>
 
-      {/* Slide-down panel + overlay — ALWAYS portaled to document.body
-          so it escapes any parent transform context.
-          When closed: visibility:hidden + pointer-events:none → fully inert.
-          When open : visibility:visible + pointer-events:auto. */}
       {createPortal(
         <>
           <div
@@ -156,22 +169,21 @@ const MoodSiteHeader = ({
             }}
           >
             <nav className="mfd-mobile-menu__nav" aria-label="Mobile">
-              <Link to={anchor('#how-it-works')} onClick={closeMenu}>{L(copy.nav.how_it_works, locale)}</Link>
-              <Link to="/magazine" onClick={closeMenu}>{L(copy.nav.magazine, locale)}</Link>
-              <Link to={anchor('#design-stories')} onClick={closeMenu}>{L(copy.nav.design_stories, locale)}</Link>
-              <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
+              {navLabel('how_it_works') && <Link to={anchor('#how-it-works')} onClick={closeMenu}>{navLabel('how_it_works')}</Link>}
+              {navLabel('magazine')       && <Link to="/magazine"              onClick={closeMenu}>{navLabel('magazine')}</Link>}
+              {navLabel('design_stories') && <Link to={anchor('#design-stories')} onClick={closeMenu}>{navLabel('design_stories')}</Link>}
+              {navLabel('professionals')  && <Link to="/professionals"         onClick={closeMenu}>{navLabel('professionals')}</Link>}
             </nav>
-            <Link
-              to={copy.nav?.cta_href || '/consulenza'}
-              className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
-              onClick={closeMenu}
-              data-testid="mobile-menu-cta"
-            >
-              {L(copy.nav.cta, locale)}
-            </Link>
-            <Link to="/access" className="mfd-mobile-menu__login" onClick={closeMenu}>
-              {L(copy.nav.login, locale)}
-            </Link>
+            {ctaLabel && ctaHref && (
+              <Link to={ctaHref} className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta" onClick={closeMenu} data-testid="mobile-menu-cta">
+                {ctaLabel}
+              </Link>
+            )}
+            {loginLabel && (
+              <Link to="/access" className="mfd-mobile-menu__login" onClick={closeMenu}>
+                {loginLabel}
+              </Link>
+            )}
           </div>
           {menuOpen && <div className="mfd-mobile-menu__overlay" onClick={closeMenu} />}
         </>,

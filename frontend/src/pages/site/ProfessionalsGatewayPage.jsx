@@ -1,22 +1,23 @@
 /**
  * ProfessionalsGatewayPage — Pagina Partner Network
  * ═══════════════════════════════════════════════════
- * CMS-driven via useStorefrontContent('professionals').
+ * 100% CMS-driven via useStorefrontContent('professionals').
  * Partner Sprint 2026 — CTA → /partner-application
  *
  * Sezioni:
- *   1. ProHero          — hero_editorial
- *   2. ProManifesto     — atmosphere_statement
- *   3. PartnerTypesGrid — inline (Chi collabora)
- *   4. ProTriptych      — editorial_triptych
- *   5. ProProcess       — design_journey (4 step)
- *   6. PartnerCaseStudies — inline (Progetti sviluppati insieme)
- *   7. ProCollaborators — professionals_cta
- *   8. ProFinalCTA      — cinematic_quote
+ *   1. ProHero              — hero_editorial
+ *   2. ProManifesto         — atmosphere_statement
+ *   3. ProTriptych          — editorial_triptych (6 partner types)
+ *   4. ProProcess           — design_journey (4 step)
+ *   5. PartnerCasesSection  — partner_case_studies (CMS-driven)
+ *   6. ProCollaborators     — professionals_cta
+ *   7. ProFinalCTA          — cinematic_quote
+ *
+ * ZERO hardcoded content policy: nessun array PARTNER_TYPES o CASE_STUDIES nel JSX.
  */
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Building2, Home, Hammer, Store, Tag, LayoutGrid } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useSite } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import './home-iter150.css';
@@ -275,121 +276,42 @@ const ProCollaborators = ({ locale, sec }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sezione inline A — Partner Types Grid (Chi collabora)
+// Sezione 5b — Partner Case Studies (partner_case_studies) — CMS-driven
 // ─────────────────────────────────────────────────────────────────────────────
-const PARTNER_TYPES = [
-  { id: 'architect',        icon: Building2,   it: 'Architetti',        en: 'Architects',        desc_it: 'Studi di architettura che cercano un partner operativo per la fase esecutiva.', desc_en: 'Architecture firms looking for an operational partner for the execution phase.' },
-  { id: 'interior_designer',icon: Home,        it: 'Interior Designer', en: 'Interior Designers', desc_it: 'Designer indipendenti che vogliono amplificare la portata dei loro progetti.', desc_en: 'Independent designers who want to amplify the scope of their projects.' },
-  { id: 'contractor',       icon: Hammer,      it: 'Contractor',        en: 'Contractors',        desc_it: 'General contractor e imprese che gestiscono cantieri di qualità elevata.', desc_en: 'General contractors and firms managing high-quality construction sites.' },
-  { id: 'showroom',         icon: Store,       it: 'Showroom',          en: 'Showrooms',          desc_it: 'Showroom e distributori di materiali premium alla ricerca di progetti di riferimento.', desc_en: 'Premium material showrooms and distributors looking for showcase projects.' },
-  { id: 'brand',            icon: Tag,         it: 'Brand',             en: 'Brands',             desc_it: 'Brand di arredo e prodotto che cercano visibilità su progetti residenziali e hospitality.', desc_en: 'Furniture and product brands seeking visibility on residential and hospitality projects.' },
-  { id: 'developer',        icon: LayoutGrid,  it: 'Developer',         en: 'Developers',         desc_it: 'Developer immobiliari che vogliono elevare la qualità progettuale dei propri interventi.', desc_en: 'Real estate developers who want to elevate the design quality of their projects.' },
-];
+const PartnerCasesSection = ({ locale, sec }) => {
+  if (!sec) return null;
+  const b       = bag(sec, locale);
+  const eyebrow = b.eyebrow || '';
+  const title   = b.title   || '';
+  const cases   = b.cases   || [];
+  if (!cases.length) return null;
 
-const PartnerTypesGrid = ({ locale }) => {
-  const en = (locale || 'it').startsWith('en');
-  return (
-    <section className="mfd-partner-types" data-testid="partner-types-grid">
-      <div className="mfd-partner-types__inner">
-        <header className="mfd-section-head">
-          <p className="mfd-section-eyebrow" data-testid="partner-types-eyebrow">
-            {en ? 'WHO COLLABORATES WITH US' : 'CHI COLLABORA CON NOI'}
-          </p>
-          <h2 className="mfd-section-title" data-testid="partner-types-title">
-            {en ? <>Professionals who share<span style={{display:'block'}}>our vision.</span></> : <>Professionisti che condividono<span style={{display:'block'}}>la nostra visione.</span></>}
-          </h2>
-        </header>
-        <div className="mfd-partner-types__grid">
-          {PARTNER_TYPES.map((pt) => {
-            const Icon = pt.icon;
-            return (
-              <div key={pt.id} className="mfd-partner-type-card" data-testid={`partner-type-${pt.id}`}>
-                <div className="mfd-partner-type-card__icon">
-                  <Icon size={22} strokeWidth={1.4} />
-                </div>
-                <h3 className="mfd-partner-type-card__title">{en ? pt.en : pt.it}</h3>
-                <p className="mfd-partner-type-card__desc">{en ? pt.desc_en : pt.desc_it}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sezione inline B — Partner Case Studies (Progetti sviluppati insieme)
-// ─────────────────────────────────────────────────────────────────────────────
-const CASE_STUDIES = [
-  {
-    id: 'cs1',
-    partner_it: 'Studio Arch. M. Ferrante',
-    partner_en: 'Arch. M. Ferrante Studio',
-    role_it: 'Progetto architettonico',
-    role_en: 'Architectural design',
-    title_it: 'Villa privata, Brianza',
-    title_en: 'Private Villa, Brianza',
-    result_it: 'Ristrutturazione completa 480 mq — 14 mesi, consegnato entro budget.',
-    result_en: 'Full renovation 480 sqm — 14 months, delivered within budget.',
-    image: 'https://images.pexels.com/photos/4968694/pexels-photo-4968694.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-  },
-  {
-    id: 'cs2',
-    partner_it: 'Showroom Material Lab',
-    partner_en: 'Material Lab Showroom',
-    role_it: 'Fornitura materiali lapidei',
-    role_en: 'Stone materials supply',
-    title_it: 'Resort boutique, Costiera',
-    title_en: 'Boutique Resort, Amalfi Coast',
-    result_it: '23 suite — selezione materiali premium, posa e supervisione cantiere.',
-    result_en: '23 suites — premium material selection, laying and site supervision.',
-    image: 'https://images.pexels.com/photos/5582590/pexels-photo-5582590.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-  },
-  {
-    id: 'cs3',
-    partner_it: 'GC Costruzioni Srl',
-    partner_en: 'GC Costruzioni Srl',
-    role_it: 'General Contractor',
-    role_en: 'General Contractor',
-    title_it: 'Penthouse Milano, Zona Magenta',
-    title_en: 'Penthouse Milan, Magenta District',
-    result_it: 'Penthouse 320 mq — progettazione esecutiva e cantieristica integrata.',
-    result_en: '320 sqm penthouse — executive design and integrated construction management.',
-    image: 'https://images.pexels.com/photos/23496714/pexels-photo-23496714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-  },
-];
-
-const PartnerCaseStudies = ({ locale }) => {
-  const en = (locale || 'it').startsWith('en');
   return (
     <section className="mfd-partner-cases" data-testid="partner-case-studies">
       <div className="mfd-partner-cases__inner">
-        <header className="mfd-section-head mfd-section-head--with-link">
-          <div>
-            <p className="mfd-section-eyebrow" data-testid="partner-cases-eyebrow">
-              {en ? 'PROJECTS BUILT TOGETHER' : 'PROGETTI SVILUPPATI INSIEME'}
-            </p>
+        <header className="mfd-section-head">
+          {eyebrow && <p className="mfd-section-eyebrow" data-testid="partner-cases-eyebrow">{eyebrow}</p>}
+          {title && (
             <h2 className="mfd-section-title" data-testid="partner-cases-title">
-              {en ? <>Partner&nbsp;+&nbsp;Studio<span style={{display:'block'}}>= risultato.</span></> : <>Partner&nbsp;+&nbsp;Studio<span style={{display:'block'}}>= risultato.</span></>}
+              {title.split('\n').map((line, i) => <span key={i} style={{ display: 'block' }}>{line}</span>)}
             </h2>
-          </div>
+          )}
         </header>
         <div className="mfd-partner-cases__grid">
-          {CASE_STUDIES.map((cs) => (
-            <article key={cs.id} className="mfd-partner-case-card" data-testid={`partner-case-${cs.id}`}>
+          {cases.map((cs, i) => (
+            <article key={cs.title || i} className="mfd-partner-case-card" data-testid={`partner-case-${i}`}>
               <div className="mfd-partner-case-card__image">
-                <img src={cs.image} alt={en ? cs.title_en : cs.title_it} loading="lazy" />
+                {cs.image && <img src={cs.image} alt={cs.title || ''} loading="lazy" />}
                 <div className="mfd-partner-case-card__badge">
-                  <span>{en ? cs.partner_en : cs.partner_it}</span>
+                  <span>{cs.partner || ''}</span>
                   <span className="mfd-partner-case-card__plus">+</span>
                   <span>MOOD for DESIGN</span>
                 </div>
               </div>
               <div className="mfd-partner-case-card__body">
-                <p className="mfd-partner-case-card__role">{en ? cs.role_en : cs.role_it}</p>
-                <h3 className="mfd-partner-case-card__title">{en ? cs.title_en : cs.title_it}</h3>
-                <p className="mfd-partner-case-card__result">{en ? cs.result_en : cs.result_it}</p>
+                <p className="mfd-partner-case-card__role">{cs.role || ''}</p>
+                <h3 className="mfd-partner-case-card__title">{cs.title || ''}</h3>
+                <p className="mfd-partner-case-card__result">{cs.result || ''}</p>
               </div>
             </article>
           ))}
@@ -457,24 +379,24 @@ const ProfessionalsGatewayPage = () => {
   const sections = cms?.page?.sections || [];
   const byType   = (type) => sections.find((s) => s.section_type === type) || null;
 
-  const heroSec    = byType('hero_editorial');
+  const heroSec      = byType('hero_editorial');
   const manifestoSec = byType('atmosphere_statement');
   const triptychSec  = byType('editorial_triptych');
   const processSec   = byType('design_journey');
+  const casesSec     = byType('partner_case_studies');
   const collabSec    = byType('professionals_cta');
   const finalCtaSec  = byType('cinematic_quote');
 
   return (
     <div data-testid="professionals-gateway-page">
       <main>
-        <ProHero          locale={locale} sec={heroSec} />
-        <ProManifesto     locale={locale} sec={manifestoSec} />
-        <PartnerTypesGrid locale={locale} />
-        <ProTriptych      locale={locale} sec={triptychSec} />
-        <ProProcess       locale={locale} sec={processSec} />
-        <PartnerCaseStudies locale={locale} />
-        <ProCollaborators locale={locale} sec={collabSec} />
-        <ProFinalCTA      locale={locale} sec={finalCtaSec} />
+        <ProHero            locale={locale} sec={heroSec} />
+        <ProManifesto       locale={locale} sec={manifestoSec} />
+        <ProTriptych        locale={locale} sec={triptychSec} />
+        <ProProcess         locale={locale} sec={processSec} />
+        <PartnerCasesSection locale={locale} sec={casesSec} />
+        <ProCollaborators   locale={locale} sec={collabSec} />
+        <ProFinalCTA        locale={locale} sec={finalCtaSec} />
       </main>
     </div>
   );

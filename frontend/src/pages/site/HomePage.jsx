@@ -436,7 +436,7 @@ const Magazine = ({ locale, copy, articles }) => {
                 ))}
               </h3>
               <span className="mag-card__read-cta" aria-hidden="true">
-                {locale === 'en' ? 'Read article' : "Leggi l'articolo"} <ArrowRight size={11} strokeWidth={1.8} />
+                {L(copy.magazine?.read_cta, locale)} <ArrowRight size={11} strokeWidth={1.8} />
               </span>
             </div>
             <span className="mag-card__plus" aria-hidden="true">
@@ -514,7 +514,7 @@ const DesignStories = ({ locale, copy }) => {
               <h3 className="story-card__title">{j.title}</h3>
               {j.excerpt && <p className="story-card__excerpt">{j.excerpt}</p>}
               <span className="story-card__discover">
-                {locale === 'en' ? 'Discover project' : 'Scopri il progetto'} <ArrowRight size={11} strokeWidth={1.8} />
+                {L(copy.stories?.discover_cta, locale) || L(copy.magazine?.read_cta, locale)} <ArrowRight size={11} strokeWidth={1.8} />
               </span>
             </div>
           </Link>
@@ -625,28 +625,30 @@ const EditorialStatement = ({ locale, copy }) => {
 const JOURNEY_ICONS = [Heart, SlidersHorizontal, FileText, Layers];
 
 const DigitalJourneyHighlight = ({ locale, copy }) => {
-  const steps = (copy.howitworks?.steps || []).slice(0, 4);
-  const title   = locale === 'en'
-    ? 'Tell us about your project'
-    : 'Raccontaci il tuo progetto';
-  const body    = locale === 'en'
-    ? 'Share your needs, style, timeframe and goals. We will help you turn ideas into a concrete, personalised project.'
-    : 'Condividi esigenze, stile, tempistiche e obiettivi. Ti aiuteremo a trasformare le idee in un progetto concreto.';
-  const ctaLabel = locale === 'en' ? 'Fill in the brief' : 'Compila il brief';
-  const eyebrow  = locale === 'en' ? 'Project Brief' : 'Brief di Progetto';
+  const steps      = (copy.howitworks?.steps || []).slice(0, 4);
+  const hl_title   = copy.howitworks?.hl_title   || '';
+  const hl_body    = copy.howitworks?.hl_body    || '';
+  const hl_eyebrow = copy.howitworks?.hl_eyebrow || '';
+  const hl_cta     = copy.howitworks?.hl_cta     || '';
+  const hl_href    = copy.howitworks?.hl_cta_href || '';
 
-  if (!steps.length) return null;
+  // Segue la policy: if (!content) return null — nessun fallback hardcoded
+  if (!steps.length || !hl_title) return null;
 
   return (
     <section className="mfd-journey-hl" data-testid="journey-highlight">
       <div className="mfd-journey-hl__inner">
         <div className="mfd-journey-hl__left">
-          <p className="mfd-journey-hl__eyebrow">{eyebrow}</p>
-          <h2 className="mfd-journey-hl__title">{title}</h2>
-          <p className="mfd-journey-hl__body">{body}</p>
-          <Link to="/begin-journey" className="mfd-journey-hl__cta" data-testid="journey-hl-cta">
-            {ctaLabel} <ArrowRight size={12} strokeWidth={2} />
-          </Link>
+          {hl_eyebrow && <p className="mfd-journey-hl__eyebrow">{hl_eyebrow}</p>}
+          <h2 className="mfd-journey-hl__title">
+            {hl_title.split('\n').map((line, i) => <span key={i}>{line}</span>)}
+          </h2>
+          {hl_body && <p className="mfd-journey-hl__body">{hl_body}</p>}
+          {hl_cta && hl_href && (
+            <Link to={hl_href} className="mfd-journey-hl__cta" data-testid="journey-hl-cta">
+              {hl_cta} <ArrowRight size={12} strokeWidth={2} />
+            </Link>
+          )}
         </div>
         <div className="mfd-journey-hl__grid">
           {steps.map((s, i) => {
@@ -666,39 +668,49 @@ const DigitalJourneyHighlight = ({ locale, copy }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────
-// FINAL CTA — 3 colonne dark (titolo | CTA | contatto)
+// FINAL CTA — 3 colonne dark (titolo | CTA | contatto) — 100% CMS-driven
 // ─────────────────────────────────────────────────────────────────────
-const FinalCTA = ({ locale, copy }) => (
-  <section className="mfd-finalcta" data-testid="final-cta">
-    <div className="mfd-finalcta__inner">
-      <div className="mfd-finalcta__lede">
-        <h2 className="mfd-finalcta__title">
-          {L(copy.finalCTA.title, locale).split('\n').map((line, i) => (
-            <span key={i}>{line}</span>
-          ))}
-        </h2>
-        <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
+const FinalCTA = ({ locale, copy }) => {
+  const contactLabel     = copy.finalCTA?.contact_label      || '';
+  const contactLinkLabel = copy.finalCTA?.contact_link_label || '';
+  const contactHref      = copy.finalCTA?.contact_href       || '';
+
+  return (
+    <section className="mfd-finalcta" data-testid="final-cta">
+      <div className="mfd-finalcta__inner">
+        <div className="mfd-finalcta__lede">
+          <h2 className="mfd-finalcta__title">
+            {L(copy.finalCTA.title, locale).split('\n').map((line, i) => (
+              <span key={i}>{line}</span>
+            ))}
+          </h2>
+          <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
+        </div>
+        <div className="mfd-finalcta__center">
+          <Link
+            to={copy.finalCTA.private_href || '/consulenza'}
+            className="mfd-cta mfd-cta--outline mfd-cta--inverse"
+            data-testid="final-cta-private"
+          >
+            {L(copy.hero?.cta_primary, locale) || L(copy.finalCTA.private, locale)}
+          </Link>
+        </div>
+        {(contactLabel || contactLinkLabel) && (
+          <div className="mfd-finalcta__contact">
+            {contactLabel && (
+              <p className="mfd-finalcta__contact-label">{contactLabel}</p>
+            )}
+            {contactLinkLabel && contactHref && (
+              <Link to={contactHref} className="mfd-finalcta__contact-link" data-testid="final-cta-contact">
+                {contactLinkLabel}
+              </Link>
+            )}
+          </div>
+        )}
       </div>
-      <div className="mfd-finalcta__center">
-        <Link
-          to={copy.finalCTA.private_href || '/consulenza'}
-          className="mfd-cta mfd-cta--outline mfd-cta--inverse"
-          data-testid="final-cta-private"
-        >
-          {L(copy.hero.cta_primary, locale) || (locale === 'en' ? 'Book a consultation' : 'Prenota una consulenza')}
-        </Link>
-      </div>
-      <div className="mfd-finalcta__contact">
-        <p className="mfd-finalcta__contact-label">
-          {locale === 'en' ? 'Prefer to write?' : 'Preferisci scrivere?'}
-        </p>
-        <Link to="/consulenza" className="mfd-finalcta__contact-link" data-testid="final-cta-contact">
-          {locale === 'en' ? 'Contattaci' : 'Contattaci'}
-        </Link>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // FOOTER — Colophon (LEFT · CENTER · RIGHT) · CMS-driven, multilingual
@@ -837,11 +849,12 @@ const mapCmsToCopy = (content, locale) => {
   const magSettings = content.editorial_grid?._settings || {};
   if (Object.keys(mag).length || (magSettings.cards || []).length) {
     merged.magazine = {
-      eyebrow: { it: mag.eyebrow || '', en: mag.eyebrow || '' },
-      title:   { it: mag.title   || '', en: mag.title   || '' },
-      explore: { it: mag.explore || '', en: mag.explore || '' },
+      eyebrow:  { it: mag.eyebrow  || '', en: mag.eyebrow  || '' },
+      title:    { it: mag.title    || '', en: mag.title    || '' },
+      explore:  { it: mag.explore  || '', en: mag.explore  || '' },
+      read_cta: { it: mag.read_link || "Leggi l'articolo", en: mag.read_link || 'Read the article' },
       // ITER157.B will wire the auto-feed from magazine_articles here.
-      cards:   Array.isArray(magSettings.cards) ? magSettings.cards : [],
+      cards:    Array.isArray(magSettings.cards) ? magSettings.cards : [],
     };
   }
 
@@ -856,6 +869,12 @@ const mapCmsToCopy = (content, locale) => {
       cta:     { it: journey.cta     || '', en: journey.cta || '' },
       cta_href: journeySettings.links?.cta_href || journeySettings.cta_href || '/consulenza',
       steps:   Array.isArray(journeySettings.steps) ? journeySettings.steps : [],
+      // ── DigitalJourneyHighlight fields (CMS-driven, no fallback) ──────────
+      hl_eyebrow:  journey.hl_eyebrow  || '',
+      hl_title:    journey.hl_title    || '',
+      hl_body:     journey.hl_body     || '',
+      hl_cta:      journey.hl_cta      || '',
+      hl_cta_href: journey.hl_cta_href || '',
     };
   }
 
@@ -864,11 +883,12 @@ const mapCmsToCopy = (content, locale) => {
   const storiesSettings = content.featured_design_journeys?._settings || {};
   if (Object.keys(stories).length || (storiesSettings.cards || []).length) {
     merged.stories = {
-      eyebrow: { it: stories.eyebrow || '', en: stories.eyebrow || '' },
-      title:   { it: stories.title   || '', en: stories.title   || '' },
-      viewAll: { it: stories.viewAll || '', en: stories.viewAll || '' },
+      eyebrow:      { it: stories.eyebrow      || '', en: stories.eyebrow      || '' },
+      title:        { it: stories.title        || '', en: stories.title        || '' },
+      viewAll:      { it: stories.viewAll      || '', en: stories.viewAll      || '' },
+      discover_cta: { it: stories.discover_cta || "Scopri il progetto", en: stories.discover_cta || 'Discover project' },
       // ITER157.B will wire the auto-feed from published_design_journeys here.
-      cards:   Array.isArray(storiesSettings.cards) ? storiesSettings.cards : [],
+      cards:        Array.isArray(storiesSettings.cards) ? storiesSettings.cards : [],
     };
   }
 
@@ -889,12 +909,16 @@ const mapCmsToCopy = (content, locale) => {
   const finalSettings = content.cinematic_quote?._settings || {};
   if (Object.keys(finalc).length) {
     merged.finalCTA = {
-      title:        { it: finalc.title   || '', en: finalc.title   || '' },
-      sub:          { it: finalc.sub     || '', en: finalc.sub     || '' },
-      private:      { it: finalc.private || '', en: finalc.private || '' },
-      pro:          { it: finalc.pro     || '', en: finalc.pro     || '' },
-      private_href: finalSettings.private_href || '/consulenza',
-      pro_href:     finalSettings.pro_href     || '/professionals',
+      title:              { it: finalc.title   || '', en: finalc.title   || '' },
+      sub:                { it: finalc.sub     || '', en: finalc.sub     || '' },
+      private:            { it: finalc.private || '', en: finalc.private || '' },
+      pro:                { it: finalc.pro     || '', en: finalc.pro     || '' },
+      private_href:       finalSettings.private_href || '/consulenza',
+      pro_href:           finalSettings.pro_href     || '/professionals',
+      // ── CMS-driven contact block ──────────────────────────────────────────
+      contact_label:      finalc.contact_label      || '',
+      contact_link_label: finalc.contact_link_label || '',
+      contact_href:       finalSettings.contact_href || '',
     };
   }
 

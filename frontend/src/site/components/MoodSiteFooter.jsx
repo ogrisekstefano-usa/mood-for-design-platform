@@ -145,6 +145,24 @@ const MoodSiteFooter = () => {
     ? footerSettings.social_links.filter((s) => s && s.href)
     : [];
 
+  // Locale picker label — CMS-driven (navigation.nav_top.settings.locale_picker_label_i18n)
+  const localPickerLabel = useMemo(() => {
+    const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
+    const navSettings = navTop?._settings || navTop?.settings || {};
+    const labels = navSettings.locale_picker_label_i18n;
+    if (!labels) return '';
+    return labels[i18nLocale] || labels['_default'] || labels['en-US'] || '';
+  }, [JSON.stringify(cmsNav?.content?.nav_top), i18nLocale]);
+
+  // Footer nav column title — CMS-driven
+  const footerNavTitle = useMemo(() => {
+    const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
+    const navSettings = navTop?._settings || navTop?.settings || {};
+    const labels = navSettings.footer_nav_title_i18n;
+    if (!labels) return null; // null = hide the title
+    return labels[i18nLocale] || labels['_default'] || null;
+  }, [JSON.stringify(cmsNav?.content?.nav_top), i18nLocale]);
+
   // Editorial cols come from per-locale locale_content. SEGUICI col is
   // intentionally skipped here because the same data is rendered as icons
   // under the logo (avoids duplication).
@@ -158,7 +176,7 @@ const MoodSiteFooter = () => {
     const navLinks = navSection?._settings?.links || navSection?.settings?.links || [];
     if (Array.isArray(navLinks) && navLinks.length) {
       const navCol = {
-        title: { it: 'Navigazione', en: 'Navigation' },
+        title: footerNavTitle ? { it: footerNavTitle, en: footerNavTitle } : null,
         links: navLinks
           .filter((l) => l.visible !== false)
           .map((l) => ({ href: l.href, label: l.label_i18n || l.label || {} })),
@@ -183,7 +201,7 @@ const MoodSiteFooter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main),
       JSON.stringify(cmsHome?.content?.editorial_footer),
-      i18nLocale, locale]);
+      footerNavTitle, i18nLocale, locale]);
 
   return (
     <footer id="footer" className="mfd-footer" data-testid="site-footer">
@@ -227,11 +245,13 @@ const MoodSiteFooter = () => {
             >
               <Globe size={14} strokeWidth={1.6} />
               <span>
-                {locale.startsWith('it') ? 'Paese · Lingua'
-                 : locale.startsWith('fr') ? 'Pays · Langue'
-                 : locale.startsWith('de') ? 'Land · Sprache'
-                 : locale.startsWith('es') ? 'País · Idioma'
-                 : 'Country · Language'}
+                {localPickerLabel || (
+                  locale.startsWith('it') ? 'Paese · Lingua'
+                  : locale.startsWith('fr') ? 'Pays · Langue'
+                  : locale.startsWith('de') ? 'Land · Sprache'
+                  : locale.startsWith('es') ? 'País · Idioma'
+                  : 'Country · Language'
+                )}
               </span>
               <span className="mfd-footer__locale-current">
                 · {(i18nLocale || locale).toUpperCase()}
