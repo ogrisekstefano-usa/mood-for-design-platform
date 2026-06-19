@@ -24,7 +24,7 @@ from typing import Dict, Any, List
 
 
 # ── Page key catalog (Session B locks to these 6) ──────────────────────────
-PAGE_KEYS = ['home', 'projects', 'start_project', 'professionals', 'navigation', 'ui', 'about', 'services']
+PAGE_KEYS = ['home', 'projects', 'start_project', 'professionals', 'navigation', 'ui', 'about', 'services', 'partner-application', 'consulenza', 'magazine']
 
 
 # ── Storefront-specific section catalog ────────────────────────────────────

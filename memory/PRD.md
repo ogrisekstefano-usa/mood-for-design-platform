@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Giugno 2026 — v5
-> **Status:** REAL FLOW CERTIFIED (Iteration 242: 14/14 PASS) · JourneyWelcomePage P1-2 CHIUSO · CTA "Accedi al tuo Atelier™" + "Visualizza le Direzioni™" · Flusso Designer↔Cliente COMPLETAMENTE CERTIFICATO · UX/UI & Conversion Sprint COMPLETATO (report generati) · Homepage CMS Consolidation Plan GENERATO
+> **Last update:** Febbraio 2026 — v6  
+> **Status:** CMS Consolidation Sprint COMPLETATO ✅ (Iteration 249: 9/10 → 10/10 dopo fix PAGE_KEYS) · Partner Network LIVE · Header/Footer/Professionals/HomePage 100% CMS-driven · ZERO hardcoded text in public pages
 
 ## Original problem statement
 
