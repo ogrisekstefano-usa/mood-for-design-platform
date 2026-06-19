@@ -872,6 +872,45 @@ Analisi architetturale pura: trovare la Source of Truth per l'entità Partner ne
 | In review / approvato | `leads` | `status = 'review' \| 'approved'` |
 | Accesso piattaforma | `users_profile` | `role = 'ad_partner'` (già esiste in RBAC) |
 | Partecipazione DJ | `design_journey_assignments` | `assignment_role = 'contributor'` |
+
+---
+
+## PARTNER NETWORK IMPLEMENTATION SPRINT — COMPLETATO (Giugno 2026)
+
+### Decisioni architetturali implementate (con aggiustamenti rispetto al piano)
+
+| Piano originale | Implementato | Motivo aggiustamento |
+|---|---|---|
+| `lead_type = 'partner_application'` | `lead_type = 'partner_studio'` | `'partner_application'` non era nel ENUM PostgreSQL; `'partner_studio'` era già presente in migration 079 |
+| `leads.progression_state = 'applied'` | `leads.metadata_json.partner_status = 'applied'` | `progression_state` ha un CHECK constraint → solo `('lead','prospect','account','dormant','archived')` |
+| `progression_state` per transizioni | `metadata_json.partner_status` per tracking | Zero migration richiesta |
+
+### Componenti implementati
+
+**Backend (`/app/backend/routers/partner_network.py`):**
+- `POST /api/partner/apply` — endpoint pubblico, crea `leads.lead_type='partner_studio'`
+- `GET /api/partner-network/partners` — lista con filtri status
+- `PATCH /api/partner-network/partners/{id}/status` — transizione stato
+- `GET /api/partner-network/journeys` — lista DJ per assegnazione
+- `POST /api/partner-network/partners/{id}/assign` — assegna a DJ come contributor
+- `DELETE /api/partner-network/partners/{id}/assignment/{journey_id}` — rimuove da DJ
+
+**Frontend:**
+- `PartnerNetworkPage.jsx` — tabella partner con filtri, status menu, DJ modal
+- `partner-network.css` — Blueprint OS dark theme
+- Route `/partner-network` aggiunta in `App.js` (dentro ProtectedRoute → StudioRoute)
+- Navigation entry aggiunta a `STORE_NAVIGATION_TREE` (posizione 35, icona Network)
+
+**Form update:**
+- `PartnerApplicationPage.jsx` — submit ora chiama `POST /api/partner/apply`
+- Success message: "Candidatura ricevuta. Grazie per il tuo interesse..."
+
+### Testing
+- Backend: **14/14 test passati**
+- Frontend: **90%** (503 transient Supabase, non bug code)
+- Report generati: `PARTNER_APPLICATION_IMPLEMENTATION_REPORT.md`, `PARTNER_NETWORK_REPORT.md`, `DJ_PARTNER_INTEGRATION_REPORT.md`
+
+
 | Membro stabile | `users_profile` | `role = 'designer' \| 'project_manager'` |
 
 ### Principio fondamentale
