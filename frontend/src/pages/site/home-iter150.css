@@ -590,6 +590,11 @@
 /* ═════════════════════════════════════════════════════════════════
  * MAGAZINE — Editorial Redesign
  * ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+ * MAGAZINE EDITORIAL GRID — 2026
+ * Layout asimmetrico: hero (2fr) + 2 sub (1fr) in colonna
+ * Vogue Living · AD Italia · Wallpaper*
+ * ═══════════════════════════════════════════════════════════════ */
 .mfd-home-magazine {
   padding: clamp(80px, 8vw, 120px) 0;
   background: var(--mfd-bg);
@@ -600,133 +605,172 @@
   margin: 0 auto;
   padding: 0 clamp(24px, 4vw, 72px);
 }
+
+/* Grid: hero 2fr + colonna sub 1fr */
 .mfd-home-magazine__grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-auto-rows: 1fr;
-  gap: 24px;
+  gap: 3px;
+  margin-top: 44px;
 }
+
+/* Card base */
 .mag-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  background: transparent;
+  display: block;
   overflow: hidden;
   text-decoration: none;
-  min-height: 400px;
+  background: #0E0C0A;
+  cursor: pointer;
 }
+
+/* Hero: occupa entrambe le righe */
 .mag-card--hero {
-  grid-row: span 2;
-  min-height: 600px;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  /* Altezza implicita dalla somma dei due sub */
 }
+
+/* Sub: aspect-ratio determina l'altezza della riga */
 .mag-card--sub {
-  min-height: 300px;
+  grid-column: 2;
+  aspect-ratio: 4 / 3;
 }
+
+/* Media: position absolute per riempire la card */
 .mag-card__media {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  z-index: 0;
 }
 .mag-card__media img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.mag-card:hover .mag-card__media img {
-  transform: scale(1.05);
-}
+.mag-card:hover .mag-card__media img { transform: scale(1.06); }
+
+/* Gradient veil — leggibilità del testo */
 .mag-card__veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.85) 100%);
+  display: block;
+  background: linear-gradient(
+    to top,
+    rgba(6, 4, 2, 0.88) 0%,
+    rgba(6, 4, 2, 0.30) 45%,
+    rgba(6, 4, 2, 0.00) 72%
+  );
+  pointer-events: none;
+  transition: opacity 360ms ease;
   z-index: 1;
-  transition: background 400ms ease;
 }
+.mag-card:hover .mag-card__veil { opacity: 0.95; }
+
+/* Body — sovrapposto, bottom-pinned */
 .mag-card__body {
-  position: relative;
-  z-index: 2;
-  padding: 32px;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 28px 28px 32px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  color: var(--mfd-paper, #FFFFFF);
+  gap: 10px;
+  z-index: 2;
 }
+.mag-card--hero .mag-card__body { padding: 44px 44px 52px; }
+
 .mag-card__category {
-  font-size: 11px;
-  letter-spacing: 0.28em;
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--mfd-paper, #FFFFFF);
-  opacity: 0.85;
+  color: rgba(255,255,255,0.58);
   font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
   margin: 0;
 }
+
 .mag-card__title {
   font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(24px, 2.5vw, 36px);
-  color: var(--mfd-paper, #FFFFFF);
-  line-height: 1.15;
+  font-size: clamp(17px, 1.4vw, 22px);
+  color: #FFFFFF;
+  line-height: 1.16;
   letter-spacing: -0.01em;
   margin: 0;
 }
-.mag-card--hero .mag-card__title {
-  font-size: clamp(32px, 4vw, 56px);
-}
-.mag-card__title span {
-  display: block;
-}
+.mag-card--hero .mag-card__title { font-size: clamp(26px, 2.6vw, 40px); }
+.mag-card__title span { display: block; }
+
+/* Read CTA — reveal on hover */
 .mag-card__read-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  gap: 6px;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   font-weight: 600;
-  color: var(--mfd-paper, #FFFFFF);
+  font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,0.82);
+  margin-top: 2px;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 300ms ease, transform 300ms ease;
+  transform: translateY(8px);
+  transition: opacity 260ms ease, transform 260ms ease;
 }
-.mag-card:hover .mag-card__read-cta {
-  opacity: 1;
-  transform: translateY(0);
+.mag-card:hover .mag-card__read-cta { opacity: 1; transform: translateY(0); }
+
+/* Accent underline al bottom su hover */
+.mag-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--mfd-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 440ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
 }
+.mag-card:hover::after { transform: scaleX(1); }
+
 .mag-card__plus { display: none; }
 
+/* ── Responsive ───────────────────────────── */
+
+/* Tablet: hero full-width + 2 sub affiancati sotto */
 @media (max-width: 1280px) {
   .mfd-home-magazine__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
   }
   .mag-card--hero {
-    grid-column: span 2;
-    grid-row: auto;
-    aspect-ratio: 2/1;
-    min-height: 400px;
+    grid-column: 1 / 3;
+    grid-row: 1;
+    aspect-ratio: 16 / 7;
   }
   .mag-card--sub {
-    aspect-ratio: 4/5;
+    grid-column: auto;
+    grid-row: 2;
+    aspect-ratio: 4 / 3;
   }
 }
 
+/* Mobile: stack verticale */
 @media (max-width: 768px) {
   .mfd-home-magazine__grid {
     grid-template-columns: 1fr;
+    gap: 3px;
   }
-  .mag-card--hero {
+  .mag-card--hero, .mag-card--sub {
     grid-column: 1;
-    aspect-ratio: 4/5;
+    grid-row: auto;
+    aspect-ratio: 4 / 3;
   }
-  .mag-card--sub {
-    aspect-ratio: 4/5;
-  }
-  .mag-card__body {
-    padding: 24px;
-  }
+  .mag-card--hero .mag-card__body,
+  .mag-card__body { padding: 22px 22px 26px; }
+  .mag-card--hero .mag-card__title { font-size: clamp(22px, 5.5vw, 30px); }
+  .mag-card__read-cta { opacity: 1; transform: translateY(0); }
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -1139,7 +1183,7 @@
   .mfd-home-hero { min-height: 880px; }
   .mfd-home-hero__title { font-size: clamp(96px, 6vw, 142px); }
   .mfd-section-title { font-size: clamp(56px, 3.6vw, 78px); }
-  .mfd-home-magazine__grid { gap: 18px; }
+  .mfd-home-magazine__grid { gap: 3px; }
   .mfd-stories__grid { gap: 22px; }
 }
 
@@ -1160,8 +1204,7 @@
    the header from wrapping when the 4 nav items + RIENTRA + CTA can't
    all fit on a single row. */
 @media (max-width: 1280px) {
-  .mfd-home-magazine__grid { grid-template-columns: repeat(3, 1fr); }
-  .mag-card:nth-child(4), .mag-card:nth-child(5) { display: none; }
+  /* Magazine: già gestito nel blocco dedicato sopra (2fr 1fr → hero full-width) */
   /* Projects: passa a 2 colonne a 1280 */
   .mfd-stories__grid { grid-template-columns: repeat(2, 1fr); }
   .mfd-footer__top { grid-template-columns: 1fr; gap: 22px; }
@@ -1238,9 +1281,9 @@
   .mfd-how__step:not(:last-child)::after { display: none; }
   .mfd-how__step-title { font-size: 20px; }
 
-  .mfd-home-magazine__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .mag-card__title { font-size: 18px; }
-  .mag-card__category { left: 14px; bottom: 70px; font-size: 9.5px; }
+  /* Magazine: già gestito nel blocco dedicato (responsive stack 1fr 1fr) */
+  .mag-card__title { font-size: clamp(17px, 1.4vw, 22px); }
+  .mag-card--hero .mag-card__title { font-size: clamp(26px, 2.6vw, 40px); }
 
   /* Projects: 1 colonna su mobile */
   .mfd-stories__grid { grid-template-columns: 1fr; gap: 12px; }
@@ -1265,7 +1308,7 @@
 @media (max-width: 480px) {
   .mfd-home-hero { min-height: 100vh; min-height: 100svh; padding: 48px 18px; }
   .mfd-home-hero__title { font-size: 36px; }
-  .mfd-home-magazine__grid { grid-template-columns: 1fr; gap: 8px; }
+  /* Magazine: già gestito nel blocco dedicato (single column mobile) */
   .mfd-footer__cols { grid-template-columns: 1fr; }
   .mfd-trust__brand { font-size: 16px; }
 }

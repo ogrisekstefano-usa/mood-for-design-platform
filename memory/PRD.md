@@ -760,7 +760,17 @@ Tutti marcati: `editorial_tone = 'cms-showcase-demo'`, `tags: ['demo-content']`
 ### Score credibilità (SITE_CREDIBILITY_AUDIT.md)
 7.58 / 10 — Trust 7.0 · Authority 7.5 · Editorial 7.0 · Conversion 8.5 · Brand 8.0
 
-### Backlog P1 post-sprint
+### Magazine Section Redesign (2026-06-19)
+- Rimosso il vecchio layout "rows" (3 righe orizzontali con thumbnail 96×96px)
+- Nuovo layout editoriale asimmetrico: **hero 2fr** (grid-row 1/3) + **2 sub 1fr** (aspect-ratio 4/3), gap 3px
+- Media `position: absolute; inset: 0` — riempie tutta la card
+- Gradient veil `rgba(6,4,2,0.88) → transparent 72%` per leggibilità del testo
+- Titolo Cormorant Garamond sovrapposto in basso (hero: `clamp(26px,2.6vw,40px)`)
+- Hover: zoom immagine (scale 1.06) + reveal "Leggi l'articolo" (translateY) + accent underline cyan
+- Responsive: tablet → hero full-width (16/7) + 2 sub affiancati; mobile → stack verticale 4/3
+- Rimossi conflitti CSS legacy (`--rows` override, breakpoint `repeat(3,1fr)`)
+
+
 - Aggiungere demo-marker ai 3 progetti legacy e 6 articoli legacy
 - Arricchire body_blocks dei nuovi articoli (1-3 → 5-7 blocchi)
 - Configurare social handles dal pannello CMS admin

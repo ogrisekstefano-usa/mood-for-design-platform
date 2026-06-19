@@ -5,13 +5,13 @@
   "components": {
     "Magazine": {
       "path": "/app/frontend/src/pages/site/HomePage.jsx",
-      "description": "Editorial magazine section with 3 cards. The first card spans full height (hero), while the next two stack vertically on the right.",
-      "code_jsx_snippet": "<section id=\"magazine\" className=\"mfd-home-magazine\" data-testid=\"magazine-section\">\n  <div className=\"mfd-home-magazine__inner\">\n    <header className=\"mfd-section-head mfd-section-head--with-link\">\n      <div>\n        <p className=\"mfd-section-eyebrow\">{L(copy.magazine.eyebrow, locale)}</p>\n        <h2 className=\"mfd-section-title\">{L(copy.magazine.title, locale)}</h2>\n      </div>\n      <Link to=\"/magazine\" className=\"mfd-section-link\" data-testid=\"magazine-explore\">\n        {L(copy.magazine.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />\n      </Link>\n    </header>\n    <div className=\"mfd-home-magazine__grid\">\n      {cards.map((c, index) => (\n        <Link key={c.id} to={c.slug ? `/magazine/${c.slug}` : `/magazine/${c.id}`} className={`mag-card mag-card--${index === 0 ? 'hero' : 'sub'}`} data-testid={`magazine-card-${c.id}`}>\n          <div className=\"mag-card__media\">\n            <img src={c.image} alt=\"\" loading=\"lazy\" />\n            <span className=\"mag-card__veil\" />\n          </div>\n          <div className=\"mag-card__body\">\n            <span className=\"mag-card__category\">{c.category}</span>\n            <h3 className=\"mag-card__title\">\n              {L(c.title, locale).split('\\n').map((line, i) => (\n                <span key={i}>{line}</span>\n              ))}\n            </h3>\n            <span className=\"mag-card__read-cta\" aria-hidden=\"true\">\n              {locale === 'en' ? 'Read article' : \"Leggi l'articolo\"} <ArrowRight size={11} strokeWidth={1.8} />\n            </span>\n          </div>\n        </Link>\n      ))}\n    </div>\n  </div>\n</section>"
+      "css_path": "/app/frontend/src/pages/site/home-iter150.css",
+      "description": "Editorial grid redesign 2026. Layout: hero (2fr, grid-row 1/3) + 2 sub (1fr, aspect-ratio 4/3) with 3px gap. All cards use position:relative + media position:absolute inset:0 (fills card). Gradient veil: rgba(6,4,2,0.88) bottom to transparent 72%. Body position:absolute bottom:0 with Cormorant title (hero: clamp(26px,2.6vw,40px)). hover: img scale(1.06) + read-cta reveal translateY(0). Accent ::after underline scaleX(1) on hover. Responsive: tablet=hero full-width 16/7 + 2 sub 4/3 side-by-side; mobile=single column stack 4/3."
     }
   },
   "css_guidelines": {
     "path": "/app/frontend/src/pages/site/home-iter150.css",
-    "description": "Grid was updated to use a 2fr 1fr layout on desktop. Image zoom on hover implemented. Cards use a linear-gradient veil to ensure text contrast without muddying the whole image."
+    "description": "Grid uses 2fr/1fr asymmetric layout. Media absolute inset:0. Gradient veil to top. Body absolute bottom:0. Hover: scale+read-cta reveal+accent underline."
   },
   "typography": {
     "headings": "Cormorant Garamond, serif",
