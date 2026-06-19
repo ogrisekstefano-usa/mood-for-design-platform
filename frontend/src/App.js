@@ -139,6 +139,7 @@ const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlac
 const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
 const BeginJourneyPage   = lazy(() => import('./pages/site/BeginJourneyPage'));
 const BeginPartnershipPage = lazy(() => import('./pages/site/BeginPartnershipPage'));
+const PartnerApplicationPage = lazy(() => import('./pages/site/PartnerApplicationPage'));
 const JourneyWelcomePage = lazy(() => import('./pages/site/JourneyWelcomePage'));
 import MagazinePage from './pages/site/MagazinePage';
 import MagazineArticlePage from './pages/site/MagazineArticlePage';
@@ -485,6 +486,7 @@ function App() {
                   <Route path="/begin-partnership" element={<BeginPartnershipPage />} />
                   <Route path="/begin-journey" element={<BeginJourneyPage />} />
                   <Route path="/consulenza" element={<BeginJourneyPage />} />
+                  <Route path="/partner-application" element={<PartnerApplicationPage />} />
                   <Route path="/journey/welcome/:token" element={<JourneyWelcomePage />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
                   <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
