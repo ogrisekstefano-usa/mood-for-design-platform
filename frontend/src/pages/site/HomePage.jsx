@@ -410,7 +410,7 @@ const Magazine = ({ locale, copy, articles }) => {
     return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli in evidenza dal pannello amministrativo." />;
   }
   return (
-  <section id="magazine" className="mfd-home-magazine mfd-home-magazine--rows" data-testid="magazine-section">
+  <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
     <div className="mfd-home-magazine__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
         <div>
@@ -422,8 +422,8 @@ const Magazine = ({ locale, copy, articles }) => {
         </Link>
       </header>
       <div className="mfd-home-magazine__grid">
-        {cards.map((c) => (
-          <Link key={c.id} to={c.slug ? `/magazine/${c.slug}` : `/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
+        {cards.map((c, index) => (
+          <Link key={c.id} to={c.slug ? `/magazine/${c.slug}` : `/magazine/${c.id}`} className={`mag-card mag-card--${index === 0 ? 'hero' : 'sub'}`} data-testid={`magazine-card-${c.id}`}>
             <div className="mag-card__media">
               <img src={c.image} alt="" loading="lazy" />
               <span className="mag-card__veil" />
