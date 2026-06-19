@@ -1,0 +1,23 @@
+{
+  "summary": "PARTNER AUTH FIX SPRINT — Validated all 9 public routes as anonymous user. All routes load correctly without redirecting to /auth/login. The isPublicSurface whitelist fix in api.js is working. /partner-application shows 'CANDIDATURA PARTNER' eyebrow, 'Proponi una collaborazione.' title, and all form fields (nome, cognome, studio, email).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/memory/PLAYWRIGHT_PUBLIC_ROUTES_REPORT.md"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Background 401 errors (~60) on public pages are expected and harmless — anonymous users hitting authenticated endpoints. The isPublicSurface guard correctly prevents redirect."
+  ],
+  "updated_files": ["/app/memory/PLAYWRIGHT_PUBLIC_ROUTES_REPORT.md"],
+  "success_rate": {"backend": "N/A", "frontend": "100% (9/9 routes pass)"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All public routes certified working anonymously. api.js isPublicSurface whitelist includes /partner-application, /professionals/* (startsWith), /about, /services, /consulenza, /magazine, /projects, /begin-journey, /. No issues found."
+}

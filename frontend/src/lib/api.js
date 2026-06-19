@@ -102,6 +102,9 @@ api.interceptors.response.use(
       //    Design Journey™ public layer (concierge UX, not app UX).
       //    A 401 from a background provider call (Blueprint, Tenant, i18n)
       //    must NEVER tear the visitor out of the cinematic experience.
+      //
+      //    PARTNER AUTH FIX SPRINT — added /partner-application and
+      //    broadened /professionals to cover all sub-paths (/professionals/intake …)
       const isPublicSurface =
         localePrefix ||
         p === '/' ||
@@ -112,9 +115,12 @@ api.interceptors.response.use(
         p === '/projects' ||
         p.startsWith('/projects/') ||
         p === '/professionals' ||
+        p.startsWith('/professionals/') ||         // /professionals/intake + future sub-paths
+        p === '/partner-application' ||            // PARTNER AUTH FIX · public candidatura form
         p === '/platform' ||
         p === '/start-project' ||
         p === '/begin-journey' ||
+        p.startsWith('/begin-journey') ||          // safety: querystring variants
         p === '/begin-partnership' ||
         p.startsWith('/journey/welcome/') ||
         p === '/journey/preparing' ||              // ITER166 · cinematic post-onboarding screen
@@ -127,6 +133,7 @@ api.interceptors.response.use(
         p.startsWith('/presentation/') ||
         p.startsWith('/moodboard/share/') ||
         p.startsWith('/review/') ||
+        p.startsWith('/story/') ||                 // Public Project Story™ (no auth)
         p.startsWith('/f/') ||
         p.startsWith('/form/') ||
         p === '/about' ||
