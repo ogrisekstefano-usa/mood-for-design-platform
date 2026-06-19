@@ -817,3 +817,41 @@ Separare il funnel "Human First" (`/consulenza`) dal funnel "Project First" (`/b
 - Sostituire `/onboarding/private` → `/begin-journey` in: ProjectDetailPage, ProjectsIndexPage
 - Sostituire `/onboarding/pro` → `/professionals` in: ProjectsIndexPage
 
+
+
+---
+
+## PARTNER AUTH FIX SPRINT — COMPLETATO (Giugno 2026)
+
+### Obiettivo
+Correggere il comportamento di autenticazione delle superfici pubbliche dedicate ai professionisti e certificare tutte le route pubbliche del sito.
+
+### Causa radice identificata
+`frontend/src/lib/api.js` — interceptor axios globale 401. La lista `isPublicSurface` non includeva `/partner-application`, `/professionals/intake` e `/story/`. Quando `TenantThemeContext` chiamava `/api/branding` (autenticato) al mount e riceveva 401, l'interceptor forzava `window.location.href = '/auth/login'`.
+
+### Fix applicato
+```js
+// PRIMA: solo p === '/professionals'
+// DOPO:
+p === '/professionals' ||
+p.startsWith('/professionals/') ||   // /professionals/intake + future sub-paths
+p === '/partner-application' ||       // PARTNER AUTH FIX — form pubblico candidatura
+p.startsWith('/story/')               // PublicProjectStoryViewer (preventivo)
+```
+
+### Documenti prodotti
+- `PUBLIC_SURFACE_AUDIT.md` — mappatura completa 25+ route pubbliche con classificazione, API chiamate, stato whitelist pre/post fix
+- `AUTH_REDIRECT_REGRESSION_REPORT.md` — analisi 10 pattern redirect, classificati INTENZIONALE vs ANOMALIA
+- `PLAYWRIGHT_PUBLIC_ROUTES_REPORT.md` — test 9/9 route pubbliche, 100% PASS
+
+### Risultato test
+- `/partner-application` carica correttamente (title "Proponi una collaborazione.", eyebrow "CANDIDATURA PARTNER", form completo)
+- Nessuna delle 9 route pubbliche testate redireziona verso `/auth/login`
+- 9/9 PASS — FIX CERTIFICATO
+
+### Backlog Partner Sprint (IN PAUSA — in attesa di decisione architetturale)
+- **P0 (In Pausa)**: Review `PARTNER_DATA_MODEL_AUDIT.md` per decidere entità DB partner
+- **P0 (In Pausa)**: Fase 3 — Backend modello Partner definitivo
+- **P0 (In Pausa)**: Fase 5 — Partner Network Blueprint UI
+- **P0 (In Pausa)**: Fase 6 — DJ Integration (assegnare partner ai Design Journey)
+
