@@ -853,5 +853,41 @@ p.startsWith('/story/')               // PublicProjectStoryViewer (preventivo)
 - **P0 (In Pausa)**: Review `PARTNER_DATA_MODEL_AUDIT.md` per decidere entità DB partner
 - **P0 (In Pausa)**: Fase 3 — Backend modello Partner definitivo
 - **P0 (In Pausa)**: Fase 5 — Partner Network Blueprint UI
+
+---
+
+## PARTNER DATA MODEL AUDIT — COMPLETATO (Giugno 2026)
+
+### Obiettivo
+Analisi architetturale pura: trovare la Source of Truth per l'entità Partner nel modello dati esistente. Zero code changes. Zero nuove tabelle.
+
+### Tabelle analizzate
+`auth.users`, `users_profile`, `tenant_memberships`, `contacts`, `accounts`, `leads`, `design_journey_assignments`, `human_assignments`, `advisor_profiles`, `ROLE_PERMISSIONS` (permissions.py)
+
+### Decisione architetturale proposta
+
+| Fase | Source of Truth | Campo discriminante |
+|---|---|---|
+| Candidatura | `leads` | `lead_type = 'partner_application'` |
+| In review / approvato | `leads` | `status = 'review' \| 'approved'` |
+| Accesso piattaforma | `users_profile` | `role = 'ad_partner'` (già esiste in RBAC) |
+| Partecipazione DJ | `design_journey_assignments` | `assignment_role = 'contributor'` |
+| Membro stabile | `users_profile` | `role = 'designer' \| 'project_manager'` |
+
+### Principio fondamentale
+Una persona esiste una sola volta. Poi assume ruoli diversi.
+- Partner (pre-approvazione) = `leads.lead_type = 'partner_application'` → **mai promosso ad `accounts`**
+- Partner (post-approvazione) = `users_profile.role = 'ad_partner'` (già nel sistema RBAC)
+- Modifiche schema richieste: **ZERO**
+
+### Documenti prodotti
+- `PARTNER_DATA_MODEL_AUDIT.md` v2.0 — analisi completa 10 tabelle + 4 casi d'uso
+- `PARTNER_SOURCE_OF_TRUTH_DECISION.md` — proposta in attesa di approvazione
+- `PARTNER_LIFECYCLE_DIAGRAM.md` — diagrammi ciclo vita per i 4 casi (A/B/C/D)
+
+### Status
+**IN ATTESA DI APPROVAZIONE UTENTE** — Nessuna implementazione prima della conferma
+
+
 - **P0 (In Pausa)**: Fase 6 — DJ Integration (assegnare partner ai Design Journey)
 
