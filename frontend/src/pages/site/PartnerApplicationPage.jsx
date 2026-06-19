@@ -76,7 +76,7 @@ const copy = {
     submit:       'Invia candidatura',
     privacy:      'I tuoi dati vengono utilizzati esclusivamente per valutare la collaborazione. Nessun dato viene condiviso con terzi.',
     success_title: 'Candidatura ricevuta.',
-    success_body:  'Valuteremo il tuo profilo entro 5 giorni lavorativi e ti contatteremo all\'indirizzo email fornito.',
+    success_body:  'Grazie per il tuo interesse. Il nostro team valuterà la candidatura e ti contatterà qualora emergano opportunità di collaborazione compatibili con il tuo profilo.',
     error:        'Si è verificato un errore. Riprova o scrivici a info@studio.com.',
     required:     'Compila tutti i campi obbligatori.',
   },
@@ -152,9 +152,7 @@ export default function PartnerApplicationPage() {
 
     try {
       const payload = {
-        lead_type:              'partner_application',
-        progression_state:      'partner',
-        source:                 'professionals_page',
+        tenant_slug:            TENANT,
         first_name:             form.first_name,
         last_name:              form.last_name,
         company_name:           form.company_name,
@@ -162,17 +160,15 @@ export default function PartnerApplicationPage() {
         phone:                  form.phone || undefined,
         professional_category:  form.professional_category,
         company_website:        form.company_website || undefined,
-        city:                   form.city || undefined,
+        portfolio_url:          form.portfolio_url   || undefined,
+        territory:              form.city            || undefined,
         collaboration_intent:   form.collaboration_intent || undefined,
-        notes:                  form.notes || undefined,
-        metadata_json: {
-          instagram: form.instagram || undefined,
-          linkedin:  form.linkedin  || undefined,
-          interests: form.interests.length > 0 ? form.interests : undefined,
-        },
+        notes:                  form.notes           || undefined,
+        instagram_url:          form.instagram        || undefined,
+        linkedin_url:           form.linkedin         || undefined,
       };
 
-      const res = await fetch(`${API_BASE}/api/storefront/public/${TENANT}/begin`, {
+      const res = await fetch(`${API_BASE}/api/partner/apply`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),

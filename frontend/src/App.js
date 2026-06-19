@@ -230,6 +230,7 @@ const AccountsPage             = lazy(() => import('./pages/relations/AccountsPa
 const RelationshipMemoryPage   = lazy(() => import('./pages/relations/RelationshipMemoryPage'));
 // ITER148 · Sprint B · Relationship Memory™ editorial timeline (detail view).
 const RelationshipMemoryTimeline = lazy(() => import('./pages/relations/RelationshipMemoryTimeline'));
+const PartnerNetworkPage       = lazy(() => import('./pages/partner-network/PartnerNetworkPage'));
 
 // ITER187.B · Journey Mail Workspace™ — Communications · Mail
 const MailWorkspaceLayout = lazy(() => import('./pages/communications/mail/MailWorkspaceLayout'));
@@ -678,6 +679,8 @@ function App() {
                   <Route path="/library/collections" element={G('media_library', <CollectionsHub />)} />
                   <Route path="/workspace/calendar" element={<CalendarHub />} />
                   <Route path="/workspace/activity" element={<ActivityHub />} />
+                  {/* Partner Network — Blueprint modulo autonomo (PARTNER NETWORK SPRINT) */}
+                  <Route path="/partner-network" element={<PartnerNetworkPage />} />
                   {/* /workspace/team → operational redirect to /settings/members (real feature). */}
                   <Route path="/workspace/team" element={<Navigate to="/settings/members" replace />} />
                   <Route path="/workspace/clients" element={<Navigate to="/crm/accounts" replace />} />

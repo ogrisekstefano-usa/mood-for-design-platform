@@ -349,6 +349,9 @@ from routers import tenant_configuration  # noqa: E402
 api_router.include_router(tenant_configuration.router, prefix="/tenant", tags=["tenant-configuration"])
 api_router.include_router(tenant_configuration.admin_router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
 
+from routers import partner_network  # noqa: E402
+api_router.include_router(partner_network.router, tags=["partner-network"])
+
 # ITER178 · JOURNEY ASSIGNMENTS™ Phase 1 — admin CRUD + workspace endpoints
 from routers import journey_assignments_admin  # noqa: E402
 api_router.include_router(
