@@ -222,6 +222,9 @@
 @keyframes ps-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
 
 /* Editor cards */
+.ps-editor {
+  padding-bottom: 40px;
+}
 .ps-section { margin-bottom: 26px; }
 .ps-section__label {
   font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;

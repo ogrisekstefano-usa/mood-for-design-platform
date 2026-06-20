@@ -1,0 +1,66 @@
+{
+  "summary": "FINAL SALES READINESS SPRINT: Full backend + frontend testing of ProjectsStudioPage, Published Journeys APIs, PartnerApplicationPage, StorySectionsEditor YouTube block. All 16 backend tests pass. All P0 frontend flows verified. One bug found and fixed (YouTube preview memo bug).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ProjectsStudioPage - hero title text", "issues": ["Hero title shows 'Proponi unacollaborazione.' (missing space between 'una' and 'collaborazione') — likely a rendering issue with multi-line split on newline char"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_published_journeys.py",
+    "/app/test_reports/pytest/iter252_published_journeys.xml"
+  ],
+  "action_items": [
+    "Minor: In PartnerApplicationPage hero title, 'Proponi una collaborazione.' renders as 'Proponi unacollaborazione.' — check CMS locale_content for hero_editorial and whether the title split logic handles newlines correctly (line.split('\\n') maps to <span> without spaces)"
+  ],
+  "critical_code_review_comments": [
+    "FIXED: StorySectionsEditor.jsx - safeBlocks useMemo had dependency [blocks.length, blocks.map(b => b.id).join('|')] which doesn't track content changes. YouTube video_id was never visible in BlockRow after URL entry because memo returned stale blocks. Fixed by using [blocks] as memo dep.",
+    "StorySectionsEditor addBlock switch statement has no 'youtube' case — falls through to default: {type, text:''}. Should have youtube case with {type, url:'', video_id:'', title:''}. Not blocking since onChange correctly sets url+video_id on input, but initial block shape is inconsistent."
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/storytelling/StorySectionsEditor.jsx"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 tests pass)",
+    "frontend": "95% (all P0 flows work, YouTube preview now fixed)"
+  },
+  "p0_checklist": {
+    "list_6_journeys_in_rail": "PASS — 7 cards shown (6 original + 1 test archived item from backend test)",
+    "select_journey_loads_detail": "PASS — clicking card loads detail with title, location, year",
+    "3_tabs_visible": "PASS — Progetto, Traduzioni, SEO & Visibilità all visible",
+    "tab_progetto_fields": "PASS — title, tipo, location, anno, atmosfera, excerpt, hero image, gallery, body all present",
+    "gallery_editor_visible": "PASS — ProjectGalleryEditor renders",
+    "story_sections_editor_visible": "PASS — StorySectionsEditor renders with add block button",
+    "youtube_block_addable": "PASS — YouTube block type appears in add menu",
+    "youtube_url_input": "PASS — URL input present in YouTube block",
+    "youtube_preview_embed": "PASS — iframe preview shows after URL entry (after bug fix)",
+    "tab_traduzioni_7_locales": "PASS — all locale buttons visible including en-US, it-IT etc.",
+    "tab_seo_fields": "PASS — SEO title, SEO desc, visibility status all present",
+    "publish_btn_for_draft": "N/A — first item already published (Archivia btn shown, correct)",
+    "nuovo_progetto_modal": "PASS — modal opens, auto-slug generated, Annulla closes",
+    "api_list_200": "PASS",
+    "api_detail_item_translations": "PASS",
+    "api_translations_endpoint": "PASS",
+    "api_upsert_translation": "PASS",
+    "api_create_and_publish": "PASS",
+    "partner_application_cms_driven": "PASS — it-IT labels: 'Identità professionale', 'Invia candidatura'",
+    "partner_roles_from_cms": "PASS — 7 roles from CMS (Architetto, Interior Designer, etc.)",
+    "partner_interests_from_cms": "PASS — 5 interest checkboxes from CMS"
+  },
+  "seed_data_creation": "Created and archived 1 TEST_ journey via backend tests (archived status, not affecting production data)",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All P0 tests pass. ProjectsStudioPage at /blueprint/projects-studio fully functional. YouTube block in StorySectionsEditor works (memo bug was fixed). PartnerApplicationPage CMS-driven labels working for it-IT. Backend APIs for published journeys all return correct data. Minor: hero title rendering issue with linebreaks in PartnerApplicationPage title.",
+  "rca_of_issues": {
+    "youtube_preview_bug": {
+      "root_cause": "StorySectionsEditor useMemo for safeBlocks had deps [blocks.length, blocks.map(b => b.id).join('|')]. When user types URL, block content (url, video_id) changes but ID and length stay same, so memo returned stale blocks without video_id. BlockRow received stale block, preview condition {block.video_id && ...} was false.",
+      "fix": "Changed memo dep to [blocks] so it recomputes whenever the blocks array reference changes (which happens on every block content update from parent state).",
+      "file": "/app/frontend/src/components/storytelling/StorySectionsEditor.jsx"
+    }
+  }
+}

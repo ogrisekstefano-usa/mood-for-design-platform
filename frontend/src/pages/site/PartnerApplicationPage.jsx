@@ -2,122 +2,35 @@
  * PartnerApplicationPage — /partner-application
  * ═══════════════════════════════════════════════
  * Form di candidatura partner per professionisti.
- * 
- * Design: singola pagina scrollabile, stile editoriale premium.
- * Submit → POST /api/storefront/public/{tenant}/begin con lead_type='partner_application'
+ *
+ * 100% CMS-driven: tutte le label, placeholder, messaggi di errore/successo
+ * e le opzioni dei select/checkbox provengono dalla sezione `partner_form_labels`
+ * nel CMS (cms_sections), governabile dal cliente via Blueprint senza sviluppatore.
+ *
+ * Supporto multilingua: BCP-47 completo (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES, es-MX)
+ * tramite resolveLocaleBag — nessun dict statico, nessun fallback IT/EN.
+ *
+ * Submit → POST /api/partner/apply
  * Success: feedback inline, nessun redirect.
- * 
- * Partner Sprint 2026 — Fase 4
  */
 import React, { useState } from 'react';
 import { useSite } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
+import { resolveLocaleBag } from '../../site/localeResolver';
 import { CheckSquare, Square, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import './home-iter150.css';
 import './partner-application.css';
 
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
-const TENANT   = 'studio';
-
-const L = (obj, locale) => {
-  if (!obj || typeof obj === 'string') return obj || '';
-  return obj[locale] || obj['it'] || obj['_default'] || '';
-};
-
-import { resolveLocaleBag, normalizeLocale, langCode as getLangCode } from '../../site/localeResolver';
-
-// resolveBag: uses resolveLocaleBag — never collapses en-GB onto en-US
-const resolveBag = (bag, locale) => resolveLocaleBag(bag, locale);
-
+const API_BASE    = process.env.REACT_APP_BACKEND_URL;
+const TENANT      = 'studio';
 const TENANT_SLUG = (() => {
   if (typeof window === 'undefined') return 'studio';
   const host  = window.location.hostname || '';
   const first = (host.split('.')[0] || '').toLowerCase();
   if (host.includes('.preview.emergentagent.com')) return 'studio';
-  if (['studio', 'blueprint', 'www', 'localhost'].some((h) => first === h || first.startsWith(h))) return 'studio';
+  if (['studio', 'blueprint', 'www', 'localhost'].some(h => first === h || first.startsWith(h))) return 'studio';
   return first || 'studio';
 })();
-
-const ROLES = [
-  { value: 'architect',         it: 'Architetto',         en: 'Architect' },
-  { value: 'interior_designer', it: 'Interior Designer',  en: 'Interior Designer' },
-  { value: 'contractor',        it: 'General Contractor', en: 'General Contractor' },
-  { value: 'showroom',          it: 'Showroom',           en: 'Showroom' },
-  { value: 'brand',             it: 'Brand',              en: 'Brand' },
-  { value: 'artisan',           it: 'Artigiano',          en: 'Artisan' },
-  { value: 'developer',         it: 'Developer',          en: 'Developer' },
-];
-
-const COLLAB_TYPES = [
-  { value: 'residential',       it: 'Progetti residenziali',      en: 'Residential projects' },
-  { value: 'hospitality',       it: 'Progetti hospitality',       en: 'Hospitality projects' },
-  { value: 'retail',            it: 'Retail / Showroom',          en: 'Retail / Showroom' },
-  { value: 'contract',          it: 'Contract / Developer',       en: 'Contract / Developer' },
-];
-
-const INTERESTS = [
-  { id: 'collab_residential', it: 'Vorrei collaborare su progetti residenziali',          en: 'I want to collaborate on residential projects' },
-  { id: 'collab_hospitality', it: 'Vorrei collaborare su progetti hospitality',           en: 'I want to collaborate on hospitality projects' },
-  { id: 'propose_services',   it: 'Vorrei proporre i miei servizi allo studio',           en: 'I want to propose my services to the studio' },
-  { id: 'receive_opp',        it: 'Vorrei ricevere opportunità da MOOD for DESIGN',       en: 'I want to receive opportunities from MOOD for DESIGN' },
-  { id: 'network',            it: 'Vorrei entrare nella rete professionale',              en: 'I want to join the professional network' },
-];
-
-// FORM_LABELS: etichette del form — P2 per migrazione CMS completa
-const FORM_LABELS = {
-  it: {
-    s1_title:     'Identità professionale',
-    nome:         'Nome *',
-    cognome:      'Cognome *',
-    studio:       'Studio / Azienda *',
-    email:        'Email professionale *',
-    telefono:     'Telefono',
-    s2_title:     'Profilo online',
-    ruolo:        'Ruolo professionale *',
-    ruolo_ph:     'Seleziona ruolo...',
-    sito:         'Sito Web',
-    instagram:    'Instagram (handle)',
-    linkedin:     'LinkedIn (URL profilo)',
-    s3_title:     'Contesto geografico',
-    area:         'Area geografica (città, regione o paese)',
-    s4_title:     'Intenti di collaborazione',
-    tipo_collab:  'Tipologia di collaborazione desiderata',
-    tipo_ph:      'Seleziona...',
-    interessi:    'Seleziona tutto ciò che ti riguarda:',
-    racconto:     'Raccontaci come immagini una collaborazione.',
-    racconto_ph:  'Descrivici il tuo approccio al progetto...',
-    submit:       'Invia candidatura',
-    privacy:      'I tuoi dati vengono utilizzati esclusivamente per valutare la collaborazione. Nessun dato viene condiviso con terzi.',
-    error:        'Si è verificato un errore. Riprova o scrivici a info@studio.com.',
-    required:     'Compila tutti i campi obbligatori.',
-  },
-  en: {
-    s1_title:     'Professional identity',
-    nome:         'First name *',
-    cognome:      'Last name *',
-    studio:       'Studio / Company *',
-    email:        'Professional email *',
-    telefono:     'Phone',
-    s2_title:     'Online profile',
-    ruolo:        'Professional role *',
-    ruolo_ph:     'Select role...',
-    sito:         'Website',
-    instagram:    'Instagram (handle)',
-    linkedin:     'LinkedIn (profile URL)',
-    s3_title:     'Geographic context',
-    area:         'Geographic area (city, region or country)',
-    s4_title:     'Collaboration intent',
-    tipo_collab:  'Desired type of collaboration',
-    tipo_ph:      'Select...',
-    interessi:    'Select all that apply:',
-    racconto:     'Tell us how you envision a collaboration.',
-    racconto_ph:  'Describe your approach to design...',
-    submit:       'Submit application',
-    privacy:      'Your data is used exclusively to evaluate the collaboration. No data is shared with third parties.',
-    error:        'An error occurred. Please try again or write to info@studio.com.',
-    required:     'Please fill in all required fields.',
-  },
-};
 
 const INITIAL_FORM = {
   first_name: '', last_name: '', company_name: '', email: '', phone: '',
@@ -128,24 +41,32 @@ const INITIAL_FORM = {
 
 export default function PartnerApplicationPage() {
   const { locale } = useSite();
-  const lang = getLangCode(locale);
-  const c  = FORM_LABELS[lang] || FORM_LABELS['it'];
-  const en = lang === 'en';
-  const cmsPa     = useStorefrontContent(TENANT_SLUG, 'partner-application');
-  const heroSec   = cmsPa?.page?.sections?.find(s => s.section_type === 'hero_editorial') || null;
-  const heroBag   = heroSec ? resolveBag(heroSec.locale_content || {}, locale) : null;
-  const heroSetts = heroSec?.settings || {};
 
-  const heroEyebrow     = heroBag?.eyebrow     || '';
-  const heroTitle       = heroBag?.title        || '';
-  const heroSub         = heroBag?.sub          || '';
-  const heroBgImage     = heroSetts.bg_image    || '';
-  const heroSuccessTitle = heroBag?.success_title || '';
-  const heroSuccessBody  = heroBag?.success_body  || '';
-  // ──────────────────────────────────────────────────────────────────────────
+  // ── CMS ──────────────────────────────────────────────────────────────────
+  const cmsPa = useStorefrontContent(TENANT_SLUG, 'partner-application');
+  const sections = cmsPa?.page?.sections || [];
 
-  const [form, setForm]         = useState(INITIAL_FORM);
-  const [status, setStatus]     = useState('idle'); // idle | loading | success | error
+  const heroSec      = sections.find(s => s.section_type === 'hero_editorial')    || null;
+  const formLabelSec = sections.find(s => s.section_type === 'partner_form_labels') || null;
+
+  const heroBag = heroSec      ? resolveLocaleBag(heroSec.locale_content      || {}, locale) : {};
+  const c       = formLabelSec ? resolveLocaleBag(formLabelSec.locale_content  || {}, locale) : {};
+
+  const heroEyebrow     = heroBag.eyebrow      || '';
+  const heroTitle       = heroBag.title         || '';
+  const heroSub         = heroBag.sub           || '';
+  const heroBgImage     = heroSec?.settings?.bg_image || '';
+  const heroSuccessTitle = heroBag.success_title || '';
+  const heroSuccessBody  = heroBag.success_body  || '';
+
+  // CMS-driven form options (roles, collab_types, interests)
+  const cmsRoles       = Array.isArray(c.roles)        ? c.roles        : [];
+  const cmsCollabTypes = Array.isArray(c.collab_types) ? c.collab_types : [];
+  const cmsInterests   = Array.isArray(c.interests)    ? c.interests    : [];
+
+  // ── Form state ────────────────────────────────────────────────────────────
+  const [form,     setForm]     = useState(INITIAL_FORM);
+  const [status,   setStatus]   = useState('idle'); // idle | loading | success | error
   const [errorMsg, setErrorMsg] = useState('');
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
@@ -161,58 +82,62 @@ export default function PartnerApplicationPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validazione required
     if (!form.first_name || !form.last_name || !form.company_name || !form.email || !form.professional_category) {
-      setErrorMsg(c.required);
+      setErrorMsg(c.error_required || '');
       return;
     }
     setStatus('loading');
     setErrorMsg('');
-
     try {
       const payload = {
-        tenant_slug:            TENANT,
-        first_name:             form.first_name,
-        last_name:              form.last_name,
-        company_name:           form.company_name,
-        email:                  form.email,
-        phone:                  form.phone || undefined,
-        professional_category:  form.professional_category,
-        company_website:        form.company_website || undefined,
-        portfolio_url:          form.portfolio_url   || undefined,
-        territory:              form.city            || undefined,
-        collaboration_intent:   form.collaboration_intent || undefined,
-        notes:                  form.notes           || undefined,
-        instagram_url:          form.instagram        || undefined,
-        linkedin_url:           form.linkedin         || undefined,
+        tenant_slug:           TENANT,
+        first_name:            form.first_name,
+        last_name:             form.last_name,
+        company_name:          form.company_name,
+        email:                 form.email,
+        phone:                 form.phone          || undefined,
+        professional_category: form.professional_category,
+        company_website:       form.company_website || undefined,
+        territory:             form.city            || undefined,
+        collaboration_intent:  form.collaboration_intent || undefined,
+        notes:                 form.notes           || undefined,
+        instagram_url:         form.instagram        || undefined,
+        linkedin_url:          form.linkedin         || undefined,
       };
-
       const res = await fetch(`${API_BASE}/api/partner/apply`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),
       });
-
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.detail || `HTTP ${res.status}`);
       }
-
       setStatus('success');
     } catch (err) {
-      console.error('[PartnerApplication] submit error:', err);
       setStatus('error');
-      setErrorMsg(c.error);
+      setErrorMsg(c.error_generic || '');
     }
   };
+
+  // Loading: mostra solo quando il CMS non ha ancora caricato
+  if (cmsPa.loading && !formLabelSec) {
+    return (
+      <div className="mfd-pa-page" data-testid="partner-application-page">
+        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.4 }}>
+          <span style={{ fontFamily: 'var(--site-serif,"Playfair Display",Georgia,serif)', fontStyle: 'italic' }}>…</span>
+        </div>
+      </div>
+    );
+  }
 
   if (status === 'success') {
     return (
       <div className="mfd-pa-page" data-testid="partner-application-page">
         <div className="mfd-pa-success" data-testid="partner-application-success">
           <CheckCircle size={48} strokeWidth={1.2} className="mfd-pa-success__icon" />
-          <h1 className="mfd-pa-success__title">{heroSuccessTitle || (en ? 'Application received.' : 'Candidatura ricevuta.')}</h1>
-          <p className="mfd-pa-success__body">{heroSuccessBody || ''}</p>
+          <h1 className="mfd-pa-success__title">{heroSuccessTitle}</h1>
+          <p className="mfd-pa-success__body">{heroSuccessBody}</p>
         </div>
       </div>
     );
@@ -220,7 +145,7 @@ export default function PartnerApplicationPage() {
 
   return (
     <div className="mfd-pa-page" data-testid="partner-application-page">
-      {/* Hero editoriale — CMS driven via partner-application page */}
+      {/* Hero editoriale — CMS driven */}
       <header className="mfd-pa-hero">
         <div className="mfd-pa-hero__inner">
           {heroEyebrow && <p className="mfd-section-eyebrow mfd-pa-hero__eyebrow" data-testid="pa-hero-eyebrow">{heroEyebrow}</p>}
@@ -246,26 +171,26 @@ export default function PartnerApplicationPage() {
               <h2 className="mfd-pa-form__section-title">{c.s1_title}</h2>
               <div className="mfd-pa-form__row mfd-pa-form__row--2col">
                 <div className="mfd-pa-form__field">
-                  <label>{c.nome}</label>
-                  <input type="text" value={form.first_name} onChange={e => set('first_name', e.target.value)} placeholder="Mario" data-testid="pa-input-nome" required />
+                  <label>{c.field_nome}</label>
+                  <input type="text" value={form.first_name} onChange={e => set('first_name', e.target.value)} data-testid="pa-input-nome" required />
                 </div>
                 <div className="mfd-pa-form__field">
-                  <label>{c.cognome}</label>
-                  <input type="text" value={form.last_name} onChange={e => set('last_name', e.target.value)} placeholder="Rossi" data-testid="pa-input-cognome" required />
+                  <label>{c.field_cognome}</label>
+                  <input type="text" value={form.last_name} onChange={e => set('last_name', e.target.value)} data-testid="pa-input-cognome" required />
                 </div>
               </div>
               <div className="mfd-pa-form__field">
-                <label>{c.studio}</label>
-                <input type="text" value={form.company_name} onChange={e => set('company_name', e.target.value)} placeholder={en ? 'Rossi Architecture Studio' : 'Studio Rossi Architetti'} data-testid="pa-input-studio" required />
+                <label>{c.field_studio}</label>
+                <input type="text" value={form.company_name} onChange={e => set('company_name', e.target.value)} data-testid="pa-input-studio" required />
               </div>
               <div className="mfd-pa-form__row mfd-pa-form__row--2col">
                 <div className="mfd-pa-form__field">
-                  <label>{c.email}</label>
-                  <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="m.rossi@studio.it" data-testid="pa-input-email" required />
+                  <label>{c.field_email}</label>
+                  <input type="email" value={form.email} onChange={e => set('email', e.target.value)} data-testid="pa-input-email" required />
                 </div>
                 <div className="mfd-pa-form__field">
-                  <label>{c.telefono}</label>
-                  <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+39 02 0000000" data-testid="pa-input-telefono" />
+                  <label>{c.field_telefono}</label>
+                  <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} data-testid="pa-input-telefono" />
                 </div>
               </div>
             </div>
@@ -274,25 +199,25 @@ export default function PartnerApplicationPage() {
             <div className="mfd-pa-form__section" data-testid="pa-section-profile">
               <h2 className="mfd-pa-form__section-title">{c.s2_title}</h2>
               <div className="mfd-pa-form__field">
-                <label>{c.ruolo}</label>
+                <label>{c.field_ruolo}</label>
                 <select value={form.professional_category} onChange={e => set('professional_category', e.target.value)} data-testid="pa-select-ruolo" required>
-                  <option value="">{c.ruolo_ph}</option>
-                  {ROLES.map(r => (
-                    <option key={r.value} value={r.value}>{en ? r.en : r.it}</option>
+                  <option value="">{c.ph_ruolo}</option>
+                  {cmsRoles.map(r => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
                   ))}
                 </select>
               </div>
               <div className="mfd-pa-form__field">
-                <label>{c.sito}</label>
-                <input type="url" value={form.company_website} onChange={e => set('company_website', e.target.value)} placeholder="https://studio.it" data-testid="pa-input-sito" />
+                <label>{c.field_sito}</label>
+                <input type="url" value={form.company_website} onChange={e => set('company_website', e.target.value)} placeholder="https://" data-testid="pa-input-sito" />
               </div>
               <div className="mfd-pa-form__row mfd-pa-form__row--2col">
                 <div className="mfd-pa-form__field">
-                  <label>{c.instagram}</label>
+                  <label>{c.field_instagram}</label>
                   <input type="text" value={form.instagram} onChange={e => set('instagram', e.target.value)} placeholder="@studio" data-testid="pa-input-instagram" />
                 </div>
                 <div className="mfd-pa-form__field">
-                  <label>{c.linkedin}</label>
+                  <label>{c.field_linkedin}</label>
                   <input type="url" value={form.linkedin} onChange={e => set('linkedin', e.target.value)} placeholder="https://linkedin.com/in/..." data-testid="pa-input-linkedin" />
                 </div>
               </div>
@@ -302,8 +227,8 @@ export default function PartnerApplicationPage() {
             <div className="mfd-pa-form__section" data-testid="pa-section-geo">
               <h2 className="mfd-pa-form__section-title">{c.s3_title}</h2>
               <div className="mfd-pa-form__field">
-                <label>{c.area}</label>
-                <input type="text" value={form.city} onChange={e => set('city', e.target.value)} placeholder={en ? 'Milan, Lombardy, Italy' : 'Milano, Lombardia, Italia'} data-testid="pa-input-area" />
+                <label>{c.field_area}</label>
+                <input type="text" value={form.city} onChange={e => set('city', e.target.value)} data-testid="pa-input-area" />
               </div>
             </div>
 
@@ -311,19 +236,19 @@ export default function PartnerApplicationPage() {
             <div className="mfd-pa-form__section" data-testid="pa-section-intent">
               <h2 className="mfd-pa-form__section-title">{c.s4_title}</h2>
               <div className="mfd-pa-form__field">
-                <label>{c.tipo_collab}</label>
+                <label>{c.field_tipo_collab}</label>
                 <select value={form.collaboration_intent} onChange={e => set('collaboration_intent', e.target.value)} data-testid="pa-select-collab">
-                  <option value="">{c.tipo_ph}</option>
-                  {COLLAB_TYPES.map(t => (
-                    <option key={t.value} value={t.value}>{en ? t.en : t.it}</option>
+                  <option value="">{c.ph_collab}</option>
+                  {cmsCollabTypes.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
                   ))}
                 </select>
               </div>
 
               <div className="mfd-pa-form__field">
-                <label>{c.interessi}</label>
+                <label>{c.field_interessi}</label>
                 <div className="mfd-pa-checkboxes" data-testid="pa-interests">
-                  {INTERESTS.map(int => {
+                  {cmsInterests.map(int => {
                     const checked = form.interests.includes(int.id);
                     return (
                       <button
@@ -334,11 +259,8 @@ export default function PartnerApplicationPage() {
                         data-testid={`pa-interest-${int.id}`}
                         aria-pressed={checked}
                       >
-                        {checked
-                          ? <CheckSquare size={16} strokeWidth={1.8} />
-                          : <Square      size={16} strokeWidth={1.8} />
-                        }
-                        <span>{en ? int.en : int.it}</span>
+                        {checked ? <CheckSquare size={16} strokeWidth={1.8} /> : <Square size={16} strokeWidth={1.8} />}
+                        <span>{int.label}</span>
                       </button>
                     );
                   })}
@@ -346,11 +268,11 @@ export default function PartnerApplicationPage() {
               </div>
 
               <div className="mfd-pa-form__field">
-                <label>{c.racconto}</label>
+                <label>{c.field_racconto}</label>
                 <textarea
                   value={form.notes}
                   onChange={e => set('notes', e.target.value)}
-                  placeholder={c.racconto_ph}
+                  placeholder={c.ph_racconto}
                   rows={5}
                   data-testid="pa-textarea-notes"
                 />
@@ -375,10 +297,10 @@ export default function PartnerApplicationPage() {
               >
                 {status === 'loading'
                   ? <span className="mfd-pa-form__submit-loading" />
-                  : <>{c.submit} <ArrowRight size={14} strokeWidth={1.8} /></>
+                  : <>{c.cta_submit} <ArrowRight size={14} strokeWidth={1.8} /></>
                 }
               </button>
-              <p className="mfd-pa-form__privacy">{c.privacy}</p>
+              <p className="mfd-pa-form__privacy">{c.privacy_text}</p>
             </div>
           </form>
         </div>

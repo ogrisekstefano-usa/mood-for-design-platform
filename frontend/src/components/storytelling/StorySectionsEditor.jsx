@@ -21,7 +21,7 @@
  * Reorder: HTML5 drag&drop on a left-side handle.
  */
 import React, { useState, useCallback } from 'react';
-import { GripVertical, Trash2, Plus, Type, Quote, Image as ImgIcon, Images as GalleryIcon, MapPin, Megaphone, ChevronDown, ChevronUp } from 'lucide-react';
+import { GripVertical, Trash2, Plus, Type, Quote, Image as ImgIcon, Images as GalleryIcon, MapPin, Megaphone, ChevronDown, ChevronUp, Youtube } from 'lucide-react';
 import EditorialMediaField from '../common/EditorialMediaField';
 import HotspotImageOverlay from './HotspotImageOverlay';
 import './storytelling.css';
@@ -46,6 +46,10 @@ const BLOCK_TYPES = [{
   id: 'hotspot_image',
   label: 'Immagine + Detail Points',
   icon: MapPin
+}, {
+  id: 'youtube',
+  label: 'Video YouTube',
+  icon: Youtube
 }, {
   id: 'cta',
   label: 'Call to Action',
@@ -73,12 +77,11 @@ const StorySectionsEditor = ({
   // Backward-compat: ensure every block has an id (legacy blocks may not).
   // We migrate lazily on mount so subsequent renders use stable IDs (otherwise
   // React keys would flicker and input focus would be lost on every keystroke).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const safeBlocks = React.useMemo(() => blocks.map((b, i) => b.id ? b : {
     ...b,
     id: `legacy_${i}_${Math.random().toString(36).slice(2, 8)}`
-  }),
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [blocks.length, blocks.map(b => b.id || '').join('|')]);
+  }), [blocks]);
 
   // Persist the id migration upstream once when needed (idempotent).
   React.useEffect(() => {
@@ -320,6 +323,23 @@ const BlockRow = ({
               <option value="book_visit">Book visit</option>
               <option value="book_consultation">Book consultation</option>
             </select>
+          </div>}
+        {block.type === 'youtube' && <div className="ss-youtube-block">
+            <input className="ss-input" style={{marginBottom: 8}} placeholder="URL YouTube · es. https://www.youtube.com/watch?v=..." data-testid={`ss-yt-url-${index}`} value={block.url || ''} onChange={e => {
+              const url = e.target.value;
+              const m = url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{11})/);
+              onChange({ url, video_id: m ? m[1] : (block.video_id || '') });
+            }} />
+            <input className="ss-input ss-input--small" placeholder="Titolo video (opzionale)" data-testid={`ss-yt-title-${index}`} value={block.title || ''} onChange={e => onChange({ title: e.target.value })} />
+            {block.video_id && <div className="ss-youtube-preview" style={{marginTop: 8, background: '#111', borderRadius: 4, overflow: 'hidden', aspectRatio: '16/9', position: 'relative'}}>
+                <iframe
+                  style={{position:'absolute',inset:0,width:'100%',height:'100%',border:'none'}}
+                  src={`https://www.youtube.com/embed/${block.video_id}`}
+                  title={block.title || 'YouTube video'}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>}
           </div>}
       </div>
     </article>;

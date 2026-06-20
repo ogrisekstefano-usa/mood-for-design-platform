@@ -267,6 +267,36 @@ def admin_create(payload: PublishCreatePayload,
     return {"item": row, "created": True}
 
 
+@admin_router.get("/{journey_id}")
+def admin_detail(journey_id: str, ctx: dict = Depends(get_tenant_context)):
+    """Single journey detail + all translations for Blueprint editor."""
+    sb = db()
+    row = (sb.table("published_design_journeys").select("*")
+           .eq("id", journey_id).eq("tenant_id", ctx["tenant_id"])
+           .limit(1).execute()).data or []
+    if not row:
+        raise HTTPException(status_code=404, detail="published_journey_not_found")
+    tx = (sb.table("published_design_journey_translations").select("*")
+          .eq("published_journey_id", journey_id)
+          .order("locale").execute()).data or []
+    return {"item": row[0], "translations": tx}
+
+
+@admin_router.get("/{journey_id}/translations")
+def admin_translations(journey_id: str, ctx: dict = Depends(get_tenant_context)):
+    """List all translation rows for a journey."""
+    sb = db()
+    parent = (sb.table("published_design_journeys").select("id")
+              .eq("id", journey_id).eq("tenant_id", ctx["tenant_id"])
+              .limit(1).execute()).data or []
+    if not parent:
+        raise HTTPException(status_code=404, detail="published_journey_not_found")
+    tx = (sb.table("published_design_journey_translations").select("*")
+          .eq("published_journey_id", journey_id)
+          .order("locale").execute()).data or []
+    return {"translations": tx, "count": len(tx)}
+
+
 @admin_router.patch("/{journey_id}")
 def admin_update(journey_id: str, payload: dict = Body(...),
                  ctx: dict = Depends(get_tenant_context)):

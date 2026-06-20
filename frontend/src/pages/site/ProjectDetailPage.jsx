@@ -135,9 +135,9 @@ const ProjectDetailPage = () => {
   const materialLanguage  = null;
   const materialPalette   = Array.isArray(p.material_tags) ? p.material_tags : [];
   const tags              = null;
-  const galleryRaw        = [];
-  const gallery           = [];
-  const storyBody         = [];
+  const galleryRaw        = Array.isArray(p.gallery) ? p.gallery : [];
+  const gallery           = galleryRaw.filter(g => g && g.url);
+  const storyBody         = Array.isArray(p.body_blocks) ? p.body_blocks : [];
   const ctaSet            = [];
   const marketCode        = null;
   const chapters          = null;
@@ -308,6 +308,25 @@ const ProjectDetailPage = () => {
                           onClick={() => signal.fireCtaClick({ project_slug: slug, cta_action: b.action || `story_cta_${i}`, cta_label: b.label })}>
                       {b.label} <ArrowUpRight size={14} />
                     </Link>
+                  </Reveal>
+                );
+              }
+              if (b.type === 'youtube' && (b.video_id || b.url)) {
+                const vid = b.video_id || (b.url && b.url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{11})/))?.[1];
+                if (!vid) return null;
+                return (
+                  <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '2rem 0' }}>
+                    {b.title && <p style={{ fontFamily: 'var(--site-serif,"Playfair Display",Georgia,serif)', fontSize: 'clamp(1rem,1.3vw,1.2rem)', marginBottom: '0.75rem', fontStyle: 'italic' }}>{b.title}</p>}
+                    <div style={{ position: 'relative', aspectRatio: '16/9', background: '#111', borderRadius: '4px', overflow: 'hidden' }}>
+                      <iframe
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                        src={`https://www.youtube.com/embed/${vid}`}
+                        title={b.title || 'Video'}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        loading="lazy"
+                      />
+                    </div>
                   </Reveal>
                 );
               }
