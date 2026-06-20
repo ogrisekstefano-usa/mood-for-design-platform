@@ -933,7 +933,26 @@ Una persona esiste una sola volta. Poi assume ruoli diversi.
 
 ---
 
-## CMS GOVERNANCE & MULTILINGUAL COMPLETION SPRINT (20 Giu 2026)
+## MAGAZINE & PROJECTS CMS COMPLETION SPRINT — AUDIT (20 Giu 2026)
+
+### Stato: AUDIT COMPLETATO — In attesa di approvazione implementazione
+
+### 5 Report generati in `/app/memory/`
+1. `MAGAZINE_PROJECTS_DATA_AUDIT.md` — schema DB, source of truth, campi esistenti/mancanti/inutilizzati
+2. `FRONTEND_HARDCODED_AUDIT.md` — 103+ testi HC, 14 pattern locale HC, 1 bug architetturale critico
+3. `BLUEPRINT_EDITOR_GAP_REPORT.md` — editor esistenti, gap SEO/YouTube/tag/locale/hotspot
+4. `MULTILINGUAL_CONTENT_AUDIT.md` — 0% copertura `en-GB`/`fr-FR`/`de-DE`/`es-ES` su magazine e projects
+5. `IMPLEMENTATION_PLAN.md` — piano in 4 fasi, 0 nuove tabelle, richiede decisione architetturale
+
+### Finding critico: Bug architetturale P0
+- `ProjectDetailPage.jsx` legge da `portfolio_projects` (0 record) invece di `published_design_journeys` (6 record)
+- **Tutti i dettagli progetto mostrano dati fake in produzione (da `site/content/projects.js`)**
+- Richiede approvazione decisione architetturale (Opzione 1: unificare su `published_design_journeys`)
+
+### Decisione richiesta prima dell'implementazione
+1. Opzione architetturale Projects (Opzione 1 raccomandata: unificare su `published_design_journeys`)
+2. UI labels (`DETAIL_LABELS`, `EDITORIAL_LOADING`) → CMS sections o dict statici ottimizzati BCP-47?
+3. YouTube → come blocco `body_blocks` o campo separato `magazine_articles`?
 
 ### Completato
 
