@@ -26,6 +26,7 @@ import MovementIdentity from './pages/studio/MovementIdentity';
 import MovementRequest from './pages/studio/MovementRequest';
 import StudioFunnelV2 from './pages/studio_v2/StudioFunnelV2';
 import PasswordResetPage from './pages/PasswordResetPage';
+import FaqPage from './pages/FaqPage';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -99,6 +100,7 @@ const CorporateApp = () => {
 
         {/* Studio Activation Flow V2 — public funnel (5 step) */}
         <Route path="/studio"           element={<StudioFunnelV2 />} />
+        <Route path="/faq"              element={<FaqPage />} />
 
         {/* V1 quarantined to /studio-legacy (QA / regression only,
             not linked from any public navigation, not indexed). */}

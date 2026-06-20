@@ -134,6 +134,9 @@ from routers.notifications import router as notifications_router  # /api/notific
 app.include_router(notifications_router)
 from routers.transcribe import router as transcribe_router
 app.include_router(transcribe_router, prefix="/api")
+from routers.faq import public_router as faq_public_router, admin_router as faq_admin_router
+app.include_router(faq_public_router, prefix="/api")
+app.include_router(faq_admin_router,  prefix="/api")
 
 # M4 — Background scheduler (follow-up overdue, etc.)
 from jobs.scheduler import start_scheduler as _start_m4_scheduler, stop_scheduler as _stop_m4_scheduler
