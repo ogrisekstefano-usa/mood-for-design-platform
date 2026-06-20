@@ -161,6 +161,14 @@ const StorySectionsEditor = ({
           tier: 'soft'
         };
         break;
+      case 'youtube':
+        block = {
+          ...base,
+          url:      '',
+          video_id: '',
+          title:    ''
+        };
+        break;
       default:
         block = {
           ...base,

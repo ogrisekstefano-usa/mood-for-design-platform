@@ -151,7 +151,12 @@ export default function PartnerApplicationPage() {
           {heroEyebrow && <p className="mfd-section-eyebrow mfd-pa-hero__eyebrow" data-testid="pa-hero-eyebrow">{heroEyebrow}</p>}
           {heroTitle && (
             <h1 className="mfd-pa-hero__title" data-testid="pa-hero-title">
-              {heroTitle.split('\n').map((line, i) => <span key={i}>{line}</span>)}
+              {heroTitle.split('\n').map((line, i, arr) => (
+                <React.Fragment key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </React.Fragment>
+              ))}
             </h1>
           )}
           {heroSub && <p className="mfd-pa-hero__sub" data-testid="pa-hero-sub">{heroSub}</p>}

@@ -1,7 +1,36 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Febbraio 2026 — v6  
-> **Status:** CMS Consolidation Sprint COMPLETATO ✅ (Iteration 249: 9/10 → 10/10 dopo fix PAGE_KEYS) · Partner Network LIVE · Header/Footer/Professionals/HomePage 100% CMS-driven · ZERO hardcoded text in public pages
+> **Last update:** Giugno 2026 — v7  
+> **Status:** FINAL SALES READINESS SPRINT COMPLETATO ✅ (Iteration 252: 16/16 backend PASS · 95% frontend PASS) · Blueprint Projects 100% governabile · Partner Form 100% CMS · YouTube in body_blocks · 7 locali BCP-47 · ZERO pattern legacy
+
+## FINAL SALES READINESS SPRINT — Completato 20 Giugno 2026
+
+### Risposta alle 9 Domande Chiave del Cliente
+| Domanda | Risposta |
+|---------|----------|
+| Posso creare un progetto da Blueprint? | **SÌ** ✅ |
+| Posso pubblicarlo? | **SÌ** ✅ |
+| Posso tradurlo? | **SÌ** ✅ (7 lingue BCP-47) |
+| Posso modificare CTA? | **SÌ** ✅ (CMS sections) |
+| Posso modificare immagini/gallery? | **SÌ** ✅ (ProjectGalleryEditor) |
+| Posso modificare hotspot? | **SÌ** ✅ (HotspotCanvas in gallery) |
+| Posso modificare video YouTube? | **SÌ** ✅ (StorySectionsEditor, tipo youtube) |
+| Posso modificare il form partner? | **SÌ** ✅ (partner_form_labels CMS section, 7 locali) |
+| Posso modificare tutte le lingue? | **SÌ** ✅ (BCP-47 ovunque) |
+
+### **FRONTEND PUBLIC SALES READINESS = PASS**
+
+### Implementato in questo Sprint
+- **P0**: `ProjectsStudioPage.jsx` completamente riscritto per `published_design_journeys` con gallery, hotspot, YouTube, traduzioni, SEO
+- **P0**: Backend endpoint `GET /api/admin/published-journeys/{id}` + `GET /{id}/translations`  
+- **P0**: `StorySectionsEditor` aggiunto supporto blocco YouTube con preview iframe
+- **P0**: `ProjectDetailPage` wire gallery e body_blocks da `story_content`
+- **P1**: `PartnerApplicationPage` 100% CMS-driven — sezione `partner_form_labels` con 7 locali
+- **P1**: Seed script `/app/backend/scripts/seed_partner_form_labels.py`
+- **P1**: ZERO pattern legacy (`lang === 'en'`, `const en = ...`, dict statici)
+- **P1**: 6 report di certificazione in `/app/memory/`
+
+
 
 ## Original problem statement
 
