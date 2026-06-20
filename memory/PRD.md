@@ -933,7 +933,23 @@ Una persona esiste una sola volta. Poi assume ruoli diversi.
 
 ---
 
-## MAGAZINE & PROJECTS CMS COMPLETION SPRINT — AUDIT (20 Giu 2026)
+## PRE-DEPLOY FINAL CERTIFICATION SPRINT (20 Giu 2026)
+
+### Fix implementati
+- `ProjectDetailPage.jsx`: Cablato su `published_design_journeys` (rimosso `portfolio_projects`, `findProjectBySlug`, fallback fake)
+- `ProjectsIndexPage.jsx`: Rimosso fallback `portfolio/public/projects` — unica source è `published_design_journeys`
+
+### Report prodotti
+- `FRONTEND_CONTENT_SOURCE_OF_TRUTH.md`
+- `CTA_RUNTIME_CERTIFICATION.md`
+- `FORM_RUNTIME_CERTIFICATION.md`
+- `BCP47_COMPLIANCE_REPORT.md`
+- `YOUTUBE_BLOCK_READINESS.md`
+
+### Test (iteration_251): 95% PASS
+- 6 progetti reali mostrati in `/projects`
+- Dettagli progetto mostrano dati reali DB
+- Nessun dato fake/mock in produzione
 
 ### Stato: AUDIT COMPLETATO — In attesa di approvazione implementazione
 
