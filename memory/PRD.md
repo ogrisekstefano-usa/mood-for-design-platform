@@ -3,7 +3,33 @@
 > **Last update:** Giugno 2026 — v7  
 > **Status:** FINAL SALES READINESS SPRINT COMPLETATO ✅ (Iteration 252: 16/16 backend PASS · 95% frontend PASS) · Blueprint Projects 100% governabile · Partner Form 100% CMS · YouTube in body_blocks · 7 locali BCP-47 · ZERO pattern legacy
 
-## DEPLOY READINESS SPRINT — Completato 20 Giugno 2026
+## BUSINESS FLOW CERTIFICATION SPRINT — Completato 20 Giugno 2026
+
+### GO_LIVE_DECISION: ⚠️ CONDITIONAL — 3 fix operativi per PASS completo
+
+| Domanda | Gate |
+|---------|------|
+| Vendere licenza oggi? | ⚠️ PARTIAL |
+| Demo oggi? | ✅ PASS |
+| Onboardare cliente reale? | ⚠️ PARTIAL (con doc onboarding) |
+| Gestire progetto reale? | ⚠️ PARTIAL (featured_only default critico) |
+| Gestire partner reale? | ⚠️ PARTIAL (assegnazione DJ bloccata) |
+| Pubblicare contenuti reali? | ✅ PASS |
+
+### I 3 fix che sbloccano il go-live completo
+1. **F1 CRITICO**: `featured_only=True` default nel feed pubblico → progetto pubblicato non visibile in `/projects`. Fix: cambiare default a False O aggiungere hint UI.
+2. **F2**: `/blueprint/leads` → 404. Redirect a `/relations/accounts` O voce sidebar.
+3. **F3**: Partner assignment bloccato → aggiungere nota "Invita alla piattaforma prima di assegnare".
+
+### 6 Report generati in `/app/memory/`
+- `LEAD_TO_DJ_CERTIFICATION.md`
+- `PARTNER_LIFECYCLE_CERTIFICATION.md`
+- `PROJECT_PUBLISH_CERTIFICATION.md`
+- `MAGAZINE_PUBLISH_CERTIFICATION.md`
+- `REAL_USER_USABILITY_REPORT.md`
+- `GO_LIVE_DECISION.md`
+
+
 
 ### SALES_READINESS_FINAL_GATE: ⚠️ CONDITIONAL PASS
 | Domanda | Gate |
