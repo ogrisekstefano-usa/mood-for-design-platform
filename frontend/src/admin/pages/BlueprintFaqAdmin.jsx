@@ -24,9 +24,10 @@ const headers = () => ({
 
 const api = axios.create({ baseURL: `${BACKEND}/api/admin/site/faq` });
 
-// ── Small editor for one localized object: { "it-IT": {...}, "en-US": {...} }
+// ── Small editor for one localized object: { "<locale>": {...}, ... }
+// Locales come exclusively from the DB-managed i18n layer — no hardcoded codes.
 const LocalizedField = ({ value, onChange, locales, fields, testIdRoot }) => {
-  const [active, setActive] = useState(locales[0]?.code || 'it-IT');
+  const [active, setActive] = useState(locales[0]?.code || '');
   const v = (value && value[active]) || {};
   const set = (k, val) => {
     onChange({ ...(value || {}), [active]: { ...v, [k]: val } });
@@ -78,6 +79,22 @@ const FieldGroup = ({ title, children }) => (
   </div>
 );
 
+// Localized peek: try each locale from the DB-managed list in order, return
+// the first non-empty value for the given field. NO hardcoded fallback locales.
+const pickLocalized = (lc, locales, field) => {
+  if (!lc || typeof lc !== 'object') return '';
+  for (const l of locales) {
+    const v = lc[l.code];
+    if (v && typeof v === 'object' && v[field]) return v[field];
+  }
+  // Last resort: any locale present
+  for (const k of Object.keys(lc)) {
+    const v = lc[k];
+    if (v && typeof v === 'object' && v[field]) return v[field];
+  }
+  return '';
+};
+
 const ConfirmButton = ({ onConfirm, children, testid }) => {
   const [armed, setArmed] = useState(false);
   useEffect(() => {
@@ -126,7 +143,7 @@ const CategoryRow = ({
         <div className="flex-1 flex items-baseline gap-2 min-w-0">
           <code className="text-[11px] text-stone-500 tabular-nums">{cat.slug}</code>
           <span className="text-[13px] text-stone-900 truncate">
-            {(cat.locale_content?.[locales[0].code]?.title) || (cat.locale_content?.['it-IT']?.title) || '—'}
+            {pickLocalized(cat.locale_content, locales, 'title') || '—'}
           </span>
           <span className="text-[10px] text-stone-400">· #{cat.sort_order}</span>
           {!cat.visible && (
@@ -243,9 +260,7 @@ const ItemRow = ({ item, locales, onMove, onSave, onDelete }) => {
     onSave();
   };
 
-  const peek = item.locale_content?.[locales[0].code]?.question
-           || item.locale_content?.['it-IT']?.question
-           || '—';
+  const peek = pickLocalized(item.locale_content, locales, 'question') || '—';
 
   return (
     <div className="border border-stone-200 rounded bg-white" data-testid={`faq-item-${item.id}`}>
@@ -299,11 +314,9 @@ const ItemRow = ({ item, locales, onMove, onSave, onDelete }) => {
 };
 
 const BlueprintFaqAdmin = () => {
-  const { locales: availableLocales } = useLocale();
+  const { locales: availableLocales, ready: localeReady } = useLocale();
   const locales = useMemo(
-    () => (availableLocales && availableLocales.length
-      ? availableLocales.map((l) => ({ code: l.code || l.locale || l }))
-      : [{ code: 'it-IT' }, { code: 'en-US' }]),
+    () => (availableLocales || []).map((l) => ({ code: l.code || l.locale || l })),
     [availableLocales],
   );
 
@@ -410,6 +423,14 @@ const BlueprintFaqAdmin = () => {
           Nessun link è cablato nel codice.
         </div>
       </header>
+
+      {localeReady && locales.length === 0 && (
+        <div data-testid="faq-no-locales"
+             className="mb-6 px-4 py-3 border border-amber-300 bg-amber-50 text-amber-800 text-[12px]">
+          Nessuna lingua attiva nel sistema i18n. Configura almeno una lingua dal
+          pannello Lingue prima di gestire i contenuti FAQ.
+        </div>
+      )}
 
       {/* PAGE SETTINGS — Hero · Final CTA · SEO, all from cms_sections.faq_page */}
       <section data-testid="faq-page-settings"

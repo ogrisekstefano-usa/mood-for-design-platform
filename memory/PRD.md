@@ -217,3 +217,36 @@ Deployed at https://moodfordesign.com. Preview environment URL: `REACT_APP_BACKE
 - `/app/memory/FUNCTIONAL_LUXURY_PHASE2_REVIEW.md` (FASE 2)
 - `/app/memory/M6_RELATIONSHIP_DASHBOARD_FOUNDATION.md` (M6 plan)
 - `/app/test_reports/iteration_8.json` (M6 test report)
+- `/app/test_reports/iteration_9.json` (FAQ CMS test report — 100% pass)
+
+---
+
+## 9. FAQ CMS module (shipped 20 June 2026)
+
+100% CMS-driven FAQ system. **Zero hardcoded strings in the frontend.**
+
+### 9.1 Schema
+- `faq_categories(id, tenant_id, slug, sort_order, visible, locale_content JSONB)` — `locale_content[<locale>] = {title, description}`
+- `faq_items(id, tenant_id, category_id, sort_order, visible, locale_content JSONB)` — `locale_content[<locale>] = {question, answer}`
+- Page-level hero/finalCta/SEO copy lives in `cms_sections(section_type='faq_page', page_id→cms_pages(page_key='faq'))` · `locale_content` shape: `{hero_eyebrow, hero_title, hero_body, hero_primary_cta_label, hero_primary_cta_url, search_placeholder, final_cta_*, seo_title, seo_description}` per locale.
+
+### 9.2 API surface (`/app/backend/routers/faq.py`)
+| Method | Path | Auth |
+|---|---|---|
+| GET | /api/site/faq?locale=…&q=…&category=… | public |
+| GET | /api/admin/site/faq/page | admin (auto-creates page+section on first call) |
+| PUT | /api/admin/site/faq/page | admin |
+| GET/POST/PATCH/DELETE | /api/admin/site/faq/categories(/{id}) | admin |
+| POST | /api/admin/site/faq/categories/reorder | admin |
+| GET/POST/PATCH/DELETE | /api/admin/site/faq/items(/{id}) | admin |
+| POST | /api/admin/site/faq/items/reorder | admin |
+
+Public response includes a fully-built JSON-LD `FAQPage` schema (built only from CMS content) for SEO.
+
+### 9.3 Frontend
+- Public: `/app/frontend/src/corporate/pages/FaqPage.jsx` — fetches per active locale from `useLocale()`, renders hero, sticky-search (250ms debounce), accordion, deep-link `/faq#<slug>`, injects `<script type="application/ld+json" data-faq="1">` + meta tags.
+- Admin: `/app/frontend/src/admin/pages/BlueprintFaqAdmin.jsx` — mounted at `/blueprint/faq`. Page Settings panel (Hero · Final CTA · SEO, per-locale tabs from `useLocale().locales`), plus full CRUD + reorder for categories/items. Locale list NEVER hardcoded — falls back to a no-locale warning instead of static defaults.
+- Navigation: the `/faq` link in nav_top / footer is managed via existing CMS editors (`Pagine → navigation` and `Footer`). No hardcoded link anywhere.
+
+### 9.4 Regression suite
+`/app/backend/tests/test_faq_system.py` — 12/12 pytest passed.
