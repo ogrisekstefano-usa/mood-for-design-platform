@@ -1,0 +1,42 @@
+{
+  "summary": "FAQ system (100% CMS-driven) — full backend + frontend testing. Backend: 12/12 pytest tests PASSED covering public GET /api/site/faq (it-IT/en-US/search/jsonld), admin auth (401 on no token), CRUD on categories+items, reorder, and page settings GET/PUT round-trip with public reflection. Frontend public /faq renders hero 'Domande Frequenti', JSON-LD FAQPage with 1 entity, document.title='FAQ — MOOD', accordion toggle works, search filters live (debounced), deep-link /faq#mood scrolls to category and auto-opens first item (aria-expanded=true). Frontend admin /blueprint/faq renders blueprint-faq-admin shell, blueprint-nav-faq link, faq-page-settings-toggle opens panel with per-locale tabs (IT-IT/EN-US/EN-GB/FR-FR/DE-DE/ES-ES/ES-MX) and all Hero/FinalCTA/SEO field groups; hero_title edit + faq-page-save triggers 'salvato' indicator and persists to DB (verified via backend pytest reflecting saved value back in public endpoint).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_faq_system.py",
+    "/app/test_reports/pytest/iter9_faq.xml"
+  ],
+  "action_items": [
+    "OPTIONAL HARDCODED-LOCALE LEAK: /app/frontend/src/admin/pages/BlueprintFaqAdmin.jsx has 4 hardcoded 'it-IT'/'en-US' literals that violate the user's strict 'NO hardcoded locales' rule: (line 29) useState(locales[0]?.code || 'it-IT'), (line 129) cat.locale_content?.['it-IT']?.title fallback in CategoryRow header, (line 247) item.locale_content?.['it-IT']?.question fallback in ItemRow peek, (line 306) fallback [{code:'it-IT'},{code:'en-US'}] when useLocale().locales is empty. Replace with locales[0]?.code only, and let empty-locales be a hard failure or come from a single source of truth.",
+    "OPTIONAL: BlueprintFaqAdmin.jsx contains several hardcoded Italian admin-UI labels (Salva, Conferma, Nuova categoria, Nuova domanda, Slug, Sort, Visible, Impostazioni Pagina, etc.). If the spec applies to admin UI too (user said 'anywhere in frontend'), these should be moved to i18n. Public FaqPage.jsx public copy is CMS-driven — only an 'Errore caricamento' fallback string remains.",
+    "Non-FAQ platform-wide issue noticed: several 500/failed requests on /api/site/faq?locale=null, /api/site/locales, /api/markets, /api/site/footer?locale=null, /api/site/navigation?locale=null, /api/site/pages/home?locale=null on first render before useLocale() resolves. FAQ recovers correctly once locale becomes 'it-IT', but these warrant defensive guards in LocaleProvider / fetch callers to skip the null-locale call.",
+    "Non-FAQ: react hydration warning '<a> cannot be a descendant of <a>' somewhere in CorporateApp tree."
+  ],
+  "critical_code_review_comments": [
+    "routers/faq.py is well-structured (single source of truth, tenant-scoped, soft-delete, locale-fallback chain in _localized, jsonld built only from CMS). _json helper duplicates json.dumps inline — fine but could move to a shared util.",
+    "admin_get_faq_page auto-creates cms_pages + cms_sections rows on first GET — good UX but the race-guard `if not page: re-select` does not re-INSERT on race; if two admins hit /page concurrently and the first INSERT lost the race, the second .first() may still return None. Low probability but worth a SELECT FOR UPDATE or upsert.",
+    "BlueprintFaqAdmin.jsx CategoryRow/ItemRow re-create `draft` only when cat.id changes (useEffect dep on cat.id) — if locale_content is updated server-side and id stays same, the editor will keep stale draft. Acceptable since edits are local-then-save, but worth a refresh hook on cancel.",
+    "FaqPage.jsx useEffect that injects JSON-LD and SEO meta has cleanup `document.querySelectorAll('[data-faq=\"1\"]').forEach(el => el.remove())` — this is good (removes on unmount). Verified the script DOES end up in head after navigation.",
+    "All admin endpoints use require_admin_tenant — verified 401 returned without token (X-Admin-Key fallback path also exists but not tested in this iteration since JWT path works)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_faq_system.py (new pytest file)"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 pytest passed)",
+    "frontend": "100% on functional checks (public hero/search/jsonld/deep-link + admin nav/settings panel/page-save). Hardcoded-locale leak in admin file is a code-review finding, not a runtime failure."
+  },
+  "test_credentials": "admin@moodfordesign.com / MoodAdmin2026! (verified working). X-Admin-Key:dev fallback exists in .env, not retested.",
+  "seed_data_creation": "Tests create one TEST_ category + one TEST_ item per run and clean them up via fixture teardown. The 'mood' seed category and its one item remained intact.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "FAQ feature is functionally complete end-to-end. Public /faq is 100% CMS-driven (no hardcoded copy or category list leaking into rendering). Admin /blueprint/faq has full CRUD + Page Settings panel. The pytest file /app/backend/tests/test_faq_system.py is the regression suite — run with: pytest backend/tests/test_faq_system.py -v. Only outstanding (optional, code-quality) item: 4 hardcoded 'it-IT'/'en-US' literals in BlueprintFaqAdmin.jsx which slightly violate the user's strict 'no hardcoded locales' rule.",
+  "rca of the issue": "N/A — no functional bugs."
+}

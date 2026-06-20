@@ -71,6 +71,13 @@ const LocalizedField = ({ value, onChange, locales, fields, testIdRoot }) => {
   );
 };
 
+const FieldGroup = ({ title, children }) => (
+  <div>
+    <p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 mb-2">{title}</p>
+    {children}
+  </div>
+);
+
 const ConfirmButton = ({ onConfirm, children, testid }) => {
   const [armed, setArmed] = useState(false);
   useEffect(() => {
@@ -292,7 +299,7 @@ const ItemRow = ({ item, locales, onMove, onSave, onDelete }) => {
 };
 
 const BlueprintFaqAdmin = () => {
-  const { availableLocales } = useLocale();
+  const { locales: availableLocales } = useLocale();
   const locales = useMemo(
     () => (availableLocales && availableLocales.length
       ? availableLocales.map((l) => ({ code: l.code || l.locale || l }))
@@ -305,17 +312,39 @@ const BlueprintFaqAdmin = () => {
   const [openIds, setOpenIds] = useState(new Set());
   const [creating, setCreating] = useState(false);
   const [newSlug, setNewSlug] = useState('');
+  const [pageOpen, setPageOpen] = useState(false);
+  const [pageLc, setPageLc] = useState({});
+  const [pageDirty, setPageDirty] = useState(false);
+  const [pageSaving, setPageSaving] = useState(false);
+  const [pageSaved, setPageSaved] = useState(false);
 
   const refresh = async () => {
-    const [cR, iR] = await Promise.all([
+    const [cR, iR, pR] = await Promise.all([
       api.get('/categories', { headers: headers() }),
       api.get('/items',      { headers: headers() }),
+      api.get('/page',       { headers: headers() }),
     ]);
     setCats(cR.data.categories || []);
     setItems(iR.data.items || []);
+    setPageLc(pR.data.locale_content || {});
+    setPageDirty(false);
   };
 
   useEffect(() => { refresh(); }, []);
+
+  const savePage = async () => {
+    setPageSaving(true); setPageSaved(false);
+    try {
+      await api.put('/page', { locale_content: pageLc }, { headers: headers() });
+      setPageDirty(false);
+      setPageSaved(true);
+      setTimeout(() => setPageSaved(false), 2500);
+    } catch (e) {
+      window.alert('Errore salvataggio pagina FAQ: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setPageSaving(false);
+    }
+  };
 
   const itemsByCat = useMemo(() => {
     const m = new Map();
@@ -372,14 +401,106 @@ const BlueprintFaqAdmin = () => {
         <div>
           <h1 className="text-2xl tracking-tight" style={{ fontWeight: 500 }}>FAQ</h1>
           <p className="text-[12px] text-stone-500 mt-1">
-            Gestisci categorie e domande. Tutti i contenuti sono pubblicati su <code>/faq</code>.
+            Gestisci categorie, domande e tutti i contenuti della pagina <code>/faq</code>.
           </p>
         </div>
-        <div className="text-[11px] text-stone-400">
-          Hero + Final CTA + SEO della pagina FAQ vivono nella sezione <code>faq_page</code>
-          (Pages → faq).
+        <div className="text-[11px] text-stone-400 max-w-md text-right">
+          Per aggiungere il link <code>/faq</code> al menu o al footer, usa
+          rispettivamente <code>Pagine → navigation</code> e <code>Footer</code>.
+          Nessun link è cablato nel codice.
         </div>
       </header>
+
+      {/* PAGE SETTINGS — Hero · Final CTA · SEO, all from cms_sections.faq_page */}
+      <section data-testid="faq-page-settings"
+               className="mb-6 border border-stone-200 bg-white rounded">
+        <button onClick={() => setPageOpen((v) => !v)}
+                data-testid="faq-page-settings-toggle"
+                className="w-full px-4 py-3 flex items-center gap-3 text-left">
+          <span className="text-[11px] uppercase tracking-[0.18em] text-stone-500">
+            Impostazioni Pagina
+          </span>
+          <span className="text-[13px] text-stone-900">Hero · CTA finale · SEO</span>
+          {pageDirty && <span className="text-[10px] text-amber-600">● non salvato</span>}
+          {pageSaved && <span className="text-[10px] text-emerald-600">✓ salvato</span>}
+          <span className="ml-auto text-stone-400">
+            {pageOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </span>
+        </button>
+        {pageOpen && (
+          <div className="px-4 pb-4 space-y-4 border-t border-stone-100">
+            <p className="text-[11px] text-stone-500 leading-relaxed pt-3">
+              Tutti i campi sono per lingua. Le lingue disponibili sono lette dal sistema
+              i18n della piattaforma. Lascia vuoto un campo per nasconderne il rendering
+              pubblico.
+            </p>
+
+            <FieldGroup title="Hero">
+              <LocalizedField
+                value={pageLc}
+                onChange={(lc) => { setPageLc(lc); setPageDirty(true); }}
+                locales={locales}
+                fields={[
+                  { key: 'hero_eyebrow',           label: 'Hero · Eyebrow' },
+                  { key: 'hero_title',             label: 'Hero · Title' },
+                  { key: 'hero_body',              label: 'Hero · Body', multiline: true, rows: 3 },
+                  { key: 'hero_primary_cta_label', label: 'Hero · CTA Label' },
+                  { key: 'hero_primary_cta_url',   label: 'Hero · CTA URL' },
+                  { key: 'search_placeholder',     label: 'Search · Placeholder' },
+                ]}
+                testIdRoot="faq-page-hero"
+              />
+            </FieldGroup>
+
+            <FieldGroup title="Final CTA">
+              <LocalizedField
+                value={pageLc}
+                onChange={(lc) => { setPageLc(lc); setPageDirty(true); }}
+                locales={locales}
+                fields={[
+                  { key: 'final_cta_eyebrow',         label: 'Eyebrow' },
+                  { key: 'final_cta_title',           label: 'Title' },
+                  { key: 'final_cta_body',            label: 'Body', multiline: true, rows: 3 },
+                  { key: 'final_cta_primary_label',   label: 'Primary · Label' },
+                  { key: 'final_cta_primary_url',     label: 'Primary · URL' },
+                  { key: 'final_cta_secondary_label', label: 'Secondary · Label' },
+                  { key: 'final_cta_secondary_url',   label: 'Secondary · URL' },
+                ]}
+                testIdRoot="faq-page-finalcta"
+              />
+            </FieldGroup>
+
+            <FieldGroup title="SEO">
+              <LocalizedField
+                value={pageLc}
+                onChange={(lc) => { setPageLc(lc); setPageDirty(true); }}
+                locales={locales}
+                fields={[
+                  { key: 'seo_title',       label: 'SEO · Title' },
+                  { key: 'seo_description', label: 'SEO · Description', multiline: true, rows: 2 },
+                ]}
+                testIdRoot="faq-page-seo"
+              />
+            </FieldGroup>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button onClick={savePage}
+                      disabled={!pageDirty || pageSaving}
+                      data-testid="faq-page-save"
+                      className={`px-4 py-2 text-[11px] uppercase tracking-[0.18em] ${
+                        (!pageDirty || pageSaving)
+                          ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                          : 'bg-black text-white hover:bg-stone-800'
+                      }`}>
+                {pageSaving ? 'Salvataggio…' : 'Salva pagina'}
+              </button>
+              {pageDirty && (
+                <span className="text-[11px] text-amber-600">Modifiche non salvate</span>
+              )}
+            </div>
+          </div>
+        )}
+      </section>
 
       <div className="mb-4">
         {creating ? (

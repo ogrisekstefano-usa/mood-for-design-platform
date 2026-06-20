@@ -219,6 +219,115 @@ async def public_faq(
 
 # ── ADMIN ──────────────────────────────────────────────────────────────
 
+class FaqPageUpsert(BaseModel):
+    locale_content: dict = Field(default_factory=dict)
+
+
+@admin_router.get("/faq/page")
+async def admin_get_faq_page(tenant: dict = Depends(require_admin_tenant)):
+    """
+    Returns the locale_content of the cms_sections row that drives
+    hero / final CTA / SEO of the public /faq page.
+
+    Auto-creates the cms_pages(page_key='faq') + cms_sections(section_type='faq_page')
+    rows on first access so the admin form always has a target to write to.
+    """
+    async with AsyncSessionLocal() as s:
+        # Ensure cms_pages row exists (NO CONFLICT update so we never lose other columns)
+        await s.execute(
+            text("""
+                INSERT INTO cms_pages (tenant_id, page_key, title, status)
+                VALUES (:tid, 'faq', 'FAQ', 'draft')
+                ON CONFLICT DO NOTHING
+            """),
+            {"tid": tenant["id"]},
+        )
+        page = (await s.execute(
+            text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key='faq' LIMIT 1"),
+            {"tid": tenant["id"]},
+        )).first()
+        if not page:
+            # Race: try again
+            page = (await s.execute(
+                text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key='faq' LIMIT 1"),
+                {"tid": tenant["id"]},
+            )).first()
+        page_id = page[0]
+
+        # Ensure section row exists
+        sec = (await s.execute(
+            text("""
+                SELECT id, locale_content
+                  FROM cms_sections
+                 WHERE tenant_id=:tid AND page_id=:pid AND section_type='faq_page'
+                   AND deleted_at IS NULL
+                 LIMIT 1
+            """),
+            {"tid": tenant["id"], "pid": str(page_id)},
+        )).first()
+        if not sec:
+            inserted = (await s.execute(
+                text("""
+                    INSERT INTO cms_sections (tenant_id, page_id, section_type, sort_order, visible, locale_content, settings)
+                    VALUES (:tid, :pid, 'faq_page', 0, true, '{}'::jsonb, '{}'::jsonb)
+                    RETURNING id, locale_content
+                """),
+                {"tid": tenant["id"], "pid": str(page_id)},
+            )).first()
+            await s.commit()
+            return {"locale_content": inserted[1] or {}}
+        await s.commit()
+        return {"locale_content": sec[1] or {}}
+
+
+@admin_router.put("/faq/page")
+async def admin_update_faq_page(body: FaqPageUpsert,
+                                 tenant: dict = Depends(require_admin_tenant)):
+    """
+    Upsert the locale_content of the faq_page section.
+    All hero / final CTA / SEO copy lives here, per locale.
+    """
+    async with AsyncSessionLocal() as s:
+        page = (await s.execute(
+            text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key='faq' LIMIT 1"),
+            {"tid": tenant["id"]},
+        )).first()
+        if not page:
+            await s.execute(
+                text("""
+                    INSERT INTO cms_pages (tenant_id, page_key, title, status)
+                    VALUES (:tid, 'faq', 'FAQ', 'draft')
+                """),
+                {"tid": tenant["id"]},
+            )
+            page = (await s.execute(
+                text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key='faq' LIMIT 1"),
+                {"tid": tenant["id"]},
+            )).first()
+        page_id = page[0]
+
+        res = await s.execute(
+            text("""
+                UPDATE cms_sections
+                   SET locale_content = CAST(:lc AS jsonb),
+                       updated_at     = now()
+                 WHERE tenant_id=:tid AND page_id=:pid AND section_type='faq_page'
+                   AND deleted_at IS NULL
+            """),
+            {"tid": tenant["id"], "pid": str(page_id), "lc": _json(body.locale_content)},
+        )
+        if res.rowcount == 0:
+            await s.execute(
+                text("""
+                    INSERT INTO cms_sections (tenant_id, page_id, section_type, sort_order, visible, locale_content, settings)
+                    VALUES (:tid, :pid, 'faq_page', 0, true, CAST(:lc AS jsonb), '{}'::jsonb)
+                """),
+                {"tid": tenant["id"], "pid": str(page_id), "lc": _json(body.locale_content)},
+            )
+        await s.commit()
+        return {"ok": True}
+
+
 class CategoryUpsert(BaseModel):
     slug:           str               = Field(..., min_length=1, max_length=64)
     sort_order:     int               = 0

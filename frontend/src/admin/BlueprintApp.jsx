@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { BookOpen, FileText, Layout, Image, AlignEndHorizontal, Search, Settings as SettingsIcon, Building2 } from 'lucide-react';
+import { BookOpen, FileText, Layout, Image, AlignEndHorizontal, Search, Settings as SettingsIcon, Building2, HelpCircle } from 'lucide-react';
 
 import WorkspaceShell from './shared/WorkspaceShell';
 import BlocksEditor from './pages/BlocksEditor';
@@ -11,6 +11,7 @@ import PagesEditor from './pages/PagesEditor';
 import FooterEditor from './pages/FooterEditor';
 import SearchConsoleHelper from './pages/SearchConsoleHelper';
 import BlueprintOverview from './pages/BlueprintOverview';
+import BlueprintFaqAdmin from './pages/BlueprintFaqAdmin';
 
 /**
  * BlueprintShell™ — Tenant runtime workspace.
@@ -30,6 +31,7 @@ import BlueprintOverview from './pages/BlueprintOverview';
 const BLUEPRINT_NAV = [
   { to: '/blueprint/overview', icon: Building2,          label: 'Studio',           testid: 'blueprint-nav-overview' },
   { to: '/blueprint/pages',    icon: BookOpen,           label: 'Pagine',           testid: 'blueprint-nav-pages' },
+  { to: '/blueprint/faq',      icon: HelpCircle,         label: 'FAQ',              testid: 'blueprint-nav-faq' },
   { to: '/blueprint/blocks',   icon: FileText,           label: 'Editorial Blocks', testid: 'blueprint-nav-blocks' },
   { to: '/blueprint/sections', icon: Layout,             label: 'Sections',         testid: 'blueprint-nav-sections' },
   { to: '/blueprint/media',    icon: Image,              label: 'Media Library',    testid: 'blueprint-nav-media' },
@@ -50,6 +52,7 @@ const BlueprintApp = () => (
       <Route index            element={<Navigate to="/blueprint/overview" replace />} />
       <Route path="overview"  element={<BlueprintOverview />} />
       <Route path="pages"     element={<PagesEditor />} />
+      <Route path="faq"       element={<BlueprintFaqAdmin />} />
       <Route path="blocks"    element={<BlocksEditor />} />
       <Route path="sections"  element={<SectionsManager />} />
       <Route path="media"     element={<MediaLibrary />} />
