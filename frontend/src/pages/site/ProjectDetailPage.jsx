@@ -2,7 +2,7 @@
  * ProjectDetailPage — Public storefront cinematic editorial reading.
  *
  * RUNTIME-BOUND (Phase S-CONNECT Step 4):
- *   • Reads `/api/portfolio/public/{tenant_slug}/{project_slug}?locale_code=<bcp47>`
+ *   • Reads `/api/public/published-journeys/{tenant_slug}/{slug}?locale=<bcp47>`
  *   • The response is the MARKET-NATIVE variant composed in Projects Studio™:
  *     variant_title · cultural_angle · hospitality_tone · aspirational_narrative ·
  *     material_language · story_body[] · gallery · cta_set[] · seo ·
@@ -18,9 +18,8 @@ import { ArrowUpRight, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
-import { toBcp47Storefront } from '../../site/localeBcp47';
+import { resolveLocaleBag } from '../../site/localeResolver';
 import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
-import { findProjectBySlug } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
 import { useMarketSignal } from '../../hooks/useMarketSignal';
@@ -74,31 +73,25 @@ const ProjectDetailPage = () => {
   useEffect(() => {
     let alive = true;
     setState({ status: 'loading' });
-    const bcp = toBcp47Storefront(locale);
-    const url = `${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/${slug}?locale_code=${encodeURIComponent(bcp)}`;
+    const url = `${BACKEND_URL}/api/public/published-journeys/${tenantConfig.slug}/${slug}?locale=${encodeURIComponent(locale)}`;
     axios.get(url)
       .then((r) => {
         if (!alive) return;
-        const project = r.data?.project;
-        if (project) setState({ status: 'runtime', project });
-        else setState({ status: 'fallback', project: findProjectBySlug(slug) });
+        const item = r.data?.item;
+        if (item) setState({ status: 'runtime', project: item });
+        else setState({ status: '404' });
       })
       .catch(() => {
-        if (!alive) return;
-        const fallback = findProjectBySlug(slug);
-        setState(fallback ? { status: 'fallback', project: fallback } : { status: '404' });
+        if (alive) setState({ status: '404' });
       });
     return () => { alive = false; };
   }, [slug, locale]);
 
   useEffect(() => {
-    if (state.status === 'runtime' || state.status === 'fallback') {
-      const t = state.status === 'runtime'
-        ? state.project.title
-        : pick(state.project.title, `projects.${slug}.title`);
-      document.title = `${t} — MOOD for DESIGN\u2122`;
+    if (state.status === 'runtime') {
+      document.title = `${state.project.title} — MOOD for DESIGN\u2122`;
     }
-  }, [state, pick, slug]);
+  }, [state]);
 
   // Loading state — editorial italic
   if (state.status === 'loading') {
@@ -123,36 +116,35 @@ const ProjectDetailPage = () => {
 
   if (state.status === '404') return <Navigate to="/projects" replace />;
 
-  const isRuntime = state.status === 'runtime';
+  // Il progetto proviene esclusivamente da published_design_journeys
   const p = state.project;
 
-  // Project facets (runtime variant vs fallback shape)
-  const title          = isRuntime ? p.title : pick(p.title, `projects.${slug}.title`);
-  const culturalAngle  = isRuntime ? (p.cultural_angle || '') : '';
-  const subtitle       = isRuntime ? (p.subtitle || '') : pick(p.subtitle, `projects.${slug}.subtitle`);
-  const hospitalityTone= isRuntime ? (p.hospitality_tone || '') : '';
-  const luxuryPerception = isRuntime ? (p.luxury_perception || '') : '';
-  const aspirational     = isRuntime ? (p.aspirational_narrative || '') : '';
-  const cover          = isRuntime ? p.cover_image_url : p.cover;
-  const studio         = isRuntime ? null : p.studio;
-  const designer       = isRuntime ? null : p.designer;
-  const location       = isRuntime ? (p.location || '') : pick(p.location, `projects.${slug}.location`);
-  const year           = isRuntime ? p.year : p.year;
-  const category       = isRuntime ? p.category : null;
-  const materialLanguage = isRuntime ? (p.material_language || {}) : null;
-  const materialPalette = isRuntime ? (p.material_palette || []) : null;
-  const tags           = isRuntime ? null : p.tags;
-  const summary        = isRuntime ? '' : pick(p.summary, `projects.${slug}.summary`);
-  const galleryRaw     = isRuntime ? (p.gallery || []) : (p.gallery || []);
-  const gallery        = galleryRaw.map((g) => (typeof g === 'string' ? { url: g } : g)).filter((g) => g && g.url);
-  const storyBody      = isRuntime ? (p.story_body || []) : [];
-  const ctaSet         = isRuntime ? (p.cta_set || []) : [];
-  const marketCode     = isRuntime ? (p.market_code || p.target_locale) : null;
-  const chapters       = isRuntime ? null : (p.chapters || []);
-  const materials      = isRuntime ? null : (p.materials || []);
+  // Mapping published_design_journeys → variabili locali
+  const title             = p.title || '';
+  const culturalAngle     = p.atmosphere || '';
+  const subtitle          = p.excerpt || '';
+  const hospitalityTone   = null;
+  const luxuryPerception  = null;
+  const aspirational      = null;
+  const cover             = p.hero_url || null;
+  const studio            = null;
+  const designer          = null;
+  const location          = p.location || '';
+  const year              = p.year || null;
+  const category          = p.project_type || null;
+  const materialLanguage  = null;
+  const materialPalette   = Array.isArray(p.material_tags) ? p.material_tags : [];
+  const tags              = null;
+  const galleryRaw        = [];
+  const gallery           = [];
+  const storyBody         = [];
+  const ctaSet            = [];
+  const marketCode        = null;
+  const chapters          = null;
+  const materials         = null;
 
   return (
-    <div data-testid="site-project-detail" data-source={isRuntime ? 'runtime' : 'fallback'}>
+    <div data-testid="site-project-detail" data-source="published_journeys">
       {/* HERO — atmosphere first */}
       <section className="mfd-detail-hero" data-testid="project-hero">
         {cover && <img src={cover} alt={title} loading="eager" decoding="async" />}
@@ -205,13 +197,13 @@ const ProjectDetailPage = () => {
               )}
             </Reveal>
             <Reveal delay={2}>
-              <span className="mfd-eyebrow">{isRuntime ? labels.atmosphere : pick(ui.overview, 'ui.detail.overview')}</span>
+              <span className="mfd-eyebrow">{labels.atmosphere}</span>
               <h2 className="mfd-h1" style={{ marginTop: '1rem' }}>{subtitle}</h2>
               {aspirational && (
                 <p className="mfd-lead" style={{ marginTop: '1.5rem' }}>{aspirational}</p>
               )}
-              {summary && !aspirational && (
-                <p className="mfd-lead" style={{ marginTop: '1.5rem' }}>{summary}</p>
+              {subtitle && (
+                <p className="mfd-lead" style={{ marginTop: '1.5rem' }}>{subtitle}</p>
               )}
               {hospitalityTone && (
                 <p
@@ -489,26 +481,23 @@ const ProjectDetailPage = () => {
       </section>
 
       {/* RELATED — runtime-bound: other published variants in this locale. */}
-      {isRuntime && (
-        <RelatedRuntimeProjects currentSlug={slug} locale={locale} pickUiRelated={pick(ui.related, 'ui.detail.related')} />
-      )}
+      <RelatedJourneys currentSlug={slug} locale={locale} pickUiRelated={pick(ui.related, 'ui.detail.related')} />
     </div>
   );
 };
 
 /**
- * RelatedRuntimeProjects — fetches up to 3 other published variants for the
- * current market and links to them. Replaces the hardcoded `projects.js` seed.
+ * RelatedJourneys — altri progetti pubblicati per questa locale.
+ * Legge esclusivamente da published_design_journeys via /feed.
  */
-const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
+const RelatedJourneys = ({ currentSlug, locale, pickUiRelated }) => {
   const [items, setItems] = useState([]);
   useEffect(() => {
     let alive = true;
-    const bcp = toBcp47Storefront(locale);
-    axios.get(`${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/projects?locale_code=${encodeURIComponent(bcp)}`)
+    axios.get(`${BACKEND_URL}/api/public/published-journeys/${tenantConfig.slug}/feed?locale=${encodeURIComponent(locale)}&featured_only=false&limit=4`)
       .then((r) => {
         if (!alive) return;
-        const list = (r.data?.projects || []).filter((p) => p.slug !== currentSlug).slice(0, 3);
+        const list = (r.data?.items || []).filter((p) => p.slug !== currentSlug).slice(0, 3);
         setItems(list);
       })
       .catch(() => { if (alive) setItems([]); });
@@ -518,7 +507,7 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
   if (items.length === 0) return null;
 
   return (
-    <section className="mfd-section" data-testid="project-related" data-source="runtime">
+    <section className="mfd-section" data-testid="project-related" data-source="published_journeys">
       <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem' }}>
         <Reveal as="span" className="mfd-eyebrow">{pickUiRelated}</Reveal>
         <Reveal delay={2}>
@@ -531,8 +520,8 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
                 data-testid={`project-related-${rp.slug}`}
               >
                 <div className="mfd-strip__media">
-                  {rp.cover_image_url
-                    ? <SiteImage src={rp.cover_image_url} aspect={3/4} alt={rp.title} />
+                  {rp.hero_url
+                    ? <SiteImage src={rp.hero_url} aspect={3/4} alt={rp.title} />
                     : <div style={{ aspectRatio: '3/4', background: 'var(--site-line, rgba(28,24,20,0.05))' }} />}
                 </div>
                 <div className="mfd-strip__meta">
@@ -540,8 +529,8 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
                     <h4 className="mfd-strip__title" style={{ fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)' }}>{rp.title}</h4>
                     {rp.location && <span className="mfd-strip__location">{rp.location}</span>}
                   </div>
-                  {rp.cultural_angle && (
-                    <p className="mfd-body" style={{ fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)', fontStyle: 'italic', marginTop: '0.5rem' }}>{rp.cultural_angle}</p>
+                  {rp.atmosphere && (
+                    <p className="mfd-body" style={{ fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)', fontStyle: 'italic', marginTop: '0.5rem' }}>{rp.atmosphere}</p>
                   )}
                 </div>
               </Link>

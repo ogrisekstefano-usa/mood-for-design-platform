@@ -1,0 +1,36 @@
+{
+  "summary": "P0 Certification: ProjectsIndexPage and ProjectDetailPage verified. All 6 real DB projects load at /projects from published_design_journeys (data-source=runtime). Project detail pages /projects/residenza-in-campagna and /projects/villa-lago-di-como both show real DB data with data-source='published_journeys'. No fake data, no fallback. Related Projects section works for residenza-in-campagna (3 items). /about, /services, /professionals, /magazine all load without crash. Magazine shows 12 real articles.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "Various static assets", "issue": "Some 404s and 503s in browser console for static resources (not API endpoints) — likely CDN/asset issues, not blocking functionality"}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "/projects/villa-lago-di-como Related Projects", "issue": "Related section not showing for villa-lago-di-como (shows for residenza-in-campagna). May be locale filtering issue or normal if feed returns only 1 result for that locale at time of test. Not confirmed as bug.", "affected_selectors": ["[data-testid='project-related']"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_251.json"],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "95% — all P0 tests pass, minor note on related section for villa-lago-di-como"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All P0 checks pass. /projects shows 6 real DB projects (data-source=runtime). /projects/residenza-in-campagna: title OK, location 'Italia centrale', anno 2025, materials Travertino/Legno di recupero/Cotto, data-source=published_journeys, related=3 items. /projects/villa-lago-di-como: loads OK with real data. /about /services /professionals /magazine all load without crash. Magazine shows 12 real articles.",
+  "p0_checklist": {
+    "projects_index_6_real_projects": "PASS — 6 cards: villa-lago-di-como, penthouse-milano-porta-nuova, residenza-in-campagna, boutique-suite-costiera-amalfitana, suite-boutique-waterfront, spazio-di-lavoro-creativo",
+    "projects_index_data_source": "PASS — data-source=runtime",
+    "residenza_in_campagna_detail": "PASS — title, location Italia centrale, anno 2025, materials Travertino/Legno di recupero/Cotto all correct",
+    "residenza_data_source": "PASS — data-source=published_journeys",
+    "villa_lago_di_como_detail": "PASS — real DB data shown",
+    "related_projects_residenza": "PASS — 3 related items shown",
+    "related_projects_villa": "INFO — not shown (possible locale/data variation)",
+    "about_services_professionals": "PASS — all load without crash",
+    "magazine": "PASS — 12 real articles shown"
+  }
+}

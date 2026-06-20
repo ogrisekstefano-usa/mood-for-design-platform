@@ -2,7 +2,7 @@
  * ProjectsIndexPage — Public storefront portfolio archive.
  *
  * RUNTIME-BOUND (Phase S-CONNECT Step 4):
- *   • Reads `/api/portfolio/public/{tenant_slug}/projects?locale_code=<bcp47>`
+ *   • Reads `/api/public/published-journeys/{tenant_slug}/feed?locale=<bcp47>`
  *   • Each project is the MARKET-NATIVE variant composed in Projects Studio™ —
  *     variant_title · cultural_angle · material_palette · cover image — NOT a
  *     translated copy of a master record.
@@ -17,7 +17,7 @@ import { ArrowUpRight } from 'lucide-react';
 import axios from 'axios';
 import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
-import { toBcp47Storefront } from '../../site/localeBcp47';
+import { normalizeLocale } from '../../site/localeResolver';
 import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
 import { projectCategories } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
@@ -72,39 +72,20 @@ const ProjectsIndexPage = () => {
   const [usingFallback, setUsingFallback] = useState(false);
   const ui = uiContent.archive;
 
-  // Runtime bind — ITER157.B resolution order:
-  //   1. /api/public/published-journeys/{tenant}/feed (canonical editorial)
-  //   2. /api/portfolio/public/{tenant}/projects     (legacy portfolio archive)
-  //   3. graceful empty editorial state               (no fake content)
+  // Runtime bind — published_design_journeys è l'unica source of truth.
   useEffect(() => {
     let alive = true;
     setItems(null); setUsingFallback(false);
-    const bcp = toBcp47Storefront(locale);
+    const url = `${BACKEND_URL}/api/public/published-journeys/${tenantConfig.slug}/feed?locale=${encodeURIComponent(locale)}&featured_only=false&limit=50`;
 
-    const url1 = `${BACKEND_URL}/api/public/published-journeys/${tenantConfig.slug}/feed?locale=${encodeURIComponent(bcp)}&featured_only=false&limit=50`;
-    const url2 = `${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/projects?locale_code=${encodeURIComponent(bcp)}`;
-
-    axios.get(url1)
+    axios.get(url)
       .then((r) => {
         if (!alive) return;
         const list = (r.data?.items || []).map(_adaptPublishedToCard);
-        if (list.length > 0) {
-          setItems(list); setUsingFallback(false);
-          return;
-        }
-        // Try legacy portfolio archive as a transitional secondary source.
-        return axios.get(url2).then((r2) => {
-          if (!alive) return;
-          const legacy = r2.data?.projects || [];
-          setItems(legacy);
-          setUsingFallback(false);  // legacy is real DB data, not hardcoded fakes
-        });
+        setItems(list); setUsingFallback(false);
       })
       .catch(() => {
-        if (!alive) return;
-        // No fake fallback — show graceful empty editorial state.
-        setItems([]);
-        setUsingFallback(false);
+        if (alive) setItems([]);
       });
     return () => { alive = false; };
   }, [locale]);
@@ -211,7 +192,7 @@ const ProjectsIndexPage = () => {
 /**
  * ProjectCard — atmosphere-first cinematic strip card.
  *
- * Runtime variant shape (from /api/portfolio/public): {
+ * Runtime variant shape (from /api/public/published-journeys): {
  *   slug, title (variant_title), subtitle, cultural_angle,
  *   cover_image_url, location, year, category,
  *   material_palette[], target_locale, market_code, …
