@@ -44,6 +44,7 @@ ADMIN_PATCH_FIELDS = {
     "seo_title", "seo_description",
     "visibility_status", "featured_order", "homepage_featured",
     "canonical_locale", "slug",
+    "story_content",  # JSONB: { gallery: [{id,url,asset_id,caption,alt_text,hotspots}], body_blocks: [{type,url,...}] }
 }
 ALLOWED_VISIBILITY = {"draft", "published", "archived"}
 
@@ -91,6 +92,7 @@ def _resolve_locale(parent: dict, translation: Optional[dict]) -> dict:
 
 def _public_shape(parent: dict, translation: Optional[dict]) -> dict:
     resolved = _resolve_locale(parent, translation)
+    sc = parent.get("story_content") or {}
     return {
         "id":              parent["id"],
         "slug":            parent["slug"],
@@ -101,7 +103,9 @@ def _public_shape(parent: dict, translation: Optional[dict]) -> dict:
         "project_type":    parent.get("project_type"),
         "year":            parent.get("year"),
         "hero_url":        parent.get("hero_url"),
-        "gallery_count":   len(parent.get("gallery_asset_ids") or []),
+        "gallery":         sc.get("gallery") or [],
+        "gallery_count":   len(sc.get("gallery") or parent.get("gallery_asset_ids") or []),
+        "body_blocks":     sc.get("body_blocks") or [],
         "material_tags":   parent.get("material_tags") or [],
         "featured_order":  parent.get("featured_order") or 0,
         "homepage_featured": bool(parent.get("homepage_featured")),
