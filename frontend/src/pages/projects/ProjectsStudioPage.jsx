@@ -206,7 +206,7 @@ const ProjectsStudioPage = () => {
             >
               <div className="ps-card__cover">
                 {j.hero_url
-                  ? <img src={j.hero_url} alt={j.title} />
+                  ? <img src={j.hero_url} alt={j.title} style={{ pointerEvents: 'none' }} />
                   : <div className="ps-card__cover--empty" />
                 }
               </div>
