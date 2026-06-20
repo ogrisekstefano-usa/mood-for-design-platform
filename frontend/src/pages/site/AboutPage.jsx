@@ -23,6 +23,8 @@ import { useSite } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import './home-iter150.css';
 
+import { resolveLocaleBag } from '../../site/localeResolver';
+
 // ── Tenant slug ──────────────────────────────────────────────────────────────
 const TENANT_SLUG = (() => {
   if (typeof window === 'undefined') return 'studio';
@@ -34,28 +36,25 @@ const TENANT_SLUG = (() => {
 })();
 
 // ── Locale utilities ─────────────────────────────────────────────────────────
+// resolveLocaleBag: respects full BCP-47; never collapses en-GB onto en-US.
 const L = (obj, locale) => {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
-  const norm = (locale || 'it').toLowerCase();
-  const en  = norm.startsWith('en');
-  return obj[en ? 'en-US' : 'it'] || obj[en ? 'en' : 'en-US'] || obj._default || Object.values(obj)[0] || '';
+  if (obj[locale]) return obj[locale];
+  const lang = (locale || '').split('-')[0];
+  if (lang && obj[lang]) return obj[lang];
+  return obj._default || Object.values(obj)[0] || '';
 };
 
-const resolveBag = (bag, locale) => {
-  if (!bag || typeof bag !== 'object') return {};
-  const norm = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
-  return { ...(bag._default || {}), ...(bag.it || {}) };
-};
+const resolveBag = (localeContent, locale) => resolveLocaleBag(localeContent, locale);
 
 // ── Data hooks ───────────────────────────────────────────────────────────────
 const usePublishedJourneys = (locale) => {
   const [state, setState] = useState({ items: [], loading: true });
   useEffect(() => {
     let cancelled = false;
-    const loc = locale === 'en' ? 'en-US' : 'it-IT';
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/public/published-journeys/${TENANT_SLUG}/feed?locale=${encodeURIComponent(loc)}&featured_only=true&limit=3`;
+    // Pass locale exactly as received — no normalization
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/public/published-journeys/${TENANT_SLUG}/feed?locale=${encodeURIComponent(locale)}&featured_only=true&limit=3`;
     fetch(url)
       .then((r) => r.ok ? r.json() : { items: [] })
       .then((d) => { if (!cancelled) setState({ items: d.items || [], loading: false }); })
@@ -84,8 +83,8 @@ const AboutHero = ({ locale, sec }) => {
   const title = bag.title || '';
   const sub = bag.sub || '';
   const eyebrow = bag.eyebrow || '';
-  const cta1 = bag.cta_primary || (locale === 'en' ? 'Start a project' : 'Inizia un progetto');
-  const cta2 = bag.cta_secondary || (locale === 'en' ? 'For professionals' : 'Per i professionisti');
+  const cta1 = bag.cta_primary   || '';
+  const cta2 = bag.cta_secondary || '';
   const settings = sec?.settings || {};
 
   return (
@@ -161,7 +160,7 @@ const TeamSection = ({ locale, sec }) => {
   const eyebrow = bag.eyebrow || '';
   const headline = bag.headline || '';
   const subheadline = bag.subheadline || '';
-  const ctaLabel = bag.cta_label || (locale === 'en' ? 'Start a conversation' : 'Inizia una conversazione');
+  const ctaLabel = bag.cta_label || '';
   const ctaHref = settings.cta_href || '/consulenza';
 
   const leader = leaders[0];
@@ -296,7 +295,7 @@ const ProjectsTeaser = ({ locale, sec }) => {
   const { items, loading } = usePublishedJourneys(locale);
   const eyebrow = bag.eyebrow || '';
   const title = bag.title || '';
-  const viewAll = bag.viewAll || (locale === 'en' ? 'View all projects' : 'Vedi tutti i progetti');
+  const viewAll = bag.viewAll || '';
 
   if (loading) return <section className="mfd-stories mfd-stories--loading" aria-hidden="true" />;
   if (!items.length) return null;
@@ -375,7 +374,7 @@ const ContactCTA = ({ locale, sec }) => {
 // ── Page Body ─────────────────────────────────────────────────────────────────
 const AboutPageBody = () => {
   const site = useSite();
-  const locale = (site?.locale || 'it').slice(0, 2);
+  const locale = site?.locale || 'it-IT';   // full BCP-47: never truncated
   const cms = useStorefrontContent(TENANT_SLUG, 'about');
   const content = cms?.content || {};
   const sections = cms?.page?.sections || [];

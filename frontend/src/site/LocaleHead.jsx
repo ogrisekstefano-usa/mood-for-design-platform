@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PLATFORM_DEFAULT_LOCALE, SUPPORTED_LOCALES, toBcp47 } from '../i18n';
 import { useT } from '../i18n';
+import { langCode as getLangCode } from './localeResolver';
 import { tenantConfig } from './content/tenant';
 import { navigationContent } from './content/navigation';
 import api from '../lib/api';
@@ -197,7 +198,7 @@ export const LocaleHead = ({ pageMeta }) => {
         // Homepage SEO from storefront CMS (locale-aware tagline → title).
         const cms = cmsSeo || navigationContent || {};
         const brandName = cms.brand?.name || tenantConfig?.brand?.name || 'MOOD for DESIGN';
-        const langKey = canonicalLocale.slice(0, 2);     // 'it', 'en', 'de', …
+        const langKey = getLangCode(canonicalLocale); // 'it-IT' → 'it', 'en-US' → 'en'
         const taglineMap = cms.brand?.tagline || {};
         const tagline = taglineMap[langKey] || taglineMap.it || taglineMap.en || '';
         // Tab title format: "{brand} · {tagline}"

@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { Instagram, Linkedin, Facebook, Youtube, Twitter, Mail, Globe } from 'lucide-react';
 import { useStorefrontContent } from '../useStorefrontContent';
 import { useSite } from '../SiteContext';
+import { resolveLocaleBag, normalizeLocale, langCode as getLangCode } from '../localeResolver';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
 import { CountryLanguageSelector } from './CountryLanguageSelector';
 
@@ -48,16 +49,7 @@ const L = (obj, locale) => {
   return Object.values(obj)[0] || '';
 };
 
-const resolveBag = (bag, locale) => {
-  if (!bag || typeof bag !== 'object') return {};
-  const norm = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
-  if (norm.startsWith('it')) return { ...(bag._default || {}), ...(bag.it || {}) };
-  if (norm.startsWith('fr')) return { ...(bag._default || {}), ...(bag.fr || {}) };
-  if (norm.startsWith('de')) return { ...(bag._default || {}), ...(bag.de || {}) };
-  if (norm.startsWith('es')) return { ...(bag._default || {}), ...(bag.es || {}) };
-  return { ...(bag._default || {}) };
-};
+const resolveBag = (bag, fullLocale) => resolveLocaleBag(bag, fullLocale);
 
 const SHELL_COLOPHON = {
   enabled: false,
@@ -124,8 +116,8 @@ const FooterColophon = ({ locale, colophon }) => {
 
 const MoodSiteFooter = () => {
   const site = useSite();
-  const locale = (site?.locale || 'it').slice(0, 2);
-  const i18nLocale = locale === 'en' ? 'en-US' : (locale === 'it' ? 'it-IT' : locale);
+  const fullLocale = normalizeLocale(site?.locale || 'it-IT');
+  const lang = getLangCode(fullLocale); // 'it-IT' → 'it', 'en-US' → 'en', 'en-GB' → 'en'
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const tenantSlug = useMemo(() => resolveTenantSlug(), []);
@@ -151,8 +143,8 @@ const MoodSiteFooter = () => {
     const navSettings = navTop?._settings || navTop?.settings || {};
     const labels = navSettings.locale_picker_label_i18n;
     if (!labels) return '';
-    return labels[i18nLocale] || labels['_default'] || labels['en-US'] || '';
-  }, [JSON.stringify(cmsNav?.content?.nav_top), i18nLocale]);
+    return labels[fullLocale] || labels['_default'] || labels['en-US'] || '';
+  }, [JSON.stringify(cmsNav?.content?.nav_top), fullLocale]);
 
   // Footer nav column title — CMS-driven
   const footerNavTitle = useMemo(() => {
@@ -160,8 +152,8 @@ const MoodSiteFooter = () => {
     const navSettings = navTop?._settings || navTop?.settings || {};
     const labels = navSettings.footer_nav_title_i18n;
     if (!labels) return null; // null = hide the title
-    return labels[i18nLocale] || labels['_default'] || null;
-  }, [JSON.stringify(cmsNav?.content?.nav_top), i18nLocale]);
+    return labels[fullLocale] || labels['_default'] || null;
+  }, [JSON.stringify(cmsNav?.content?.nav_top), fullLocale]);
 
   // Editorial cols come from per-locale locale_content. SEGUICI col is
   // intentionally skipped here because the same data is rendered as icons
@@ -185,10 +177,10 @@ const MoodSiteFooter = () => {
     }
 
     // 2 · Editorial cols
-    const footerBag = resolveBag(cmsHome?.content?.editorial_footer, i18nLocale);
+    const footerBag = resolveBag(cmsHome?.content?.editorial_footer, fullLocale);
     const editorialCols = Array.isArray(footerBag.cols) ? footerBag.cols : [];
     for (const c of editorialCols) {
-      const titleNorm = L(c.title, locale).toLowerCase();
+      const titleNorm = L(c.title, fullLocale).toLowerCase();
       // Skip the "Seguici"/"Follow" column — we render socials as icons
       // under the logo to avoid duplication.
       if (/segu|follow|social/i.test(titleNorm)) continue;
@@ -201,7 +193,7 @@ const MoodSiteFooter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main),
       JSON.stringify(cmsHome?.content?.editorial_footer),
-      footerNavTitle, i18nLocale, locale]);
+      footerNavTitle, fullLocale]);
 
   return (
     <footer id="footer" className="mfd-footer" data-testid="site-footer">
@@ -246,15 +238,15 @@ const MoodSiteFooter = () => {
               <Globe size={14} strokeWidth={1.6} />
               <span>
                 {localPickerLabel || (
-                  locale.startsWith('it') ? 'Paese · Lingua'
-                  : locale.startsWith('fr') ? 'Pays · Langue'
-                  : locale.startsWith('de') ? 'Land · Sprache'
-                  : locale.startsWith('es') ? 'País · Idioma'
+                  lang === 'it' ? 'Paese · Lingua'
+                  : lang === 'fr' ? 'Pays · Langue'
+                  : lang === 'de' ? 'Land · Sprache'
+                  : lang === 'es' ? 'País · Idioma'
                   : 'Country · Language'
                 )}
               </span>
               <span className="mfd-footer__locale-current">
-                · {(i18nLocale || locale).toUpperCase()}
+                · {fullLocale.toUpperCase()}
               </span>
             </button>
           </div>
@@ -262,13 +254,13 @@ const MoodSiteFooter = () => {
             <div className="mfd-footer__cols" data-cols={cols.length}>
               {cols.map((col, ci) => (
                 <div key={ci} className="mfd-footer__col">
-                  <h4 className="mfd-footer__col-title">{L(col.title, locale)}</h4>
+                  <h4 className="mfd-footer__col-title">{L(col.title, fullLocale)}</h4>
                   <ul>
                     {(col.links || []).map((l, li) => (
                       <li key={li}>
                         {l.href?.startsWith('http')
-                          ? <a href={l.href} target="_blank" rel="noopener noreferrer">{L(l.label, locale)}</a>
-                          : <Link to={l.href || '#'}>{L(l.label, locale)}</Link>}
+                          ? <a href={l.href} target="_blank" rel="noopener noreferrer">{L(l.label, fullLocale)}</a>
+                          : <Link to={l.href || '#'}>{L(l.label, fullLocale)}</Link>}
                       </li>
                     ))}
                   </ul>
@@ -278,7 +270,7 @@ const MoodSiteFooter = () => {
           )}
         </div>
       </div>
-      <FooterColophon locale={locale} colophon={SHELL_COLOPHON} />
+      <FooterColophon locale={fullLocale} colophon={SHELL_COLOPHON} />
       <CountryLanguageSelector open={pickerOpen} onClose={() => setPickerOpen(false)} />
     </footer>
   );

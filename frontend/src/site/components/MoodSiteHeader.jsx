@@ -23,17 +23,11 @@ const resolveTenantSlug = () => {
   return first || 'studio';
 };
 
+import { resolveLabel, normalizeLocale } from '../localeResolver';
+
 // Localized copy resolver for {en-US, it-IT, _default} format
-const Ln = (obj, locale) => {
-  if (!obj) return '';
-  if (typeof obj === 'string') return obj;
-  const norm = (locale || 'it').toLowerCase();
-  const itKey = norm.startsWith('it') ? 'it-IT' : null;
-  const enKey = norm.startsWith('en') ? 'en-US' : null;
-  return (itKey && obj[itKey]) || (enKey && obj[enKey]) ||
-    obj['_default'] || obj['en-US'] || obj['it-IT'] ||
-    Object.values(obj)[0] || '';
-};
+// Uses resolveLabel to avoid collapsing locale variants.
+const Ln = (obj, locale) => resolveLabel(obj, locale);
 
 // Legacy resolver for {it, en} format from `copy` prop (backward compat with HomePage)
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
@@ -66,7 +60,7 @@ const MoodSiteHeader = ({
   copy = null,  // optional legacy prop from HomePage; standalone usage reads CMS directly
 }) => {
   const site = useSite();
-  const locale = (localeProp || site?.locale || 'it').slice(0, 2);
+  const locale = normalizeLocale(localeProp || site?.locale);  // full BCP-47: 'it-IT', 'en-US', etc.
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoImgError, setLogoImgError] = useState(false);
   const location = useLocation();

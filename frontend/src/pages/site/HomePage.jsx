@@ -25,13 +25,14 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Plus, Heart, SlidersHorizontal, FileText, Layers } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
-import MoodSiteHeader from '../../site/components/MoodSiteHeader';
+import { resolveLocaleBag, normalizeLocale, resolveLabel } from '../../site/localeResolver';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import EditorialFreeBlocks from '../../site/EditorialFreeBlocks';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
 import EditorialBridge from '../../site/EditorialBridge';
 import MoodSiteFooter from '../../site/components/MoodSiteFooter';
+import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../../site/content/brandAssets';
 import './home-iter150.css';
 
@@ -376,8 +377,7 @@ const useMagazineArticles = (locale) => {
   const [articles, setArticles] = useState([]);
   useEffect(() => {
     let cancelled = false;
-    const loc = locale === 'en' ? 'en' : 'it';
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/magazine/public/${TENANT_SLUG}/articles?locale=${loc}&limit=3`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/magazine/public/${TENANT_SLUG}/articles?locale=${encodeURIComponent(locale)}&limit=3`;
     fetch(url)
       .then((r) => r.ok ? r.json() : {})
       .then((d) => {
@@ -464,8 +464,7 @@ const usePublishedJourneys = (locale) => {
   const [state, setState] = useState({ items: [], loading: true });
   useEffect(() => {
     let cancelled = false;
-    const loc = (locale === 'en') ? 'en-US' : (locale || 'it-IT');
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/public/published-journeys/${TENANT_SLUG}/feed?locale=${encodeURIComponent(loc)}&featured_only=true&limit=6`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/public/published-journeys/${TENANT_SLUG}/feed?locale=${encodeURIComponent(locale || 'it-IT')}&featured_only=true&limit=6`;
     fetch(url)
       .then((r) => r.ok ? r.json() : { items: [] })
       .then((d) => { if (!cancelled) setState({ items: d.items || [], loading: false }); })
@@ -476,7 +475,7 @@ const usePublishedJourneys = (locale) => {
 };
 
 const DesignStories = ({ locale, copy }) => {
-  const { items, loading } = usePublishedJourneys(locale === 'en' ? 'en-US' : 'it-IT');
+  const { items, loading } = usePublishedJourneys(locale); // full BCP-47 locale passed directly
 
   if (loading) {
     // No skeleton flash — keep the editorial silence until content lands.
@@ -496,11 +495,11 @@ const DesignStories = ({ locale, copy }) => {
     <div className="mfd-stories__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
         <div>
-          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale) || (locale === 'en' ? 'Our Projects' : 'I Nostri Progetti')}</p>
-          <h2 className="mfd-section-title">{L(copy.stories.title, locale) || (locale === 'en' ? 'Real projects. Real spaces.' : 'Progetti reali. Spazi reali.')}</h2>
+          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale)}</p>
+          <h2 className="mfd-section-title">{L(copy.stories.title, locale)}</h2>
         </div>
         <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
-          {L(copy.stories.viewAll, locale) || (locale === 'en' ? 'View all projects' : 'Vedi tutti i progetti')} <ArrowRight size={14} strokeWidth={1.6} />
+          {L(copy.stories.viewAll, locale)} <ArrowRight size={14} strokeWidth={1.6} />
         </Link>
       </header>
       <div className="mfd-stories__grid">
@@ -803,16 +802,9 @@ const SiteFooter = ({ locale, copy, brandLogoUrl }) => (
 // `locale` here is a short code ('it' / 'en'); we map to the BCP-47
 // locale keys used by the CMS bags ('it', 'en-US').
 // ────────────────────────────────────────────────────────────────
-const _resolveBag = (bag, locale) => {
-  if (!bag || typeof bag !== 'object') return {};
-  const norm = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
-  if (norm.startsWith('it')) return { ...(bag._default || {}), ...(bag.it || {}) };
-  if (norm.startsWith('fr')) return { ...(bag._default || {}), ...(bag.fr || {}) };
-  if (norm.startsWith('de')) return { ...(bag._default || {}), ...(bag.de || {}) };
-  if (norm.startsWith('es')) return { ...(bag._default || {}), ...(bag.es || {}) };
-  return { ...(bag._default || {}) };
-};
+// `locale` is the full BCP-47 locale code ('it-IT', 'en-US', 'en-GB', etc.)
+// resolveLocaleBag never collapses locale variants (en-GB ≠ en-US, es-MX ≠ es-ES).
+const _resolveBag = (bag, locale) => resolveLocaleBag(bag, locale);
 
 const mapCmsToCopy = (content, locale) => {
   if (!content || typeof content !== 'object') return null;
@@ -985,8 +977,7 @@ const useNavBundle = (locale) => {
 
   return useMemo(() => {
     if (!bag) return null;
-    const loc = locale === 'en' ? 'en-US' : 'it-IT';
-    const pick = (i18n) => (i18n || {})[loc] || (i18n || {})['_default'] || '';
+    const pick = (i18n) => resolveLabel(i18n, locale);
     const linksByKey = {};
     (bag.links || []).filter((l) => l.visible !== false).forEach((l) => {
       linksByKey[l.id] = { label: pick(l.label_i18n), href: l.href || '/' };
@@ -1014,7 +1005,7 @@ const useNavBundle = (locale) => {
 // ────────────────────────────────────────────────────────────────
 const HomePageBody = () => {
   const site = useSite();
-  const locale = (site?.locale || 'it').slice(0, 2);
+  const locale = normalizeLocale(site?.locale);  // full BCP-47: 'it-IT', 'en-US', 'en-GB', etc.
   const setLocale = site?.setLocale;
   const onLocaleChange = React.useCallback((code) => {
     if (setLocale) setLocale(code);
@@ -1027,7 +1018,7 @@ const HomePageBody = () => {
   const magazineArticles = useMagazineArticles(locale);
   const copy = useMemo(() => {
     const merged = { ...EDITORIAL_SHELL };
-    const mapped = mapCmsToCopy(cms?.content, locale === 'en' ? 'en-US' : locale);
+    const mapped = mapCmsToCopy(cms?.content, locale);
     if (mapped && typeof mapped === 'object') {
       Object.keys(mapped).forEach((k) => {
         merged[k] = { ...(EDITORIAL_SHELL[k] || {}), ...mapped[k] };

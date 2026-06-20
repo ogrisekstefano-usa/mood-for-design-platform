@@ -21,6 +21,8 @@ import { useStorefrontContent } from '../../site/useStorefrontContent';
 import './home-iter150.css';
 import './services.css';
 
+import { resolveLocaleBag } from '../../site/localeResolver';
+
 const TENANT_SLUG = (() => {
   if (typeof window === 'undefined') return 'studio';
   const host  = window.location.hostname || '';
@@ -30,21 +32,20 @@ const TENANT_SLUG = (() => {
   return first || 'studio';
 })();
 
-// ── Utilities ────────────────────────────────────────────────────────────────
+// ── Utilities ─────────────────────────────────────────────────────────────────
+// resolveLocaleBag: preserves full BCP-47 locale codes; never collapses variants.
+// en-GB and en-US remain DISTINCT. es-ES and es-MX remain DISTINCT.
+const bag = (section, locale) => resolveLocaleBag(section?.locale_content, locale);
+
+// L: resolves a { locale_code: string } label map or a plain string.
 const L = (obj, locale) => {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
-  const norm = (locale || 'it').toLowerCase();
-  const en   = norm.startsWith('en');
-  return obj[en ? 'en-US' : 'it'] || obj[en ? 'en' : 'en-US'] || obj._default || Object.values(obj)[0] || '';
-};
-
-const bag = (section, locale) => {
-  if (!section) return {};
-  const lc   = section.locale_content || {};
-  const norm  = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(lc._default || {}), ...(lc['en-US'] || lc.en || {}) };
-  return { ...(lc._default || {}), ...(lc.it || {}) };
+  // Exact match first, then language-code fallback, then _default
+  if (obj[locale]) return obj[locale];
+  const lang = (locale || '').split('-')[0];
+  if (lang && obj[lang]) return obj[lang];
+  return obj._default || Object.values(obj)[0] || '';
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -58,10 +59,10 @@ const ServicesHero = ({ locale, sec }) => {
   const title    = b.title || '';
   const sub      = b.sub   || '';
   const eyebrow  = b.eyebrow || '';
-  const cta1     = b.cta_primary   || (locale === 'en' ? 'Book a consultation' : 'Prenota una consulenza');
-  const cta2     = b.cta_secondary || (locale === 'en' ? 'Discover our projects' : 'Scopri i nostri progetti');
-  const href1    = settings.cta_primary_href   || '/consulenza';
-  const href2    = settings.cta_secondary_href || '/projects';
+  const cta1     = b.cta_primary   || '';
+  const cta2     = b.cta_secondary || '';
+  const href1    = settings.cta_primary_href   || '';
+  const href2    = settings.cta_secondary_href || '';
 
   return (
     <section className="mfd-home-hero mfd-svc-hero" data-testid="services-hero">
@@ -193,7 +194,7 @@ const ServicesProcess = ({ locale, sec }) => {
         </ol>
         <div className="mfd-how__cta-wrap">
           <Link to={settings.cta_href || '/consulenza'} className="mfd-cta mfd-cta--outline" data-testid="services-process-cta">
-            {b.cta || (locale === 'en' ? 'Book a consultation' : 'Prenota una consulenza')}
+            {b.cta || ''}
           </Link>
         </div>
       </div>
@@ -221,11 +222,11 @@ const ServicesFinalCTA = ({ locale, sec }) => {
         </div>
         <div className="mfd-finalcta__paths">
           <Link to={settings.private_href || '/consulenza'} className="mfd-finalcta__path" data-testid="services-finalcta-cta1">
-            <span className="mfd-finalcta__path-label">{b.private || (locale === 'en' ? 'Book a consultation' : 'Prenota una consulenza')}</span>
+            <span className="mfd-finalcta__path-label">{b.private || ''}</span>
             <ArrowRight size={16} strokeWidth={1.5} />
           </Link>
           <Link to={settings.pro_href || '/projects'} className="mfd-finalcta__path mfd-finalcta__path--outline" data-testid="services-finalcta-cta2">
-            <span className="mfd-finalcta__path-label">{b.pro || (locale === 'en' ? 'Discover our projects' : 'Scopri i nostri progetti')}</span>
+            <span className="mfd-finalcta__path-label">{b.pro || ''}</span>
             <ArrowRight size={16} strokeWidth={1.5} />
           </Link>
         </div>
@@ -239,13 +240,11 @@ const ServicesFinalCTA = ({ locale, sec }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const ServicesPage = () => {
   const site   = useSite();
-  const locale = (site?.locale || 'it').slice(0, 2);
+  const locale = site?.locale || 'it-IT';   // full BCP-47: 'it-IT', 'en-US', 'en-GB', etc.
   const cms    = useStorefrontContent(TENANT_SLUG, 'services');
 
   useEffect(() => {
-    document.title = locale === 'en'
-      ? 'Services — Studio'
-      : 'Servizi — Studio';
+    document.title = 'Servizi — Studio';
   }, [locale]);
 
   const sections = cms?.page?.sections || [];

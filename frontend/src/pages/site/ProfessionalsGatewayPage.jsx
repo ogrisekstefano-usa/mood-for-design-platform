@@ -34,21 +34,19 @@ const TENANT_SLUG = (() => {
 })();
 
 // ── Locale utilities ─────────────────────────────────────────────────────────
+import { resolveLocaleBag } from '../../site/localeResolver';
+
 const L = (obj, locale) => {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
-  const norm = (locale || 'it').toLowerCase();
-  const en   = norm.startsWith('en');
-  return obj[en ? 'en-US' : 'it'] || obj[en ? 'en' : 'en-US'] || obj._default || Object.values(obj)[0] || '';
+  if (obj[locale]) return obj[locale];
+  const lang = (locale || '').split('-')[0];
+  if (lang && obj[lang]) return obj[lang];
+  return obj._default || Object.values(obj)[0] || '';
 };
 
-const bag = (section, locale) => {
-  if (!section) return {};
-  const lc  = section.locale_content || {};
-  const norm = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(lc._default || {}), ...(lc['en-US'] || lc.en || {}) };
-  return { ...(lc._default || {}), ...(lc.it || {}) };
-};
+// resolveLocaleBag: never collapses locale variants (en-GB ≠ en-US, es-MX ≠ es-ES)
+const bag = (section, locale) => resolveLocaleBag(section?.locale_content, locale);
 
 // ── Loading skeleton ─────────────────────────────────────────────────────────
 const ProSkeleton = () => (
@@ -70,8 +68,8 @@ const ProHero = ({ locale, sec }) => {
   const title    = b.title || '';
   const sub      = b.sub   || '';
   const eyebrow  = b.eyebrow || '';
-  const cta1     = b.cta_primary   || (locale === 'en' ? 'Propose a collaboration' : 'Proponi una collaborazione');
-  const cta2     = b.cta_secondary || (locale === 'en' ? 'Discover our projects' : 'Scopri i nostri progetti');
+  const cta1     = b.cta_primary   || '';
+  const cta2     = b.cta_secondary || '';
   const href1    = settings.cta_primary_href   || '/partner-application';
   const href2    = settings.cta_secondary_href || '/projects';
 
@@ -187,7 +185,7 @@ const ProProcess = ({ locale, sec }) => {
   const settings = sec.settings || {};
   const eyebrow  = b.eyebrow || '';
   const title    = b.title   || '';
-  const ctaLabel = b.cta     || (locale === 'en' ? 'Propose a collaboration' : 'Proponi una collaborazione');
+  const ctaLabel = b.cta || '';
   const ctaHref  = settings.cta_href || '/partner-application';
   const steps    = (settings.steps || []);
   if (!steps.length) return null;
@@ -238,7 +236,7 @@ const ProCollaborators = ({ locale, sec }) => {
   const eyebrow  = b.eyebrow || '';
   const title    = b.title   || '';
   const body     = b.body    || '';
-  const ctaLabel = b.cta     || (locale === 'en' ? 'Join the professional network' : 'Entra nella rete professionale');
+  const ctaLabel = b.cta || '';
   const ctaHref  = settings.cta_href || '/partner-application';
   const profBlocks = (b.blocks || []);
   if (!title && !body) return null;
@@ -330,8 +328,8 @@ const ProFinalCTA = ({ locale, sec }) => {
   const settings = sec.settings || {};
   const title    = b.title   || '';
   const sub      = b.sub     || '';
-  const cta1     = b.private || (locale === 'en' ? 'Propose a collaboration' : 'Proponi una collaborazione');
-  const cta2     = b.pro     || (locale === 'en' ? 'Join the professional network' : 'Entra nella rete professionale');
+  const cta1     = b.private || '';
+  const cta2     = b.pro     || '';
   const href1    = settings.private_href || '/partner-application';
   const href2    = settings.pro_href     || '/partner-application';
   if (!title) return null;
@@ -365,13 +363,11 @@ const ProFinalCTA = ({ locale, sec }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const ProfessionalsGatewayPage = () => {
   const site   = useSite();
-  const locale = (site?.locale || 'it').slice(0, 2);
+  const locale = site?.locale || 'it-IT';   // full BCP-47
   const cms    = useStorefrontContent(TENANT_SLUG, 'professionals');
 
   useEffect(() => {
-    document.title = locale === 'en'
-      ? 'Partner Network — Studio'
-      : 'Partner Network — Studio';
+    document.title = 'Partner Network — Studio';
   }, [locale]);
 
   if (cms?.loading) return <ProSkeleton />;

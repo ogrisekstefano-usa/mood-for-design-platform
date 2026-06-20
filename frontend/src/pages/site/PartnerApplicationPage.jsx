@@ -24,12 +24,10 @@ const L = (obj, locale) => {
   return obj[locale] || obj['it'] || obj['_default'] || '';
 };
 
-const resolveBag = (bag, locale) => {
-  if (!bag || typeof bag !== 'object') return {};
-  const norm = (locale || 'it').toLowerCase();
-  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
-  return { ...(bag._default || {}), ...(bag.it || {}) };
-};
+import { resolveLocaleBag, normalizeLocale, langCode as getLangCode } from '../../site/localeResolver';
+
+// resolveBag: uses resolveLocaleBag — never collapses en-GB onto en-US
+const resolveBag = (bag, locale) => resolveLocaleBag(bag, locale);
 
 const TENANT_SLUG = (() => {
   if (typeof window === 'undefined') return 'studio';
@@ -130,10 +128,9 @@ const INITIAL_FORM = {
 
 export default function PartnerApplicationPage() {
   const { locale } = useSite();
-  const c  = FORM_LABELS[locale.startsWith('en') ? 'en' : 'it'];
-  const en = locale.startsWith('en');
-
-  // ── CMS-driven hero ────────────────────────────────────────────────────────
+  const lang = getLangCode(locale);
+  const c  = FORM_LABELS[lang] || FORM_LABELS['it'];
+  const en = lang === 'en';
   const cmsPa     = useStorefrontContent(TENANT_SLUG, 'partner-application');
   const heroSec   = cmsPa?.page?.sections?.find(s => s.section_type === 'hero_editorial') || null;
   const heroBag   = heroSec ? resolveBag(heroSec.locale_content || {}, locale) : null;
