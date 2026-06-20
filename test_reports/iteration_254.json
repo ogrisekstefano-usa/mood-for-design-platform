@@ -1,0 +1,122 @@
+{
+  "summary": "BUSINESS FLOW CERTIFICATION SPRINT — PRE GO-LIVE. Full backend + frontend audit. 22/23 backend tests pass. All 5 macro-flows tested with evidence.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/public/published-journeys/studio/feed",
+        "issue": "TEST 3E PARTIAL: Public feed default has featured_only=True. Newly published projects with homepage_featured=False (default) do NOT appear in the public feed. Admin must manually set homepage_featured=True. No UI toggle visible for this in Projects Studio. This is a workflow gap for non-technical users.",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "POST /api/partner-network/partners/{id}/assign",
+        "issue": "TEST 2F PARTIAL: 400 error — partner needs platform account. Business constraint: must invite via Settings → Members first.",
+        "priority": "MEDIUM"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Blueprint Sidebar",
+        "issue": "TEST 5A: Sidebar is icon-only (collapsed). Labels visible only on hover (tooltip). Non-technical users cannot identify sections at a glance. Tooltips are in Italian ('Relazioni con i clienti', 'Design Journey', 'Partner Network', 'Content Studio').",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Blueprint /blueprint/leads route",
+        "issue": "TEST 1E: /blueprint/leads returns 404. No dedicated Leads section in sidebar. Leads accessible only via /relations/accounts.",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Blueprint /blueprint/partner-network route",
+        "issue": "TEST 2B: /blueprint/partner-network returns 404. Sidebar link goes to /partner-network (correct), but direct /blueprint/partner-network URL breaks.",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Blueprint Dashboard sidebar",
+        "issues": ["Icon-only sidebar. Non-technical users cannot identify sections without hovering. Consider expanded sidebar or labeled tabs for go-live readiness."]
+      }
+    ]
+  },
+  "test_results_by_flow": {
+    "FLOW_1_LEAD": {
+      "1A_lead_initiate": "PASS — POST /api/public/journeys/initiate returns lead_id + journey_id",
+      "1B_lead_in_crm": "PASS — GET /api/leads returns 200 with 7 leads",
+      "1C_account_from_lead": "PASS — GET /api/accounts returns 200",
+      "1D_design_journey": "PASS — API accessible",
+      "1E_blueprint_visibility": "PARTIAL — No /blueprint/leads route (404). CRM at /relations/accounts."
+    },
+    "FLOW_2_PARTNER": {
+      "2A_partner_apply": "PASS — returns partner_id",
+      "2B_partner_visible": "PASS — GET partners 200",
+      "2C_status_review": "PASS",
+      "2D_status_approved": "PASS",
+      "2E_status_active": "PASS",
+      "2F_assignment": "PARTIAL — 400 business constraint: partner needs platform account first"
+    },
+    "FLOW_3_PROJECTS": {
+      "3A_create": "PASS",
+      "3B_story_content": "PASS — gallery + YouTube saved",
+      "3C_translation": "PASS — en-US upserted",
+      "3D_publish": "PASS",
+      "3E_public_feed": "PARTIAL — Not in feed because homepage_featured=False (default). featured_only=True is query default.",
+      "3F_public_detail": "PASS — returns gallery + body_blocks",
+      "3G_frontend_projects": "PASS — 6 projects with images, category filters",
+      "3H_frontend_detail": "PASS — hero image, Italian title visible"
+    },
+    "FLOW_4_MAGAZINE": {
+      "4A_create": "PASS",
+      "4B_update_youtube": "PASS",
+      "4C_publish": "PASS — {ok:true}",
+      "4D_public_listing": "PASS — cert article visible",
+      "4E_public_detail": "PASS — title + body_blocks (paragraph + YouTube) returned",
+      "4F_frontend_magazine": "PASS — 12 articles with images"
+    },
+    "FLOW_5_UX": {
+      "5A_blueprint_sidebar": "PARTIAL — Icon-only. Tooltips in Italian on hover. No standalone Lead/Magazine/Progetti labels.",
+      "5B_begin_journey": "PASS — 3-step flow (ATMOSFERA, COME VIVI, CONOSCIAMOCI) in Italian",
+      "5C_partner_application": "PASS — 100% Italian labels: Nome, Cognome, Email professionale, Candidatura Partner",
+      "5D_projects_public": "PASS — projects with images, Italian text, filters"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_biz_cert.py",
+    "/app/test_reports/pytest/biz_cert.xml"
+  ],
+  "action_items": [
+    "HIGH: Add 'Metti in evidenza' toggle (homepage_featured=True) in Projects Studio UI so published projects appear in the public feed. Currently no way for non-technical user to feature a project.",
+    "MEDIUM: Partner assignment blocked — guide admin through invite workflow before assignment. Add UI hint or disable 'Assegna' button until partner has platform account.",
+    "MEDIUM: Add Leads entry to Blueprint sidebar (or redirect /blueprint/leads to correct route /relations/accounts).",
+    "LOW: Consider expanding Blueprint sidebar by default with text labels for better non-technical usability at go-live."
+  ],
+  "critical_code_review_comments": [
+    "public_feed featured_only defaults to True (/app/backend/routers/published_journeys.py line 126). New published projects invisible in public feed without manual featuring — workflow gap.",
+    "Magazine publish response does not include published_at field (returns {ok:true, article_id}). published_at IS set in DB but not returned.",
+    "slug auto-deduplication works (cert-go-live-test → cert-go-live-test-2 on re-run) which is correct behavior but should be surfaced to admin UI."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_biz_cert.py"
+  ],
+  "success_rate": {
+    "backend": "95% (22/23 pass — 2F is business constraint PARTIAL)",
+    "frontend": "80% (6/8 flows PASS; 5A PARTIAL icon-only; 1E 404)"
+  },
+  "seed_data_creation": "Partner luca.ferrari.cert@example.com (id: f9bd9866-f83e-4f8a-9607-19324183c3a2) created with status active — still in DB. All cert projects/articles deleted.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Biz cert sprint done. Main gaps: (1) Public feed only shows homepage_featured=True — new projects invisible. (2) Partner assignment blocked until partner has platform account. (3) /blueprint/leads 404. All APIs functional. All public frontend pages working.",
+  "rca_of_issues": {
+    "3E_public_feed_partial": {
+      "root_cause": "featured_only: bool = Query(True) default in public_feed endpoint. New projects have homepage_featured=False.",
+      "fix": "Add 'Feature on homepage' toggle in Projects Studio admin UI, or change default to featured_only=False",
+      "file": "/app/backend/routers/published_journeys.py line 126"
+    },
+    "2F_partner_assignment": {
+      "root_cause": "Assignment endpoint validates partner has platform user_id. Partner application creates partner record but no platform account.",
+      "fix": "Add 'Invite to platform' step in Partner Network UI before showing Assign button"
+    }
+  }
+}
