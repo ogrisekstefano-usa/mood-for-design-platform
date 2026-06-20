@@ -1,0 +1,13 @@
+{
+  "name": "MOOD for DESIGN",
+  "short_name": "MOOD",
+  "description": "L'ecosistema editoriale per studi di architettura, interior designer e showroom curatoriali.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0B",
+  "theme_color": "#0A0A0B",
+  "icons": [
+    { "src": "/mood_icon_192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/mood_icon_512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
