@@ -930,3 +930,35 @@ Una persona esiste una sola volta. Poi assume ruoli diversi.
 
 - **P0 (In Pausa)**: Fase 6 — DJ Integration (assegnare partner ai Design Journey)
 
+
+---
+
+## CMS GOVERNANCE & MULTILINGUAL COMPLETION SPRINT (20 Giu 2026)
+
+### Completato
+
+- **P0-A**: Rimossi tutti i pattern locale legacy dal frontend pubblico:
+  - `HomePage.jsx`: `locale === 'en' ? 'en-US'` (righe 981, 1023, 379, 467), fallback hardcoded in DesignStories
+  - `MoodSiteFooter.jsx`: `slice(0, 2)`, `locale === 'en' ? 'en-US'`, `startsWith('en')` nella `resolveBag` interna
+  - `PartnerApplicationPage.jsx`: `locale.startsWith('en') ? 'en' : 'it'`
+  - `LocaleHead.jsx`: `canonicalLocale.slice(0, 2)` sostituito con `getLangCode()`
+  - Tutti i file usano esclusivamente `resolveLocaleBag`, `resolveLabel`, `normalizeLocale`, `langCode` da `localeResolver.js`
+- **P0-B**: Audit e clean di `ProjectsIndexPage.jsx`, `MagazinePage.jsx`, `BeginJourneyPage.jsx`, `ConsulenzaPage.jsx` — nessun pattern legacy trovato
+- **P0-C**: Testing Playwright (iteration 250) — 8/8 route pubbliche PASS. Footer mostra `IT-IT` (BCP-47 corretto). Bug critico trovato e fixato: `MoodSiteHeader` mancava di import in `HomePage.jsx`.
+- **5 Report Markdown generati**:
+  - `PUBLIC_ROUTE_RESIDUAL_AUDIT.md` — inventario hardcoded residui P1/P2
+  - `BLUEPRINT_EDITABILITY_REPORT.md` — gap di editabilità Blueprint
+  - `MULTILINGUAL_COMPLETION_REPORT.md` — mappa locale DB vs copertura contenuti
+  - `FORM_LABELS_CMS_AUDIT.md` — audit form partner/journey/consulenza
+  - `CTA_GOVERNANCE_REPORT.md` — inventario CTA con label/URL/origine/traducibilità/editabilità Blueprint
+
+### Gap identificati (non risolti — P1 backlog)
+
+- `FORM_LABELS` dict statico in `PartnerApplicationPage` — 0% CMS-driven (P1)
+- `DEFAULT_LOCALES` hardcoded in `HomePage` — non legge da `locale_profiles` DB (P1)
+- `footer` non è in `PAGE_KEYS` di `storefront_registry.py` (P2)
+- EN-GB, FR-FR, DE-DE, ES-ES quasi assenti dal DB per home/about/services (P1)
+- `ES_MX` non esiste come `locale_profile` nel DB (P1)
+- 17 CTA con URL fallback hardcoded `|| '/consulenza'` — da popolare nel CMS (P1)
+
+
