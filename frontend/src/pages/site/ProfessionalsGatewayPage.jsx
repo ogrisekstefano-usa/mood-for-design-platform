@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useSite } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
+import { tenantConfig } from '../../site/content/tenant';
 import './home-iter150.css';
 import './professionals.css';
 
@@ -303,7 +304,7 @@ const PartnerCasesSection = ({ locale, sec }) => {
                 <div className="mfd-partner-case-card__badge">
                   <span>{cs.partner || ''}</span>
                   <span className="mfd-partner-case-card__plus">+</span>
-                  <span>MOOD for DESIGN</span>
+                  <span>{tenantConfig.brand.name || 'Studio'}</span>
                 </div>
               </div>
               <div className="mfd-partner-case-card__body">

@@ -22,9 +22,6 @@ const PublicFooter = ({ footer = {}, brand = {} }) => {
           {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
             <span className="bp-eyebrow !text-[var(--bp-text-primary)] !text-xs">{brand.name || 'Studio'}</span>
-            <p className="bp-caption text-[var(--bp-text-muted)] mt-4 max-w-xs">
-              A Blueprint OS™ workspace
-            </p>
           </div>
 
           {columns.map((col) => (

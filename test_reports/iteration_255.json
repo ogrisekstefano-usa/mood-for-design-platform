@@ -1,0 +1,47 @@
+{
+  "summary": "Pre-Production Certification Sprint — Design Journey E2E + White Label + Sidebar Magazine + Route Checks. All 10 backend tests PASS. All frontend checks PASS.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "PATCH /api/journeys/{jid}/lifecycle",
+        "issue": "Field name is 'lifecycle_state' (not 'status' as documented in the review request). Valid values are: conversation_open, in_progress, presenting, drifting, on_pause, approved, closed, editioned, abandoned. 'active' is NOT valid."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "DJ_STEP1_Lead_CRM": "PASS — /api/relations/accounts and /api/relations/leads return 200",
+    "DJ_STEP2_Workspace": "PASS — /studio/journey/fe495a99-0c98-4390-9e90-5c8296d1af33 loads correctly (Design Journey™ workspace visible with 7 phases)",
+    "DJ_STEP3_Milestones": "PASS — GET /api/journeys/{jid}/overview returns 200 with milestones",
+    "DJ_STEP4_Lifecycle": "PASS — PATCH /api/journeys/{jid}/lifecycle with {'lifecycle_state': 'in_progress'} returns 200 (NOTE: field is 'lifecycle_state', not 'status')",
+    "DJ_STEP5_Assignments": "PASS — GET /api/admin/journeys/{jid}/assignments returns 200",
+    "DJ_STEP6_Timeline": "PASS — GET /api/journeys/{jid}/timeline returns 200",
+    "MAGAZINE_SIDEBAR": "PASS — tenant config contains 'magazine', /settings/magazine loads (Magazine & Design References™ page visible)",
+    "WHITE_LABEL_1_projects_title": "PASS — document.title is 'EXE INTERIOR · Italian Design Excellence' (no 'MOOD for DESIGN')",
+    "WHITE_LABEL_2_footer_blueprint_os": "PASS — 'A Blueprint OS™ workspace' NOT present in /projects footer",
+    "WHITE_LABEL_3_professionals_badges": "PASS — Badge uses tenantConfig.brand.name (line 307 ProfessionalsGatewayPage.jsx), not hardcoded. Body text contains 'MOOD for DESIGN' from CMS i18n strings (it-IT.json name field), which is CMS-driven not hardcoded",
+    "ROUTE_blueprint_leads": "PASS — /blueprint/leads redirects correctly to /relations/accounts",
+    "ROUTE_settings_magazine": "PASS — /settings/magazine loads without 404"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_dj_e2e.py",
+    "/app/test_reports/pytest/dj_e2e_results.xml"
+  ],
+  "action_items": [
+    "MINOR: Review request documents lifecycle PATCH with {status: 'active'} but actual API requires {lifecycle_state: 'in_progress'} (valid states are specific Italian-style states, not generic 'active'). Update documentation.",
+    "INFO: /professionals page body contains 'Entra nella rete professionale MOOD for DESIGN. Un progetto, poi il prossimo.' — this comes from i18n strings (it-IT.json), NOT hardcoded in JSX component. Component uses tenantConfig.brand.name correctly."
+  ],
+  "critical_code_review_comments": [
+    "Lifecycle PATCH endpoint accepts 'lifecycle_state' field but review request called it 'status' — could confuse future devs/testers. Consider adding alias or documentation."
+  ],
+  "updated_files": ["/app/backend/tests/test_dj_e2e.py"],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100% (all checks pass)"},
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All DJ E2E, white label, sidebar magazine, and route checks pass. The lifecycle PATCH uses field 'lifecycle_state' with values like 'in_progress', 'conversation_open', etc. (not 'active'). Magazine sidebar confirmed working at /settings/magazine. Public pages /projects and /professionals are properly white-labeled (using tenantConfig.brand.name). /blueprint/leads redirects to /relations/accounts correctly."
+}

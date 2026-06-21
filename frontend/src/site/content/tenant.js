@@ -11,9 +11,13 @@ export const tenantConfig = {
     target: '_self', // _blank when real external URL is configured
   },
   // Brand display in chrome
+  // NOTE: name is a fallback for legacy site pages.
+  // Tenant-specific brand name is configured via /settings/brand-studio
+  // and served dynamically by the CMS API. Update this value to match
+  // the tenant's public brand name for white-label deployments.
   brand: {
-    name: 'MOOD for DESIGN',
-    suffix: '\u2122',
+    name: 'Studio',
+    suffix: '',
     logoSrc: '/brand/mood-for-design-mark.png',
   },
   // Tenant slug — single source of truth for the CMS public endpoints.

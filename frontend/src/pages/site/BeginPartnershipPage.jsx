@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowRight, Check, Loader2, Sparkles } from 'lucide-react';
 import '../../styles/begin-journey.css';
+import { tenantConfig } from '../../site/content/tenant';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -182,7 +183,7 @@ const BeginPartnershipPage = () => {
          className="begin-journey-root">
       <div className="begin-journey-shell">
         <div className="bj-eyebrow" data-testid="bp-eyebrow">
-          MOOD for DESIGN™ · Partnership
+          {tenantConfig.brand.name}{tenantConfig.brand.suffix} · Partnership
         </div>
         <h1 className="bj-title" data-testid="bp-title"
             style={{ fontFamily: 'Cormorant Garamond, serif',

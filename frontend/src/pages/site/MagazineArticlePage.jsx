@@ -430,7 +430,7 @@ const MagazineArticleInner = () => {
       const a = state.article;
       const lc = a.locale_content?.[locale] || a.locale_content?.it || {};
       const titleForTab = a.title || lc.title || 'Article';
-      document.title = `${titleForTab} · MOOD for DESIGN`;
+      document.title = `${titleForTab} · ${tenantConfig?.brand?.name || 'Studio'}`;
     }
   }, [state.article, locale]);
 

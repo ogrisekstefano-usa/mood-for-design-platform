@@ -89,7 +89,7 @@ const ProjectDetailPage = () => {
 
   useEffect(() => {
     if (state.status === 'runtime') {
-      document.title = `${state.project.title} — MOOD for DESIGN\u2122`;
+      document.title = `${state.project.title} — ${tenantConfig.brand.name || 'Studio'}`;
     }
   }, [state]);
 

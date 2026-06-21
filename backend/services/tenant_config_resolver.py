@@ -348,6 +348,9 @@ STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
         "label": "Growth",
         "position": 30,
         "items": [
+            {"code": "magazine",           "label": "Magazine",
+             "route": "/settings/magazine",            "icon": "BookOpen",
+             "test_id": "sidebar-nav-magazine",              "position": 5},
             {"code": "content_studio",     "label": "Content Studio",
              "route": "/blueprint/editorial",       "icon": "PenLine",
              "test_id": "sidebar-nav-content-studio",     "position": 10},
