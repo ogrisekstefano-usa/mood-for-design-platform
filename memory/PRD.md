@@ -1,7 +1,24 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Giugno 2026 — v8  
-> **Status:** GO-LIVE UNBLOCKING SPRINT COMPLETATO ✅ — F1+F2+F3 tutti PASS · READY FOR FIRST PAYING CUSTOMER
+> **Last update:** Giugno 2026 — v9  
+> **Status:** PRE-PRODUCTION CERTIFICATION COMPLETATA ✅ — 10/10 aree PASS · READY FOR PRODUCTION
+
+## PRE-PRODUCTION CERTIFICATION SPRINT — Completato 20 Giugno 2026
+
+### Fix applicati in questo sprint
+| Fix | File | Esito |
+|-----|------|-------|
+| Magazine nella sidebar (Growth) | `tenant_config_resolver.py` | PASS |
+| Rimozione "A Blueprint OS™ workspace" footer | `PublicFooter.jsx` | PASS |
+| Document.title white-label (Projects, Magazine, Detail) | 3 pagine site | PASS |
+| BeginPartnershipPage white-label | `BeginPartnershipPage.jsx` | PASS |
+| ProfessionalsGatewayPage white-label | `ProfessionalsGatewayPage.jsx` | PASS |
+| tenant.js fallback neutro | `tenant.js` | PASS |
+
+### Gate Finale: 10/10 PASS
+Report: `/app/memory/PRE_PRODUCTION_CERTIFICATION.md`
+
+### VERDETTO: **READY FOR PRODUCTION**
 
 ## GO-LIVE UNBLOCKING SPRINT — Completato 20 Giugno 2026
 
