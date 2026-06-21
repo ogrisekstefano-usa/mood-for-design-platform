@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Giugno 2026 — v10  
-> **Status:** REAL USER VALIDATION SPRINT COMPLETATO ✅ — Nessun BLOCKER · 7 WARNING documentati · Fix minimo index.html applicato
+> **Last update:** Giugno 2026 — v11  
+> **Status:** CHAMELEON CLEANUP SPRINT COMPLETATO ✅ — Chameleon opzionale, banner non più bloccante
 
 ## REAL USER VALIDATION SPRINT — Completato 20 Giugno 2026
 

@@ -370,7 +370,8 @@ _AF_CATALOGUE = [
         "description": "Scegli lo stile visivo che definisce lo studio.",
         "cta_label": "Apri impostazioni",
         "cta_route": "/settings",
-        "critical": True,
+        "critical": False,
+        "optional": True,   # CHAMELEON CLEANUP · non blocca l'attivazione
     },
     {
         "key": "team",
@@ -432,10 +433,12 @@ def get_activation_foundation(ctx: dict = Depends(get_tenant_context)):
             "done": bool(s.get("done")),
             "metadata": {kk: vv for kk, vv in s.items() if kk != "done"},
         })
-    completed = sum(1 for i in items if i["done"])
-    total = len(items)
-    # First missing critical step (the "next action")
-    next_critical = next((i for i in items if i["critical"] and not i["done"]), None)
+    # CHAMELEON CLEANUP · optional steps excluded from activation gate
+    required_items = [i for i in items if not i.get("optional")]
+    completed = sum(1 for i in required_items if i["done"])
+    total = len(required_items)
+    # First missing critical step (the "next action" shown in the banner)
+    next_critical = next((i for i in required_items if i["critical"] and not i["done"]), None)
     business = _business_counts(tenant_id)
     return {
         "tenant_id": tenant_id,
