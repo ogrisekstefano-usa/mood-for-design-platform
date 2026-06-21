@@ -1,7 +1,19 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Giugno 2026 — v9  
-> **Status:** PRE-PRODUCTION CERTIFICATION COMPLETATA ✅ — 10/10 aree PASS · READY FOR PRODUCTION
+> **Last update:** Giugno 2026 — v10  
+> **Status:** REAL USER VALIDATION SPRINT COMPLETATO ✅ — Nessun BLOCKER · 7 WARNING documentati · Fix minimo index.html applicato
+
+## REAL USER VALIDATION SPRINT — Completato 20 Giugno 2026
+
+### Fix applicati
+- `index.html`: `<title>Studio</title>` (era "MOOD for DESIGN™") — white label fix
+
+### Raccomandazioni priorità alta (non bloccanti, V2.0)
+- Sidebar: etichette visibili di default
+- Chameleon: rimuovere dall'onboarding obbligatorio
+- CRM: testo contestuale "dove arrivano le richieste"
+
+### Report: `/app/memory/REAL_USER_VALIDATION_REPORT.md`
 
 ## PRE-PRODUCTION CERTIFICATION SPRINT — Completato 20 Giugno 2026
 

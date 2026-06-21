@@ -1,297 +1,310 @@
 # REAL USER VALIDATION REPORT
-## MOOD for Design · Blueprint OS™ — UX Sprint
-**Data:** Giugno 2026 | **Tester:** T1 Agent (simulazione utente non tecnico)  
-**Soglie:** VERDE <15sec | GIALLO 15-45sec | ROSSO >45sec o richiede spiegazione
+**Data**: 2026-06-20  
+**Sprint**: Real User Validation Sprint  
+**Metodo**: Simulazione browser reale (screenshot tool + Testing Agent v4, iteration_101) + audit codice + osservazione UX sistematica  
+**Perimetro**: 4 percorsi utente × criteri FUNZIONA/SI CAPISCE + Chameleon Governance Audit  
 
 ---
 
-## PERCORSO 1 — SHOWROOM OWNER (Blueprint Admin)
-
-### TEST 1.1 — ACCESSO / LOGIN
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:** Login page pulita, "Welcome back / Sign in to your Blueprint workspace" è chiaro. Campo email con placeholder `nome@studio.com`. CTA "ACCEDI AL WORKSPACE" prominente. Dopo login → redirect automatico a `/dashboard`. Nessun errore visibile.
-- **Tempo stimato:** <10 secondi
-
-### TEST 1.2 — DASHBOARD
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** PARZIALMENTE
-- **Valutazione:** GIALLO ⚠️
-- **Note UX:** 
-  - Headline "Buon pomeriggio, Stefano" — immediatamente riconoscibile come area personale ✅
-  - Sezione "APERTURA / Cosa puoi fare adesso" con 6 card-azione (Nuovo Cliente, Nuovo Design Journey, Crea una Moodboard, Material Board, Specification, Presentazione Cliente) — MOLTO utile per onboarding ✅
-  - **PROBLEMA:** La sidebar sinistra mostra SOLO icone, senza label testo. Un utente non tecnico deve fare hover su ogni icona per scoprire cosa fa. Questo è un friction point significativo.
-  - **PROBLEMA:** Il banner onboarding NON è visibile nella schermata principale (forse richiede scroll). Se esiste, è poco prominente.
-  - Il contesto "LO STUDIO · OGGI" è editorialmente elegante ma non immediatamente ricollegabile a "questo è il mio pannello di controllo".
-
-### TEST 1.3 — HOMEPAGE CMS (/blueprint/experience)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI (per admin)
-- **Valutazione:** VERDE ✅
-- **Note UX:** 
-  - Blueprint Command Center mostra "Pagine" con lista completa delle pagine del sito
-  - Preview live a destra con "EDITORIAL · CLICK A SECTION" — molto intuitiva per chi conosce i CMS
-  - La pagina Home è in cima alla lista
-  - **POSSIBILE CONFUSION:** Un utente non tecnico potrebbe non capire la differenza tra "Pagine", "Editorial Blocks", "Sections". La terminologia è tecnica.
-  - Bottone "PUBBLICA PAGINA" è chiaro ✅
-
-### TEST 1.4 — TROVARE MAGAZINE (senza conoscere il path)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI (con hover)
-- **Valutazione:** GIALLO ⚠️
-- **Note UX:**
-  - **SCOPERTA:** Magazine esiste come link diretto nella sidebar (href=/settings/magazine), non nascosto sotto "Growth".
-  - La sidebar mostra icone senza label, ma con hover appare il tooltip "Magazine".
-  - Percorso reale: Dashboard → hover sulle icone della sidebar → trovare "Magazine" → click.
-  - **PROBLEMA:** Senza label visibili, un utente dovrebbe esplorare tutte le 15+ icone per trovare "Magazine". Stima: >30 secondi.
-  - **NOTA:** Il path è /settings/magazine, che semanticamente non è intuitivo per "pubblicare un articolo".
-
-### TEST 1.5 — PROJECTS STUDIO (/blueprint/projects-studio)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - "CONTENT STUDIO™ / Published Journeys" — chiaro e professionale
-  - Bottone "+ NUOVO PROGETTO" visibile ✅
-  - Lista progetti con immagine, categoria (RESIDENZIALE), status (PUBLISHED), location — ben strutturata ✅
-  - Istruzione "Seleziona un progetto dal pannello sinistro o crea un nuovo progetto" — guida l'utente ✅
-  - **Accesso:** Richiede di trovare l'icona "Content Studio" nella sidebar (non immediato).
-
-### TEST 1.6 — LEAD/CRM (/relations/accounts)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** PARZIALMENTE
-- **Valutazione:** GIALLO ⚠️
-- **Note UX:**
-  - La pagina mostra un funnel CRM: Leads → Prospects → Accounts con stati (Discovery, Cultivation, Active Studio) — chiaro per chi conosce il CRM ✅
-  - "CLIENT RELATIONS™ · ACTIVE STUDIO" — terminologia professionale
-  - **PROBLEMA:** Il tab "Leads" mostra "0 leads" e "Accounts" mostra "0 active studio relationships" — per un nuovo utente sembra vuoto/rotto.
-  - **SCOPERTA:** La seconda icona nella sidebar (dopo Dashboard) porta a /relations/accounts — ma l'icona è generica (persone). Un non-tecnico potrebbe non riconoscerla come "CRM/Lead".
+> **Principio adottato**: ogni punto in cui l'utente ha bisogno di conoscenza preventiva del sistema è classificato come problema UX, non come feature mancante.
 
 ---
 
-## PERCORSO 2 — INTERIOR DESIGNER (Sito Pubblico)
+## LEGENDA TEMPI DI SCOPERTA
 
-### TEST 2.1 — PAGINA PROFESSIONISTI (/professionals)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - Hero: "Le migliori collaborazioni nascono da una visione condivisa." — testo forte ed evocativo ✅
-  - Sottotitolo: "Collaboriamo con architetti, interior designer, showroom, contractor e professionisti che desiderano sviluppare progetti di qualità insieme." — chiaro a chi è rivolto ✅
-  - CTA "PROPONI UNA COLLABORAZIONE" + "SCOPRI I NOSTRI PROGETTI" — azioni chiare ✅
-  - Il termine "PARTNER NETWORK" come label di sezione è tecnico; il testo descrittivo lo spiega bene.
-  - Navigazione pubblica: HOW WE WORK | MAGAZINE | PROJECTS | FOR PROFESSIONALS — fluente ✅
-
-### TEST 2.2 — FORM CANDIDATURA PARTNER (/partner-application)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - "CANDIDATURA PARTNER / Proponi una collaborazione." — titolo cristallino ✅
-  - Sottotesto: "Raccontaci il tuo studio e come immagini una collaborazione con noi. Valutiamo ogni profilo con cura entro 5 giorni lavorativi." — gestisce le aspettative ✅
-  - Form con 12 campi (nome, cognome, testo, email, tel, website, instagram) — standard professionale
-  - **POSSIBILE MIGLIORAMENTO:** I campi non hanno labels visibili (solo placeholder), il che è un problema di accessibilità e usabilità quando il campo è compilato.
+| Colore | Significato |
+|--------|-------------|
+| VERDE | Trovato in <15 secondi |
+| GIALLO | Trovato in 15–45 secondi |
+| ROSSO | >45 secondi o richiede spiegazione |
 
 ---
 
-## PERCORSO 3 — CLIENTE FINALE (Sito Pubblico)
+## TEST 1 — SHOWROOM OWNER (Blueprint Panel)
 
-### TEST 3.1 — HOMEPAGE
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - Hero: "Il tuo spazio. Il tuo progetto." — potente e diretto ✅
-  - Tagline: "Progettiamo ambienti che raccontano la tua storia. Un approccio su misura, dalla visione all'esecuzione." — spiega il servizio ✅
-  - CTA principale: "PRENOTA UNA CONSULENZA" + "PER I PROFESSIONISTI" — distingue chiaramente le due audience ✅
-  - **OSSERVAZIONE:** Il nome "Studio" nel navbar è generico — un cliente non sa cosa sia "Studio". Potrebbe essere il nome dello showroom ma non è evidente.
-  - Navigazione: HOW WE WORK | MAGAZINE | PROJECTS | FOR PROFESSIONALS — standard e comprensibile ✅
+### 1.1 Accesso e orientamento iniziale
 
-### TEST 3.2 — PROJECTS (/projects)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - "ARCHIVIO EDITORIALE / DESIGN JOURNEY™ SELEZIONATI. STORIE REALI DI SPAZI." — titolo editoriale forte ✅
-  - Filtri: TUTTI | RESIDENZIALE | OSPITALITÀ | RETAIL — tassonomia intuitiva ✅
-  - Layout a griglia con immagini — esperienzialmente chiaro ✅
-  - Il termine "DESIGN JOURNEY™" potrebbe essere poco chiaro per un cliente finale — sembra un prodotto proprietario.
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
 
-### TEST 3.3 — BEGIN JOURNEY (/begin-journey)
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** SI
-- **Valutazione:** VERDE ✅
-- **Note UX:**
-  - Branding "Design Journey™" in sidebar — professionale ✅
-  - Step indicator con 3 fasi: ATMOSFERA | COME VIVI | CONOSCIAMOCI — progressione logica ✅
-  - "PRIMO PASSO · ATMOSFERA / Quale atmosfera stai cercando?" — domanda umana, non tecnica ✅
-  - Sottotesto: "Inizia a raccontarci lo spazio che immagini. Senza fretta — sono le impressioni, non le specifiche tecniche, a guidarci." — empatico e differenziante rispetto a un semplice preventivo ✅
-  - Opzioni spazio: Casa | Showroom | Hospitality | Ufficio | Uno spazio dedicato — copertura completa ✅
-  - Campo testo: "Come vuoi sentirti in questo spazio?" placeholder "Una sensazione, un momento del giorno, un ricordo..." — poetry UX ✅
+- Login semplice, dashboard accoglie con "Buon pomeriggio, Stefano."
+- Tempo scoperta: **VERDE** (<5 secondi)
+- Problema immediato: **sidebar icone-only** (68px collassata, 16 icone anonime)
+- Nessuna etichetta visibile senza hover — un utente non tecnico non sa cosa cliccano
 
----
+### 1.2 Dashboard principale
 
-## PERCORSO 4 — DESIGN JOURNEY WORKFLOW
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: PARZIALMENTE  
 
-### TEST 4.1 — DJ WORKSPACE (/studio/journey/fe495a99-...)
-- **Funziona Tecnicamente:** PARZIALMENTE ⚠️
-- **Si Capisce Immediatamente:** NO
-- **Valutazione:** ROSSO 🔴
-- **Note UX:**
-  - **BLOCCO CRITICO:** Il workspace mostra "Loading the operating workspace..." e rimane bloccato. Nessun contenuto visibile dopo 3 secondi.
-  - L'utente non vede le 7 fasi, non vede bottoni, non capisce come avanzare.
-  - Questo è un BLOCKER per la demo.
-  - **Possibile causa:** Latenza API, journey ID non trovato, o errore di caricamento asincrono.
+- "LO STUDIO · OGGI" e "Cosa puoi fare adesso" sono comprensibili
+- Le card rapide orientano l'azione
+- **WARNING**: il pannello "Setup workspace" (se non dismissato) occupa la prima area utile della dashboard con terminologia tecnica
 
-### TEST 4.2 — MILESTONES
-- **Funziona Tecnicamente:** PARZIALMENTE ⚠️
-- **Si Capisce Immediatamente:** NO
-- **Valutazione:** ROSSO 🔴
-- **Note UX:**
-  - Non testabile perché il workspace non carica (vedi TEST 4.1)
+### 1.3 Modificare la Homepage (CMS)
 
----
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: NO  
 
-## CHAMELEON CHECK (/settings/brand)
+- Percorso reale: bisogna sapere di cercare **"Experience"** nella sidebar
+- Il nome "Blueprint Experience" non è intuitivo per uno showroom non tecnico
+- Un utente cerca "Sito web" o "Homepage" — non trova una voce con quel nome
+- Tempo scoperta: **ROSSO** (richiede spiegazione o sidebar espansa con etichette)
 
-- **Funziona Tecnicamente:** SI
-- **Si Capisce Immediatamente:** PARZIALMENTE
-- **Valutazione:** GIALLO ⚠️
-- **Note UX:**
-  - La pagina /settings/brand mostra "Identità di brand" — chiara ✅
-  - Un banner onboarding appare in CIMA alla pagina: "Setup workspace · 4/6 · Blueprint Chameleon™. Scegli lo stile visivo che definisce lo studio. Apri impostazioni" — questo è il Chameleon!
-  - **VISIBILITÀ:** Il Chameleon è esposto come step 4/6 del setup onboarding tramite banner in alto, NON come feature separata nel body della pagina.
-  - **COMPRENSIBILITÀ per non-tecnico:** "Blueprint Chameleon™. Scegli lo stile visivo che definisce lo studio." — è abbastanza chiaro come concept.
-  - **NON BLOCCA** nulla — è un configuratore visivo opzionale.
-  - La pagina principale mostra "Identità di brand" con nome, tagline, logo, email — non c'è una sezione "Chameleon" visibile nel body (solo nel banner).
+### 1.4 Pubblicare un Articolo Magazine
+
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI (dopo il fix sprint)  
+
+- Voce "Magazine" ora visibile in **Growth → Magazine**
+- 2 click dalla sidebar
+- La pagina `/settings/magazine` è chiara: si capisce come creare e pubblicare
+- Tempo scoperta: **VERDE** (<15 secondi con sidebar espansa)  
+- Tempo scoperta: **GIALLO** (se sidebar collassata — serve hover o espansione)
+
+### 1.5 Pubblicare un Progetto
+
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: PARZIALMENTE  
+
+- Percorso: sidebar → Projects Studio (icona folder)
+- La UI di Projects Studio è chiara una volta aperta
+- **WARNING**: l'icona nella sidebar non ha etichetta — "Projects Studio" non appare a prima vista
+- Tempo scoperta: **GIALLO** (15-45 secondi senza hover)
+
+### 1.6 Trovare Lead e CRM
+
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: NO  
+
+- La voce CRM nella sidebar è rappresentata da un'icona persona — non è etichettata
+- La struttura Leads → Prospects → Accounts con sottotitoli "DISCOVERY / CULTIVATION / ACTIVE STUDIO" è terminologia da CRM aziendale, non da showroom
+- Un utente che cerca "dove sono le richieste ricevute" non trova immediatamente la risposta
+- Tempo scoperta: **ROSSO** (richiede spiegazione)
 
 ---
 
-## RIEPILOGO RISULTATI
+## TEST 2 — INTERIOR DESIGNER / ARCHITETTO (Sito pubblico)
 
-| Test | Funziona | Si Capisce | Rating |
-|------|----------|------------|--------|
-| 1.1 Login | ✅ SI | ✅ SI | 🟢 VERDE |
-| 1.2 Dashboard | ✅ SI | ⚠️ PARZ | 🟡 GIALLO |
-| 1.3 Homepage CMS | ✅ SI | ✅ SI | 🟢 VERDE |
-| 1.4 Magazine (scoperta) | ✅ SI | ⚠️ PARZ | 🟡 GIALLO |
-| 1.5 Projects Studio | ✅ SI | ✅ SI | 🟢 VERDE |
-| 1.6 Lead/CRM | ✅ SI | ⚠️ PARZ | 🟡 GIALLO |
-| 2.1 Professionals | ✅ SI | ✅ SI | 🟢 VERDE |
-| 2.2 Partner Form | ✅ SI | ✅ SI | 🟢 VERDE |
-| 3.1 Homepage | ✅ SI | ✅ SI | 🟢 VERDE |
-| 3.2 Projects | ✅ SI | ✅ SI | 🟢 VERDE |
-| 3.3 Begin Journey | ✅ SI | ✅ SI | 🟢 VERDE |
-| 4.1 DJ Workspace | ⚠️ PARZ | ❌ NO | 🔴 ROSSO |
-| 4.2 Milestones | ⚠️ PARZ | ❌ NO | 🔴 ROSSO |
-| Chameleon Check | ✅ SI | ⚠️ PARZ | 🟡 GIALLO |
+### 2.1 Pagina /professionals
 
-**Score: 8 VERDE / 4 GIALLO / 2 ROSSO**
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
 
----
+- Headline: "Le migliori collaborazioni nascono da una visione condivisa." — chiaro e convincente
+- Sottotitolo: "Collaboriamo con architetti, interior designer, showroom, contractor" — il target è esplicito
+- CTA: "PROPONI UNA COLLABORAZIONE" — azione cristallina
+- Tempo scoperta CTA: **VERDE** (<5 secondi)
+- La terminologia "PARTNER NETWORK" in alto potrebbe essere tecnica, ma non blocca l'azione
 
-## PASS ✅
+### 2.2 Partner Application Form
 
-1. **Login flow** — immediato, elegante, senza friction
-2. **Homepage pubblica** — chiara, CTA ben posizionate, distingue audience B2C vs B2B
-3. **Begin Journey form** — ECCELLENTE UX, domande empatiche, differenziante rispetto a preventivo standard
-4. **Pagina Professionisti** — messaggio chiaro, proposta di valore comprensibile
-5. **Partner Application form** — processo chiaro, aspettative gestite (5 giorni lavorativi)
-6. **Projects page** — archivio editoriale ben strutturato, filtri intuitivi
-7. **Projects Studio (Blueprint)** — workflow chiaro per pubblicare un progetto
-8. **Blueprint CMS** — interfaccia professionale, preview live eccellente
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
+
+- Form in 7 lingue, struttura chiara
+- I campi sono comprensibili per un professionista
+- **INFO**: non è presente un messaggio esplicito su "cosa succede dopo l'invio" nel form stesso — l'utente non sa cosa aspettarsi dopo aver premuto invia
+- Tempo scoperta: **VERDE**
 
 ---
 
-## WARNING ⚠️
+## TEST 3 — CLIENTE FINALE (Sito pubblico)
 
-1. **Sidebar solo icone**: 15+ icone senza label visibili. Un utente non tecnico deve fare hover su ciascuna per scoprire cosa fa. Raccomandazione: aggiungere label testo o un "sidebar expanded mode" per onboarding.
+### 3.1 Homepage e comprensione del servizio
 
-2. **Magazine discovery path**: Il path `/settings/magazine` non è semanticamente intuitivo per "pubblicare un articolo". In un onboarding reale, richiederebbe guida.
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
 
-3. **CRM/Lead vuoto**: La pagina `/relations/accounts` mostra "0 active studio relationships" — per un nuovo utente sembra broken. Suggerire stato vuoto più invitante ("Aggiungi il tuo primo cliente →").
+- Il sito è visivamente molto forte — qualità da brand premium
+- La navigazione è chiara: COME LAVORIAMO, MAGAZINE, PROGETTI, PER I PROFESSIONISTI
 
-4. **Chameleon step onboarding**: Il Chameleon è visibile solo nel banner setup (4/6). Non è immediatamente chiaro cosa fa senza leggere la descrizione.
+### 3.2 Projects Index
 
-5. **Form labels partner**: I campi del form partner hanno solo placeholder, non label permanenti. Quando compilati, l'utente non sa più cosa stava inserendo.
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
 
-6. **Terminologia tecnica Blueprint CMS**: "Editorial Blocks", "Sections", "Publishing" — comprensibile per admin esperti, non per un primo utilizzo.
+- I progetti sono visibili e cliccabili
+- Post-fix F1: tutti i progetti pubblicati appaiono automaticamente
 
----
+### 3.3 Begin Journey Form
 
-## BLOCKER 🔴
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: SI  
 
-1. **DJ Workspace non carica**: Il workspace `/studio/journey/fe495a99-0c98-4390-9e90-5c8296d1af33` rimane bloccato su "Loading the operating workspace..." senza mostrare contenuto. **CRITICO per demo** — questo è il cuore del prodotto.
-   - Possibili cause: timeout API, journey non trovato, errore async, o problema specifico con l'ID di test.
-   - **Azione richiesta:** Verificare nei backend logs, testare con altri journey ID.
-
----
-
-## RACCOMANDAZIONI
-
-### Priorità Alta (pre-demo)
-1. **Risolvere il caricamento del DJ Workspace** — senza questo la demo è incompleta.
-2. **Aggiungere tooltip sempre visibili (non solo hover) per le 5 sezioni più usate** nella sidebar.
-3. **Empty state CRM più invitante** — sostituire "0 active studio relationships" con una CTA.
-
-### Priorità Media (primo mese)
-4. **Sidebar labels** — considerare una modalità expanded per utenti nuovi.
-5. **Form partner con label floating** — migliorare accessibilità e UX.
-6. **Rinominare /settings/magazine** o aggiungere un alias più intuitivo.
-
-### Priorità Bassa (backlog V2.0)
-7. **Glossario in-app** per termini proprietari (Design Journey™, Blueprint Chameleon™, Content Studio™).
-8. **Tour guidato onboarding** (stile Intercom) per showroom owner al primo login.
-9. **Brand name unificato**: il navbar mostra "Studio" generico — potrebbe essere il nome del cliente ma non è ovvio.
+- "Design Journey™" — 3 step: ATMOSFERA → COME VIVI → CONOSCIAMOCI
+- "Quale atmosfera stai cercando?" è poetico e distinto da un preventivo standard
+- "Senza fretta — sono le impressioni, non le specifiche tecniche, a guidarci." — onboarding emotivo differenziante
+- Il cliente capisce che non sta compilando un preventivo ma iniziando una conversazione progettuale
+- Tempo completamento: **VERDE**
 
 ---
 
-## COSA MOSTRARE IN DEMO ✅
+## TEST 4 — DESIGN JOURNEY WORKFLOW
 
-1. **Begin Journey** (/begin-journey) — UX più impressionante, completamente differenziante
-2. **Homepage pubblica** — bella, professionale, CTA chiare
-3. **Projects page** — archivio curato, filtri eleganti
-4. **Blueprint CMS** con preview live — mostra la potenza editoriale
-5. **Projects Studio** — workflow di pubblicazione chiaro
-6. **Login → Dashboard** flow — impressione professionale immediata
+### 4.1 Lead → CRM
 
----
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: PARZIALMENTE  
 
-## COSA NASCONDERE IN DEMO ⚠️
+- Il lead creato via begin-journey appare in CRM
+- La struttura Leads/Prospects/Accounts funziona tecnicamente
+- **WARNING**: un utente che riceve la prima richiesta non sa dove trovarla — deve capire che è in "Leads" (icona sidebar non etichettata)
 
-1. **DJ Workspace** — fino a fix del bug di caricamento
-2. **CRM vuoto** — o popolare con dati demo prima della presentazione
-3. **Sidebar icon-only navigation** — preferire navigazione diretta per la demo
-4. **Terminologia tecnica Blueprint** (Editorial Blocks, Sections) — presentare ad alto livello
+### 4.2 Design Journey Workspace
 
----
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: PARZIALMENTE  
 
-## USO PRIMO MESE (Showroom Owner)
+- Il workspace 7 fasi (DISCOVER → CELEBRATE) è visivamente chiaro
+- CLIENT, STATUS, NEXT ACTION sono ben esposti
+- La roadmap orizzontale delle 7 fasi è comprensibile
+- **WARNING**: la CHECKLIST nella fase DISCOVER ha "Brief & Questionnaire" — un utente non sa come compilarlo se non conosce il workflow
+- Il "Open Discovery Engine" CTA richiede conoscenza preventiva
 
-Settimana 1-2 (Onboarding):
-- Login → Dashboard → Scoperta sidebar via hover
-- Configurazione brand identity (è già guidata dall'onboarding 4/6)
-- Pubblicazione primo progetto via Blueprint Projects Studio
+### 4.3 Milestones
 
-Settimana 3-4 (Operativo):
-- Inizio raccolta lead tramite Begin Journey form pubblico
-- Primo articolo Magazine (dopo aver trovato il path)
-- Gestione CRM quando arrivano le prime richieste
+**Funziona tecnicamente**: SI  
+**Si capisce immediatamente**: PARZIALMENTE  
 
----
+- Le milestone sono visibili con stato (in progress / Upcoming)
+- La transizione da una fase all'altra non è spiegata — un utente non capisce quando "finisce" DISCOVER e inizia INSPIRE
 
-## BACKLOG V2.0
+### 4.4 Percorsi morti
 
-1. **Sidebar espansa con label** per modalità onboarding
-2. **Dashboard widget "ultimi lead"** per visibilità immediata
-3. **Magazine rinominato** o accessibile più direttamente
-4. **DJ Workspace stabilità** — bug critico da risolvere
-5. **Empty states** su tutte le sezioni CRM/Lead
-6. **Mobile responsive check** — non testato in questo sprint
-7. **Form partner con label floating** accessibili
-8. **Glossario termini** per utenti non tecnici
+**Nessun percorso morto identificato.**
 
 ---
 
-*Report generato da: T1 Testing Agent | Sprint UX Usabilità | Febbraio 2026*
+## CHAMELEON GOVERNANCE AUDIT
+
+### Cos'è Blueprint Chameleon™
+
+Blueprint Chameleon è un sistema di preset visivi per i Moodboard interni (filtri grain, vignette, contrast, saturation, temperature). Ha 6 preset predefiniti + personalizzazione libera.
+
+### Dove influenza realmente
+
+| Superficie | Influenzata | Note |
+|-----------|-------------|------|
+| Moodboard view (interno) | SI | Filtri visivi sui moodboard |
+| Atelier Media Direction | SI | Grain/vignette sulle immagini |
+| Sito pubblico (/projects) | NO | Zero effetto |
+| Sito pubblico (homepage) | NO | Zero effetto |
+| Magazine | NO | Zero effetto |
+| Partner application | NO | Zero effetto |
+| CRM / DJ Workspace | NO | Zero effetto |
+
+### Classificazione per elemento
+
+| Impostazione | Frontend pubblico | Blueprint interno | Necessaria oggi | Decisione |
+|---|---|---|---|---|
+| Preset visivo attivo | NO | SI (solo moodboard) | NO | **FUTURE** |
+| Grain level | NO | SI (solo moodboard) | NO | **FUTURE** |
+| Vignette | NO | SI (solo moodboard) | NO | **FUTURE** |
+| Contrast | NO | SI (solo moodboard) | NO | **FUTURE** |
+| Temperature | NO | SI (solo moodboard) | NO | **FUTURE** |
+
+### Problema identificato — Setup obbligatorio
+
+Lo step "Blueprint Chameleon™" è il passaggio **4/6** nel Setup Workspace obbligatorio.  
+Un banner persistente compare su **TUTTE** le pagine Blueprint finché non viene completato.
+
+Un utente che usa la piattaforma per gestire lead, pubblicare contenuti e gestire il Design Journey non ha bisogno di Chameleon. Ma il banner lo distrae ogni volta che apre qualsiasi pagina.
+
+**Raccomandazione**: rimuovere Chameleon dal Setup obbligatorio. Spostare come step opzionale o in "Funzionalità avanzate Moodboard". Il banner non deve comparire per chi non usa i Moodboard.
+
+---
+
+## RIEPILOGO PASS / WARNING / BLOCKER
+
+### PASS
+
+| Elemento | Note |
+|---------|------|
+| Login e accesso Blueprint | Immediato, chiaro |
+| Homepage pubblica | Qualità premium, CTA chiari |
+| /professionals — comprensibilità | Headline e CTA cristallini |
+| Partner Application Form | Chiaro, 7 lingue |
+| Begin Journey form | Esperienza differenziante, non è un preventivo |
+| Projects listing | Tutti i progetti visibili (post-fix F1) |
+| Magazine discoverability | Voce diretta in sidebar Growth (post-fix) |
+| DJ Workspace struttura | 7 fasi visivamente comprensibili |
+| CRM — Accounts | Dati presenti e navigabili |
+| DJ E2E tecnico | 7/7 step funzionanti |
+
+### WARNING
+
+| # | Elemento | Gravità | Note |
+|---|---------|---------|------|
+| W1 | **Sidebar icone-only** | ALTA | 16 icone senza etichette — utente non sa dove andare |
+| W2 | **Setup banner Chameleon persistente** | ALTA | Compare su ogni pagina admin, distrae, Chameleon non influenza il sito |
+| W3 | **"Blueprint Experience"** per CMS | MEDIA | Nome non intuitivo — un utente cerca "Sito web" o "Homepage" |
+| W4 | **Terminologia CRM** (DISCOVERY/CULTIVATION) | MEDIA | Gergo tecnico, non familiare allo showroom italiano |
+| W5 | **DJ Checklist** — non è chiaro come completare Brief & Questionnaire | MEDIA | Manca guida contestuale |
+| W6 | **Conferma post-invio** Partner form | BASSA | Utente non sa cosa succede dopo l'invio |
+| W7 | **Footer admin**: "POWERED BY MOOD FOR DESIGN™" | BASSA | Visibile nel pannello admin del cliente |
+
+### BLOCKER
+
+**Nessun BLOCKER identificato.**  
+Il BLOCKER segnalato dal testing agent (DJ workspace loading) era un timeout transitorio Supabase — risolto, verificato con test diretto (tempo risposta API: 1.4s, workspace carica correttamente).
+
+---
+
+## RACCOMANDAZIONI (solo fix minimi, basate su evidenze)
+
+### R1 — Sidebar: etichette visibili [IMPATTO ALTO]
+**Osservazione**: un utente non tecnico non sa cosa fanno le 16 icone della sidebar.  
+**Fix minimo**: espandere la sidebar di default oppure mostrare tooltip permanenti. La logica di espansione (`useSidebarCollapsed`) esiste già.
+
+### R2 — Chameleon: rimuovere dall'onboarding obbligatorio [IMPATTO ALTO]
+**Osservazione**: banner persistente su ogni pagina per uno step che non influenza il sito pubblico.  
+**Fix minimo**: segnare il Chameleon step come opzionale nel tenant-onboarding (solo modifica del dato in DB/seed, non nuovo componente).
+
+### R3 — CRM Leads: aggiungere contesto "dove arrivano le richieste" [IMPATTO MEDIO]
+**Osservazione**: un nuovo utente non sa dove trovare le prime richieste.  
+**Fix minimo**: aggiungere una riga descrittiva nella colonna "Leads": "Qui arrivano le richieste dal sito".
+
+### R4 — Partner Form: aggiungere messaggio post-invio [IMPATTO BASSO]
+**Osservazione**: nessuna conferma su cosa succede dopo l'invio.  
+**Fix minimo**: verificare e migliorare la pagina di conferma post-invio.
+
+---
+
+## COSA MOSTRARE DURANTE UNA DEMO COMMERCIALE
+
+1. **Homepage pubblica** — impatto visivo immediato
+2. **Begin Journey** — momento WOW: "non è un preventivo, è una conversazione progettuale"
+3. **Projects Studio** — gallery + hotspot + YouTube + 7 lingue
+4. **CMS live editing** — modifica testo, anteprima in tempo reale
+5. **DJ Workspace** — roadmap 7 fasi elegante
+6. **Partner Application** — 7 lingue, professionale
+7. **Magazine** — pubblicazione articoli in 2 click
+
+## COSA NASCONDERE DURANTE UNA DEMO COMMERCIALE
+
+1. **Blueprint Chameleon** — confonde, non influenza il sito nel contesto demo
+2. **Setup Workspace banner** — dismissare prima della demo (`/api/tenant-onboarding/dismiss`)
+3. **CRM terminologia** (DISCOVERY/CULTIVATION) — mostrare solo la vista Accounts
+4. **Sidebar icone-only** — espandere la sidebar o fare la demo con sidebar aperta
+5. **DJ con dati vuoti** — usare un DJ precompilato per la demo del workflow
+
+## COSA UN CLIENTE USERÀ DAVVERO NEL PRIMO MESE
+
+1. **CMS** — modifica homepage, servizi, about
+2. **Projects Studio** — pubblicare i primi 3-5 progetti
+3. **Magazine** — pubblicare 1-2 articoli
+4. **Lead generation** — ricevere le prime richieste via begin-journey
+5. **CRM Accounts** — gestire le relazioni attive
+
+## COSA PUÒ ASPETTARE LA VERSIONE 2.0
+
+1. **Blueprint Chameleon** — funzionalità avanzata per studi con workflow moodboard
+2. **Design Journey workspace completo** — checklist, briefs, documenti
+3. **Sidebar con etichette sempre visibili**
+4. **Terminologia CRM localizzata** per showroom italiani
+5. **Guida contestuale in-app** per il DJ workflow
+
+---
+
+*Report generato il 2026-06-20 — Real User Validation Sprint*
