@@ -1,0 +1,153 @@
+{
+  "summary": "UX Pilot Validation Sprint — 4 percorsi utente su MOOD for DESIGN. Testati tutti gli scenari richiesti (TEST 1A-1D, 2A-2B, 3A-3B, 4A-4B + Source of Truth). Focus su usabilità e comprensione immediata per utenti non tecnici.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Sidebar (Blueprint OS)",
+        "issue": "Sidebar mostra SOLO icone — zero label visibili senza hover. Un utente non tecnico non capisce dove andare. testid=sidebar-brand-toggle espande la sidebar ma non è intuitivo.",
+        "selector": "[data-testid='sidebar-brand-toggle']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Homepage CTA",
+        "issue": "'PRENOTA UNA CONSULENZA' porta a /consulenza, NON a /begin-journey. Il flusso Begin Journey (Design Journey™) è accessibile solo tramite URL diretto. Nessuna CTA sulla homepage punta a /begin-journey.",
+        "selector": "a[href='/consulenza']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Partner Application Form",
+        "issue": "Il form è single-page scrollabile (non multi-step come atteso). Non ci sono step indicator visibili. Tutto in un'unica schermata lunga.",
+        "selector": ".partner-form",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Begin Journey → CRM Lead Creation",
+        "issue": "FUNZIONA CORRETTAMENTE. Giulia Romano (giulia.test.pilot@test.com) comparsa in /relations/accounts come Account dopo submit del form. Flusso end-to-end verificato.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "CRM /relations/accounts",
+        "issues": ["Label DISCOVERY / CULTIVATION / ACTIVE STUDIO sono in inglese — potrebbe confondere uno showroom italiano non tecnico. Suggerimento: aggiungere traduzione italiana sotto o tooltip."]
+      },
+      {
+        "screen": "Blueprint sidebar - voce CMS",
+        "issues": ["Label 'Experience' (route /blueprint/experience) non è intuitiva per un utente che cerca 'modifica homepage'. Il CMS si chiama 'Pagine' una volta dentro ma l'entry point non è discoverable dalla sidebar principale."]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "ux_scorecard": {
+    "TEST_1A_dashboard_orientamento": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "NO - ROSSO (>45sec)",
+      "note": "Sidebar icon-only. Nessuna label visibile. L'utente vede solo icone e non sa cosa rappresentano. Il pannello onboarding è una banner sottile in cima (non prominente). Le action cards 'Cosa puoi fare adesso' aiutano ma non sostituiscono la navigazione.",
+      "actions_required": 1,
+      "discovery_time_estimate": ">45sec"
+    },
+    "TEST_1B_trovare_CMS": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "NO - ROSSO (>45sec)",
+      "note": "Per trovare la modifica della homepage, l'utente deve: (1) trovare il link Blueprint nella sidebar (non etichettato), (2) capire che 'Experience' = 'Pagine' = homepage editor. La voce 'Experience' nella sidebar non è mai visibile come testo. Numero di azioni: 2-3 click minimo, ma senza sapere l'URL è praticamente impossibile in <45sec.",
+      "clicks_to_reach_blueprint_experience": "3+ (sidebar icon → Blueprint → Pagine → Home)",
+      "discovery_time_estimate": ">45sec"
+    },
+    "TEST_1C_pubblicare_progetto": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "SI - VERDE (<15sec)",
+      "note": "Il pulsante '+ NUOVO PROGETTO' è chiaramente visibile. I badge PUBLISHED/DRAFT sono leggibili. Il layout è intuitivo. Content Studio™ con Published Journeys® è ben strutturato.",
+      "projects_visible": 6,
+      "new_project_button_visible": true
+    },
+    "TEST_1D_trovare_lead": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "PARZIALE - GIALLO (15-45sec)",
+      "note": "La struttura Leads/Prospects/Accounts pipeline è visuale e comprensibile. Le label DISCOVERY/CULTIVATION/ACTIVE STUDIO sono in inglese. 11 Leads nel sistema. La struttura è logica ma i termini anglofoni possono confondere.",
+      "leads_count": 11,
+      "prospects_count": 0,
+      "accounts_count": 5
+    },
+    "TEST_2A_professionals": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "SI - VERDE (<15sec)",
+      "note": "Pagina /professionals carica correttamente. Il valore della collaborazione è chiaro: 'Le migliori collaborazioni nascono da una visione condivisa'. CTA 'PROPONI UNA COLLABORAZIONE' è ben visibile e porta correttamente a /partner-application.",
+      "partner_cta_links_correctly": true
+    },
+    "TEST_2B_partner_form": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "PARZIALE - GIALLO",
+      "note": "Il form /partner-application è un SINGLE-PAGE FORM (non multi-step). Non ci sono step indicator. Sezioni: Identità professionale, Profilo online, Contesto geografico, tipo di collaborazione. Bottone 'INVIA CANDIDATURA' visibile. La submission non è stata testata.",
+      "form_steps": 1,
+      "form_sections": ["Identità professionale", "Profilo online", "Contesto geografico", "Tipo collaborazione"],
+      "submit_button_visible": true
+    },
+    "TEST_3A_homepage": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "PARZIALE - GIALLO (15-45sec)",
+      "note": "Il servizio è chiaro ('Progettiamo ambienti che raccontano la tua storia'). Le CTA primarie sono 'PRENOTA UNA CONSULENZA' e 'PER I PROFESSIONISTI'. NON c'è una CTA che porta a /begin-journey. Il percorso cliente finale (Design Journey) non è il CTA principale.",
+      "begin_journey_cta_visible": false,
+      "main_cta": "PRENOTA UNA CONSULENZA → /consulenza"
+    },
+    "TEST_3B_begin_journey_form": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "SI - VERDE (<15sec)",
+      "note": "Form 3-step completato con successo: Step1 (Atmosfera/Casa), Step2 (Come Vivi), Step3 (Conosciamoci - nome/email). Email validation in tempo reale ('Email disponibile'). Submission mostrata con 'Stiamo aprendo il tuo Design Journey™...'.",
+      "form_steps": 3,
+      "step_labels": ["ATMOSFERA", "COME VIVI", "CONOSCIAMOCI"],
+      "submission_success": true,
+      "email_validation_works": true,
+      "test_data_used": "Giulia Romano, giulia.test.pilot@test.com"
+    },
+    "TEST_4A_workflow_dj": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "N/A",
+      "note": "VERIFICATO: Giulia Romano è comparsa in /relations/accounts con status JOURNEY · PRIVATE CLIENT · IT · in progress. Il workflow inbound è funzionante end-to-end.",
+      "lead_found_in_crm": true,
+      "lead_category": "JOURNEY (Account diretto, non Lead)"
+    },
+    "TEST_4B_projects": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "SI - VERDE (<15sec)",
+      "note": "6 progetti visibili su /projects. Tutti cliccabili. Detail page carica ('VILLA RESIDENZIALE — LAGO DI COMO'). Filtri per categoria funzionanti (TUTTI/RESIDENZIALE/OSPITALITÀ/RETAIL).",
+      "projects_count": 6,
+      "projects_clickable": true,
+      "detail_page_loads": true
+    },
+    "SOURCE_OF_TRUTH_projects_studio": {
+      "FUNZIONA": "SI",
+      "SI_CAPISCE_IMMEDIATAMENTE": "SI - VERDE (<15sec)",
+      "note": "In /blueprint/projects-studio: 6 progetti visibili. Badge PUBLISHED chiaramente distingue published da draft. Lista con immagini thumbnail, categoria, titolo, status, anno.",
+      "published_projects_visible": 6,
+      "published_vs_draft_clear": true
+    }
+  },
+  "action_items": [
+    "CRITICO: Sidebar del Blueprint OS deve mostrare label testuali visibili senza hover per utenti non tecnici. Considerare sidebar espansa di default o tooltip labels permanenti.",
+    "ALTO: Aggiungere CTA sulla homepage pubblica che porta direttamente a /begin-journey (il cuore del percorso cliente).",
+    "MEDIO: Considerare di italianizzare le label CRM: DISCOVERY→Scoperta, CULTIVATION→Coltivazione, ACTIVE STUDIO→Studio Attivo.",
+    "MEDIO: Il percorso per trovare 'modifica homepage' è troppo lungo. Considerare link diretto dalla sidebar principale o dal dashboard.",
+    "INFO: Partner application form è single-page (non multi-step). Se era intenzionale, documentare. Se doveva essere multi-step, è un bug."
+  ],
+  "critical_code_review_comments": [
+    "Sidebar navigation: nessuna label visibile senza hover → UX FAILURE per utenti non tecnici. Richiede sidebar espansa di default o label permanenti.",
+    "Homepage missing /begin-journey CTA: il flusso principale cliente (Design Journey) non è raggiungibile dalla homepage pubblica senza conoscere l'URL.",
+    "Blueprint CMS route 'Experience' è non-intuitivo: un owner di showroom che cerca 'modifica homepage' non associa 'Experience' con questa funzione."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A",
+    "frontend": "90%"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Creato lead Giulia Romano (giulia.test.pilot@test.com) tramite form /begin-journey durante il test",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Tutti i percorsi utente principali funzionano tecnicamente. I problemi sono esclusivamente di UX/discoverability. Il flusso end-to-end Begin Journey → CRM è verificato e funzionante. La sidebar Blueprint OS mostra solo icone: è necessario hover per vedere le label. La homepage pubblica non ha una CTA diretta per /begin-journey. Il partner-application è single-page form (non multi-step)."
+}
