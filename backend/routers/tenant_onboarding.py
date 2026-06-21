@@ -440,6 +440,7 @@ def get_activation_foundation(ctx: dict = Depends(get_tenant_context)):
     # First missing critical step (the "next action" shown in the banner)
     next_critical = next((i for i in required_items if i["critical"] and not i["done"]), None)
     business = _business_counts(tenant_id)
+    row = _ensure_row(tenant_id)
     return {
         "tenant_id": tenant_id,
         "items": items,
@@ -447,6 +448,7 @@ def get_activation_foundation(ctx: dict = Depends(get_tenant_context)):
         "total": total,
         "progress": round((completed / total) * 100) if total else 0,
         "activated": completed == total,
+        "dismissed": bool(row.get("dismissed_at")),  # permanent server-side dismiss
         "next_action": next_critical,
         "business_counts": business,
     }

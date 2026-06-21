@@ -146,7 +146,7 @@ const SettingsPage = () => {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <SettingsTile testid="tile-storefront" icon={Store} to="/blueprint/experience"
-            title={t('settings.storefront.title', null, 'Experience Studio')}
+            title={t('settings.storefront.title', null, 'Website Studio')}
             description={t('settings.storefront.sub', null, 'Homepage, hero, projects, value props — navigation & footer included.')}
           />
           <SettingsTile testid="tile-forms" icon={ClipboardList} to="/blueprint/forms-journeys"

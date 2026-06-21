@@ -20,7 +20,7 @@ export default function PersistentAlertBanner() {
   const route = useSmartCtaRouter();
   const { pathname } = useLocation();
 
-  if (!data || data.activated || bannerDismissed) return null;
+  if (!data || data.activated || bannerDismissed || data.dismissed) return null;
   // Editorial Dashboard (Feb 2026) · banner NON deve dominare /dashboard
   if (pathname === '/dashboard' || pathname === '/dashboard/') return null;
   const next = data.next_action;

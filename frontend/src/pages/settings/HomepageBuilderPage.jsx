@@ -59,7 +59,7 @@ const HomepageBuilderPage = () => {
           color: 'var(--bp-text-primary)',
           margin: 0,
         }}>
-          This experience is now managed inside Blueprint Experience.
+          This experience is now managed inside Website Studio.
         </h1>
         <p style={{
           fontFamily: 'var(--bp-font-body)',
@@ -69,7 +69,7 @@ const HomepageBuilderPage = () => {
         }}>
           La Public Editorial Infrastructure™ ora vive in un'unica pipeline.
           La gestione delle pagine, dei blocchi e degli asset si fa da
-          <em> Blueprint Experience</em>.
+          <em> Website Studio</em>.
         </p>
         <button
           type="button"
@@ -86,7 +86,7 @@ const HomepageBuilderPage = () => {
             fontFamily: 'var(--bp-font-body)',
           }}
         >
-          Apri Blueprint Experience <ArrowRight size={13} strokeWidth={2} />
+          Apri Website Studio <ArrowRight size={13} strokeWidth={2} />
         </button>
         <p style={{ fontSize: 11, color: 'var(--bp-text-subtle)', margin: 0 }}>
           Verrai reindirizzato automaticamente fra qualche secondo.

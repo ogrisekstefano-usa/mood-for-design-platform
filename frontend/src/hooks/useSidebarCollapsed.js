@@ -8,15 +8,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'mfd_sidebar_collapsed';
 
-// MOOD for DESIGN™ defaults to an icon-only "architectural" left rail on
-// first load — same as Figma. Users can expand explicitly and we persist
-// that choice. We DO NOT auto-expand on hover (the user explicitly rejected
-// hover-expand: it creates visual jitter and breaks the editorial calm).
+// ITER144 UX CLEANUP · default = expanded so labels are immediately
+// visible to new users. The user can still collapse manually and
+// the preference is persisted in localStorage.
 const initial = () => {
-  if (typeof window === 'undefined') return true;
+  if (typeof window === 'undefined') return false;
   const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === '0') return false;
-  return true; // default = collapsed (icon-only)
+  if (stored === null) return false;   // first visit → expanded
+  if (stored === '0') return false;    // user explicitly expanded
+  return true;                         // user explicitly collapsed
 };
 
 export default function useSidebarCollapsed() {

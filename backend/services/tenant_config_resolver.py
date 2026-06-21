@@ -364,6 +364,9 @@ STORE_NAVIGATION_TREE: List[Dict[str, Any]] = [
         "label": "Studio",
         "position": 40,
         "items": [
+            {"code": "website_studio",     "label": "Website Studio",
+             "route": "/blueprint/experience",         "icon": "Globe",
+             "test_id": "sidebar-nav-website-studio",      "position": 5},
             {"code": "media_library",      "label": "Media Library",
              "route": "/library",                   "icon": "Library",
              "test_id": "sidebar-nav-media-library",      "position": 10},
