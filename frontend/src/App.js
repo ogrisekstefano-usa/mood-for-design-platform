@@ -756,6 +756,9 @@ function App() {
                   {/* Legacy redirect — old /workspace/relationships → /relations/accounts */}
                   <Route path="/workspace/relationships" element={<Navigate to="/relations/accounts" replace />} />
                   <Route path="/crm/accounts" element={<Navigate to="/relations/accounts" replace />} />
+                  {/* F2 fix: /blueprint/leads redirects to CRM accounts */}
+                  <Route path="/blueprint/leads" element={<Navigate to="/relations/accounts" replace />} />
+                  <Route path="/leads" element={<Navigate to="/relations/accounts" replace />} />
                   <Route path="/crm/inbox"    element={<Navigate to="/relations/leads"    replace />} />
 
                   {/* ── CLIENT RELATIONS\u2122 (ITER148 · P0 sidebar) ── */}

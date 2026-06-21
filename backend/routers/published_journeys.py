@@ -123,9 +123,11 @@ def _public_shape(parent: dict, translation: Optional[dict]) -> dict:
 @router.get("/{tenant_slug}/feed")
 def public_feed(tenant_slug: str,
                 locale: str = Query("it-IT"),
-                featured_only: bool = Query(True),
+                featured_only: bool = Query(False),
                 limit: int = Query(12, ge=1, le=50)):
-    """Homepage feed — featured + published, locale-resolved."""
+    """Projects feed — tutti i progetti pubblicati, locale-resolved.
+    featured_only=False di default: un progetto pubblicato appare sempre in /projects.
+    La homepage può passare featured_only=True per la sezione "In evidenza"."""
     sb = db()
     # Resolve tenant
     t = (sb.table("tenants").select("id").eq("slug", tenant_slug).limit(1).execute()).data or []

@@ -1,25 +1,31 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
-> **Last update:** Giugno 2026 — v7  
-> **Status:** FINAL SALES READINESS SPRINT COMPLETATO ✅ (Iteration 252: 16/16 backend PASS · 95% frontend PASS) · Blueprint Projects 100% governabile · Partner Form 100% CMS · YouTube in body_blocks · 7 locali BCP-47 · ZERO pattern legacy
+> **Last update:** Giugno 2026 — v8  
+> **Status:** GO-LIVE UNBLOCKING SPRINT COMPLETATO ✅ — F1+F2+F3 tutti PASS · READY FOR FIRST PAYING CUSTOMER
+
+## GO-LIVE UNBLOCKING SPRINT — Completato 20 Giugno 2026
+
+### Risultati Sprint (F1+F2+F3)
+| Fix | Descrizione | Esito |
+|-----|-------------|-------|
+| F1 | `featured_only=False` default nel feed — progetti pubblicati visibili automaticamente | **PASS** |
+| F2 | Redirect `/blueprint/leads` → `/relations/accounts` | **PASS** |
+| F3 | Helper text guida assegnazione partner a Design Journey | **PASS** |
+
+### Report: `/app/memory/GO_LIVE_UNBLOCKING_REPORT.md`
 
 ## BUSINESS FLOW CERTIFICATION SPRINT — Completato 20 Giugno 2026
 
-### GO_LIVE_DECISION: ⚠️ CONDITIONAL — 3 fix operativi per PASS completo
+### GO_LIVE_DECISION aggiornato post-fix:
 
 | Domanda | Gate |
 |---------|------|
-| Vendere licenza oggi? | ⚠️ PARTIAL |
+| Vendere licenza oggi? | ✅ PASS (dopo F1+F2+F3) |
 | Demo oggi? | ✅ PASS |
-| Onboardare cliente reale? | ⚠️ PARTIAL (con doc onboarding) |
-| Gestire progetto reale? | ⚠️ PARTIAL (featured_only default critico) |
-| Gestire partner reale? | ⚠️ PARTIAL (assegnazione DJ bloccata) |
+| Onboardare cliente reale? | ✅ PASS (con doc onboarding 1 pagina) |
+| Gestire progetto reale? | ✅ PASS (dopo F1) |
+| Gestire partner reale? | ✅ PASS (dopo F3) |
 | Pubblicare contenuti reali? | ✅ PASS |
-
-### I 3 fix che sbloccano il go-live completo
-1. **F1 CRITICO**: `featured_only=True` default nel feed pubblico → progetto pubblicato non visibile in `/projects`. Fix: cambiare default a False O aggiungere hint UI.
-2. **F2**: `/blueprint/leads` → 404. Redirect a `/relations/accounts` O voce sidebar.
-3. **F3**: Partner assignment bloccato → aggiungere nota "Invita alla piattaforma prima di assegnare".
 
 ### 6 Report generati in `/app/memory/`
 - `LEAD_TO_DJ_CERTIFICATION.md`

@@ -137,8 +137,13 @@ const AssignDJModal = ({ partner, onClose, onAssigned }) => {
       onAssigned(partner.id);
       onClose();
     } catch (err) {
-      const msg = err?.response?.data?.detail || 'Errore durante l\'assegnazione.';
-      setError(msg);
+      const raw = err?.response?.data?.detail || '';
+      // F3: guida contestuale quando il partner non ha ancora un account piattaforma
+      if (raw.toLowerCase().includes('platform account') || raw.toLowerCase().includes('account')) {
+        setError('Questo professionista non ha ancora un account sulla piattaforma. Invitalo prima da Impostazioni → Membri, poi potrai assegnarlo a un Design Journey.');
+      } else {
+        setError(raw || 'Errore durante l\'assegnazione.');
+      }
     } finally {
       setAssigning(false);
     }
@@ -160,6 +165,20 @@ const AssignDJModal = ({ partner, onClose, onAssigned }) => {
           <p className="pn-modal__desc">
             Seleziona il Design Journey a cui aggiungere <strong>{name}</strong> come contributor.
           </p>
+
+          {/* F3: guida contestuale prerequisito account piattaforma */}
+          <div className="pn-modal__info" data-testid="pn-assign-platform-hint" style={{
+            display: 'flex', alignItems: 'flex-start', gap: 8,
+            background: 'rgba(180,160,120,0.08)', border: '1px solid rgba(180,160,120,0.25)',
+            borderRadius: 6, padding: '10px 14px', marginBottom: 16, fontSize: 12,
+            color: 'var(--bp-text-dim, #888)', lineHeight: 1.5
+          }}>
+            <span style={{ marginTop: 1, flexShrink: 0 }}>ℹ</span>
+            <span>
+              Il professionista deve avere un account sulla piattaforma per essere assegnato.
+              Se non l'ha ancora, invitalo da <strong>Impostazioni → Membri</strong> prima di procedere.
+            </span>
+          </div>
 
           {loading ? (
             <div className="pn-modal__loading">Caricamento Design Journey...</div>
