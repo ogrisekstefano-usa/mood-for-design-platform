@@ -81,10 +81,10 @@ const EditorialFooter = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
           {/* Brand column */}
           <div data-testid="footer-col-brand">
-            <Link to="/" style={{ display: 'inline-block', marginBottom: '1.6rem', textDecoration: 'none' }}
-                  data-testid="footer-logo-link">
+            {/* MoodLogo already renders a <Link> — no outer wrapper needed */}
+            <div style={{ marginBottom: '1.6rem' }} data-testid="footer-logo-link">
               <MoodLogo compact />
-            </Link>
+            </div>
             {social.length > 0 && (
               <div className="flex items-center gap-5" data-testid="footer-socials">
                 {social.map((s, i) => {

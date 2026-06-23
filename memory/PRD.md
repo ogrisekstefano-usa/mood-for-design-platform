@@ -326,6 +326,26 @@ Eliminare tutti i punti di rottura i18n nel funnel studio V2 e nella navigazione
 
 ---
 
+## Phase 3 — Batch 2 (23 June 2026) ✅
+
+### Email Partner ✅
+- `seed_partner_email_templates.py` — template `partner_application_received` + `admin_new_partner_application` (16 blocchi, 32 traduzioni IT+EN)
+- Endpoint aggiornato: `asyncio.create_task()` × 2 email al submit — emails testate status=`sent`
+- `collaboration_intents` serializzato come stringa leggibile in email admin
+
+### IT Content Master ✅
+- `seed_it_master_content.py` — 7 blocchi aggiornati site.home + site.pricing
+- Parole eliminate: piattaforma → ecosistema, software → metodo, utenti inclusi → accessi inclusi
+- Audit post-update: zero occorrenze vietate in home/features/pricing IT
+
+### Locale Autodetect ✅
+- `detectBrowserLocale()` in `LocaleContext.js` — localStorage → navigator.language → 'en-US'
+- `locale` state inizializzato con `useState(() => detectBrowserLocale())` — no null al primo render
+- `LocaleSwitcher` scrive localStorage prima di `setLocale()`
+- Fix: nested `<a>` in footer (outer Link rimosso, MoodLogo già ha Link interno)
+
+---
+
 ## Backlog (post-Phase 3)
 
 - **P1**: Sostituire i `[PLACEHOLDER]` dell'About page con dati reali del founder (bio, metrics, foto, quote)
