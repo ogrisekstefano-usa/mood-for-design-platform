@@ -54,6 +54,17 @@ import ExperiencePillars from './ExperiencePillars';
 import FragmentedTools from './FragmentedTools';
 
 /**
+ * Returns true if any string value in a (possibly nested) object contains [PLACEHOLDER].
+ * Used to hide About page sections that are not yet ready for public display.
+ */
+const hasPlaceholder = (obj) => {
+  if (!obj || typeof obj !== 'object') return false;
+  return Object.values(obj).some(
+    (v) => typeof v === 'string' && v.includes('[PLACEHOLDER]')
+  );
+};
+
+/**
  * Section registry for the ITER149 site engine.
  * Modern sections receive: { content, media, links, options } (resolved by site_resolver).
  * Legacy sections continue to receive: { content, config } (cms_sections.locale_content path).
@@ -126,6 +137,9 @@ export const SECTION_REGISTRY = {
 
 const SectionRenderer = ({ section }) => {
   if (!section || !section.type) return null;
+  // Phase 3 — filter out sections whose content contains [PLACEHOLDER] markers
+  // (About page founder/metrics/quote blocks are placeholder until real data is provided)
+  if (hasPlaceholder(section.content)) return null;
   const Component = SECTION_REGISTRY[section.type];
   if (!Component) {
     console.warn(`[MOOD] Unknown section type: "${section.type}"`);

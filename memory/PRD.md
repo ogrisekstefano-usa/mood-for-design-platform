@@ -281,7 +281,21 @@ Eliminare tutti i punti di rottura i18n nel funnel studio V2 e nella navigazione
 - Backend: 25/25 + 17/17 = 42 test passati (100%)
 - Frontend: 100% — nav hrefs IT e EN corretti, login tradotto (Accedi/Sign in), CTA tradotto (Attiva/Activate Blueprint™), overlay loading mostra `·`
 
-### 10.4 Prossimi step
+### 10.5 Phase 2 — Content EN-US Adaptation (23 June 2026)
+
+**Script eseguiti:**
+- `backend/db/seed_studio_v2_landing_keys.py` — 8 nuove traduzioni (landing.headline, landing.subheadline, landing.cta_start, landing.link_signin × IT+EN)
+- `backend/db/seed_site_en_us.py` — site.home 1 fix chirurgico, site.audience 46 EN-US, site.training 58 EN-US, site.features 29 EN-US
+- `backend/db/seed_seo_meta_en_us.py` — SEO meta (seo.title, seo.description, seo.h1) per 8 pagine EN-US
+
+**Forbidden keyword cleanup:**
+- features `hero.title` EN+IT: "platform/piattaforma" → "editorial configuration/editoriale"
+- features `hero.body` EN+IT: old copy → §B.3 copy
+- features `page_intro.body` EN+IT: "platform/piattaforma" → "editorial infrastructure/infrastruttura editoriale"
+- home `hero.subtitle_accent` EN: "editorial platform" → "editorial ecosystem"
+
+**Risultati test:** 36/36 (100%) — tutte le API servono il contenuto EN-US corretto senza keyword vietate.
+
 - P1: `/partner-application` UI update (prefisso telefono internazionale + checkboxes collaborazione)
 - P2: Trust Layer About page (Founder Letter — bloccato su dati reali founder)
 - P3: **LOCKED** — Design Journey™ page `/design-journey` (sblocca solo dopo Trust Layer pubblicato + score ≥8.0)

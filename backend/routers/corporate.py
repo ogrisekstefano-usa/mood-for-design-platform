@@ -159,6 +159,53 @@ async def subscribe_newsletter(data: NewsletterSubscribe, db: AsyncSession = Dep
     return {"success": True, "message": "You're on the list."}
 
 
+class PartnerApplicationForm(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    phone_prefix: Optional[str] = None
+    phone_number: Optional[str] = None
+    company: Optional[str] = None
+    website: Optional[str] = None
+    profile_type: str
+    collaboration_intents: Optional[list] = []
+    message: Optional[str] = None
+    locale: Optional[str] = "en-US"
+
+
+@router.post("/partner-application")
+async def submit_partner_application(
+    form: PartnerApplicationForm, db: AsyncSession = Depends(get_db)
+):
+    import json as _json
+    intents_json = _json.dumps(form.collaboration_intents or [])
+    await db.execute(
+        text("""
+            INSERT INTO partner_applications
+              (id, first_name, last_name, email, phone_prefix, phone_number,
+               company, website, profile_type, collaboration_intents,
+               message, locale, status, created_at)
+            VALUES (
+              gen_random_uuid(),
+              :fn, :ln, :email, :pp, :pn, :co, :ws, :pt,
+              ARRAY(SELECT jsonb_array_elements_text(CAST(:ci AS jsonb))),
+              :msg, :loc, 'new', NOW()
+            )
+        """),
+        {
+            "fn": form.first_name, "ln": form.last_name,
+            "email": form.email,
+            "pp": form.phone_prefix, "pn": form.phone_number,
+            "co": form.company, "ws": form.website,
+            "pt": form.profile_type,
+            "ci": intents_json,
+            "msg": form.message, "loc": form.locale,
+        },
+    )
+    await db.commit()
+    return {"success": True, "message": "Application received. We'll be in touch within 48 hours."}
+
+
 class StudioSignup(BaseModel):
     studio_name: str
     email: str

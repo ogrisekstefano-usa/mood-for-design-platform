@@ -113,6 +113,20 @@ export const LOCALIZED_SLUGS = {
     de:       '/anmelden',
     es:       '/acceso',
   },
+  'partner-application': {
+    'it-IT':  '/candidatura-partner',
+    'en-US':  '/partner-application',
+    'en-GB':  '/partner-application',
+    'fr-FR':  '/candidature-partenaire',
+    'de-DE':  '/partner-bewerbung',
+    'es-ES':  '/candidatura-partner',
+    'it':     '/candidatura-partner',
+    'en-us':  '/partner-application',
+    'en-uk':  '/partner-application',
+    fr:       '/candidature-partenaire',
+    de:       '/partner-bewerbung',
+    es:       '/candidatura-partner',
+  },
 };
 
 /** Returns a deduplicated list of all paths for a given canonical key. */

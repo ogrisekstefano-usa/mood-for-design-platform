@@ -27,6 +27,7 @@ import MovementRequest from './pages/studio/MovementRequest';
 import StudioFunnelV2 from './pages/studio_v2/StudioFunnelV2';
 import PasswordResetPage from './pages/PasswordResetPage';
 import FaqPage from './pages/FaqPage';
+import PartnerApplicationPage from './pages/PartnerApplicationPage';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -47,6 +48,7 @@ const PAGE_COMPONENTS = {
   training: TrainingPage,
   support:  SupportPage,
   login:    AccessContinuityPage,  // ITER167 — replaces LoginHero
+  'partner-application': PartnerApplicationPage,
 };
 
 const renderLocalizedRoutes = () => {
