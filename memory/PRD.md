@@ -348,5 +348,5 @@ Eliminare tutti i punti di rottura i18n nel funnel studio V2 e nella navigazione
 
 ## Backlog (post-Phase 3)
 
-- **P1**: Sostituire i `[PLACEHOLDER]` dell'About page con dati reali del founder (bio, metrics, foto, quote)
+- **P1 COMPLETATO**: About page corporate rewrite — zero founder references, 6 sezioni corporate
 - **P2 LOCKED**: Implementare `/design-journey` — sblocca solo dopo Trust Layer pubblicato e score ≥8.0
