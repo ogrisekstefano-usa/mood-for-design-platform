@@ -178,8 +178,13 @@ async def submit_partner_application(
     form: PartnerApplicationForm, db: AsyncSession = Depends(get_db)
 ):
     import json as _json
+    import asyncio as _asyncio
+    from services import email_dispatcher as _ed
+
     intents_json = _json.dumps(form.collaboration_intents or [])
-    await db.execute(
+
+    # 1. Persist the application
+    row = (await db.execute(
         text("""
             INSERT INTO partner_applications
               (id, first_name, last_name, email, phone_prefix, phone_number,
@@ -191,6 +196,7 @@ async def submit_partner_application(
               ARRAY(SELECT jsonb_array_elements_text(CAST(:ci AS jsonb))),
               :msg, :loc, 'new', NOW()
             )
+            RETURNING id
         """),
         {
             "fn": form.first_name, "ln": form.last_name,
@@ -201,8 +207,54 @@ async def submit_partner_application(
             "ci": intents_json,
             "msg": form.message, "loc": form.locale,
         },
-    )
+    )).fetchone()
     await db.commit()
+    application_id = str(row[0]) if row else "—"
+
+    # 2. Build shared variables
+    contact_name   = f"{form.first_name} {form.last_name}".strip()
+    phone_full     = f"{form.phone_prefix or ''} {form.phone_number or ''}".strip() or "—"
+    intents_readable = ", ".join(form.collaboration_intents or []) or "—"
+    reference      = f"PA-{application_id[:8].upper()}"
+    locale         = form.locale or "it-IT"
+    company_part   = f" · {form.company}" if form.company else ""
+
+    # 3. Fire emails (non-blocking)
+    _asyncio.create_task(_ed.dispatch_email(
+        template_key="partner_application_received",
+        to_email=form.email,
+        to_name=contact_name,
+        locale=locale,
+        variables={
+            "reference":    reference,
+            "contact_name": contact_name,
+            "profile_type": form.profile_type,
+            "company":      form.company or "—",
+        },
+    ))
+
+    admin_email = os.environ.get("ADMIN_EMAIL", "admin@moodfordesign.com")
+    _asyncio.create_task(_ed.dispatch_email(
+        template_key="admin_new_partner_application",
+        to_email=admin_email,
+        to_name="MOOD Admin",
+        locale="it-IT",                 # admin emails always in IT
+        variables={
+            "reference":        reference,
+            "application_id":   application_id,
+            "contact_name":     contact_name,
+            "contact_email":    form.email,
+            "phone_full":       phone_full,
+            "company":          form.company or "—",
+            "company_part":     company_part,
+            "website":          form.website or "—",
+            "profile_type":     form.profile_type,
+            "intents_readable": intents_readable,
+            "message":          form.message or "—",
+            "locale":           locale,
+        },
+    ))
+
     return {"success": True, "message": "Application received. We'll be in touch within 48 hours."}
 
 

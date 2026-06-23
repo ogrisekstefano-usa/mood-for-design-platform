@@ -28,6 +28,9 @@ const LocaleSwitcher = ({ dark = true }) => {
   const itemColor    = dark ? '#FFFFFF' : '#000000';
 
   const onSelectLocale = (newLocale) => {
+    // Write explicit user preference FIRST so detectBrowserLocale() picks it
+    // up immediately on the next render before the API responds.
+    try { localStorage.setItem('mood-locale', newLocale); } catch { /* ignore */ }
     setLocale(newLocale);
     setOpen(false);
 

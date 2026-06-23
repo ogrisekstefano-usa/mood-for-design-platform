@@ -5,6 +5,32 @@ import { LOCALIZED_SLUGS } from '../corporate/routes/localizedSlugs';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 /**
+ * detectBrowserLocale()
+ * ─────────────────────────────────────────────────────────────────────────
+ * Returns the best-guess locale SYNCHRONOUSLY — no API, no async.
+ * Used as the initial React state so the first paint is never null.
+ *
+ * Strategy:
+ *   1) localStorage 'mood-locale' / 'mood_locale' — explicit user preference
+ *   2) navigator.language — browser signal (coerced to BCP-47 base)
+ *   3) 'en-US' — safe fallback
+ *
+ * NOTE: This is overridden after the API bootstrap completes (resolveInitial).
+ * Its only purpose is to prevent a null→value locale flash.
+ */
+export const detectBrowserLocale = () => {
+  try {
+    const stored = localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale');
+    if (stored) return stored;
+  } catch { /* localStorage blocked */ }
+  try {
+    const nav = navigator.language || navigator.userLanguage || '';
+    if (nav) return nav;          // e.g. 'it-IT' or 'it' — downstream will normalise
+  } catch { /* SSR / restricted env */ }
+  return 'en-US';
+};
+
+/**
  * LocaleContext — Market-first locale architecture.
  *
  * Source of truth is the DB:
@@ -60,7 +86,7 @@ export const LocaleProvider = ({ children }) => {
   const [defaultLocale, setDefaultLocale] = useState(null);
   const [defaultMarketCode, setDefaultMarketCode] = useState(null);
   const [marketCode, setMarketCode] = useState(null);
-  const [locale, setLocaleState]   = useState(null);
+  const [locale, setLocaleState]   = useState(() => detectBrowserLocale()); // sync initial value
   const [ready, setReady] = useState(false);
 
   // ── Bootstrap: fetch catalogs in parallel, then resolve initial state ──

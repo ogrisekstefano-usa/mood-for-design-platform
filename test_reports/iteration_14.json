@@ -1,0 +1,52 @@
+{
+  "summary": "Iteration 14 — Phase 3 Supplementari. Tested: email dispatch for partner-application, IT content master update (forbidden words removal), locale autodetect (detectBrowserLocale), frontend partner form submit flow. All 11 backend tests passed (100%). All frontend critical flows working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/admin/email-dispatch-log",
+        "issue": "No public endpoint available to verify studio_email_dispatch_log programmatically via API — email dispatch correctness verified indirectly (fire-and-forget asyncio.create_task, application rows created successfully). Resend is live (no mock)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "DesignJourneyTeaser locale",
+        "issue": "Teaser eyebrow shows 'COMING SOON' (EN) even when homepage is in IT. Same carry-over from iter 13 — locale autodetect works (nav shows Italian) but teaser uses a separate translation path that defaults to EN. LOW priority.",
+        "affected_selectors": ["[data-testid='teaser-eyebrow']"],
+        "priority": "LOW"
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Footer (all pages)",
+        "issues": ["Nested <a> inside <a> causes hydration warning in console: MoodLogo inside a LinkWithRef is itself a LinkWithRef — <a> descendent of <a>. Not a visual bug but a console error."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter14_phase3_supplementari.py",
+    "/app/test_reports/pytest/iter14_phase3.xml"
+  ],
+  "action_items": [
+    "LOW: Fix nested <a> in <a> hydration warning — MoodLogo inside footer LinkWithRef wraps another LinkWithRef, creating <a> inside <a>.",
+    "LOW: DesignJourneyTeaser still shows EN 'COMING SOON' even when page locale is IT — minor locale translation miss."
+  ],
+  "critical_code_review_comments": [
+    "asyncio.create_task() for email dispatch in corporate.py is correct pattern (fire-and-forget), but if the event loop is not running at that point (test context), tasks may be silently dropped. In production FastAPI this is safe.",
+    "partner_applications.id is UUID type (gen_random_uuid() without ::text cast) which is correct but inconsistent with contact_submissions which uses gen_random_uuid()::text — minor inconsistency from previous iteration, harmless."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter14_phase3_supplementari.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "95% (partner form submit works, locale autodetect working — minor teaser EN issue persists from iter 13)"
+  },
+  "seed_data_creation": "Test partner applications created via POST tests with TEST_ prefix emails (iter14 suffix)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 14 tests Phase 3 Supplementari tasks. Backend: POST /api/corporate/partner-application fully working (DB persist + email dispatch via asyncio.create_task). IT content master: no forbidden words (piattaforma, software, utenti inclusi) in IT home/pricing pages. Frontend: detectBrowserLocale() working — homepage first render shows IT locale (nav is Italian). Partner form /partner-application and /candidatura-partner both load and submit successfully showing success state. Minor ongoing issue: DesignJourneyTeaser teaser-eyebrow still EN even in IT locale context."
+}
