@@ -16,7 +16,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
 
   // Phone prefix ISO state — defaults to HQ country, can be changed by the user.
   const [phoneIso, setPhoneIso] = useState(() =>
-    form.phone_prefix_iso || form.headquarter_country_iso || 'IT'
+    form.phone_prefix_iso || form.headquarter_country_iso || null
   );
 
   // Sync the textual phone_prefix (+39) into the form whenever ISO changes.
@@ -83,17 +83,16 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
       {/* P0-B: Studio name (required, ≥2 chars). Drives tenant
           display name + suggested slug in the activation modal. */}
       <div style={{ marginBottom: 22 }}>
-        <label style={labelStyle}>{t('step3_studio_name', 'Nome dello studio')}</label>
+        <label style={labelStyle}>{t('step3_studio_name')}</label>
         <input type="text" value={form.studio_name || ''}
           onChange={(e) => update({ studio_name: e.target.value })}
           data-testid="studio-name-input"
-          placeholder={t('step3_studio_name_placeholder', 'Es. Martinel Interior Design')}
+          placeholder={t('step3_studio_name_placeholder')}
           maxLength={120}
           style={inputStyle} />
         <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.45)',
                     marginTop: 6, lineHeight: 1.5 }}>
-          {t('step3_studio_name_hint',
-             'Sarà il nome ufficiale del tuo workspace MOOD.')}
+          {t('step3_studio_name_hint')}
         </p>
       </div>
 
@@ -125,7 +124,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
         {checking && (
           <p data-testid="email-checking" style={{
             fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', marginTop: 6,
-          }}>{t('step3.email.checking', 'Verifica in corso…')}</p>
+          }}>{t('step3.email.checking') || '·'}</p>
         )}
         {showError && (
           <p data-testid="email-error" style={{
@@ -142,7 +141,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
             display: 'flex', alignItems: 'center', gap: 6,
           }}>
             <span aria-hidden="true">✓</span>
-            <span>{t('step3.email.ok', 'Email disponibile.')}</span>
+            <span>{t('step3.email.ok')}</span>
           </p>
         )}
       </div>
@@ -157,7 +156,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
           number={form.phone_number}
           onNumber={(v) => update({ phone_number: v })}
           testIdRoot="phone"
-          searchPlaceholder={t('step2.targets.search.placeholder', 'Cerca…')} />
+          searchPlaceholder={t('step2.targets.search.placeholder') || '…'} />
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
@@ -165,7 +164,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
           style={{ background: 'transparent', color: 'rgba(255,255,255,0.6)',
             border: 'none', cursor: 'pointer',
             padding: '14px 4px', fontSize: '0.92rem', fontFamily: 'inherit' }}>
-          ← {t('btn_back')}
+          ← {t('btn_back') || '←'}
         </button>
         <button type="button" disabled={!canContinue} onClick={next}
           data-testid="step3-continue"
@@ -177,7 +176,7 @@ const Step3Contact = ({ t, form, update, next, back, locale }) => {
             fontWeight: 500, letterSpacing: '0.04em',
             cursor: canContinue ? 'pointer' : 'not-allowed',
             fontFamily: 'inherit',
-          }}>{t('btn_continue')} →</button>
+          }}>{t('btn_continue') || '→'} →</button>
       </div>
     </div>
   );

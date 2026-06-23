@@ -167,7 +167,9 @@ async def manifest(locale: str = 'it-IT') -> dict:
             "step2.targets.eyebrow":          _c("studio_v2.ui.step2.targets.eyebrow",          "C · Paesi target · Opzionale"),
             "step2.city.placeholder":         _c("studio_v2.ui.step2.city.placeholder",         "Inserisci la città…"),
             "step2.city.placeholder_italy":   _c("studio_v2.ui.step2.city.placeholder_italy",   "Milano…"),
-            "step2.city.fallback_hint":       _c("studio_v2.ui.step2.city.fallback_hint",       "Inserisci manualmente il nome della città."),
+            "step2.city.fallback_hint":       _c("studio_v2.ui.step2.city.fallback_hint",
+                                                   "Type your city manually." if locale.startswith('en')
+                                                   else "Inserisci manualmente il nome della città."),
             "step2.targets.search.placeholder": _c("studio_v2.ui.step2.targets.search.placeholder", "Cerca un Paese…"),
             "step2.targets.status.active":    _c("studio_v2.ui.step2.targets.status.active",    "Già attivo"),
             "step2.targets.status.planned":   _c("studio_v2.ui.step2.targets.status.planned",   "In espansione"),
@@ -179,8 +181,10 @@ async def manifest(locale: str = 'it-IT') -> dict:
             "step4.help_other.placeholder":   _c("studio_v2.ui.step4.help_other.placeholder",   "Specifica…"),
             "step4.error.prefix":             _c("studio_v2.ui.step4.error.prefix",             "Si è verificato un errore"),
             "loading.brand":                  _c("studio_v2.ui.loading.brand",                  "MOOD"),
-            "loading.message":                _c("studio_v2.ui.loading.message",                "Un attimo…"),
-            "manifest.error":                 _c("studio_v2.ui.manifest.error",                 "Servizio temporaneamente non disponibile."),
+            "loading.message":                _c("studio_v2.ui.loading.message",                "·"),
+            "manifest.error":                 _c("studio_v2.ui.manifest.error",
+                                                   "Service temporarily unavailable." if locale.startswith('en')
+                                                   else "Servizio temporaneamente non disponibile."),
         }
     }
 

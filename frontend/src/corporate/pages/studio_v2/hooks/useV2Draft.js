@@ -29,7 +29,7 @@ const emptyForm = {
   first_name:         '',
   last_name:          '',
   contact_email:      '',
-  phone_prefix:       '+39',
+  phone_prefix:       '',
   phone_number:       '',
   help_topics:        [],
   help_other_text:    '',

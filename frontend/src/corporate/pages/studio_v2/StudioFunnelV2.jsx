@@ -14,6 +14,7 @@ import Step5Received from './Step5Received';
 import { useStudioV2Manifest } from './hooks/useStudioV2Manifest';
 import { useV2Draft } from './hooks/useV2Draft';
 import { LoadingProvider, useLoading } from './components/LoadingContext';
+import { useLocale } from '../../../contexts/LocaleContext';
 
 const TOTAL_STEPS = 5;
 
@@ -29,7 +30,8 @@ const FunnelInner = ({ locale }) => {
   // Smooth step transition: brief branded overlay during state batching
   // so the visitor never sees a blank or frozen interim state.
   const advanceStep = async (delta) => {
-    await withLoading(t('loading.message', 'Un attimo…'), async () => {
+    const loadingMsg = t('loading.message') || '·';
+    await withLoading(loadingMsg, async () => {
       await new Promise((r) => setTimeout(r, 280));
       setStep((s) => Math.min(Math.max(s + delta, 0), TOTAL_STEPS - 1));
     });
@@ -51,7 +53,7 @@ const FunnelInner = ({ locale }) => {
           alignItems: 'center', justifyContent: 'center',
           color: 'rgba(255,255,255,0.4)', letterSpacing: '0.18em',
           textTransform: 'uppercase', fontSize: '0.8rem',
-        }}>{locale.startsWith('en') ? 'One moment…' : 'Un attimo…'}</div>
+        }}>·</div>
       </StudioV2Layout>
     );
   }
@@ -82,11 +84,11 @@ const FunnelInner = ({ locale }) => {
 };
 
 const StudioFunnelV2 = () => {
-  const locale = (typeof navigator !== 'undefined' && navigator.language?.startsWith('en'))
-    ? 'en-US' : 'it-IT';
+  const { locale } = useLocale();
+  const safeLocale = locale || 'it-IT';
   return (
-    <LoadingProvider defaultMessage={locale.startsWith('en') ? 'One moment…' : 'Un attimo…'}>
-      <FunnelInner locale={locale} />
+    <LoadingProvider defaultMessage="·">
+      <FunnelInner locale={safeLocale} />
     </LoadingProvider>
   );
 };

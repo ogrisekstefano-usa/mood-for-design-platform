@@ -1,0 +1,69 @@
+{
+  "summary": "Retested 3 bug fixes from iteration_10. All 3 fixes verified: (1) localizeHref now applied in useSiteNavigation() — EN locale shows /audience,/features,/pricing,/training; IT locale shows /dedicato-a,/caratteristiche,/versioni-prezzi,/formazione. (2) loading.message='·' confirmed via API for both IT and EN locales. (3) /api/site/footer returns 200 for both locales. Backend: 17/17 new tests pass. Frontend: all nav href and label checks pass.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Footer (pre-existing)",
+        "issues": ["Console warning: <a> nested inside <a> — MoodLogo Link inside footer's anchor. Pre-existing, not related to this iteration's fixes."]
+      },
+      {
+        "screen": "EditorialBodyWithPhoto (pre-existing)",
+        "issues": ["Console warning: Each child in a list should have a unique 'key' prop. Pre-existing issue."]
+      }
+    ]
+  },
+
+  "test_report_links": [
+    "/app/backend/tests/test_iter11_bugfixes.py",
+    "/app/test_reports/pytest/iter11_bugfixes.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [
+    "All 3 bugs from iteration_10 are fixed and verified.",
+    "Minor pre-existing console warnings: nested <a> tags in footer and missing key props in list — these are not regressions introduced by this iteration."
+  ],
+
+  "updated_files": [
+    "/app/backend/tests/test_iter11_bugfixes.py"
+  ],
+
+  "success_rate": {
+    "backend": "17/17 = 100% (all new iteration-11 tests pass)",
+    "frontend": "100% — IT locale nav hrefs correct (/dedicato-a, /caratteristiche, /versioni-prezzi, /formazione), EN locale nav hrefs correct (/audience, /features, /pricing, /training), login='Sign in' EN / 'Accedi' IT, CTA='Activate Blueprint™' EN / 'Attiva Blueprint™' IT, footer renders without 500 error, loading.message='·' confirmed via API"
+  },
+
+  "test_credentials": "Not required for these tests",
+
+  "seed_data_creation": "None",
+
+  "retest_needed": false,
+
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "All 3 iteration_10 bugs are fixed. localizeHref is in useSiteChrome.js useSiteNavigation() hook (applies to MinimalNav). loading.message='·' confirmed from DB/fallback. Footer returns 200. No remaining bugs. Pre-existing minor console warnings (nested <a>, missing key props) exist but are not regressions.",
+
+  "verified_fixes": {
+    "fix_1_localize_href": {
+      "status": "VERIFIED",
+      "details": "useSiteChrome.js useSiteNavigation() applies localizeHref() to all nav items. EN locale: audience=/audience, features=/features, pricing=/pricing, training=/training, login='Sign in', CTA='Activate Blueprint™'. IT locale: audience=/dedicato-a, features=/caratteristiche, pricing=/versioni-prezzi, training=/formazione, login='Accedi', CTA='Attiva Blueprint™'."
+    },
+    "fix_2_loading_message": {
+      "status": "VERIFIED",
+      "details": "API /api/studio/v2/manifest?locale=it-IT returns loading.message='·'. API /api/studio/v2/manifest?locale=en-US returns loading.message='·'. Backend fallback in studio_v2.py line 184 is now '·' (not 'Un attimo…'). Frontend code t('loading.message') || '·' will correctly show '·'."
+    },
+    "fix_3_footer_500": {
+      "status": "VERIFIED",
+      "details": "/api/site/footer?locale=it-IT returns 200. /api/site/footer?locale=en-US returns 200. site_resolver.py now handles both list-of-dicts and dict-with-accounts social_cfg formats. Response includes manifesto, copyright, links, legal, social keys with proper list types."
+    }
+  }
+}

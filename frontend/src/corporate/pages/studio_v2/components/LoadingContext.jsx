@@ -10,7 +10,7 @@ import MoodLoadingOverlay from './MoodLoadingOverlay';
 
 const LoadingCtx = createContext({ show: () => {}, hide: () => {}, withLoading: async () => {} });
 
-export const LoadingProvider = ({ children, defaultMessage = 'Un attimo…' }) => {
+export const LoadingProvider = ({ children, defaultMessage = '·' }) => {
   const [state, setState] = useState({ visible: false, message: defaultMessage });
   // Ref-counted: multiple async calls don't fight over the overlay state.
   const refCount = useRef(0);

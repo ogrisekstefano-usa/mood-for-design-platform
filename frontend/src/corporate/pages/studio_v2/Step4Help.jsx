@@ -65,7 +65,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
     }
     };
     if (withLoading) {
-      await withLoading(t('loading.message', 'Un attimo…'), doSubmit);
+      await withLoading(t('loading.message') || '·', doSubmit);
     } else {
       await doSubmit();
     }
@@ -115,7 +115,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
         <div style={{ marginBottom: 24 }}>
           <input type="text" value={form.help_other_text || ''}
             onChange={(e) => update({ help_other_text: e.target.value })}
-            placeholder={t('step4.help_other.placeholder', 'Specifica…')}
+            placeholder={t('step4.help_other.placeholder') || '…'}
             data-testid="help-other-input"
             style={{
               width: '100%', background: 'rgba(255,255,255,0.04)',
@@ -129,7 +129,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
       {error && (
         <p data-testid="step4-error" style={{
           color: '#FFB4A2', fontSize: '0.88rem', marginBottom: 16,
-        }}>{t('step4.error.prefix', 'Si è verificato un errore')}: {error}</p>
+        }}>{t('step4.error.prefix')}: {error}</p>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
@@ -139,7 +139,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
             background: 'transparent', color: 'rgba(255,255,255,0.6)',
             border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
             padding: '14px 4px', fontSize: '0.92rem', fontFamily: 'inherit',
-          }}>← {t('btn_back')}</button>
+          }}>← {t('btn_back') || '←'}</button>
         <button type="button" onClick={onSubmit}
           disabled={!canSubmit}
           data-testid="step4-submit"
@@ -151,7 +151,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
             fontWeight: 500, letterSpacing: '0.04em',
             cursor: canSubmit ? 'pointer' : 'not-allowed',
             fontFamily: 'inherit',
-          }}>{submitting ? '…' : t('btn_submit')}</button>
+          }}>{submitting ? '·' : t('btn_submit') || '→'}</button>
       </div>
     </div>
   );

@@ -362,7 +362,17 @@ async def resolve_footer(locale: str = DEFAULT_LOCALE) -> dict:
             settings = (sec_row or {}).get('settings') or {}
             links_cfg: list[dict] = settings.get('links') or []
             legal_cfg: list[dict] = settings.get('legal') or []
-            social_cfg: list[dict] = settings.get('social') or []  # [{key, href, icon}]
+            social_cfg_raw: list | dict = settings.get('social') or []
+            # The social field may be a dict in newer CMS schemas (with 'accounts' key).
+            if isinstance(social_cfg_raw, dict):
+                social_cfg: list[dict] = [
+                    {'key': a.get('platform', ''), 'href': a.get('href', ''),
+                     'icon': a.get('platform', ''), 'visible': a.get('visible', True)}
+                    for a in social_cfg_raw.get('accounts', [])
+                    if isinstance(a, dict)
+                ]
+            else:
+                social_cfg = [s for s in social_cfg_raw if isinstance(s, dict)]
             blocks_map: dict      = settings.get('blocks') or {}    # {manifesto: 'site.footer.manifesto', copyright: '...'}
 
             block_keys = []

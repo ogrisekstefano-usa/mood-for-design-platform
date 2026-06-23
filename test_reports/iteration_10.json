@@ -1,0 +1,85 @@
+{
+  "summary": "Tested Phase 1 Multilingual i18n Fix across 17 feature points. 25/25 backend tests pass. Frontend: IT/EN locale manifests, nav labels, CTA buttons all correct. Two bugs found: (1) nav hrefs NOT translated because CorporateApp uses MinimalNav (not CorporateNav), and MinimalNav/useSiteNavigation lack localizeHref; (2) loading overlay shows 'Un attimo…' for IT locale during step transitions (manifest CMS returns it). LoadingContext defaultMessage='·' works for initial page load. All code-level fixes (phone_prefix='', phoneIso=null, /start-studio redirect, localizedSlugs.studio, no Italian fallbacks in t() calls) confirmed in source.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/site/footer?locale=*",
+        "issue": "Returns 500 Internal Server Error — AttributeError: 'str' object has no attribute 'get' in site_resolver.py:397. Pre-existing bug not introduced by this iteration's changes.",
+        "priority": "MEDIUM"
+      }
+    ]
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "MinimalNav.jsx / useSiteChrome.js",
+        "issue": "Nav hrefs NOT localized for EN locale — 'Audience' link still points to /dedicato-a instead of /audience. Root cause: CorporateApp.jsx uses MinimalNav (not CorporateNav). MinimalNav uses useSiteNavigation() from useSiteChrome.js which returns raw nav items without applying localizeHref. The localizeHref function was added to CorporateNav.jsx (which is unused) instead of MinimalNav.jsx or useSiteChrome.js.",
+        "selector": "[data-testid='nav-link-audience']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Studio funnel step transition — loading overlay",
+        "issue": "Loading overlay shows 'UN ATTIMO…' (or 'Un attimo…') for IT locale during step transitions. Root cause: backend/services/studio_v2.py line 184 has fallback _c('studio_v2.ui.loading.message', 'Un attimo…') and the DB likely has it-IT seeded with 'Un attimo…'. The t('loading.message') || '·' code is correct but t() returns 'Un attimo…' from manifest. LoadingContext defaultMessage='·' only shows for the initial page load (before any step transition).",
+        "affected_selectors": ["[data-testid='loading-overlay']", ".mood-loading"]
+      }
+    ],
+    "design_issues": []
+  },
+
+  "test_report_links": [
+    "/app/backend/tests/test_i18n_multilingual_fix.py",
+    "/app/test_reports/pytest/iter10_i18n.xml"
+  ],
+
+  "action_items": [
+    "FIX (HIGH): Add localizeHref to MinimalNav.jsx OR useSiteNavigation() in useSiteChrome.js. CorporateApp uses MinimalNav, not CorporateNav. The EN nav hrefs are still Italian (/dedicato-a, /caratteristiche, /versioni-prezzi, /formazione). localizeHref function logic is correct (verified in isolation). Move/apply it where MinimalNav fetches navigation.",
+    "FIX (MEDIUM): Change studio_v2.py line 184 fallback from 'Un attimo…' to '·': _c('studio_v2.ui.loading.message', '·'). Also check DB: if it-IT seed for studio_v2.ui.loading.message exists and is 'Un attimo…', remove/replace it with '·'. Same for en-US if 'One moment…' should be '·'.",
+    "FIX (MEDIUM): Fix /api/site/footer returning 500 — AttributeError: 'str' object has no attribute 'get' in site_resolver.py:397."
+  ],
+
+  "critical_code_review_comments": [
+    "CorporateNav.jsx has localizeHref fully implemented but CorporateApp.jsx imports MinimalNav instead of CorporateNav — the fix was implemented in a dead-code component. E1 must either: (a) import localizeHref in useSiteChrome.js and apply it in useSiteNavigation, or (b) apply it directly in MinimalNav.jsx when mapping nav items, or (c) switch CorporateApp to use CorporateNav (if design matches).",
+    "Backend studio_v2.py loading.message fallback is 'Un attimo…' — this Italian hardcoded value defeats the purpose of the LoadingContext defaultMessage='·' fix. The step-transition loading always shows the manifest's loading.message, not the LoadingContext default.",
+    "useSiteNavigation() in useSiteChrome.js does not apply localizeHref — this is the shared hook used by MinimalNav, affecting ALL locale-based nav href translation.",
+    "/api/site/footer has an unrelated 500 error that should be investigated."
+  ],
+
+  "updated_files": [
+    "/app/frontend/src/corporate/components/CorporateNav.jsx (temp debug log added then removed)"
+  ],
+
+  "success_rate": {
+    "backend": "25/25 = 100% (all backend tests pass)",
+    "frontend": "~80% — IT/EN locale content correct, nav labels correct, redirects correct, phone_prefix null correct; 2 bugs: hrefs not localized + loading overlay 'Un attimo…'"
+  },
+
+  "test_credentials": "admin@moodfordesign.com / MoodAdmin2026! (not needed for these tests)",
+
+  "seed_data_creation": "None — tests use existing DB data",
+
+  "retest_needed": true,
+
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Two confirmed bugs: (1) MinimalNav nav hrefs not localized — the fix is in CorporateNav.jsx (dead code). After E1's fix, verify [data-testid='nav-link-audience'] href='/audience' in EN locale. (2) Loading overlay shows 'Un attimo…' during step transitions in IT locale. After fix, verify overlay shows '·' when transitioning from step1 to step2. All other i18n changes are correct. Backend 25/25 tests pass. /api/site/footer still 500.",
+
+  "rca_of_issues": {
+    "localizeHref_not_applied": {
+      "file": "/app/frontend/src/corporate/components/CorporateNav.jsx",
+      "root_cause": "localizeHref was added to CorporateNav.jsx but CorporateApp.jsx imports MinimalNav (not CorporateNav). MinimalNav uses useSiteNavigation() from useSiteChrome.js which returns raw nav items. Neither MinimalNav nor useSiteNavigation applies localizeHref to item.href.",
+      "reproduction": "Set locale to en-US, check href of nav-link-audience — shows /dedicato-a instead of /audience",
+      "mitigation": "Import LOCALIZED_SLUGS and add localizeHref logic in useSiteChrome.js useSiteNavigation(), or add it to MinimalNav.jsx when rendering nav links"
+    },
+    "loading_overlay_italian": {
+      "file": "/app/backend/services/studio_v2.py line 184",
+      "root_cause": "_c('studio_v2.ui.loading.message', 'Un attimo…') returns Italian from DB seed or fallback. Frontend t('loading.message') || '·' evaluates t() as 'Un attimo…' (truthy), so || '·' never fires.",
+      "reproduction": "Navigate to /studio (IT), select archetype, click continue — loading overlay shows 'UN ATTIMO…'",
+      "mitigation": "Change fallback in studio_v2.py to '·' AND remove/update it-IT DB seed for studio_v2.ui.loading.message"
+    }
+  }
+}

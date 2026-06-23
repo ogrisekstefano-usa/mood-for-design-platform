@@ -13,6 +13,21 @@
  */
 
 export const LOCALIZED_SLUGS = {
+  studio: {
+    'it-IT': '/studio',
+    'en-US': '/studio',
+    'en-GB': '/studio',
+    'fr-FR': '/studio',
+    'de-DE': '/studio',
+    'es-ES': '/studio',
+    'es-MX': '/studio',
+    'it':    '/studio',
+    'en-us': '/studio',
+    'en-uk': '/studio',
+    fr:      '/studio',
+    de:      '/studio',
+    es:      '/studio',
+  },
   audience: {
     'it-IT':  '/dedicato-a',
     'en-US':  '/audience',

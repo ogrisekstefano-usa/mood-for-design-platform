@@ -16,7 +16,7 @@ const Step1Archetype = ({ manifest, t, form, update, next }) => {
         fontSize: '0.7rem', letterSpacing: '0.2em',
         color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
         marginBottom: 12,
-      }}>1 · {t('btn_continue', 'Continua')}</p>
+      }}>1 · {t('btn_continue') || '→'}</p>
       <h1 style={{
         fontSize: 'clamp(2rem, 4.5vw, 3rem)',
         lineHeight: 1.1,
@@ -93,7 +93,7 @@ const Step1Archetype = ({ manifest, t, form, update, next }) => {
             cursor: canContinue ? 'pointer' : 'not-allowed',
             transition: 'background 200ms ease',
           }}
-        >{t('btn_continue')} →</button>
+        >{t('btn_continue') || '→'} →</button>
       </div>
     </div>
   );

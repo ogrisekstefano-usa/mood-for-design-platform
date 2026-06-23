@@ -147,8 +147,8 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
   };
 
   const cityPlaceholder = hqCountry?.iso2 === 'IT'
-    ? t('step2.city.placeholder_italy', 'Milano…')
-    : t('step2.city.placeholder', 'Inserisci la città…');
+    ? t('step2.city.placeholder_italy') || '…'
+    : t('step2.city.placeholder') || '…';
 
   return (
     <div data-testid="step2-location">
@@ -160,7 +160,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
 
       {/* ─── A · MOOD Operating Market — VISUAL CARD GRID ──────────── */}
       <section data-testid="section-operating-market">
-        <p style={sectionEyebrowStyle}>{t('step2.market.eyebrow', 'A · Mercato operativo')}</p>
+        <p style={sectionEyebrowStyle}>{t('step2.market.eyebrow') || 'A'}</p>
         <h2 style={sectionTitleStyle}>{t('step2_market_title')}</h2>
         <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_market_helper')}</p>
 
@@ -174,7 +174,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
 
       {/* ─── B · Headquarter ────────────────────────────────────────── */}
       <section data-testid="section-headquarter">
-        <p style={sectionEyebrowStyle}>{t('step2.hq.eyebrow', 'B · Sede')}</p>
+        <p style={sectionEyebrowStyle}>{t('step2.hq.eyebrow') || 'B'}</p>
         <h2 style={sectionTitleStyle}>{t('step2_hq_title')}</h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 18 }}>
@@ -251,7 +251,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
               <p data-testid="city-fallback-hint" style={{
                 fontSize: '0.74rem', color: 'rgba(255,255,255,0.4)',
                 marginTop: 6, marginBottom: 0,
-              }}>{t('step2.city.fallback_hint', 'Inserisci manualmente il nome della città.')}</p>
+              }}>{t('step2.city.fallback_hint')}</p>
             )}
           </div>
         </div>
@@ -261,7 +261,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
 
       {/* ─── C · Target Countries (optional) ────────────────────────── */}
       <section data-testid="section-target-countries">
-        <p style={sectionEyebrowStyle}>{t('step2.targets.eyebrow', 'C · Paesi target  ·  Opzionale')}</p>
+        <p style={sectionEyebrowStyle}>{t('step2.targets.eyebrow') || 'C'}</p>
         <h2 style={sectionTitleStyle}>{t('step2_targets_title')}</h2>
         <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_targets_helper')}</p>
 
@@ -269,7 +269,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
           allCountries={countries.filter((c) => c.iso2 !== form.headquarter_country_iso)}
           selected={form.target_countries || []}
           onChange={(nx) => update({ target_countries: nx })}
-          placeholder={t('step2.targets.search.placeholder', 'Cerca un Paese…')}
+          placeholder={t('step2.targets.search.placeholder') || '…'}
           t={t}
           locale={locale}
           max={3} />
@@ -282,7 +282,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
             background: 'transparent', color: 'rgba(255,255,255,0.6)',
             border: 'none', cursor: 'pointer',
             padding: '14px 4px', fontSize: '0.92rem', fontFamily: 'inherit',
-          }}>← {t('btn_back')}</button>
+          }}>← {t('btn_back') || '←'}</button>
         <button type="button" disabled={!canContinue} onClick={next}
           data-testid="step2-continue"
           style={{
@@ -293,7 +293,7 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
             fontWeight: 500, letterSpacing: '0.04em',
             cursor: canContinue ? 'pointer' : 'not-allowed',
             fontFamily: 'inherit',
-          }}>{t('btn_continue')} →</button>
+          }}>{t('btn_continue') || '→'} →</button>
       </div>
     </div>
   );
