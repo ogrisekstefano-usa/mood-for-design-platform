@@ -185,6 +185,18 @@ async def manifest(locale: str = 'it-IT') -> dict:
             "manifest.error":                 _c("studio_v2.ui.manifest.error",
                                                    "Service temporarily unavailable." if locale.startswith('en')
                                                    else "Servizio temporaneamente non disponibile."),
+            # Landing page keys
+            "landing.headline":               _c("studio_v2.ui.landing.headline",
+                                                   "Apply your studio to MOOD." if locale.startswith('en')
+                                                   else "Candidati a MOOD."),
+            "landing.subheadline":            _c("studio_v2.ui.landing.subheadline",
+                                                   "Complete the request in 3 minutes. A MOOD Advisor will contact you." if locale.startswith('en')
+                                                   else "Completa la candidatura in 3 minuti. Un Advisor MOOD ti contatterà."),
+            "landing.cta_start":              _c("studio_v2.ui.landing.cta_start",
+                                                   "Begin" if locale.startswith('en') else "Inizia"),
+            "landing.link_signin":            _c("studio_v2.ui.landing.link_signin",
+                                                   "Already have an account? Sign in" if locale.startswith('en')
+                                                   else "Hai già un account? Accedi"),
         }
     }
 
