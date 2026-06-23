@@ -1,6 +1,6 @@
 # MOOD for DESIGN — Product Requirements Document
 
-> Master document for the MOOD for DESIGN B2B platform. Last refresh: **23 June 2026 (Phase 1 Multilingual Fix — COMPLETED)**.
+> Master document for the MOOD for DESIGN B2B platform. Last refresh: **23 June 2026 (Phase 3 Completion Sprint — COMPLETED)**.
 
 ---
 
@@ -294,8 +294,39 @@ Eliminare tutti i punti di rottura i18n nel funnel studio V2 e nella navigazione
 - features `page_intro.body` EN+IT: "platform/piattaforma" → "editorial infrastructure/infrastruttura editoriale"
 - home `hero.subtitle_accent` EN: "editorial platform" → "editorial ecosystem"
 
-**Risultati test:** 36/36 (100%) — tutte le API servono il contenuto EN-US corretto senza keyword vietate.
+**Risultati test Phase 2:** 36/36 (100%) — tutte le API servono il contenuto EN-US corretto senza keyword vietate.
 
-- P1: `/partner-application` UI update (prefisso telefono internazionale + checkboxes collaborazione)
-- P2: Trust Layer About page (Founder Letter — bloccato su dati reali founder)
-- P3: **LOCKED** — Design Journey™ page `/design-journey` (sblocca solo dopo Trust Layer pubblicato + score ≥8.0)
+---
+
+## Phase 3 — Completion Sprint (23 June 2026) — COMPLETATA
+
+### Task 1: `/partner-application` ✅
+- **DB**: migration `037_partner_applications.sql` — tabella `partner_applications` creata
+- **Backend**: `POST /api/corporate/partner-application` in `routers/corporate.py`
+- **Frontend**: `PartnerApplicationPage.jsx` — form editoriale (nome/cognome/email/phone/azienda/sito/tipo profilo/intenti/messaggio)
+  - Riutilizza `PhonePrefixField`, `useCountries`, `useLocale`
+  - Slug IT: `/candidatura-partner` | Slug EN: `/partner-application`
+- Risultati test: 100% backend, 95% frontend (low: locale flash al primo render — mitigato con localStorage fallback)
+
+### Task 2: Pricing page EN-US ✅
+- **Script**: `backend/db/seed_pricing_en_us.py` — 84 blocchi EN-US seedati (84 inserted, 0 skipped)
+- Copertura: comparison.row_01-12, ecosystem.pillar_01-03, tier_04 inc, tier_05 (empty)
+
+### Task 3: About page + placeholder filter ✅
+- **Script**: `backend/db/seed_about_page.py` — 23 editorial_blocks, 6 cms_sections
+  - Sezioni reali (visibili): page_hero, page_intro (vision), final_cta_immersive
+  - Sezioni placeholder (nascoste): editorial_body_with_photo (founder), metrics_strip, cinematic_quote
+- **Filter**: `SectionRenderer.jsx` — funzione `hasPlaceholder()` filtra sezioni con `[PLACEHOLDER]` nel content
+
+### Task 4: DesignJourney™ Teaser ✅
+- **File**: `frontend/src/corporate/sections/DesignJourneyTeaser.jsx`
+- Iniettato in `SitePages.jsx` `HomePage` override — appare dopo la sezione 0 (hero)
+- Responsive mobile, animazione entrance, badge "Coming soon / Prossimamente"
+- `data-testid="design-journey-teaser"`
+
+---
+
+## Backlog (post-Phase 3)
+
+- **P1**: Sostituire i `[PLACEHOLDER]` dell'About page con dati reali del founder (bio, metrics, foto, quote)
+- **P2 LOCKED**: Implementare `/design-journey` — sblocca solo dopo Trust Layer pubblicato e score ≥8.0

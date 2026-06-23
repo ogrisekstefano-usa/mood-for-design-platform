@@ -125,7 +125,10 @@ const labelStyle = {
 
 const PartnerApplicationPage = () => {
   const { locale } = useLocale();
-  const isIT = locale && locale.startsWith('it');
+  const resolvedLocale = locale || (() => {
+    try { return localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale') || ''; } catch { return ''; }
+  })();
+  const isIT = resolvedLocale.startsWith('it');
   const c = isIT ? COPY.it : COPY.en;
 
   const { items: countries, ready: countriesReady } = useCountries(locale || 'it-IT');

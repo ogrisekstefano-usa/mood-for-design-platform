@@ -29,7 +29,11 @@ const COPY = {
 
 const DesignJourneyTeaser = () => {
   const { locale } = useLocale();
-  const isIT = locale && (locale.startsWith('it'));
+  // Fallback al valore in localStorage per evitare flash di EN su prima visita IT
+  const resolvedLocale = locale || (() => {
+    try { return localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale') || ''; } catch { return ''; }
+  })();
+  const isIT = resolvedLocale.startsWith('it');
   const copy = isIT ? COPY.it : COPY.en;
   const barRef = useRef(null);
 
