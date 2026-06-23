@@ -148,7 +148,7 @@ $ curl -s http://localhost:8001/api/admin/email-health | jq .
     "domain_verified": true, "domain": "mail.moodfordesign.com",
     "sender_email": "no-reply@mail.moodfordesign.com",
     "sender_name": "MOOD for DESIGN",
-    "base_url": "https://editorial-platform-4.preview.emergentagent.com",
+    "base_url": "https://design-journey-cms.preview.emergentagent.com",
     "api_reachable": true, "detail": null
   },
   "dispatch": { "total": 116, "sent": 116, "failed": 0, "sandbox": 3, ... }
@@ -163,9 +163,9 @@ Recovered: 3
 ```
 Risultato DB:
 ```
-studio_request_received   → ogriusa@gmail.com         | sent | ext=c71f493d-846d-4e84-81b0-a65f4533bf26
-admin_new_studio_request  → admin@moodfordesign.com   | sent | ext=ac3cc90b-513f-4e04-a772-ed258ba255ab
-studio_request_review     → ogriusa@gmail.com         | sent | ext=40ef33fd-40fa-455e-aba8-f4341760be49
+studio_request_received   → ogriusa@gmail.com         | sent | ext=design-journey-cms
+admin_new_studio_request  → admin@moodfordesign.com   | sent | ext=design-journey-cms
+studio_request_review     → ogriusa@gmail.com         | sent | ext=design-journey-cms
 ```
 Le 3 righe `sandbox` originali rimangono in log (con `retry_count=1`) per audit. Le 3 nuove righe `sent` con `external_id` Resend confermano l'effettivo invio.
 

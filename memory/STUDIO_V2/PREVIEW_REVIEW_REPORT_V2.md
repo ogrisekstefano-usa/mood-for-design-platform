@@ -3,7 +3,7 @@
 
 > **Data review:** 2026-05-31 (re-run post Final Pre-Deploy Fix)
 > **Reviewer:** Agent E1 (handoff fork)
-> **Ambiente analizzato:** `https://editorial-platform-4.preview.emergentagent.com/`
+> **Ambiente analizzato:** `https://design-journey-cms.preview.emergentagent.com/`
 > **Metodo:** Screenshot reali + ispezione DOM + scansione CMS via script
 > **Locale verificate:** `it-IT` (default) + `en-US` (switch funzionale)
 > **Output API `/api/site/locales`:** `{default: "it-IT", enabled: ["it-IT", "en-US"]}` ✅

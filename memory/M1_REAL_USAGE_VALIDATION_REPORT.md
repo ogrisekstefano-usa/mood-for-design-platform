@@ -13,21 +13,21 @@
 |---|------|:--:|-----------|
 | 1 | `admin login` | ✅ | token len=373 |
 | 2 | `list tenants[search=martinel]` | ✅ | contacts_count=2, owner=MOOD Admin |
-| 3 | `eligible-owners` | ✅ | admin uid=2efb86f8-6546-4bb0-a653-6eab772a0da3 |
-| 4 | `assign tenant owner` | ✅ | owner=2efb86f8-6546-4bb0-a653-6eab772a0da3 |
+| 3 | `eligible-owners` | ✅ | admin uid=design-journey-cms |
+| 4 | `assign tenant owner` | ✅ | owner=design-journey-cms |
 | 5 | `catalog contact-roles` | ✅ | 11 entries |
 | 6 | `catalog activity-types` | ✅ | 8 entries |
 | 7 | `catalog contact-sources` | ✅ | 8 entries |
 | 8 | `catalog languages` | ✅ | 12 entries |
 | 9 | `contract probe preferred_language='it'` | ✅ | accepted (mapped) — clean up created probe contact |
-| 10 | `create contact Mario (founder)` | ✅ | id=e5e983b4-5b02-46e0-9bf0-4eec0c983c2e |
-| 11 | `create contact Giulia (architect)` | ✅ | id=6a2994ce-2860-452d-8cec-fccce9212e5b |
-| 12 | `create contact Luca (purchasing)` | ✅ | id=3408cd4c-5e67-4be3-bf99-cb09c7c96046 |
-| 13 | `create activity call` | ✅ | id=dc40b55b-f562-4239-9dfa-23c14897f14b |
-| 14 | `create activity email` | ✅ | id=5e47893b-69a3-4c3f-af06-666d288b341c |
-| 15 | `create activity whatsapp` | ✅ | id=2ff44625-22fa-4df7-9127-befba411612e |
-| 16 | `create activity linkedin` | ✅ | id=57dc4b65-bbb1-4122-8566-4e858e059e7b |
-| 17 | `create activity internal_note` | ✅ | id=0062af8a-ba6f-4e0d-ac72-101be4bd222a |
+| 10 | `create contact Mario (founder)` | ✅ | id=design-journey-cms |
+| 11 | `create contact Giulia (architect)` | ✅ | id=design-journey-cms |
+| 12 | `create contact Luca (purchasing)` | ✅ | id=design-journey-cms |
+| 13 | `create activity call` | ✅ | id=design-journey-cms |
+| 14 | `create activity email` | ✅ | id=design-journey-cms |
+| 15 | `create activity whatsapp` | ✅ | id=design-journey-cms |
+| 16 | `create activity linkedin` | ✅ | id=design-journey-cms |
+| 17 | `create activity internal_note` | ✅ | id=design-journey-cms |
 | 18 | `list contacts` | ✅ | 3 active |
 | 19 | `filter by role=architect` | ✅ | HTTP 200 got 1 |
 | 20 | `contact search q=Giulia` | ✅ | got 1 |

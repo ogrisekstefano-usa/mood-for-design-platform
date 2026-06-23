@@ -6,7 +6,7 @@
 > **Modalità:** **Solo trace runtime — nessuna ipotesi cache, nessun suggerimento.**
 > **Strumenti:** Playwright MutationObserver injected pre-navigation + network capture + bundle introspection
 > **Ambienti analizzati:**
->   1. **PREVIEW** (working env): `https://editorial-platform-4.preview.emergentagent.com/studio`
+>   1. **PREVIEW** (working env): `https://design-journey-cms.preview.emergentagent.com/studio`
 >   2. **PRODUCTION** (deployed): `https://moodfordesign.com/studio` _(read-only — no code access)_
 
 ---

@@ -3,7 +3,7 @@
 
 > **Data deploy:** 2026-05-31
 > **Reviewer:** Agent E1 (handoff fork)
-> **Ambiente:** Preview · `https://editorial-platform-4.preview.emergentagent.com/`
+> **Ambiente:** Preview · `https://design-journey-cms.preview.emergentagent.com/`
 > **Tipo deploy:** Hot-reload Preview (Emergent K8s ingress) — frontend `pid 2283` / backend `pid 47`
 > **Metodo verifica:** Curl API status + Playwright DOM inspection + screenshot reali
 

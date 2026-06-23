@@ -30,7 +30,7 @@ import sys
 import json
 import urllib.request
 
-BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL') or 'https://editorial-platform-4.preview.emergentagent.com'
+BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL') or 'https://design-journey-cms.preview.emergentagent.com'
 
 EXPECTED = {
     'it-IT': {

@@ -71,7 +71,7 @@ Le tab spariscono. La Dashboard è la **home stessa** del tenant.
 ## 3. Mockup reali (HTML statico)
 
 **File live:** `/app/frontend/public/_relationship_dashboard_mockup.html`
-**URL preview:** `https://editorial-platform-4.preview.emergentagent.com/_relationship_dashboard_mockup.html`
+**URL preview:** `https://design-journey-cms.preview.emergentagent.com/_relationship_dashboard_mockup.html`
 
 ### 3.1 Desktop 1920×1080
 ![Desktop 1920](./screenshots/m6/02_desktop_1920.jpeg)
@@ -309,6 +309,6 @@ Prima di scrivere una sola riga di codice mi servono **3 decisioni**:
 | 2 | **Gap B — Open FU count** | (a) Aggiungo subquery a `/tenants` (4 righe SQL) · (b) Mostra `—` finché non c'è · (c) Altro |
 | 3 | **Mockup HTML approvato come direzione finale?** | (a) Sì, implementa così · (b) Correggi prima X / Y / Z |
 
-Apri il mockup live qui: `https://editorial-platform-4.preview.emergentagent.com/_relationship_dashboard_mockup.html`
+Apri il mockup live qui: `https://design-journey-cms.preview.emergentagent.com/_relationship_dashboard_mockup.html`
 
 **STOP. Attendo le 3 decisioni prima di toccare codice React.**

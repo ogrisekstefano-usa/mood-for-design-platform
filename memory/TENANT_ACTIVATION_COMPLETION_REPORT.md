@@ -86,7 +86,7 @@ Comando: `python3 -m scripts.tenant_activation_completion_test`
 === Phase 3: Tenant Activation (full-auto) ===
   [PASS] preview_ok — slug=studio-2 email=completion.1780364022@moodtest.example.com
   [PASS] activate_ok — tenant_id=1673fece… slug=completion-1780364022
-  [PASS] magic_link_issued — https://editorial-platform-4.preview.emergentagent.com/journey/continue?token=…
+  [PASS] magic_link_issued — https://design-journey-cms.preview.emergentagent.com/journey/continue?token=…
 
 === Phase 4: Database verification ===
   [PASS] db_request_activated — status=activated

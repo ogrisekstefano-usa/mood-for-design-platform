@@ -4,7 +4,7 @@ Anti-regression API test — Markets / Locales architecture.
 Run:  cd /app/backend && python3 tests/test_markets_api.py
 """
 import os, sys, json, urllib.request
-BACKEND = os.environ.get('REACT_APP_BACKEND_URL') or 'https://editorial-platform-4.preview.emergentagent.com'
+BACKEND = os.environ.get('REACT_APP_BACKEND_URL') or 'https://design-journey-cms.preview.emergentagent.com'
 
 def fetch(path: str):
     req = urllib.request.Request(f"{BACKEND}{path}", headers={'User-Agent': 'mood-test/1.0'})

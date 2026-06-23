@@ -4,13 +4,13 @@
   "reference": "MOOD-4A7D-2622",
   "tenant_id": "d346b762-6d97-411b-98c1-c87f6ffdb3de",
   "tenant_slug": "martinel-interior-design",
-  "magic_link": "https://editorial-platform-4.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
+  "magic_link": "https://design-journey-cms.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
   "findings": [
     {
       "area": "markets.italy_exists",
       "ok": true,
       "severity": "P0",
-      "note": "market italy id=1476d3f7-4cad-48c9-a8c6-b76affb80606",
+      "note": "market italy id=design-journey-cms",
       "extra": {}
     },
     {
@@ -130,7 +130,7 @@
           "tenant_name": "Martinel Interior Design",
           "founder_user_id": "ff656a65-d0ae-4905-8ed3-71345946e69c",
           "founder_email": "mario.rossi.1780378634@martinel.example",
-          "magic_link_url": "https://editorial-platform-4.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
+          "magic_link_url": "https://design-journey-cms.preview.emergentagent.com/journey/continue?token=w8x-Agott6FOLAMNlze_KGs475icwxGQw9SdMnt0-5U",
           "magic_link_sent": true,
           "relation_id": "7882a71b-4c8f-4c6f-b257-5caacfe7d14b",
           "request_id": "4a7d2622-4e7f-4dcc-8c77-e5432dc7ecb8"
@@ -141,7 +141,7 @@
       "area": "data.operating_market_id",
       "ok": true,
       "severity": "P0",
-      "note": "market_id=1476d3f7-4cad-48c9-a8c6-b76affb80606",
+      "note": "market_id=design-journey-cms",
       "extra": {}
     },
     {
@@ -269,7 +269,7 @@
       "area": "email.founder.has_magic_link",
       "ok": true,
       "severity": "P0",
-      "note": "link=https://editorial-platform-4.preview.emergentagent.com/journ\u2026",
+      "note": "link=https://design-journey-cms.preview.emergentagent.com/journ\u2026",
       "extra": {}
     },
     {

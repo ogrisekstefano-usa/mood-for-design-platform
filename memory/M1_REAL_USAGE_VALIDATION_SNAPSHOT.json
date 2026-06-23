@@ -17,13 +17,13 @@
     {
       "name": "eligible-owners",
       "ok": true,
-      "detail": "admin uid=2efb86f8-6546-4bb0-a653-6eab772a0da3",
+      "detail": "admin uid=design-journey-cms",
       "payload": null
     },
     {
       "name": "assign tenant owner",
       "ok": true,
-      "detail": "owner=2efb86f8-6546-4bb0-a653-6eab772a0da3",
+      "detail": "owner=design-journey-cms",
       "payload": null
     },
     {
@@ -59,49 +59,49 @@
     {
       "name": "create contact Mario (founder)",
       "ok": true,
-      "detail": "id=e5e983b4-5b02-46e0-9bf0-4eec0c983c2e",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create contact Giulia (architect)",
       "ok": true,
-      "detail": "id=6a2994ce-2860-452d-8cec-fccce9212e5b",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create contact Luca (purchasing)",
       "ok": true,
-      "detail": "id=3408cd4c-5e67-4be3-bf99-cb09c7c96046",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create activity call",
       "ok": true,
-      "detail": "id=dc40b55b-f562-4239-9dfa-23c14897f14b",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create activity email",
       "ok": true,
-      "detail": "id=5e47893b-69a3-4c3f-af06-666d288b341c",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create activity whatsapp",
       "ok": true,
-      "detail": "id=2ff44625-22fa-4df7-9127-befba411612e",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create activity linkedin",
       "ok": true,
-      "detail": "id=57dc4b65-bbb1-4122-8566-4e858e059e7b",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {
       "name": "create activity internal_note",
       "ok": true,
-      "detail": "id=0062af8a-ba6f-4e0d-ac72-101be4bd222a",
+      "detail": "id=design-journey-cms",
       "payload": null
     },
     {

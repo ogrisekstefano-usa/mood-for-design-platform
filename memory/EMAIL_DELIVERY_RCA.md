@@ -108,7 +108,7 @@ HTTP 200
 ✅ Dominio `mail.moodfordesign.com` verificato e abilitato all'invio.
 ✅ Region `eu-west-1` (corretta per il dominio italiano).
 
-**Verifica end-to-end con il dispatcher attuale (pid 46)**: ho invocato `dispatch_email('studio_request_received', to='ogriusa@gmail.com', locale='en-US', variables={…})` direttamente — esito `status='sent'`, `external_id=aa138887-abcf-49a2-8625-1dc68036838d`. La mail è effettivamente uscita (e arrivata al destinatario).
+**Verifica end-to-end con il dispatcher attuale (pid 46)**: ho invocato `dispatch_email('studio_request_received', to='ogriusa@gmail.com', locale='en-US', variables={…})` direttamente — esito `status='sent'`, `external_id=design-journey-cms`. La mail è effettivamente uscita (e arrivata al destinatario).
 
 > ⚠ **Side effect dell'audit**: per chiudere il task 4 ho rispedito **una** email reale a `ogriusa@gmail.com` (template `studio_request_received` con `reference=MOOD-5D6B-A978`). Il lead la riceverà con ~1h di ritardo rispetto al submit. Le altre 2 email originali (admin notification + review) restano in stato `sandbox` nel log e non sono state ri-spedite.
 

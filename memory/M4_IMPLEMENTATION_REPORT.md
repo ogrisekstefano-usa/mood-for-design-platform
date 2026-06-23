@@ -115,7 +115,7 @@ Dalla critical review del testing agent (5 osservazioni):
 
 ## 5 · Endpoint REST production-ready
 
-Base URL: `https://editorial-platform-4.preview.emergentagent.com`
+Base URL: `https://design-journey-cms.preview.emergentagent.com`
 
 ```http
 GET    /api/notifications                          # cursor paginated

@@ -3,7 +3,7 @@
 
 > **Data fix:** 2026-06-01
 > **Reviewer:** Agent E1 (handoff fork)
-> **Ambiente verificato:** Preview · `https://editorial-platform-4.preview.emergentagent.com/`
+> **Ambiente verificato:** Preview · `https://design-journey-cms.preview.emergentagent.com/`
 > **Target:** Production must behave exactly like Preview after redeploy.
 
 ---
@@ -131,7 +131,7 @@ useEffect(() => {
 
 **Verifica live:**
 ```bash
-$ curl https://editorial-platform-4.preview.emergentagent.com/ | grep 'lang=\|atelier'
+$ curl https://design-journey-cms.preview.emergentagent.com/ | grep 'lang=\|atelier'
 2:<html lang="it-IT">
 (0 hits per "atelier")
 ```

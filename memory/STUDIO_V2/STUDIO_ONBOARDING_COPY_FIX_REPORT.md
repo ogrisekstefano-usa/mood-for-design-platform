@@ -5,7 +5,7 @@
 > **Issue origine:** `/app/memory/STUDIO_V2/ONBOARDING_RENDER_AUDIT.md`
 > **Modalità:** Hotfix CMS + cache key bump + locale-aware bundle + anti-regression test
 > **Reviewer:** Agent E1 (handoff fork)
-> **Ambiente verificato:** Preview · `https://editorial-platform-4.preview.emergentagent.com/studio`
+> **Ambiente verificato:** Preview · `https://design-journey-cms.preview.emergentagent.com/studio`
 
 ---
 

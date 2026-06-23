@@ -8,7 +8,7 @@
 | Parametro | Valore |
 |---|---|
 | Data esecuzione | 2 Giu 2026, 05:37–05:58 UTC |
-| Backend | `https://editorial-platform-4.preview.emergentagent.com` |
+| Backend | `https://design-journey-cms.preview.emergentagent.com` |
 | Lead Reference primario | `MOOD-4A7D-2622` (audit) + `MOOD-F93E-DFE1` (browser) |
 | Tenant slug creati | `martinel-interior-design-5` … `-11` (collisione handler verificato) |
 | Domain email | `mail.moodfordesign.com` · **verified** · Sandbox **OFF** |

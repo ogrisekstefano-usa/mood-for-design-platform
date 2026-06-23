@@ -4,7 +4,7 @@
 > **Data verifica:** 2026-05-31
 > **Patch eseguita:** `/app/backend/scripts/cms_patch_cta_routing.py` — 8 sezioni aggiornate, idempotente
 > **Reviewer:** Agent E1 (handoff fork)
-> **Ambiente:** Preview · `https://editorial-platform-4.preview.emergentagent.com/`
+> **Ambiente:** Preview · `https://design-journey-cms.preview.emergentagent.com/`
 
 ---
 
