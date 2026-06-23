@@ -1,6 +1,6 @@
 # MOOD for DESIGN — Product Requirements Document
 
-> Master document for the MOOD for DESIGN B2B platform. Last refresh: **5 June 2026 (M6 Relationship Center · CRM FREEZE)**.
+> Master document for the MOOD for DESIGN B2B platform. Last refresh: **23 June 2026 (Phase 1 Multilingual Fix — COMPLETED)**.
 
 ---
 
@@ -250,3 +250,38 @@ Public response includes a fully-built JSON-LD `FAQPage` schema (built only from
 
 ### 9.4 Regression suite
 `/app/backend/tests/test_faq_system.py` — 12/12 pytest passed.
+
+
+---
+
+## 10. Phase 1 Multilingual Fix — COMPLETED (23 June 2026)
+
+### 10.1 Obiettivo
+Eliminare tutti i punti di rottura i18n nel funnel studio V2 e nella navigazione pubblica, senza modificare l'architettura CMS esistente. Zero regressioni sul flusso IT.
+
+### 10.2 Fix implementati
+
+| # | Fix | File | Status |
+|---|-----|------|--------|
+| 1 | `StudioFunnelV2.jsx`: `navigator.language` → `useLocale()` | `studio_v2/StudioFunnelV2.jsx` | ✅ |
+| 2 | `LoadingContext.jsx`: defaultMessage `'Un attimo…'` → `'·'` | `studio_v2/components/LoadingContext.jsx` | ✅ |
+| 3 | Loading overlay: usa `t('loading.message') \|\| '·'` | `studio_v2/StudioFunnelV2.jsx` | ✅ |
+| 4 | `useV2Draft.js`: `phone_prefix: '+39'` → `''` | `studio_v2/hooks/useV2Draft.js` | ✅ |
+| 5 | `StartStudioPage.jsx`: redirect silenzioso a `/studio` | `corporate/pages/StartStudioPage.jsx` | ✅ |
+| 6 | `CorporateNav.jsx`: `/api/corporate/navigation` → `/api/site/navigation`, locale-aware CTA fallback, gestione right items (login + activate_blueprint) | `corporate/components/CorporateNav.jsx` | ✅ |
+| 7 | Manifest `en-US` già popolato in DB (verificato) | DB `editorial_block_translations` | ✅ |
+| 8 | Markets `usa_national` con `effective_locale='en-US'` esistente | DB `markets` | ✅ |
+| 9 | `useSiteChrome.js`: `localizeHref()` applicata in `useSiteNavigation()` — affects MinimalNav | `corporate/hooks/useSiteChrome.js` | ✅ |
+| 10 | Step1,2,3,4 (tutti): rimossi i fallback IT hardcoded da `t('key', 'testo_italiano')` | Tutti i file Step | ✅ |
+| 11 | `localizedSlugs.js`: entry `studio` aggiunta per tutti i locali | `corporate/routes/localizedSlugs.js` | ✅ |
+| B1 | `site_resolver.py`: footer `social_cfg` ora gestisce sia `list[dict]` che `dict{accounts}` | `services/site_resolver.py` | ✅ |
+| B2 | DB `loading.message`: aggiornato `'·'` per it-IT e en-US | DB `editorial_block_translations` | ✅ |
+
+### 10.3 Risultati test
+- Backend: 25/25 + 17/17 = 42 test passati (100%)
+- Frontend: 100% — nav hrefs IT e EN corretti, login tradotto (Accedi/Sign in), CTA tradotto (Attiva/Activate Blueprint™), overlay loading mostra `·`
+
+### 10.4 Prossimi step
+- P1: `/partner-application` UI update (prefisso telefono internazionale + checkboxes collaborazione)
+- P2: Trust Layer About page (Founder Letter — bloccato su dati reali founder)
+- P3: **LOCKED** — Design Journey™ page `/design-journey` (sblocca solo dopo Trust Layer pubblicato + score ≥8.0)
